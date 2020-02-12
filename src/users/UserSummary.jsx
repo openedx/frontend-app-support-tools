@@ -1,23 +1,57 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Table from '@edx/paragon/dist/Table';
 
 export default function UserSummary({ data }) {
+  if (data === null) { // FIXME in theory we shouldn't have to do this but in practice we do :(
+    return null;
+  }
+  const tableData = [{
+    name: data.name || 'not set',
+    isActive: data.isActive ? 'yes' : 'no',
+    email: data.email,
+    country: data.country,
+  }];
+
+  const columns = [
+    {
+      label: 'Full Name',
+      key: 'name',
+      width: 'col-3',
+    },
+    {
+      label: 'Active',
+      key: 'isActive',
+      width: 'col-3',
+    },
+    {
+      label: 'Email',
+      key: 'email',
+      width: 'col-3',
+    },
+    {
+      label: 'Country',
+      key: 'country',
+      width: 'col-3',
+    },
+  ];
+
   return (
     <section className="mb-3">
       <h3>User Summary</h3>
 
-      {data === null ?
-        (<div>
-          Sorry, user not found!
-        </div>)
-        :
-        (<div>
-          <p><b>Full name:</b> {data.name === '' ? <span>not set</span> : <span>{data.name}</span>}</p>
-          <p><b>Is active:</b> {data.isActive ? <span>yes</span> : <span>no</span> }</p>
-          <p><b>Email:</b> {data.email}</p>
-          <p><b>Country:</b> {data.country ? <span>{data.country}</span> : <span>not set</span>}</p>
-        </div>)
-      }
+      {data === null
+        ? (
+          <div>
+          User not found.
+          </div>
+        )
+        : (
+          <Table
+            data={tableData}
+            columns={columns}
+          />
+        )}
     </section>
   );
 }
