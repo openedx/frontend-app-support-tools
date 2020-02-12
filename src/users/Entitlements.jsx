@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import {
-  Button, Table, Collapsible,
+  Button, Table, Collapsible, TransitionReplace,
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
@@ -117,16 +117,19 @@ export default function Entitlements({ data, changeHandler, user }) {
         </Button>
         )}
       </div>
-      {formType !== null && (
-        <EntitlementForm
-          user={user}
-          entitlement={entitlementToReissue}
-          formType={formType}
-          changeHandler={changeHandler}
-          submitHandler={(entitlement) => console.log(entitlement)}
-          closeHandler={() => setFormType(null)}
-        />
-      )}
+      <TransitionReplace>
+        {formType !== null ? (
+          <EntitlementForm
+            key="entitlement-form"
+            user={user}
+            entitlement={entitlementToReissue}
+            formType={formType}
+            changeHandler={changeHandler}
+            submitHandler={(entitlement) => console.log(entitlement)}
+            closeHandler={() => setFormType(null)}
+          />
+        ) : (<React.Fragment key="nothing"></React.Fragment>)}
+      </TransitionReplace>
       <Collapsible title={`Entitlements (${tableData.length})`}>
         <Table
           className="w-100"
