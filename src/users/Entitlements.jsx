@@ -2,8 +2,12 @@ import React, {
   useMemo, useState, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
-import { Button, Table, Collapsible } from '@edx/paragon';
+import {
+  Button, Table, Collapsible,
+} from '@edx/paragon';
+import { getConfig } from '@edx/frontend-platform';
 
 
 const sort = function sort(firstElement, secondElement, key, direction) {
@@ -30,12 +34,12 @@ export default function Entitlements({ data }) {
       user: result.user,
       courseUuid: result.courseUuid,
       mode: result.mode,
-      enrollment: 'Enrollment data comes from where?',
-      expiredAt: result.expiredAt,
-      created: result.created,
-      modified: result.modified,
-      orderNumber: result.orderNumber,
-      actions: <Button type="button" onClick={() => console.log('reissue it')} className="btn-outline-primary">Reissue</Button>,
+      enrollment: result.enrollmentCourseRun,
+      expiredAt: result.expiredAt ? moment(result.expiredAt).format('lll') : null,
+      created: moment(result.created).format('lll'),
+      modified: moment(result.modified).format('lll'),
+      orderNumber: <a href={`${getConfig().ECOMMERCE_BASE_URL}${result.orderNumber}/`}>{result.orderNumber}</a>,
+      actions: <Button type="button" disabled={!result.enrollmentCourseRun} onClick={() => console.log('reissue it')} className="btn-outline-primary">Reissue</Button>,
     }));
   }, [data]);
 
