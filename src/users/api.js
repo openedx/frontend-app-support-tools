@@ -18,12 +18,10 @@ export async function getEnrollments(username) {
 }
 
 export async function getUser(username) {
-  // const { data } = await getAuthenticatedHttpClient().get(
-  //   `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${username}`,
-  // );
-  return {
-    username,
-  };
+  const { data } = await getAuthenticatedHttpClient().get(
+    `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}`,
+  );
+  return data;
 }
 
 export async function getAllUserData(username) {
