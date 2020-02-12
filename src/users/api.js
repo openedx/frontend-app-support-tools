@@ -11,20 +11,13 @@ export async function getEntitlements(username) {
 }
 
 export async function getEnrollments(username) {
-  // const { data } = await getAuthenticatedHttpClient().get(
-  //   `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${username}`,
-  // );
+  const { data } = await getAuthenticatedHttpClient().get(
+    `${getConfig().LMS_BASE_URL}/support/enrollment/${username}`,
+  );
+  console.log(data);
 
   // I'm guessing it'll look similar to the entitlements response, but this is just a guess/can be changed.
-  return {
-    start: 0,
-    results: [],
-    currentPage: 1,
-    numPages: 1,
-    previous: null,
-    count: 0,
-    next: null,
-  };
+  return data;
 }
 
 export async function getUser(username) {
