@@ -8,7 +8,7 @@ import {
   Button, Table, Collapsible,
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import EntitlementForm from './EntitlementForm';
+import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
 
 
 const sort = function sort(firstElement, secondElement, key, direction) {
@@ -23,10 +23,11 @@ const sort = function sort(firstElement, secondElement, key, direction) {
   return 0;
 };
 
-export default function Entitlements({ data }) {
+export default function Entitlements({ data, changeHandler, user }) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
+  const [entitlementToReissue, setEntitlementToReissue] = useState(undefined);
 
   const tableData = useMemo(() => {
     if (data === null) {
@@ -40,8 +41,24 @@ export default function Entitlements({ data }) {
       expiredAt: result.expiredAt ? moment(result.expiredAt).format('lll') : null,
       created: moment(result.created).format('lll'),
       modified: moment(result.modified).format('lll'),
-      orderNumber: <a href={`${getConfig().ECOMMERCE_BASE_URL}${result.orderNumber}/`}>{result.orderNumber}</a>,
-      actions: <Button type="button" disabled={!result.enrollmentCourseRun} onClick={() => console.log('reissue it')} className="btn-outline-primary">Reissue</Button>,
+      orderNumber: (
+        <a href={`${getConfig().ECOMMERCE_BASE_URL}${result.orderNumber}/`}>
+          {result.orderNumber}
+        </a>
+      ),
+      actions: (
+        <Button
+          type="button"
+          disabled={!result.enrollmentCourseRun}
+          onClick={() => {
+            setEntitlementToReissue(result);
+            setFormType(REISSUE);
+          }}
+          className="btn-outline-primary"
+        >
+          Reissue
+        </Button>
+      ),
     }));
   }, [data]);
 
@@ -50,10 +67,6 @@ export default function Entitlements({ data }) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     }
     setSortColumn(column);
-  });
-
-  const showEntitlementForm = useCallback((formType) => {
-
   });
 
   const columns = [
@@ -92,21 +105,38 @@ export default function Entitlements({ data }) {
     <section className="mb-3">
       <div className="d-flex flex-row justify-content-between mb-2">
         <h3>Entitlements</h3>
-        <Button type="button" className="btn-outline-primary">Create New Entitlement</Button>
-      </div>
-      {formType !== null ? <EntitlementForm formType={formType} />
-        : (
-          <Collapsible title={`Entitlements (${tableData.length})`}>
-            <Table
-              className="w-100"
-              data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
-              columns={columns}
-              tableSortable
-              defaultSortedColumn="created"
-              defaultSortDirection="desc"
-            />
-          </Collapsible>
+        {!formType && (
+        <Button
+          type="button"
+          className="btn-outline-primary"
+          onClick={() => {
+            setEntitlementToReissue(undefined);
+            setFormType(CREATE);
+          }}
+        >Create New Entitlement
+        </Button>
         )}
+      </div>
+      {formType !== null && (
+        <EntitlementForm
+          user={user}
+          entitlement={entitlementToReissue}
+          formType={formType}
+          changeHandler={changeHandler}
+          submitHandler={(entitlement) => console.log(entitlement)}
+          closeHandler={() => setFormType(null)}
+        />
+      )}
+      <Collapsible title={`Entitlements (${tableData.length})`}>
+        <Table
+          className="w-100"
+          data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
+          columns={columns}
+          tableSortable
+          defaultSortedColumn="created"
+          defaultSortDirection="desc"
+        />
+      </Collapsible>
     </section>
   );
 }
@@ -115,6 +145,8 @@ Entitlements.propTypes = {
   data: PropTypes.shape({
     results: PropTypes.arrayOf(PropTypes.object),
   }),
+  changeHandler: PropTypes.func.isRequired,
+  user: PropTypes.string.isRequired,
 };
 
 Entitlements.defaultProps = {

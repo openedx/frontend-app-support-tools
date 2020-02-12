@@ -1,105 +1,135 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Button, Input,
 } from '@edx/paragon';
 
-const REISSUE = 'reissue';
-const CREATE = 'create';
+import UserMessagesContext from '../user-messages/UserMessagesContext';
+import AlertList from '../user-messages/AlertList';
+import { postEntitlement, patchEntitlement } from './api';
+
+export const REISSUE = 'reissue';
+export const CREATE = 'create';
+
 
 export default function EntitlementForm({
   formType,
-  isOpen,
   entitlement,
-  createEntitlement,
-  reissueEntitlement,
+  changeHandler,
   closeHandler,
+  user,
 }) {
   const [courseUuid, setCourseUuid] = useState(entitlement.courseUuid);
   const [mode, setMode] = useState(entitlement.mode);
-  const [user, setUser] = useState(entitlement.user);
   const [comments, setComments] = useState('');
+  const { add, remove } = useContext(UserMessagesContext);
+  const [errorId, setErrorId] = useState(null);
 
   const submit = useCallback(() => {
-    if (formType === REISSUE) {
-      reissueEntitlement({
-        courseUuid, mode, user, comments,
+    if (errorId !== null) {
+      remove(errorId);
+    }
+    if (formType === CREATE) {
+      postEntitlement({
+        user,
+        courseUuid,
+        mode,
+        action: CREATE,
+        comments,
+      }).then((result) => {
+        if (result.errors !== undefined) {
+          result.errors.forEach(error => setErrorId(add(error)));
+        } else {
+          changeHandler();
+        }
       });
-    } else {
-      createEntitlement({
-        courseUuid, mode, user, comments,
+    } else if (formType === REISSUE) {
+      patchEntitlement({
+        uuid: entitlement.uuid,
+        action: REISSUE,
+        unenrolledRun: entitlement.enrollmentCourseRun,
+        comments,
+      }).then((result) => {
+        if (result.errors !== undefined) {
+          result.errors.forEach(error => setErrorId(add(error)));
+        } else {
+          changeHandler();
+        }
       });
     }
   });
 
-  const isReissue = this.props.formType === REISSUE;
+  const isReissue = formType === REISSUE;
   const title = isReissue ? 'Re-issue Entitlement' : 'Create Entitlement';
 
-  const body = (
-    <div>
-      <h3>{title}</h3>
-      <Input
-        type="text"
-        disabled={isReissue}
-        name="courseUuid"
-        label="Course UUID"
-        value={courseUuid}
-        onChange={(event) => setCourseUuid(event.target.value)}
-      />
-      <Input
-        type="text"
-        disabled={isReissue}
-        name="username"
-        label="Username"
-        value={user}
-        onChange={(event) => setUser(event.target.value)}
-      />
-      <Input
-        type="select"
-        disabled={isReissue}
-        name="mode"
-        label="Mode"
-        defaultValue={mode}
-        options={[
-          { label: '--', value: '' },
-          { label: 'Verified', value: 'verified' },
-          { label: 'Professional', value: 'professional' },
-          { label: 'No ID Professional', value: 'no-id-professional' },
-        ]}
-        onChange={(event) => setMode(event.target.value)}
-      />
-      <Input
-        type="textarea"
-        name="comments"
-        label="Comments"
-        defaultValue={comments}
-        onChange={(event) => setComments(event.target.value)}
-      />
-      <div>
-        <Button
-          className={['btn', 'btn-secondary']}
-          label="Close"
-          onClick={closeHandler}
-        />
-        <Button
-          className={['btn', 'btn-primary']}
-          label="Submit"
-          onClick={submit}
-        />
-      </div>
-    </div>
+  return (
+    <section className="card mb-3">
+      <form className="card-body">
+        <AlertList topic="entitlements" className="mb-3" />
+        <h4 className="card-title">{title}</h4>
+        <div className="form-group">
+          <label htmlFor="courseUuid">Course UUID</label>
+          <Input
+            type="text"
+            disabled={isReissue}
+            id="courseUuid"
+            name="courseUuid"
+            value={courseUuid}
+            onChange={(event) => setCourseUuid(event.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="mode">Mode</label>
+          <Input
+            type="select"
+            disabled={isReissue}
+            id="mode"
+            name="mode"
+            defaultValue={mode}
+            options={[
+              { label: '--', value: '' },
+              { label: 'Verified', value: 'verified' },
+              { label: 'Professional', value: 'professional' },
+              { label: 'No ID Professional', value: 'no-id-professional' },
+            ]}
+            onChange={(event) => setMode(event.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="comments">Comments</label>
+          <Input
+            type="textarea"
+            id="comments"
+            name="comments"
+            defaultValue={comments}
+            onChange={(event) => setComments(event.target.value)}
+          />
+        </div>
+        <div>
+          <Button
+            className="btn-primary mr-3"
+            onClick={submit}
+          >
+            Submit
+          </Button>
+          <Button
+            className="btn-outline-secondary"
+            onClick={closeHandler}
+          >
+            Cancel
+          </Button>
+        </div>
+      </form>
+    </section>
   );
-
-  return isOpen && body;
 }
 
 EntitlementForm.propTypes = {
   formType: PropTypes.string.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   entitlement: PropTypes.shape({
     uuid: PropTypes.string.isRequired,
     courseUuid: PropTypes.string.isRequired,
+    enrollmentCourseRun: PropTypes.string,
     created: PropTypes.string.isRequired,
     modified: PropTypes.string.isRequired,
     expiredAt: PropTypes.string,
@@ -113,9 +143,9 @@ EntitlementForm.propTypes = {
     })),
     user: PropTypes.string.isRequired,
   }),
-  createEntitlement: PropTypes.func.isRequired,
-  reissueEntitlement: PropTypes.func.isRequired,
-  closeForm: PropTypes.func.isRequired,
+  user: PropTypes.string.isRequired,
+  submitHandler: PropTypes.func.isRequired,
+  closeHandler: PropTypes.func.isRequired,
 };
 
 EntitlementForm.defaultProps = {

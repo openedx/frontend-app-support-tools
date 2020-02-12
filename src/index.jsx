@@ -13,6 +13,7 @@ import Footer, { messages as footerMessages } from '@edx/frontend-component-foot
 
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
+import UserMessagesProvider from './user-messages/UserMessagesProvider';
 
 import './index.scss';
 import './assets/favicon.ico';
@@ -31,13 +32,15 @@ function supportLinks() {
 subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
-      <Header />
-      <Switch>
-        <Route exact path="/" render={supportLinks} />
-        <Route exact path="/users" component={UserPage} />
-        <Route path="/users/:username" component={UserPage} />
-      </Switch>
-      <Footer />
+      <UserMessagesProvider>
+        <Header />
+        <Switch>
+          <Route exact path="/" render={supportLinks} />
+          <Route exact path="/users" component={UserPage} />
+          <Route path="/users/:username" component={UserPage} />
+        </Switch>
+        <Footer />
+      </UserMessagesProvider>
     </AppProvider>,
     document.getElementById('root'),
   );

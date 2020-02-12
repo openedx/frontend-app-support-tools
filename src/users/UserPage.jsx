@@ -28,6 +28,10 @@ export default function UserPage({ match }) {
     }
   });
 
+  const handleEntitlementsChange = useCallback(() => {
+    handleSearch(username);
+  });
+
   useEffect(() => {
     handleSearch(username);
   }, [username]);
@@ -43,7 +47,7 @@ export default function UserPage({ match }) {
       {!loading && username && (
         <>
           <UserSummary data={data.user} />
-          <Entitlements data={data.entitlements} />
+          <Entitlements user={username} data={data.entitlements} changeHandler={handleEntitlementsChange} />
           <Enrollments data={data.enrollments} />
         </>
       )}

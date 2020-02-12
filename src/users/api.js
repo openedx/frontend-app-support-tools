@@ -40,3 +40,73 @@ export async function getAllUserData(username) {
     enrollments,
   };
 }
+
+export async function patchEntitlement({
+  uuid, action, unenrolledRun = null, comments = null,
+}) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().patch(
+      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${uuid}`,
+      {
+        expired_at: null,
+        support_details: [{
+          unenrolled_run: unenrolledRun,
+          action,
+          comments,
+        }],
+      },
+    );
+    return data;
+  } catch (error) {
+    if (error.customAttributes.httpErrorStatus === 400) {
+      console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    }
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error submitting this entitlement.  Check the JavaScript console for detailed errors.',
+          type: 'error',
+          topic: 'entitlements',
+        },
+      ],
+    };
+  }
+}
+
+export async function postEntitlement({
+  user, courseUuid, mode, action, comments = null,
+}) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/`,
+      {
+        course_uuid: courseUuid,
+        user,
+        mode,
+        refund_locked: true,
+        support_details: [{
+          action,
+          comments,
+        }],
+      },
+    );
+    return data;
+  } catch (error) {
+    if (error.customAttributes.httpErrorStatus === 400) {
+      console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    }
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error submitting this entitlement.  Check the JavaScript console for detailed errors.',
+          type: 'danger',
+          topic: 'entitlements',
+        },
+      ],
+    };
+  }
+}
