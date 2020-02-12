@@ -17,8 +17,8 @@ export default function UserPage() {
     <main>
       <UserSearch dataLoadedHandler={handleDataLoaded} />
       <UserSummary data={data.user} />
-      <Enrollments data={data.enrollments} />
       <Entitlements data={data.entitlements} />
+      <Enrollments data={data.enrollments} />
     </main>
   );
 }
