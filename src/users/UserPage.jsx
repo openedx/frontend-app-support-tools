@@ -6,7 +6,7 @@ import Entitlements from './Entitlements';
 import UserSearch from './UserSearch';
 
 export default function UserPage() {
-  const [data, setData] = useState({ results: [] });
+  const [data, setData] = useState({ user: null, enrollments: null, entitlements: null });
 
   const handleDataLoaded = useCallback((_data) => {
     console.log(_data);
@@ -16,9 +16,9 @@ export default function UserPage() {
   return (
     <main>
       <UserSearch dataLoadedHandler={handleDataLoaded} />
-      <UserSummary />
-      <Enrollments />
-      <Entitlements results={data.results} />
+      <UserSummary data={data.user} />
+      <Enrollments data={data.enrollments} />
+      <Entitlements data={data.entitlements} />
     </main>
   );
 }

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Table } from '@edx/paragon';
 
 
-export default function Entitlements({ results }) {
+export default function Entitlements({ data }) {
   /*
     Process is the big process - when does osmeone build a tool for us?
 
@@ -49,10 +49,10 @@ created: "2020-02-11T18:48:42.357567Z"
  */
 
   const tableData = useMemo(() => {
-    if (results === null) {
+    if (data === null) {
       return [];
     }
-    return results.map(result => ({
+    return data.results.map(result => ({
       user: result.name,
       courseUuid: result.name,
       mode: result.name,
@@ -63,7 +63,7 @@ created: "2020-02-11T18:48:42.357567Z"
       orderNumber: result.name,
       actions: result.name,
     }));
-  }, [results]);
+  }, [data]);
 
   const columns = [
     {
@@ -108,9 +108,11 @@ created: "2020-02-11T18:48:42.357567Z"
 }
 
 Entitlements.propTypes = {
-  results: PropTypes.arrayOf(PropTypes.object),
+  data: PropTypes.shape({
+    results: PropTypes.arrayOf(PropTypes.object),
+  }),
 };
 
 Entitlements.defaultProps = {
-  results: [],
+  data: null,
 };

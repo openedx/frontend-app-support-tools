@@ -6,14 +6,14 @@ import PropTypes from 'prop-types';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { Input, Button } from '@edx/paragon';
 
-import { getEntitlements } from './api';
+import { getAllUserData } from './api';
 
 export default function UserSearch({ dataLoadedHandler }) {
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
     if (username !== null) {
-      getEntitlements(username).then((data) => {
+      getAllUserData(username).then((data) => {
         dataLoadedHandler(camelCaseObject(data));
       });
     }
