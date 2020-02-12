@@ -1,33 +1,12 @@
 import React, {
-  useState, useEffect, useRef, useCallback, useMemo,
+  useMemo,
 } from 'react';
-import { camelCaseObject } from '@edx/frontend-platform';
-import { Input, Button, Table } from '@edx/paragon';
+import PropTypes from 'prop-types';
 
-import { getEntitlements } from './api';
-
-export default function EntitlementsPage() {
-  const [username, setUsername] = useState(null);
-  const [results, setResults] = useState(null);
-  useEffect(() => {
-    if (username !== null) {
-      console.log(username);
-      getEntitlements(username).then((data) => {
-        console.log(data);
-        setResults(camelCaseObject(data));
-      });
-    }
-  }, [username]);
-
-  const searchRef = useRef();
-
-  const submit = useCallback((event) => {
-    setUsername(searchRef.current.value);
-    event.preventDefault();
-    return false;
-  });
+import { Table } from '@edx/paragon';
 
 
+export default function Entitlements({ results }) {
   /*
     Process is the big process - when does osmeone build a tool for us?
 
@@ -48,18 +27,7 @@ export default function EntitlementsPage() {
               width: 'col-3',
             },
   */
-  const tableData = useMemo(() => results.map(result => ({
-    user: result.name,
-    courseUuid: result.name,
-    mode: result.name,
-    enrollment: result.name,
-    expiredAt: result.name,
-    created: result.name,
-    modified: result.name,
-    orderNumber: result.name,
-    actions: result.name,
 
-  })), [results]);
 
   /*
 user: "verified"
@@ -79,6 +47,23 @@ comments: "Woohah"
 unenrolled_run: null
 created: "2020-02-11T18:48:42.357567Z"
  */
+
+  const tableData = useMemo(() => {
+    if (results === null) {
+      return [];
+    }
+    return results.map(result => ({
+      user: result.name,
+      courseUuid: result.name,
+      mode: result.name,
+      enrollment: result.name,
+      expiredAt: result.name,
+      created: result.name,
+      modified: result.name,
+      orderNumber: result.name,
+      actions: result.name,
+    }));
+  }, [results]);
 
   const columns = [
     {
@@ -111,24 +96,21 @@ created: "2020-02-11T18:48:42.357567Z"
   ];
 
   return (
-    <main>
-      <div className="container-fluid">
-        <h1>Entitlements</h1>
-        <form className="form-inline mb-3">
-
-          <label htmlFor="username">Username</label>
-          <Input ref={searchRef} className="flex-grow-1 mr-1" name="username" type="text" defaultValue="verified" />
-          <Button type="submit" onClick={submit} className="btn-primary">Search</Button>
-        </form>
-
-        <Table
-          data={[
-
-          ]}
-          columns={columns}
-        />
-        <p />
-      </div>
-    </main>
+    <section className="container-fluid">
+      <h3>Entitlements</h3>
+      <Table
+        data={tableData}
+        columns={columns}
+      />
+      <p />
+    </section>
   );
 }
+
+Entitlements.propTypes = {
+  results: PropTypes.arrayOf(PropTypes.object),
+};
+
+Entitlements.defaultProps = {
+  results: [],
+};
