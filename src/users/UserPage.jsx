@@ -16,11 +16,9 @@ export default function UserPage({ match }) {
   const [loading, setLoading] = useState(false);
 
   const handleSearch = useCallback((searchUsername) => {
-    history.push(`/users/${searchUsername}`);
-  });
-
-  useEffect(() => {
-    if (username !== undefined) {
+    if (searchUsername !== username) {
+      history.push(`/users/${searchUsername}`);
+    } else if (username !== undefined) {
       setLoading(true);
       getAllUserData(username).then((result) => {
         console.log(result);
@@ -28,6 +26,10 @@ export default function UserPage({ match }) {
         setLoading(false);
       });
     }
+  });
+
+  useEffect(() => {
+    handleSearch(username);
   }, [username]);
 
   return (
