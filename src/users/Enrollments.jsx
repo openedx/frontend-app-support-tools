@@ -53,7 +53,7 @@ export default function Enrollments({ data }) {
   ];
 
   return (
-    <section className="container-fluid">
+    <section className="mb-3">
       <h3>Enrollments</h3>
       <Collapsible title={`Enrollments (${tableData.length})`}>
         <Table

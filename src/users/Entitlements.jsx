@@ -8,6 +8,7 @@ import {
   Button, Table, Collapsible,
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
+import EntitlementForm from './EntitlementForm';
 
 
 const sort = function sort(firstElement, secondElement, key, direction) {
@@ -25,6 +26,7 @@ const sort = function sort(firstElement, secondElement, key, direction) {
 export default function Entitlements({ data }) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState('desc');
+  const [formType, setFormType] = useState(null);
 
   const tableData = useMemo(() => {
     if (data === null) {
@@ -48,6 +50,10 @@ export default function Entitlements({ data }) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
     }
     setSortColumn(column);
+  });
+
+  const showEntitlementForm = useCallback((formType) => {
+
   });
 
   const columns = [
@@ -83,22 +89,24 @@ export default function Entitlements({ data }) {
   const tableDataSortable = [...tableData];
 
   return (
-    <section className="container-fluid mb-3">
+    <section className="mb-3">
       <div className="d-flex flex-row justify-content-between mb-2">
         <h3>Entitlements</h3>
         <Button type="button" className="btn-outline-primary">Create New Entitlement</Button>
       </div>
-      <Collapsible title={`Entitlements (${tableData.length})`}>
-
-        <Table
-          className="w-100"
-          data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
-          columns={columns}
-          tableSortable
-          defaultSortedColumn="created"
-          defaultSortDirection="desc"
-        />
-      </Collapsible>
+      {formType !== null ? <EntitlementForm formType={formType} />
+        : (
+          <Collapsible title={`Entitlements (${tableData.length})`}>
+            <Table
+              className="w-100"
+              data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
+              columns={columns}
+              tableSortable
+              defaultSortedColumn="created"
+              defaultSortDirection="desc"
+            />
+          </Collapsible>
+        )}
     </section>
   );
 }

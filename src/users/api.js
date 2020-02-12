@@ -14,9 +14,6 @@ export async function getEnrollments(username) {
   const { data } = await getAuthenticatedHttpClient().get(
     `${getConfig().LMS_BASE_URL}/support/enrollment/${username}`,
   );
-  console.log(data);
-
-  // I'm guessing it'll look similar to the entitlements response, but this is just a guess/can be changed.
   return data;
 }
 
