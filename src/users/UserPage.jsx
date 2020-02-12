@@ -14,7 +14,7 @@ export default function UserPage() {
   });
 
   return (
-    <main>
+    <main className="my-5">
       <UserSearch dataLoadedHandler={handleDataLoaded} />
       <UserSummary data={data.user} />
       <Entitlements data={data.entitlements} />

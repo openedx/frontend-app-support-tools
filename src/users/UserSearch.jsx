@@ -28,11 +28,13 @@ export default function UserSearch({ dataLoadedHandler }) {
   });
 
   return (
-    <form className="form-inline mb-3">
-      <label htmlFor="username">Username</label>
-      <Input ref={searchRef} className="flex-grow-1 mr-1" name="username" type="text" defaultValue="verified" />
-      <Button type="submit" onClick={submit} className="btn-primary">Search</Button>
-    </form>
+    <section className="container-fluid mb-3">
+      <form className="form-inline">
+        <label htmlFor="username">Username</label>
+        <Input ref={searchRef} className="flex-grow-1 mr-1" name="username" type="text" defaultValue="verified" />
+        <Button type="submit" onClick={submit} className="btn-primary">Search</Button>
+      </form>
+    </section>
   );
 }
 

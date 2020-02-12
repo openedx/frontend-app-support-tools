@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Table } from '@edx/paragon';
+import { Button, Table, Collapsible } from '@edx/paragon';
 
 
 const sort = function sort(firstElement, secondElement, key, direction) {
@@ -79,17 +79,18 @@ export default function Entitlements({ data }) {
   const tableDataSortable = [...tableData];
 
   return (
-    <section className="container-fluid">
+    <section className="container-fluid mb-3">
       <h3>Entitlements</h3>
-      <Table
-        data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
-        columns={columns}
-        tableSortable
-        className="table-responsive"
-        defaultSortedColumn="created"
-        defaultSortDirection="desc"
-      />
-      <p />
+      <Collapsible title={`Entitlements (${tableData.length})`}>
+        <Table
+          data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
+          columns={columns}
+          tableSortable
+          className="table-responsive"
+          defaultSortedColumn="created"
+          defaultSortDirection="desc"
+        />
+      </Collapsible>
     </section>
   );
 }
