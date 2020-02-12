@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { Table } from '@edx/paragon';
+import { Button, Table } from '@edx/paragon';
 
 
 const sort = function sort(firstElement, secondElement, key, direction) {
@@ -35,7 +35,7 @@ export default function Entitlements({ data }) {
       created: result.created,
       modified: result.modified,
       orderNumber: result.orderNumber,
-      actions: 'Actions, yo',
+      actions: <Button type="button" onClick={() => console.log('reissue it')} className="btn-primary">Reissue</Button>,
     }));
   }, [data]);
 

@@ -2,12 +2,11 @@ import React, { useMemo } from 'react';
 import Table from '@edx/paragon/dist/Table';
 
 export default function Enrollments({ data }) {
-
   const tableData = useMemo(() => {
     if (data === null || data.length === 0) {
       return [];
     }
-    debugger;
+
     return data.map(result => ({
       courseId: result.courseId,
       courseStart: result.courseStart,
