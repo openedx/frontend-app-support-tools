@@ -35,7 +35,7 @@ export default function Entitlements({ data }) {
       created: result.created,
       modified: result.modified,
       orderNumber: result.orderNumber,
-      actions: <Button type="button" onClick={() => console.log('reissue it')} className="btn-primary">Reissue</Button>,
+      actions: <Button type="button" onClick={() => console.log('reissue it')} className="btn-outline-primary">Reissue</Button>,
     }));
   }, [data]);
 
@@ -80,13 +80,17 @@ export default function Entitlements({ data }) {
 
   return (
     <section className="container-fluid mb-3">
-      <h3>Entitlements</h3>
+      <div className="d-flex flex-row justify-content-between mb-2">
+        <h3>Entitlements</h3>
+        <Button type="button" className="btn-outline-primary">Create New Entitlement</Button>
+      </div>
       <Collapsible title={`Entitlements (${tableData.length})`}>
+
         <Table
+          className="w-100"
           data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
           columns={columns}
           tableSortable
-          className="table-responsive"
           defaultSortedColumn="created"
           defaultSortDirection="desc"
         />
