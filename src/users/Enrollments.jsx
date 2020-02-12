@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import Table from '@edx/paragon/dist/Table';
+import Collapsible from '@edx/paragon/dist/Collapsible';
+
 
 export default function Enrollments({ data }) {
 
@@ -54,10 +56,12 @@ export default function Enrollments({ data }) {
   return (
     <section className="container-fluid">
       <h3>Enrollments</h3>
-      <Table
-        data={tableData}
-        columns={columns}
-      />
+      <Collapsible title={`Enrollments (${tableData.length})`}>
+        <Table
+          data={tableData}
+          columns={columns}
+        />
+      </Collapsible>
     </section>
   );
 }
