@@ -1,4 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, {
+  useCallback, useState, useEffect, useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import { camelCaseObject, history } from '@edx/frontend-platform';
@@ -9,13 +11,17 @@ import Enrollments from './Enrollments';
 import Entitlements from './Entitlements';
 import UserSearch from './UserSearch';
 import { getAllUserData } from './api';
+import UserMessagesContext from '../user-messages/UserMessagesContext';
+import AlertList from '../user-messages/AlertList';
 
 export default function UserPage({ match }) {
   const { username } = match.params;
-  const [data, setData] = useState({ user: null, enrollments: null, entitlements: null });
+  const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
+  const { add, clear } = useContext(UserMessagesContext);
 
   const handleSearch = useCallback((searchUsername) => {
+    clear('general');
     if (searchUsername !== username) {
       history.push(`/users/${searchUsername}`);
     } else if (username !== undefined) {
@@ -23,6 +29,9 @@ export default function UserPage({ match }) {
       getAllUserData(username).then((result) => {
         console.log(result);
         setData(camelCaseObject(result));
+        if (result.errors.length > 0) {
+          result.errors.forEach(error => add(error));
+        }
         setLoading(false);
       });
     }
@@ -38,13 +47,14 @@ export default function UserPage({ match }) {
 
   return (
     <main className="container-fluid my-5">
+      <AlertList topic="general" className="mb-3" />
       <UserSearch username={username} searchHandler={handleSearch} />
       {loading && (
         <PageLoading
           srMessage="Loading"
         />
       )}
-      {!loading && username && (
+      {!loading && username && data.user !== null && (
         <>
           <UserSummary data={data.user} />
           <Entitlements user={username} data={data.entitlements} changeHandler={handleEntitlementsChange} />

@@ -22,13 +22,10 @@ export default function EntitlementForm({
   const [courseUuid, setCourseUuid] = useState(entitlement.courseUuid);
   const [mode, setMode] = useState(entitlement.mode);
   const [comments, setComments] = useState('');
-  const { add, remove } = useContext(UserMessagesContext);
-  const [errorId, setErrorId] = useState(null);
+  const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback(() => {
-    if (errorId !== null) {
-      remove(errorId);
-    }
+    clear('entitlements');
     if (formType === CREATE) {
       postEntitlement({
         user,
@@ -38,7 +35,7 @@ export default function EntitlementForm({
         comments,
       }).then((result) => {
         if (result.errors !== undefined) {
-          result.errors.forEach(error => setErrorId(add(error)));
+          result.errors.forEach(error => add(error));
         } else {
           changeHandler();
         }
@@ -51,7 +48,7 @@ export default function EntitlementForm({
         comments,
       }).then((result) => {
         if (result.errors !== undefined) {
-          result.errors.forEach(error => setErrorId(add(error)));
+          result.errors.forEach(error => add(error));
         } else {
           changeHandler();
         }
@@ -144,7 +141,7 @@ EntitlementForm.propTypes = {
     user: PropTypes.string.isRequired,
   }),
   user: PropTypes.string.isRequired,
-  submitHandler: PropTypes.func.isRequired,
+  changeHandler: PropTypes.func.isRequired,
   closeHandler: PropTypes.func.isRequired,
 };
 

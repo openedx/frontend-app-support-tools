@@ -24,17 +24,48 @@ export async function getUser(username) {
         `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}`,
       );
     return data;
-  } catch (e) {
-    return null;
+  } catch (error) {
+    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    if (error.customAttributes.httpErrorStatus === 404) {
+      error.userError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the username "${username}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      throw error;
+    }
+
+    error.userError = {
+      code: null,
+      dismissible: true,
+      text: 'There was an error loading this user\'s data. Check the JavaScript console for detailed errors.',
+      type: 'danger',
+      topic: 'general',
+    };
+    throw error;
   }
 }
 
 export async function getAllUserData(username) {
-  const user = await getUser(username);
-  const entitlements = await getEntitlements(username);
-  const enrollments = await getEnrollments(username);
+  const errors = [];
+  let user = null;
+  let entitlements = [];
+  let enrollments = [];
+  try {
+    user = await getUser(username);
+  } catch (error) {
+    errors.push(error.userError);
+  }
+
+  if (user !== null) {
+    entitlements = await getEntitlements(username);
+    enrollments = await getEnrollments(username);
+  }
 
   return {
+    errors,
     user,
     entitlements,
     enrollments,
