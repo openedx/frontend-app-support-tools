@@ -1,7 +1,5 @@
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import { async } from 'q';
-
 
 // eslint-disable-next-line import/prefer-default-export
 export async function getEntitlements(username) {
@@ -49,9 +47,18 @@ export async function getUser(username) {
   }
 }
 
+export async function getSSO(username) {
+  const { data } = await getAuthenticatedHttpClient()
+    .get(
+      `${getConfig().LMS_BASE_URL}/api/third_party_auth/v0/users/?username=${username}`,
+    );
+  return data.active;
+}
+
 export async function getAllUserData(username) {
   const errors = [];
   let user = null;
+  let sso = [];
   let entitlements = [];
   let enrollments = [];
   try {
@@ -61,6 +68,7 @@ export async function getAllUserData(username) {
   }
 
   if (user !== null) {
+    sso = await getSSO(username);
     entitlements = await getEntitlements(username);
     enrollments = await getEnrollments(username);
   }
@@ -68,6 +76,7 @@ export async function getAllUserData(username) {
   return {
     errors,
     user,
+    sso,
     entitlements,
     enrollments,
   };
@@ -153,7 +162,7 @@ export async function postEnrollmentChange({
         course_id: courseID,
         new_mode: newMode,
         old_mode: oldMode,
-        reason: reason
+        reason,
       },
     );
     return data;
