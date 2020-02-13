@@ -25,6 +25,7 @@ export default function EnrollmentForm ({
       user,
       courseID: enrollment.courseId,
       oldMode: enrollment.mode,
+      newMode: mode,
       reason: sendReason,
     }).then( (result)=> {
       if (result.errors !== undefined) {
