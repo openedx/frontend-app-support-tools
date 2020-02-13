@@ -2,5 +2,8 @@
 
 @import './users/index.scss';
 
-@import "~@edx/frontend-component-header/dist/index";
-@import "~@edx/frontend-component-footer/dist/footer";
+@import "~@edx/frontend-component-header-edx/dist/index";
+
+nav.main-nav {
+  display: none;
+}

@@ -8,8 +8,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route, Link } from 'react-router-dom';
 
-import Header, { messages as headerMessages } from '@edx/frontend-component-header';
-import Footer, { messages as footerMessages } from '@edx/frontend-component-footer';
+import Header, { messages as headerMessages } from '@edx/frontend-component-header-edx';
 
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
@@ -39,7 +38,6 @@ subscribe(APP_READY, () => {
           <Route exact path="/users" component={UserPage} />
           <Route path="/users/:username" component={UserPage} />
         </Switch>
-        <Footer />
       </UserMessagesProvider>
     </AppProvider>,
     document.getElementById('root'),
@@ -55,6 +53,5 @@ initialize({
   messages: [
     appMessages,
     headerMessages,
-    footerMessages,
   ],
 });

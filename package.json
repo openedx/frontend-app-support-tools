@@ -29,8 +29,7 @@
     "url": "https://github.com/edx/frontend-app-support/issues"
   },
   "dependencies": {
-    "@edx/frontend-component-footer": "10.0.7",
-    "@edx/frontend-component-header": "2.0.5",
+    "@edx/frontend-component-header-edx": "^3.0.8",
     "@edx/frontend-platform": "1.1.14",
     "@edx/paragon": "7.2.0",
     "@fortawesome/fontawesome-svg-core": "1.2.27",

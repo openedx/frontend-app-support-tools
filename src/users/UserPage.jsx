@@ -4,6 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 
 import { camelCaseObject, history } from '@edx/frontend-platform';
+import { Link } from 'react-router-dom';
 import PageLoading from '../PageLoading';
 
 import UserSummary from './UserSummary';
@@ -46,7 +47,10 @@ export default function UserPage({ match }) {
   }, [username]);
 
   return (
-    <main className="container-fluid my-5">
+    <main className="container-fluid my-3">
+      <section className="mb-3">
+        <Link to="/">&lt; Back to Tools</Link>
+      </section>
       <AlertList topic="general" className="mb-3" />
       <UserSearch username={username} searchHandler={handleSearch} />
       {loading && (
