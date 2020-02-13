@@ -48,7 +48,7 @@ export default function UserPage({ match }) {
         <>
           <UserSummary data={data.user} />
           <Entitlements user={username} data={data.entitlements} changeHandler={handleEntitlementsChange} />
-          <Enrollments data={data.enrollments} />
+          <Enrollments user={username} data={data.enrollments} />
         </>
       )}
       {!loading && !username && (

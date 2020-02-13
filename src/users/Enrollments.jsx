@@ -1,9 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Table from '@edx/paragon/dist/Table';
 import Collapsible from '@edx/paragon/dist/Collapsible';
+import { Button, TransitionReplace } from '@edx/paragon';
+import EnrollmentForm from './EnrollmentForm';
+import EntitlementForm from './Entitlements';
 
 
-export default function Enrollments({ data }) {
+export default function Enrollments({ data, user }) {
+  const [formType, setFormType] = useState(null);
+  const [enrollmentToChange, setEnrollmentToChange] = useState(undefined);
+
   const tableData = useMemo(() => {
     if (data === null || data.length === 0) {
       return [];
@@ -19,6 +25,19 @@ export default function Enrollments({ data }) {
       lastModifiedBy: '',
       active: result.isActive,
       mode: result.mode,
+      actions: (
+        <Button
+          type="button"
+          onClick={() => {
+            setEnrollmentToChange(result);
+            setFormType('CHANGE');
+            console.log('Enrollment Change!')
+          }}
+          className="btn-outline-primary"
+        >
+          Change
+        </Button>
+      )
     }));
   }, [data]);
 
@@ -50,11 +69,25 @@ export default function Enrollments({ data }) {
     {
       label: 'Active', key: 'active', columnSortable: true, onSort: () => {}, width: 'col-3',
     },
+    {
+      label: 'Actions', key: 'actions', columnSortable: true, onSort: () => {}, width: 'col-3',
+    },
   ];
 
   return (
     <section className="mb-3">
       <h3>Enrollments</h3>
+      <TransitionReplace>
+        {formType != null ? (
+          <EnrollmentForm
+            key="enrollment-form"
+            enrollment={enrollmentToChange}
+            user={user}
+            submitHandler={(entitlement) => console.log(entitlement)}
+            closeHandler={() => setFormType(null)}
+          />
+        ) : (<React.Fragment key="nothing"></React.Fragment>) }
+      </TransitionReplace>
       <Collapsible title={`Enrollments (${tableData.length})`}>
         <Table
           data={tableData}
