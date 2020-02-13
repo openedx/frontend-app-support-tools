@@ -4,10 +4,8 @@ import {
   Button, Input, InputSelect
 } from '@edx/paragon';
 import AlertList from '../user-messages/AlertList';
+import { postEnrollmentChange } from './api';
 
-// https://courses.stage.edx.org/support/enrollment/astaubin
-// POST
-// {course_id: "course-v1:edx+test102+2018_T2", new_mode: "audit", old_mode: "verified", reason: "sadf"}
 export default function EnrollmentForm ({
   user,
   enrollment,
@@ -19,7 +17,17 @@ export default function EnrollmentForm ({
   const [comments, setComments] = useState('');
 
   const submit = useCallback( () => {
-    console.log('Submit Form')
+    console.log('Submit Form');
+    const sendReason = (reason === 'other') ? comments : reason;
+    postEnrollmentChange({
+      user,
+      courseID: enrollment.courseId,
+      oldMode: enrollment.mode,
+      newMode: mode,
+      reason: sendReason,
+    }).then( (result)=> {
+      console.log(result);
+    })
   });
 
   const getModes = function getModes(enrollment) {

@@ -1,5 +1,6 @@
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import { async } from 'q';
 
 
 // eslint-disable-next-line import/prefer-default-export
@@ -139,5 +140,24 @@ export async function postEntitlement({
         },
       ],
     };
+  }
+}
+
+export async function postEnrollmentChange({
+  user, courseID, newMode, oldMode, reason,
+}) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      `${getConfig().LMS_BASE_URL}/support/enrollment/${user}`,
+      {
+        course_id: courseID,
+        new_mode: newMode,
+        old_mode: oldMode,
+        reason: reason
+      },
+    );
+    return data;
+  } catch (error) {
+    console.log(error)
   }
 }
