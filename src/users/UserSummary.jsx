@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Table from '@edx/paragon/dist/Table';
+import Table from '../Table';
 
 const notSetStr = 'not set';
 
@@ -47,6 +47,7 @@ export default function UserSummary({ data, sso }) {
     {
       label: 'Date Joined',
       key: 'dateJoined',
+      date: true,
     },
     {
       label: 'SSO Providers',
