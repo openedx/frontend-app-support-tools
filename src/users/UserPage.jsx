@@ -54,7 +54,7 @@ export default function UserPage({ match }) {
           srMessage="Loading"
         />
       )}
-      {!loading && username && data.user !== null && (
+      {!loading && username && data.user && (
         <>
           <UserSummary data={data.user} sso={data.sso} />
           <Entitlements user={username} data={data.entitlements} changeHandler={handleEntitlementsChange} />

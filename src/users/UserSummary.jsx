@@ -12,9 +12,6 @@ const joinProviders = function joinProviders(providers) {
 };
 
 export default function UserSummary({ data, sso }) {
-  if (data === null) { // FIXME in theory we shouldn't have to do this but in practice we do :(
-    return null;
-  }
 
   const tableData = [{
     name: data.name || notSetStr,
