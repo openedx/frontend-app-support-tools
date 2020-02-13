@@ -14,29 +14,39 @@ const joinProviders = function joinProviders(providers) {
 export default function UserSummary({ data, sso }) {
 
   const tableData = [{
+    username: data.username,
     name: data.name || notSetStr,
     isActive: data.isActive ? 'yes' : 'no',
     email: data.email,
     country: data.country || notSetStr,
+    dateJoined: data.dateJoined,
     ssoProviders: joinProviders(sso),
   }];
 
   const columns = [
     {
-      label: 'Full Name',
-      key: 'name',
-    },
-    {
-      label: 'Active',
-      key: 'isActive',
+      label: 'Username',
+      key: 'username',
     },
     {
       label: 'Email',
       key: 'email',
     },
     {
+      label: 'Active',
+      key: 'isActive',
+    },
+    {
+      label: 'Full Name',
+      key: 'name',
+    },
+    {
       label: 'Country',
       key: 'country',
+    },
+    {
+      label: 'Date Joined',
+      key: 'dateJoined',
     },
     {
       label: 'SSO Providers',
