@@ -5,26 +5,15 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import {
-  Button, Table, Collapsible, TransitionReplace,
+  Button, Collapsible, TransitionReplace,
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
-
-
-const sort = function sort(firstElement, secondElement, key, direction) {
-  const directionIsAsc = direction === 'asc';
-
-  if (firstElement[key] > secondElement[key]) {
-    return directionIsAsc ? 1 : -1;
-  }
-  if (firstElement[key] < secondElement[key]) {
-    return directionIsAsc ? -1 : 1;
-  }
-  return 0;
-};
+import sort from './sort';
+import Table from '../Table';
 
 export default function Entitlements({ data, changeHandler, user }) {
-  const [sortColumn, setSortColumn] = useState(null);
+  const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
   const [entitlementToReissue, setEntitlementToReissue] = useState(undefined);
@@ -38,9 +27,9 @@ export default function Entitlements({ data, changeHandler, user }) {
       courseUuid: result.courseUuid,
       mode: result.mode,
       enrollment: result.enrollmentCourseRun,
-      expiredAt: result.expiredAt ? moment(result.expiredAt).format('lll') : null,
-      created: moment(result.created).format('lll'),
-      modified: moment(result.modified).format('lll'),
+      expiredAt: result.expiredAt,
+      created: result.created,
+      modified: result.modified,
       orderNumber: (
         <a href={`${getConfig().ECOMMERCE_BASE_URL}${result.orderNumber}/`}>
           {result.orderNumber}
@@ -65,6 +54,8 @@ export default function Entitlements({ data, changeHandler, user }) {
   const setSort = useCallback((column) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc');
+    } else {
+      setSortDirection('desc');
     }
     setSortColumn(column);
   });
@@ -83,19 +74,19 @@ export default function Entitlements({ data, changeHandler, user }) {
       label: 'Enrollment', key: 'enrollment', columnSortable: true, onSort: () => setSort('enrollment'), width: 'col-3',
     },
     {
-      label: 'Expired At', key: 'expiredAt', columnSortable: true, onSort: () => setSort('expiredAt'), width: 'col-3',
+      label: 'Expired At', date: true, key: 'expiredAt', columnSortable: true, onSort: () => setSort('expiredAt'), width: 'col-3',
     },
     {
-      label: 'Created', key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
+      label: 'Created', date: true, key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
     },
     {
-      label: 'Modified', key: 'modified', columnSortable: true, onSort: () => setSort('modified'), width: 'col-3',
+      label: 'Modified', date: true, key: 'modified', columnSortable: true, onSort: () => setSort('modified'), width: 'col-3',
     },
     {
       label: 'Order', key: 'orderNumber', columnSortable: true, onSort: () => setSort('orderNumber'), width: 'col-3',
     },
     {
-      label: 'Actions', key: 'actions', columnSortable: true, onSort: () => setSort('actions'), width: 'col-3',
+      label: 'Actions', key: 'actions', columnSortable: true, onSort: () => {}, width: 'col-3',
     },
   ];
 
