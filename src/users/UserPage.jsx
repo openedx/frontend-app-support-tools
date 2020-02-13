@@ -47,7 +47,7 @@ export default function UserPage({ match }) {
   }, [username]);
 
   return (
-    <main className="container-fluid my-3">
+    <main className="container-fluid mt-3 mb-5">
       <section className="mb-3">
         <Link to="/">&lt; Back to Tools</Link>
       </section>
