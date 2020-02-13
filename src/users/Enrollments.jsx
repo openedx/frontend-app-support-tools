@@ -17,7 +17,6 @@ export default function Enrollments({ data, user }) {
     if (data === null || data.length === 0) {
       return [];
     }
-
     return data.map(result => ({
       courseId: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank">{result.courseId}</a>,
       courseStart: result.courseStart,

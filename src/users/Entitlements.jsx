@@ -26,7 +26,7 @@ export default function Entitlements({ data, changeHandler, user }) {
       user: result.user,
       courseUuid: result.courseUuid,
       mode: result.mode,
-      enrollment: result.enrollmentCourseRun,
+      enrollment: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.enrollmentCourseRun}`} rel="noopener noreferrer" target="_blank">{result.enrollmentCourseRun}</a>,
       expiredAt: result.expiredAt,
       created: result.created,
       modified: result.modified,

@@ -78,7 +78,7 @@ export async function patchEntitlement({
 }) {
   try {
     const { data } = await getAuthenticatedHttpClient().patch(
-      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${uuid}`,
+      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${uuid}/`,
       {
         expired_at: null,
         support_details: [{
@@ -158,6 +158,19 @@ export async function postEnrollmentChange({
     );
     return data;
   } catch (error) {
-    console.log(error)
+    if (error.customAttributes.httpErrorStatus === 400) {
+      console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    }
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error submitting this entitlement.  Check the JavaScript console for detailed errors.',
+          type: 'error',
+          topic: 'enrollments',
+        },
+      ],
+    };
   }
 }

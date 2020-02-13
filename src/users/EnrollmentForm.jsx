@@ -5,6 +5,7 @@ import {
 } from '@edx/paragon';
 import AlertList from '../user-messages/AlertList';
 import { postEnrollmentChange } from './api';
+import UserMessagesContext from '../user-messages/UserMessagesContext';
 
 export default function EnrollmentForm ({
   user,
@@ -15,6 +16,7 @@ export default function EnrollmentForm ({
   const [mode, setMode] = useState(enrollment.mode);
   const [reason, setReason] = useState('');
   const [comments, setComments] = useState('');
+  const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback( () => {
     console.log('Submit Form');
@@ -23,10 +25,13 @@ export default function EnrollmentForm ({
       user,
       courseID: enrollment.courseId,
       oldMode: enrollment.mode,
-      newMode: mode,
       reason: sendReason,
     }).then( (result)=> {
-      console.log(result);
+      if (result.errors !== undefined) {
+        result.errors.forEach(error => add(error));
+      } else {
+        // changeHandler();
+      }
     })
   });
 
