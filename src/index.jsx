@@ -4,10 +4,10 @@ import {
   APP_INIT_ERROR, APP_READY, subscribe, initialize,
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
-import React from 'react';
+import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
+import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route, Link } from 'react-router-dom';
-
 import Header, { messages as headerMessages } from '@edx/frontend-component-header-edx';
 
 import appMessages from './i18n';
@@ -29,7 +29,11 @@ function supportLinks() {
 }
 
 subscribe(APP_READY, () => {
-  ReactDOM.render(
+  const { administrator } = getAuthenticatedUser();
+  if (!administrator) {
+    return ReactDOM.render(<ErrorPage message="You do not have access to this page." />, document.getElementById('root'));
+  }
+  return ReactDOM.render(
     <AppProvider>
       <UserMessagesProvider>
         <Header />
