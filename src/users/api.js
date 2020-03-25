@@ -47,20 +47,9 @@ export async function getUser(username) {
   }
 }
 
-// TODO: Not working because of authorization to get this data about another
-// user
-// export async function getSSO(username) {
-//   const { data } = await getAuthenticatedHttpClient()
-//     .get(
-//       `${getConfig().LMS_BASE_URL}/api/third_party_auth/v0/users/?username=${username}`,
-//     );
-//   return data.active;
-// }
-
 export async function getAllUserData(username) {
   const errors = [];
   let user = null;
-  let sso = [];
   let entitlements = [];
   let enrollments = [];
   try {
@@ -70,7 +59,6 @@ export async function getAllUserData(username) {
   }
 
   if (user !== null) {
-    // sso = await getSSO(username);
     entitlements = await getEntitlements(username);
     enrollments = await getEnrollments(username);
   }
@@ -78,7 +66,6 @@ export async function getAllUserData(username) {
   return {
     errors,
     user,
-    sso,
     entitlements,
     enrollments,
   };

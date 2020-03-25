@@ -2,7 +2,6 @@ import React, {
   useMemo, useState, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import {
   Button, Collapsible, TransitionReplace,
@@ -31,7 +30,10 @@ export default function Entitlements({ data, changeHandler, user }) {
       created: result.created,
       modified: result.modified,
       orderNumber: (
-        <a href={`${getConfig().ECOMMERCE_BASE_URL}${result.orderNumber}/`}>
+        <a
+          href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${result.orderNumber}/`}
+          rel="noopener noreferrer"
+          target="_blank">
           {result.orderNumber}
         </a>
       ),
