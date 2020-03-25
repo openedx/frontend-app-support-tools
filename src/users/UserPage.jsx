@@ -60,7 +60,7 @@ export default function UserPage({ match }) {
       )}
       {!loading && username && data.user && (
         <>
-          <UserSummary data={data.user} sso={data.sso} />
+          <UserSummary data={data.user} />
           <Entitlements user={username} data={data.entitlements} changeHandler={handleEntitlementsChange} />
           <Enrollments user={username} data={data.enrollments} />
         </>
