@@ -101,7 +101,7 @@ export default function Enrollments({ data, user }) {
           />
         ) : (<React.Fragment key="nothing"></React.Fragment>) }
       </TransitionReplace>
-      <Collapsible title={`Enrollments (${tableData.length})`}>
+      <Collapsible title={`Enrollments (${tableData.length})` } defaultOpen>
         <Table
           className="w-100"
           data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
