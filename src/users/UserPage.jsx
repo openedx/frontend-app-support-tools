@@ -11,7 +11,7 @@ import UserSummary from './UserSummary';
 import Enrollments from './Enrollments';
 import Entitlements from './Entitlements';
 import UserSearch from './UserSearch';
-import { getAllUserData } from './api';
+import { getAllUserData, getAllUserDataByEmail } from './api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 import AlertList from '../user-messages/AlertList';
 
@@ -22,11 +22,22 @@ export default function UserPage({ match }) {
   const [showEnrollments, setShowEnrollments] = useState(true);
   const [showEntitlements, setShowEntitlements] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
+  const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 
   const handleSearch = useCallback((searchUsername) => {
     clear('general');
+    debugger;
     if (searchUsername !== username) {
       history.push(`/users/${searchUsername}`);
+    } else if(searchUsername && searchUsername.match(EMAIL_REGEX)){
+      setLoading(true);
+      getAllUserDataByEmail(searchUsername).then((result) => {
+        setData(camelCaseObject(result));
+        if (result.errors.length > 0) {
+          result.errors.forEach(error => add(error));
+        }
+        setLoading(false);
+      });
     } else if (username !== undefined) {
       setLoading(true);
       getAllUserData(username).then((result) => {
