@@ -11,7 +11,7 @@ import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
 import sort from './sort';
 import Table from '../Table';
 
-export default function Entitlements({ data, changeHandler, user }) {
+export default function Entitlements({ data, changeHandler, user, expanded }) {
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
@@ -106,7 +106,8 @@ export default function Entitlements({ data, changeHandler, user }) {
             setEntitlementToReissue(undefined);
             setFormType(CREATE);
           }}
-        >Create New Entitlement
+        >
+          Create New Entitlement
         </Button>
         )}
       </div>
@@ -118,12 +119,12 @@ export default function Entitlements({ data, changeHandler, user }) {
             entitlement={entitlementToReissue}
             formType={formType}
             changeHandler={changeHandler}
-            submitHandler={(entitlement) => console.log(entitlement)}
+            submitHandler={() => {}}
             closeHandler={() => setFormType(null)}
           />
         ) : (<React.Fragment key="nothing"></React.Fragment>)}
       </TransitionReplace>
-      <Collapsible title={`Entitlements (${tableData.length})`}>
+      <Collapsible title={`Entitlements (${tableData.length})`} defaultOpen={expanded}>
         <Table
           className="w-100"
           data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
@@ -143,8 +144,10 @@ Entitlements.propTypes = {
   }),
   changeHandler: PropTypes.func.isRequired,
   user: PropTypes.string.isRequired,
+  expanded: PropTypes.bool,
 };
 
 Entitlements.defaultProps = {
   data: null,
+  expanded: false,
 };

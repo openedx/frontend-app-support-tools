@@ -11,6 +11,7 @@ export default function EnrollmentForm ({
   user,
   enrollment,
   submitHandler,
+  changeHandler,
   closeHandler,
 }) {
   const [mode, setMode] = useState(enrollment.mode);
@@ -19,7 +20,6 @@ export default function EnrollmentForm ({
   const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback( () => {
-    console.log('Submit Form');
     const sendReason = (reason === 'other') ? comments : reason;
     postEnrollmentChange({
       user,
@@ -31,13 +31,12 @@ export default function EnrollmentForm ({
       if (result.errors !== undefined) {
         result.errors.forEach(error => add(error));
       } else {
-        // changeHandler();
+        changeHandler();
       }
     })
   });
 
   const getModes = function getModes(enrollment) {
-    console.log(enrollment);
     let modeList = [];
     enrollment.courseModes.map(mode => (
       modeList.push(mode.slug)
@@ -126,6 +125,8 @@ EnrollmentForm.propTypes = {
     isActive: PropTypes.bool.isRequired,
   }),
   user: PropTypes.string.isRequired,
+  changeHandler: PropTypes.func.isRequired,
+  closeHandler: PropTypes.func.isRequired,
 };
 
 EnrollmentForm.defaultProps = {

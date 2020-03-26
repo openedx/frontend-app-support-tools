@@ -19,6 +19,8 @@ export default function UserPage({ match }) {
   const { username } = match.params;
   const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
+  const [showEnrollments, setShowEnrollments] = useState(true);
+  const [showEntitlements, setShowEntitlements] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   const handleSearch = useCallback((searchUsername) => {
@@ -28,7 +30,6 @@ export default function UserPage({ match }) {
     } else if (username !== undefined) {
       setLoading(true);
       getAllUserData(username).then((result) => {
-        console.log(result);
         setData(camelCaseObject(result));
         if (result.errors.length > 0) {
           result.errors.forEach(error => add(error));
@@ -39,6 +40,14 @@ export default function UserPage({ match }) {
   });
 
   const handleEntitlementsChange = useCallback(() => {
+    setShowEntitlements(true);
+    setShowEnrollments(false);
+    handleSearch(username);
+  });
+
+  const handleEnrollmentsChange = useCallback(() => {
+    setShowEntitlements(false);
+    setShowEnrollments(true);
     handleSearch(username);
   });
 
@@ -61,8 +70,18 @@ export default function UserPage({ match }) {
       {!loading && username && data.user && (
         <>
           <UserSummary data={data.user} />
-          <Entitlements user={username} data={data.entitlements} changeHandler={handleEntitlementsChange} />
-          <Enrollments user={username} data={data.enrollments} />
+          <Entitlements
+            user={username}
+            data={data.entitlements}
+            changeHandler={handleEntitlementsChange}
+            expanded={showEntitlements}
+          />
+          <Enrollments
+            user={username}
+            data={data.enrollments}
+            changeHandler={handleEnrollmentsChange}
+            expanded={showEnrollments}
+          />
         </>
       )}
       {!loading && !username && (
