@@ -1,13 +1,13 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import EnrollmentForm from './EnrollmentForm';
 import sort from './sort';
 import Table from '../Table';
+import PropTypes from 'prop-types';
 
-export default function Enrollments({ data, user }) {
+export default function Enrollments({ data, changeHandler, user, expanded}) {
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
@@ -33,7 +33,6 @@ export default function Enrollments({ data, user }) {
           onClick={() => {
             setEnrollmentToChange(result);
             setFormType('CHANGE');
-            console.log('Enrollment Change!');
           }}
           className="btn-outline-primary"
         >
@@ -86,7 +85,6 @@ export default function Enrollments({ data, user }) {
   ];
 
   const tableDataSortable = [...tableData];
-
   return (
     <section className="mb-3">
       <h3>Enrollments</h3>
@@ -96,12 +94,13 @@ export default function Enrollments({ data, user }) {
             key="enrollment-form"
             enrollment={enrollmentToChange}
             user={user}
-            submitHandler={(entitlement) => console.log(entitlement)}
+            submitHandler={() => {}}
+            changeHandler={changeHandler}
             closeHandler={() => setFormType(null)}
           />
         ) : (<React.Fragment key="nothing"></React.Fragment>) }
       </TransitionReplace>
-      <Collapsible title={`Enrollments (${tableData.length})` } defaultOpen>
+      <Collapsible title={`Enrollments (${tableData.length})` } defaultOpen={expanded} >
         <Table
           className="w-100"
           data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
@@ -114,3 +113,15 @@ export default function Enrollments({ data, user }) {
     </section>
   );
 }
+
+Enrollments.propTypes = {
+  data:  PropTypes.arrayOf(PropTypes.object),
+  changeHandler: PropTypes.func.isRequired,
+  user: PropTypes.string.isRequired,
+  expanded: PropTypes.bool,
+};
+
+Enrollments.defaultProps = {
+  data: null,
+  expanded: false
+};
