@@ -11,17 +11,35 @@ import UserSummary from './UserSummary';
 import Enrollments from './Enrollments';
 import Entitlements from './Entitlements';
 import UserSearch from './UserSearch';
-import { getAllUserData } from './api';
+import { getAllUserData, getAllUserDataByEmail } from './api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 import AlertList from '../user-messages/AlertList';
 
 export default function UserPage({ match }) {
   const { username } = match.params;
+  const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
   const [showEnrollments, setShowEnrollments] = useState(true);
   const [showEntitlements, setShowEntitlements] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
+  const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
+
+  function processSearchResult(result){
+    if (result.user) {
+      history.replace(`/users/${result.user.username}`);
+    }
+    if (result.errors.length > 0) {
+      result.errors.forEach(error => add(error));
+      history.replace(`/users/`);
+    }
+    setLoading(false);
+    setSearching(false);
+  }
+
+  function isEmail(searchValue) {
+    return !!(searchValue && searchValue.match(EMAIL_REGEX));
+  }
 
   const handleFetchSearchResults = useCallback((searchUsername) => {
     clear('general');
@@ -29,17 +47,28 @@ export default function UserPage({ match }) {
       setLoading(true);
       getAllUserData(searchUsername).then((result) => {
         setData(camelCaseObject(result));
-        if (result.errors.length > 0) {
-          result.errors.forEach(error => add(error));
-        }
-        setLoading(false);
+        processSearchResult(result)
       });
     }
   });
 
-  const handleSearchInputChange = useCallback((searchUsername) => {
-    if (searchUsername !== username) {
-      history.push(`/users/${searchUsername}`);
+  const handleFetchEmailSearchResults = useCallback((searchEmail) => {
+    clear('general');
+    if (searchEmail !== undefined) {
+      setLoading(true);
+      getAllUserDataByEmail(searchEmail).then((result) => {
+        setData(camelCaseObject(result));
+        processSearchResult(result);
+      });
+    }
+  });
+
+  const handleSearchInputChange = useCallback((searchValue) => {
+    setSearching(true);
+    if (!isEmail(searchValue) && searchValue !== username) {
+      handleFetchSearchResults(searchValue);
+    } else if (isEmail(searchValue)){
+      handleFetchEmailSearchResults(searchValue);
     }
   });
 
@@ -56,7 +85,9 @@ export default function UserPage({ match }) {
   });
 
   useEffect(() => {
-    handleFetchSearchResults(username);
+    if (!searching) {
+      handleFetchSearchResults(username);
+    }
   }, [username]);
 
   return (

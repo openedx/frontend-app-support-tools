@@ -47,6 +47,37 @@ export async function getUser(username) {
   }
 }
 
+export async function getUserByEmail(userEmail) {
+  try {
+    const { data } = await getAuthenticatedHttpClient()
+      .get(
+        `${getConfig().LMS_BASE_URL}/api/user/v1/accounts?email=${userEmail}`,
+      );
+    return data;
+  } catch (error) {
+    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    if (error.customAttributes.httpErrorStatus === 404) {
+      error.userError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the email "${userEmail}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      throw error;
+    }
+
+    error.userError = {
+      code: null,
+      dismissible: true,
+      text: 'There was an error loading this user\'s data. Check the JavaScript console for detailed errors.',
+      type: 'danger',
+      topic: 'general',
+    };
+    throw error;
+  }
+}
+
 export async function getAllUserData(username) {
   const errors = [];
   let user = null;
@@ -61,6 +92,33 @@ export async function getAllUserData(username) {
   if (user !== null) {
     entitlements = await getEntitlements(username);
     enrollments = await getEnrollments(username);
+  }
+
+  return {
+    errors,
+    user,
+    entitlements,
+    enrollments,
+  };
+}
+
+
+
+export async function getAllUserDataByEmail(userEmail) {
+  const errors = [];
+  let user = null;
+  let entitlements = [];
+  let enrollments = [];
+
+  try {
+    user = await getUserByEmail(userEmail);
+  } catch (error) {
+    errors.push(error.userError);
+  }
+  if (user !== null && user.length > 0) {
+    user = user[0];
+    entitlements = await getEntitlements(user.username);
+    enrollments = await getEnrollments(user.username);
   }
 
   return {
