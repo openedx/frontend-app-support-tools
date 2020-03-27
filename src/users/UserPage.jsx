@@ -23,13 +23,11 @@ export default function UserPage({ match }) {
   const [showEntitlements, setShowEntitlements] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
-  const handleSearch = useCallback((searchUsername) => {
+  const handleFetchSearchResults = useCallback((searchUsername) => {
     clear('general');
-    if (searchUsername !== username) {
-      history.push(`/users/${searchUsername}`);
-    } else if (username !== undefined) {
+    if (searchUsername !== undefined) {
       setLoading(true);
-      getAllUserData(username).then((result) => {
+      getAllUserData(searchUsername).then((result) => {
         setData(camelCaseObject(result));
         if (result.errors.length > 0) {
           result.errors.forEach(error => add(error));
@@ -39,20 +37,26 @@ export default function UserPage({ match }) {
     }
   });
 
+  const handleSearchInputChange = useCallback((searchUsername) => {
+    if (searchUsername !== username) {
+      history.push(`/users/${searchUsername}`);
+    }
+  });
+
   const handleEntitlementsChange = useCallback(() => {
     setShowEntitlements(true);
     setShowEnrollments(false);
-    handleSearch(username);
+    handleFetchSearchResults(username);
   });
 
   const handleEnrollmentsChange = useCallback(() => {
     setShowEntitlements(false);
     setShowEnrollments(true);
-    handleSearch(username);
+    handleFetchSearchResults(username);
   });
 
   useEffect(() => {
-    handleSearch(username);
+    handleFetchSearchResults(username);
   }, [username]);
 
   return (
@@ -61,7 +65,7 @@ export default function UserPage({ match }) {
         <Link to="/">&lt; Back to Tools</Link>
       </section>
       <AlertList topic="general" className="mb-3" />
-      <UserSearch username={username} searchHandler={handleSearch} />
+      <UserSearch username={username} searchHandler={handleSearchInputChange} />
       {loading && (
         <PageLoading
           srMessage="Loading"
