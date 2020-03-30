@@ -7,29 +7,26 @@ export default function UserMessagesProvider({ children }) {
   const [messages, setMessages] = useState([]);
   const [nextId, setNextId] = useState(1);
 
-  const refMessages = useRef(messages);
+  const refId = useRef(nextId);
 
   const add = ({
     code, dismissible, text, type, topic, ...others
   }) => {
-    const id = nextId;
-    refMessages.current = [...refMessages.current, {
+    const id = refId.current;
+    setMessages(currentMessages => [...currentMessages, {
       code, dismissible, text, type, topic, ...others, id,
-    }];
-    setMessages(refMessages.current);
-    setNextId(nextId + 1);
-    return id;
+    }]);
+    refId.current += 1;
+    setNextId(refId.current);
+    return refId.current;
   };
 
   const remove = id => {
-    refMessages.current = refMessages.current.filter(message => message.id !== id);
-    setMessages(refMessages.current);
+    setMessages(currentMessages => currentMessages.current.filter(message => message.id !== id));
   };
 
   const clear = (topic = null) => {
-    refMessages.current = topic === null ? [] : refMessages.current.filter(message => message.topic !== topic);
-
-    setMessages(refMessages.current);
+    setMessages(currentMessages => (topic === null ? [] : currentMessages.filter(message => message.topic !== topic)));
   };
 
   const value = {
