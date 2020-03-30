@@ -25,13 +25,13 @@ export default function UserPage({ match }) {
   const { add, clear } = useContext(UserMessagesContext);
   const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 
-  function processSearchResult(result){
+  function processSearchResult(result) {
     if (result.user) {
       history.replace(`/users/${result.user.username}`);
     }
     if (result.errors.length > 0) {
       result.errors.forEach(error => add(error));
-      history.replace(`/users/`);
+      history.replace('/users/');
     }
     setLoading(false);
     setSearching(false);
@@ -47,7 +47,7 @@ export default function UserPage({ match }) {
       setLoading(true);
       getAllUserData(searchUsername).then((result) => {
         setData(camelCaseObject(result));
-        processSearchResult(result)
+        processSearchResult(result);
       });
     }
   });
@@ -67,7 +67,7 @@ export default function UserPage({ match }) {
     setSearching(true);
     if (!isEmail(searchValue) && searchValue !== username) {
       handleFetchSearchResults(searchValue);
-    } else if (isEmail(searchValue)){
+    } else if (isEmail(searchValue)) {
       handleFetchEmailSearchResults(searchValue);
     }
   });

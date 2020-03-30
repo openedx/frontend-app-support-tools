@@ -11,7 +11,9 @@ import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
 import sort from './sort';
 import Table from '../Table';
 
-export default function Entitlements({ data, changeHandler, user, expanded }) {
+export default function Entitlements({
+  data, changeHandler, user, expanded,
+}) {
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
@@ -33,7 +35,8 @@ export default function Entitlements({ data, changeHandler, user, expanded }) {
         <a
           href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${result.orderNumber}/`}
           rel="noopener noreferrer"
-          target="_blank">
+          target="_blank"
+        >
           {result.orderNumber}
         </a>
       ),
@@ -127,7 +130,9 @@ export default function Entitlements({ data, changeHandler, user, expanded }) {
       <Collapsible title={`Entitlements (${tableData.length})`} defaultOpen={expanded}>
         <Table
           className="w-100"
-          data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
+          data={tableDataSortable.sort(
+            (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
+          )}
           columns={columns}
           tableSortable
           defaultSortedColumn="created"

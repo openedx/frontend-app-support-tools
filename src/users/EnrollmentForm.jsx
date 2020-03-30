@@ -1,25 +1,34 @@
-import React, { useCallback, useState, useContext, useMemo } from 'react';
+import React, {
+  useCallback, useState, useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, InputSelect
+  Button, Input, InputSelect,
 } from '@edx/paragon';
 import AlertList from '../user-messages/AlertList';
 import { postEnrollmentChange } from './api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 
-export default function EnrollmentForm ({
+const getModes = function getModes(enrollment) {
+  const modeList = [];
+  enrollment.courseModes.map(mode => (
+    modeList.push(mode.slug)
+  ));
+  return modeList;
+};
+
+export default function EnrollmentForm({
   user,
   enrollment,
-  submitHandler,
   changeHandler,
   closeHandler,
 }) {
   const [mode, setMode] = useState(enrollment.mode);
   const [reason, setReason] = useState('');
   const [comments, setComments] = useState('');
-  const { add, clear } = useContext(UserMessagesContext);
+  const { add } = useContext(UserMessagesContext);
 
-  const submit = useCallback( () => {
+  const submit = useCallback(() => {
     const sendReason = (reason === 'other') ? comments : reason;
     postEnrollmentChange({
       user,
@@ -27,29 +36,21 @@ export default function EnrollmentForm ({
       oldMode: enrollment.mode,
       newMode: mode,
       reason: sendReason,
-    }).then( (result)=> {
+    }).then((result) => {
       if (result.errors !== undefined) {
         result.errors.forEach(error => add(error));
       } else {
         changeHandler();
       }
-    })
+    });
   });
 
-  const getModes = function getModes(enrollment) {
-    let modeList = [];
-    enrollment.courseModes.map(mode => (
-      modeList.push(mode.slug)
-    ));
-    return modeList;
-  };
-
   const reasons = [
-    {label: '--', value: ''},
-    {label: 'Financial Assistance', value: 'Financial Assistance'},
-    {label: 'Upset Learner', value: 'Upset Learner'},
-    {label: 'Teaching Assistant', value: 'Teaching Assistant'},
-    {label: 'Other', value: 'other'},
+    { label: '--', value: '' },
+    { label: 'Financial Assistance', value: 'Financial Assistance' },
+    { label: 'Upset Learner', value: 'Upset Learner' },
+    { label: 'Teaching Assistant', value: 'Teaching Assistant' },
+    { label: 'Other', value: 'other' },
   ];
 
   return (
@@ -57,16 +58,13 @@ export default function EnrollmentForm ({
       <form className="card-body">
         <AlertList topic="enrollments" className="mb-3" />
         <h4 className="card-title">Change Enrollment</h4>
-        <div  className="form-group">
+        <div className="form-group">
           <h5>Current Enrollment</h5>
-          <label>Course Run ID:</label> {enrollment.courseId}
-          <br/>
-          <label>Mode:</label> {enrollment.mode}
-          <br/>
-          <label>Active:</label> {enrollment.isActive.toString()}
-          <br/>
+          <div className="mb-1"><strong>Course Run ID:</strong> {enrollment.courseId}</div>
+          <div className="mb-1"><strong>Mode:</strong> {enrollment.mode}</div>
+          <div className="mb-1"><strong>Active:</strong> {enrollment.isActive.toString()}</div>
         </div>
-        <hr/>
+        <hr />
         <div className="form-group">
           <InputSelect
             label="New Mode"
@@ -85,7 +83,7 @@ export default function EnrollmentForm ({
             options={reasons}
             id="reason"
             name="reason"
-            value=''
+            value=""
             onChange={(event) => setReason(event)}
           />
         </div>
@@ -95,7 +93,7 @@ export default function EnrollmentForm ({
             type="textarea"
             id="comments"
             name="comments"
-            defaultValue=''
+            defaultValue=""
             onChange={(event) => setComments(event.target.value)}
           />
         </div>

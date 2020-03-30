@@ -1,7 +1,6 @@
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
-// eslint-disable-next-line import/prefer-default-export
 export async function getEntitlements(username) {
   const { data } = await getAuthenticatedHttpClient().get(
     `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${username}`,
@@ -24,6 +23,9 @@ export async function getUser(username) {
       );
     return data;
   } catch (error) {
+    // We don't have good error handling in the app for any errors that may have come back
+    // from the API, so we log them to the console and tell the user to go look.  We would
+    // never do this in a customer-facing app.
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     if (error.customAttributes.httpErrorStatus === 404) {
       error.userError = {
@@ -55,6 +57,9 @@ export async function getUserByEmail(userEmail) {
       );
     return data;
   } catch (error) {
+    // We don't have good error handling in the app for any errors that may have come back
+    // from the API, so we log them to the console and tell the user to go look.  We would
+    // never do this in a customer-facing app.
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     if (error.customAttributes.httpErrorStatus === 404) {
       error.userError = {
@@ -102,8 +107,6 @@ export async function getAllUserData(username) {
   };
 }
 
-
-
 export async function getAllUserDataByEmail(userEmail) {
   const errors = [];
   let user = null;
@@ -111,12 +114,13 @@ export async function getAllUserDataByEmail(userEmail) {
   let enrollments = [];
 
   try {
-    user = await getUserByEmail(userEmail);
+    const users = await getUserByEmail(userEmail);
+    // The response should be an array of users - if it has an element, use it.
+    user = Array.isArray(users) && users.length > 0 ? users[0] : null;
   } catch (error) {
     errors.push(error.userError);
   }
-  if (user !== null && user.length > 0) {
-    user = user[0];
+  if (user !== null) {
     entitlements = await getEntitlements(user.username);
     enrollments = await getEnrollments(user.username);
   }
@@ -147,6 +151,9 @@ export async function patchEntitlement({
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
+      // We don't have good error handling in the app for any errors that may have come back
+      // from the API, so we log them to the console and tell the user to go look.  We would
+      // never do this in a customer-facing app.
       console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     }
     return {
@@ -154,8 +161,8 @@ export async function patchEntitlement({
         {
           code: null,
           dismissible: true,
-          text: 'There was an error submitting this entitlement.  Check the JavaScript console for detailed errors.',
-          type: 'error',
+          text: 'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+          type: 'danger',
           topic: 'entitlements',
         },
       ],
@@ -183,6 +190,9 @@ export async function postEntitlement({
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
+      // We don't have good error handling in the app for any errors that may have come back
+      // from the API, so we log them to the console and tell the user to go look.  We would
+      // never do this in a customer-facing app.
       console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     }
     return {
@@ -190,7 +200,7 @@ export async function postEntitlement({
         {
           code: null,
           dismissible: true,
-          text: 'There was an error submitting this entitlement.  Check the JavaScript console for detailed errors.',
+          text: 'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
           type: 'danger',
           topic: 'entitlements',
         },
@@ -215,6 +225,9 @@ export async function postEnrollmentChange({
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
+      // We don't have good error handling in the app for any errors that may have come back
+      // from the API, so we log them to the console and tell the user to go look.  We would
+      // never do this in a customer-facing app.
       console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     }
     return {
@@ -222,8 +235,8 @@ export async function postEnrollmentChange({
         {
           code: null,
           dismissible: true,
-          text: 'There was an error submitting this entitlement.  Check the JavaScript console for detailed errors.',
-          type: 'error',
+          text: 'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+          type: 'danger',
           topic: 'enrollments',
         },
       ],

@@ -2,12 +2,14 @@ import React, { useMemo, useState, useCallback } from 'react';
 
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
+import PropTypes from 'prop-types';
 import EnrollmentForm from './EnrollmentForm';
 import sort from './sort';
 import Table from '../Table';
-import PropTypes from 'prop-types';
 
-export default function Enrollments({ data, changeHandler, user, expanded}) {
+export default function Enrollments({
+  data, changeHandler, user, expanded,
+}) {
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
@@ -100,10 +102,12 @@ export default function Enrollments({ data, changeHandler, user, expanded}) {
           />
         ) : (<React.Fragment key="nothing"></React.Fragment>) }
       </TransitionReplace>
-      <Collapsible title={`Enrollments (${tableData.length})` } defaultOpen={expanded} >
+      <Collapsible title={`Enrollments (${tableData.length})`} defaultOpen={expanded}>
         <Table
           className="w-100"
-          data={tableDataSortable.sort((firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection))}
+          data={tableDataSortable.sort(
+            (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
+          )}
           columns={columns}
           tableSortable
           defaultSortedColumn="created"
@@ -115,7 +119,7 @@ export default function Enrollments({ data, changeHandler, user, expanded}) {
 }
 
 Enrollments.propTypes = {
-  data:  PropTypes.arrayOf(PropTypes.object),
+  data: PropTypes.arrayOf(PropTypes.object),
   changeHandler: PropTypes.func.isRequired,
   user: PropTypes.string.isRequired,
   expanded: PropTypes.bool,
@@ -123,5 +127,5 @@ Enrollments.propTypes = {
 
 Enrollments.defaultProps = {
   data: null,
-  expanded: false
+  expanded: false,
 };
