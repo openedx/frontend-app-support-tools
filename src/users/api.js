@@ -26,6 +26,7 @@ export async function getUser(username) {
     // We don't have good error handling in the app for any errors that may have come back
     // from the API, so we log them to the console and tell the user to go look.  We would
     // never do this in a customer-facing app.
+    // eslint-disable-next-line no-console
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     if (error.customAttributes.httpErrorStatus === 404) {
       error.userError = {
@@ -60,6 +61,7 @@ export async function getUserByEmail(userEmail) {
     // We don't have good error handling in the app for any errors that may have come back
     // from the API, so we log them to the console and tell the user to go look.  We would
     // never do this in a customer-facing app.
+    // eslint-disable-next-line no-console
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     if (error.customAttributes.httpErrorStatus === 404) {
       error.userError = {
@@ -86,21 +88,27 @@ export async function getUserByEmail(userEmail) {
 export async function getUserVerificationStatus(username) {
   try {
     const { data } = await getAuthenticatedHttpClient().get(
-        `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/verification_status/`,
-      );
-      return data;
+      `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/verification_status/`,
+    );
+    return data;
   } catch (error) {
     // We don't have good error handling in the app for any errors that may have come back
     // from the API, so we log them to the console and tell the user to go look.  We would
     // never do this in a customer-facing app.
+    // eslint-disable-next-line no-console
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     if (error.customAttributes.httpErrorStatus === 404) {
       return {
         status: 'Not Available',
         expirationDatetime: '',
         isVerified: false,
-      }
+      };
     }
+    return {
+      status: 'Error, status unknown',
+      expirationDatetime: '',
+      isVerified: false,
+    };
   }
 }
 
@@ -156,8 +164,39 @@ export async function getAllUserDataByEmail(userEmail) {
     user,
     entitlements,
     enrollments,
-    verificationStatus
+    verificationStatus,
   };
+}
+
+export async function getCourseData(courseUUID) {
+  try {
+    const { data } = await getAuthenticatedHttpClient()
+      .get(
+        `${getConfig().DISCOVERY_BASE_URL}/api/v1/courses/${courseUUID}/`,
+      );
+    return data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    if (error.customAttributes.httpErrorStatus === 404) {
+      const courseError404 = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find summary data for this Course "${courseUUID}".`,
+        type: 'error',
+        topic: 'course-summary',
+      };
+      return { errors: [courseError404] };
+    }
+    const courseError = {
+      code: null,
+      dismissible: true,
+      text: `Error finding summary data for this Course "${courseUUID}".`,
+      type: 'danger',
+      topic: 'course-summary',
+    };
+    return { errors: [courseError] };
+  }
 }
 
 export async function patchEntitlement({
@@ -181,6 +220,7 @@ export async function patchEntitlement({
       // We don't have good error handling in the app for any errors that may have come back
       // from the API, so we log them to the console and tell the user to go look.  We would
       // never do this in a customer-facing app.
+      // eslint-disable-next-line no-console
       console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     }
     return {
@@ -220,6 +260,7 @@ export async function postEntitlement({
       // We don't have good error handling in the app for any errors that may have come back
       // from the API, so we log them to the console and tell the user to go look.  We would
       // never do this in a customer-facing app.
+      // eslint-disable-next-line no-console
       console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     }
     return {
@@ -255,6 +296,7 @@ export async function postEnrollmentChange({
       // We don't have good error handling in the app for any errors that may have come back
       // from the API, so we log them to the console and tell the user to go look.  We would
       // never do this in a customer-facing app.
+      // eslint-disable-next-line no-console
       console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     }
     return {

@@ -1,4 +1,10 @@
-import React, { useMemo, useState, useCallback, useRef, useLayoutEffect } from 'react';
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from 'react';
 
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
@@ -56,7 +62,7 @@ export default function Enrollments({
   });
 
   useLayoutEffect(() => {
-    if(formType != null) {
+    if (formType != null) {
       formRef.current.focus();
     }
   });
@@ -112,7 +118,7 @@ export default function Enrollments({
             closeHandler={() => setFormType(null)}
             forwardedRef={formRef}
           />
-        ) : (<React.Fragment key="nothing"></React.Fragment>) }
+        ) : (<React.Fragment key="nothing" />) }
       </TransitionReplace>
       <Collapsible title={`Enrollments (${tableData.length})`} defaultOpen={expanded}>
         <Table

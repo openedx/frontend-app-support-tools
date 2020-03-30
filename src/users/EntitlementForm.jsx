@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import {
   Button, Input,
 } from '@edx/paragon';
+import classNames from 'classnames';
 
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 import AlertList from '../user-messages/AlertList';
 import { postEntitlement, patchEntitlement } from './api';
-import classNames from 'classnames';
 
 export const REISSUE = 'reissue';
 export const CREATE = 'create';
@@ -109,8 +109,8 @@ export default function EntitlementForm({
         <div>
           <Button
             className={classNames(
-              "btn-primary mr-3",
-              {disabled: !(courseUuid && mode && comments)}
+              'btn-primary mr-3',
+              { disabled: !(courseUuid && mode && comments) },
             )}
             onClick={submit}
           >
@@ -150,6 +150,7 @@ EntitlementForm.propTypes = {
   user: PropTypes.string.isRequired,
   changeHandler: PropTypes.func.isRequired,
   closeHandler: PropTypes.func.isRequired,
+  forwardedRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 };
 
 EntitlementForm.defaultProps = {
@@ -164,4 +165,5 @@ EntitlementForm.defaultProps = {
     supportDetails: [],
     user: '',
   },
+  forwardedRef: null,
 };

@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Table from '../Table';
 import moment from 'moment';
 
-export default function UserSummary({ userData, verificationData }) {
+import Table from '../Table';
 
+export default function UserSummary({ userData, verificationData }) {
   const userAccountData = [
     {
       dataName: 'Full Name',
@@ -52,8 +52,8 @@ export default function UserSummary({ userData, verificationData }) {
     {
       dataName: 'Expiration Date',
       dataValue: verificationData.expirationDatetime ? moment(
-        verificationData.expirationDatetime
-      ).format('lll') : 'Not Available'
+        verificationData.expirationDatetime,
+      ).format('lll') : 'Not Available',
     },
     {
       dataName: 'Verified',
@@ -86,10 +86,22 @@ export default function UserSummary({ userData, verificationData }) {
 }
 
 UserSummary.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  data: PropTypes.object,
+  userData: PropTypes.shape({
+    name: PropTypes.string,
+    username: PropTypes.string,
+    email: PropTypes.string,
+    isActive: PropTypes.bool,
+    country: PropTypes.string,
+    dateJoined: PropTypes.string,
+  }),
+  verificationData: PropTypes.shape({
+    status: PropTypes.string,
+    expirationDatetime: PropTypes.string,
+    isVerified: PropTypes.bool,
+  }),
 };
 
 UserSummary.defaultProps = {
-  data: null,
+  userData: null,
+  verificationData: null,
 };
