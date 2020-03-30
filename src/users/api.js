@@ -161,8 +161,8 @@ export async function patchEntitlement({
         {
           code: null,
           dismissible: true,
-          type: 'error',
           text: 'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+          type: 'danger',
           topic: 'entitlements',
         },
       ],
@@ -235,8 +235,8 @@ export async function postEnrollmentChange({
         {
           code: null,
           dismissible: true,
-          type: 'error',
           text: 'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+          type: 'danger',
           topic: 'enrollments',
         },
       ],
