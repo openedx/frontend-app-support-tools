@@ -114,12 +114,13 @@ export async function getAllUserDataByEmail(userEmail) {
   let enrollments = [];
 
   try {
-    user = await getUserByEmail(userEmail);
+    const users = await getUserByEmail(userEmail);
+    // The response should be an array of users - if it has an element, use it.
+    user = Array.isArray(users) && users.length > 0 ? users[0] : null;
   } catch (error) {
     errors.push(error.userError);
   }
-  if (user !== null && user.length > 0) {
-    user = user[0];
+  if (user !== null) {
     entitlements = await getEntitlements(user.username);
     enrollments = await getEnrollments(user.username);
   }
