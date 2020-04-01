@@ -65,6 +65,8 @@ export default function UserPage({ match }) {
 
   const handleSearchInputChange = useCallback((searchValue) => {
     setSearching(true);
+    setShowEntitlements(false);
+    setShowEnrollments(true);
     if (!isEmail(searchValue) && searchValue !== username) {
       handleFetchSearchResults(searchValue);
     } else if (isEmail(searchValue)) {

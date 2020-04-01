@@ -1,5 +1,5 @@
 import React, {
-  useMemo, useState, useCallback,
+  useMemo, useState, useCallback, useRef, useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -18,6 +18,13 @@ export default function Entitlements({
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
   const [entitlementToReissue, setEntitlementToReissue] = useState(undefined);
+  const formRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if(formType != null) {
+      formRef.current.focus();
+    }
+  });
 
   const tableData = useMemo(() => {
     if (data === null) {
@@ -27,7 +34,15 @@ export default function Entitlements({
       user: result.user,
       courseUuid: result.courseUuid,
       mode: result.mode,
-      enrollment: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.enrollmentCourseRun}`} rel="noopener noreferrer" target="_blank">{result.enrollmentCourseRun}</a>,
+      enrollment: result.enrollmentCourseRun ? (
+        <a
+          href={`${getConfig().LMS_BASE_URL}/courses/${result.enrollmentCourseRun}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {result.enrollmentCourseRun}
+        </a>
+      ) : 'Course Run Not Selected',
       expiredAt: result.expiredAt,
       created: result.created,
       modified: result.modified,
@@ -124,6 +139,7 @@ export default function Entitlements({
             changeHandler={changeHandler}
             submitHandler={() => {}}
             closeHandler={() => setFormType(null)}
+            forwardedRef={formRef}
           />
         ) : (<React.Fragment key="nothing"></React.Fragment>)}
       </TransitionReplace>

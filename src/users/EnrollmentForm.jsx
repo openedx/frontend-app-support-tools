@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, useContext,
+  useCallback, useState, useContext, useEffect, useLayoutEffect
 } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -8,6 +8,7 @@ import {
 import AlertList from '../user-messages/AlertList';
 import { postEnrollmentChange } from './api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
+import classNames from 'classnames';
 
 const getModes = function getModes(enrollment) {
   const modeList = [];
@@ -22,6 +23,7 @@ export default function EnrollmentForm({
   enrollment,
   changeHandler,
   closeHandler,
+  forwardedRef,
 }) {
   const [mode, setMode] = useState(enrollment.mode);
   const [reason, setReason] = useState('');
@@ -59,13 +61,14 @@ export default function EnrollmentForm({
         <AlertList topic="enrollments" className="mb-3" />
         <h4 className="card-title">Change Enrollment</h4>
         <div className="form-group">
-          <h5>Current Enrollment</h5>
+          <h5>Current Enrollment Data</h5>
           <div className="mb-1"><strong>Course Run ID:</strong> {enrollment.courseId}</div>
           <div className="mb-1"><strong>Mode:</strong> {enrollment.mode}</div>
           <div className="mb-1"><strong>Active:</strong> {enrollment.isActive.toString()}</div>
         </div>
         <hr />
         <div className="form-group">
+          <h5 className="card-subtitle">All fields are required</h5>
           <InputSelect
             label="New Mode"
             type="select"
@@ -95,11 +98,15 @@ export default function EnrollmentForm({
             name="comments"
             defaultValue=""
             onChange={(event) => setComments(event.target.value)}
+            ref={forwardedRef}
           />
         </div>
         <div>
           <Button
-            className="btn-primary mr-3"
+            className={classNames(
+                "btn-primary mr-3",
+                {disabled : !reason}
+              )}
             onClick={submit}
           >
             Submit
