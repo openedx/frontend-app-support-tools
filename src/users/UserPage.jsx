@@ -104,7 +104,7 @@ export default function UserPage({ match }) {
       )}
       {!loading && username && data.user && (
         <>
-          <UserSummary data={data.user} />
+          <UserSummary userData={data.user} verificationData={data.verificationStatus} />
           <Entitlements
             user={username}
             data={data.entitlements}

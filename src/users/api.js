@@ -83,11 +83,33 @@ export async function getUserByEmail(userEmail) {
   }
 }
 
+export async function getUserVerificationStatus(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+        `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/verification_status/`,
+      );
+      return data;
+  } catch (error) {
+    // We don't have good error handling in the app for any errors that may have come back
+    // from the API, so we log them to the console and tell the user to go look.  We would
+    // never do this in a customer-facing app.
+    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    if (error.customAttributes.httpErrorStatus === 404) {
+      return {
+        status: 'Not Available',
+        expirationDatetime: '',
+        isVerified: false,
+      }
+    }
+  }
+}
+
 export async function getAllUserData(username) {
   const errors = [];
   let user = null;
   let entitlements = [];
   let enrollments = [];
+  let verificationStatus = null;
   try {
     user = await getUser(username);
   } catch (error) {
@@ -97,6 +119,7 @@ export async function getAllUserData(username) {
   if (user !== null) {
     entitlements = await getEntitlements(username);
     enrollments = await getEnrollments(username);
+    verificationStatus = await getUserVerificationStatus(username);
   }
 
   return {
@@ -104,6 +127,7 @@ export async function getAllUserData(username) {
     user,
     entitlements,
     enrollments,
+    verificationStatus,
   };
 }
 
