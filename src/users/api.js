@@ -110,12 +110,12 @@ export async function getAllUserData(username) {
   let entitlements = [];
   let enrollments = [];
   let verificationStatus = null;
+
   try {
     user = await getUser(username);
   } catch (error) {
     errors.push(error.userError);
   }
-
   if (user !== null) {
     entitlements = await getEntitlements(username);
     enrollments = await getEnrollments(username);
@@ -136,6 +136,7 @@ export async function getAllUserDataByEmail(userEmail) {
   let user = null;
   let entitlements = [];
   let enrollments = [];
+  let verificationStatus = null;
 
   try {
     const users = await getUserByEmail(userEmail);
@@ -147,6 +148,7 @@ export async function getAllUserDataByEmail(userEmail) {
   if (user !== null) {
     entitlements = await getEntitlements(user.username);
     enrollments = await getEnrollments(user.username);
+    verificationStatus = await getUserVerificationStatus(user.username);
   }
 
   return {
@@ -154,6 +156,7 @@ export async function getAllUserDataByEmail(userEmail) {
     user,
     entitlements,
     enrollments,
+    verificationStatus
   };
 }
 
