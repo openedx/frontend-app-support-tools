@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useRef, useLayoutEffect } from 'react';
 
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
@@ -14,6 +14,7 @@ export default function Enrollments({
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
   const [enrollmentToChange, setEnrollmentToChange] = useState(undefined);
+  const formRef = useRef(null);
 
   const tableData = useMemo(() => {
     if (data === null || data.length === 0) {
@@ -25,9 +26,10 @@ export default function Enrollments({
       courseEnd: result.courseEnd,
       upgradeDeadline: result.verifiedUpgradeDeadline,
       created: result.created,
-      reason: '',
-      lastModifiedBy: '',
-      active: result.isActive,
+      reason: result.manualEnrollment ? result.manualEnrollment.reason : '',
+      lastModifiedBy: result.manualEnrollment ? result.manualEnrollment.enrolledBy : '',
+      lastModified: result.manualEnrollment ? result.manualEnrollment.timeStamp : '',
+      active: result.isActive ? 'True' : 'False',
       mode: result.mode,
       actions: (
         <Button
@@ -53,6 +55,12 @@ export default function Enrollments({
     setSortColumn(column);
   });
 
+  useLayoutEffect(() => {
+    if(formType != null) {
+      formRef.current.focus();
+    }
+  });
+
   const columns = [
     {
       label: 'Course Run ID', key: 'courseId', columnSortable: true, onSort: () => setSort('courseId'), width: 'col-3',
@@ -74,6 +82,9 @@ export default function Enrollments({
     },
     {
       label: 'Last Modified By', key: 'lastModifiedBy', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
+    },
+    {
+      label: 'Last Modified', date: true, key: 'lastModified', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
     },
     {
       label: 'Mode', key: 'mode', columnSortable: true, onSort: () => setSort('mode'), width: 'col-3',
@@ -99,6 +110,7 @@ export default function Enrollments({
             submitHandler={() => {}}
             changeHandler={changeHandler}
             closeHandler={() => setFormType(null)}
+            forwardedRef={formRef}
           />
         ) : (<React.Fragment key="nothing"></React.Fragment>) }
       </TransitionReplace>

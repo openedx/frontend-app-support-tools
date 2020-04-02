@@ -7,6 +7,7 @@ import {
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 import AlertList from '../user-messages/AlertList';
 import { postEntitlement, patchEntitlement } from './api';
+import classNames from 'classnames';
 
 export const REISSUE = 'reissue';
 export const CREATE = 'create';
@@ -18,6 +19,7 @@ export default function EntitlementForm({
   changeHandler,
   closeHandler,
   user,
+  forwardedRef,
 }) {
   const [courseUuid, setCourseUuid] = useState(entitlement.courseUuid);
   const [mode, setMode] = useState(entitlement.mode);
@@ -64,6 +66,7 @@ export default function EntitlementForm({
       <form className="card-body">
         <AlertList topic="entitlements" className="mb-3" />
         <h4 className="card-title">{title}</h4>
+        <h5 className="card-subtitle">All fields are required</h5>
         <div className="form-group">
           <label htmlFor="courseUuid">Course UUID</label>
           <Input
@@ -100,11 +103,15 @@ export default function EntitlementForm({
             name="comments"
             defaultValue={comments}
             onChange={(event) => setComments(event.target.value)}
+            ref={forwardedRef}
           />
         </div>
         <div>
           <Button
-            className="btn-primary mr-3"
+            className={classNames(
+              "btn-primary mr-3",
+              {disabled: !(courseUuid && mode && comments)}
+            )}
             onClick={submit}
           >
             Submit
