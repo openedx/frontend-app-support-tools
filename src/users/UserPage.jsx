@@ -24,6 +24,7 @@ export default function UserPage({ match }) {
   const [showEntitlements, setShowEntitlements] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
   const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
+  const USERNAME_REGEX = '^[\\w.@_+-]+$';
 
   function processSearchResult(result) {
     if (result.user) {
@@ -39,6 +40,10 @@ export default function UserPage({ match }) {
 
   function isEmail(searchValue) {
     return !!(searchValue && searchValue.match(EMAIL_REGEX));
+  }
+
+  function isValidUsername(searchValue) {
+    return !!(searchValue && searchValue.match(USERNAME_REGEX))
   }
 
   const handleFetchSearchResults = useCallback((searchUsername) => {
@@ -64,10 +69,23 @@ export default function UserPage({ match }) {
   });
 
   const handleSearchInputChange = useCallback((searchValue) => {
+    if (!isValidUsername(searchValue) && !isEmail(searchValue)){
+      clear('general');
+      add({
+        code: null,
+        dismissible: true,
+        text: 'The searched username or email is invalid. Please correct the username or email and try again.',
+        type: 'error',
+        topic: 'general',
+      });
+      history.replace('/users/');
+      return;
+    }
+
     setSearching(true);
     setShowEntitlements(false);
     setShowEnrollments(true);
-    if (!isEmail(searchValue) && searchValue !== username) {
+    if (!isEmail(searchValue) && isValidUsername(searchValue) && searchValue !== username) {
       handleFetchSearchResults(searchValue);
     } else if (isEmail(searchValue)) {
       handleFetchEmailSearchResults(searchValue);
