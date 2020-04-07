@@ -25,17 +25,24 @@ export default function CourseSummary({
 
   function renderCourseRuns(data) {
     const { courseRuns } = data;
+    if (courseRuns) {
+      return (
+        <div>
+          <ul className="list-unstyled">
+            {
+              courseRuns.map((item) => (
+                <li key={item.key}>
+                  {item.key} <b>Start:</b> {item.start ? moment(item.start).format('lll') : ''}, <b>End:</b> {item.end ? moment(item.end).format('lll') : ''}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      );
+    }
     return (
       <div>
-        <ul className="list-unstyled">
-          {
-            courseRuns.map((item) => (
-              <li key={item.key}>
-                {item.key} <b>Start:</b> {item.start ? moment(item.start).format('lll') : ''}, <b>End:</b> {item.end ? moment(item.end).format('lll') : ''}
-              </li>
-            ))
-          }
-        </ul>
+        No Course Runs available
       </div>
     );
   }
