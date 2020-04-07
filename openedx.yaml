@@ -1,6 +1,14 @@
 # This file describes this Open edX repo, as described in OEP-2:
-# http://open-edx-proposals.readthedocs.io/en/latest/oeps/oep-0002.html#specification
+# https://github.com/edx/open-edx-proposals/blob/master/oeps/oep-0002-bp-repo-metadata.rst#specification
 
-nick: tmpa
-oeps: {}
-owner: edx/arch-team
+nick: support-tools
+owner:
+  type: team
+  team: edx/edx-aperture
+openedx-release:
+  ref: master
+tags:
+  - frontend-app
+oeps:
+  oep-2: True  # this spec
+  oep-16: True  # bootstrap
