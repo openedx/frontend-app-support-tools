@@ -1,28 +1,62 @@
 import React, {
-  useMemo, useState, useCallback, useRef, useLayoutEffect,
+  useMemo, useState, useCallback, useRef, useLayoutEffect, useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 
 import {
   Button, Collapsible, TransitionReplace,
 } from '@edx/paragon';
-import { getConfig } from '@edx/frontend-platform';
+import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
 import sort from './sort';
 import Table from '../Table';
+import CourseSummary from './CourseSummary';
+import { getCourseData } from './api';
+import UserMessagesContext from '../user-messages/UserMessagesContext';
 
 export default function Entitlements({
   data, changeHandler, user, expanded,
 }) {
+  const { add, clear } = useContext(UserMessagesContext);
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
   const [entitlementToReissue, setEntitlementToReissue] = useState(undefined);
+  const [courseSummaryUUID, setCourseSummaryUUID] = useState(null);
+  const [courseSummaryData, setCourseSummaryData] = useState(null);
+  const [courseSummaryErrors, setCourseSummaryErrors] = useState(false);
   const formRef = useRef(null);
+  const summaryRef = useRef(null);
 
   useLayoutEffect(() => {
-    if(formType != null) {
+    if (formType != null) {
       formRef.current.focus();
+    } else if (formType === null && (courseSummaryData != null || courseSummaryErrors)) {
+      summaryRef.current.focus();
+    }
+  });
+
+  function clearCourseSummary() {
+    clear('course-summary');
+    setCourseSummaryData(null);
+    setCourseSummaryUUID(null);
+    setCourseSummaryErrors(false);
+  }
+
+  const handleCourseSummaryDataGet = useCallback((courseUUID) => {
+    if (courseUUID !== null && courseUUID !== undefined) {
+      setCourseSummaryData(null);
+      getCourseData(courseUUID).then((result) => {
+        const camelResult = camelCaseObject(result);
+        clear('course-summary');
+        if (camelResult.errors) {
+          camelResult.errors.forEach(error => add(error));
+          setCourseSummaryErrors(true);
+        } else {
+          setCourseSummaryErrors(false);
+          setCourseSummaryData(camelResult);
+        }
+      });
     }
   });
 
@@ -31,8 +65,19 @@ export default function Entitlements({
       return [];
     }
     return data.results.map(result => ({
-      user: result.user,
-      courseUuid: result.courseUuid,
+      courseUuid: (
+        <Button
+          className="btn btn-link"
+          onClick={() => {
+            setFormType(null);
+            setEntitlementToReissue(undefined);
+            setCourseSummaryUUID(result.courseUuid);
+            handleCourseSummaryDataGet(result.courseUuid);
+          }}
+        >
+          {result.courseUuid}
+        </Button>
+      ),
       mode: result.mode,
       enrollment: result.enrollmentCourseRun ? (
         <a
@@ -60,6 +105,7 @@ export default function Entitlements({
           type="button"
           disabled={!result.enrollmentCourseRun}
           onClick={() => {
+            clearCourseSummary();
             setEntitlementToReissue(result);
             setFormType(REISSUE);
           }}
@@ -81,9 +127,6 @@ export default function Entitlements({
   });
 
   const columns = [
-    {
-      label: 'User', key: 'user', columnSortable: true, onSort: () => setSort('user'), width: 'col-3',
-    },
     {
       label: 'Course UUID', key: 'courseUuid', columnSortable: true, onSort: () => setSort('courseUuid'), width: 'col-3',
     },
@@ -121,6 +164,7 @@ export default function Entitlements({
           type="button"
           className="btn-outline-primary"
           onClick={() => {
+            clearCourseSummary();
             setEntitlementToReissue(undefined);
             setFormType(CREATE);
           }}
@@ -141,7 +185,21 @@ export default function Entitlements({
             closeHandler={() => setFormType(null)}
             forwardedRef={formRef}
           />
-        ) : (<React.Fragment key="nothing"></React.Fragment>)}
+        ) : (<React.Fragment key="nothing" />) }
+      </TransitionReplace>
+      <TransitionReplace>
+        {courseSummaryUUID !== null ? (
+          <CourseSummary
+            key="course-summary"
+            courseUUID={courseSummaryUUID}
+            clearHandler={() => {
+              clearCourseSummary();
+            }}
+            courseData={courseSummaryData}
+            errors={courseSummaryErrors}
+            forwardedRef={summaryRef}
+          />
+        ) : (<React.Fragment key="nothing" />) }
       </TransitionReplace>
       <Collapsible title={`Entitlements (${tableData.length})`} defaultOpen={expanded}>
         <Table

@@ -1,14 +1,13 @@
-import React, {
-  useCallback, useState, useContext, useEffect, useLayoutEffect
-} from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Input, InputSelect,
 } from '@edx/paragon';
+import classNames from 'classnames';
+
 import AlertList from '../user-messages/AlertList';
 import { postEnrollmentChange } from './api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
-import classNames from 'classnames';
 
 const getModes = function getModes(enrollment) {
   const modeList = [];
@@ -104,9 +103,9 @@ export default function EnrollmentForm({
         <div>
           <Button
             className={classNames(
-                "btn-primary mr-3",
-                {disabled : !reason}
-              )}
+              'btn-primary mr-3',
+              { disabled: !reason },
+            )}
             onClick={submit}
           >
             Submit
@@ -132,6 +131,7 @@ EnrollmentForm.propTypes = {
   user: PropTypes.string.isRequired,
   changeHandler: PropTypes.func.isRequired,
   closeHandler: PropTypes.func.isRequired,
+  forwardedRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 };
 
 EnrollmentForm.defaultProps = {
@@ -140,4 +140,5 @@ EnrollmentForm.defaultProps = {
     mode: '',
     isActive: false,
   },
+  forwardedRef: null,
 };

@@ -43,7 +43,7 @@ export default function UserPage({ match }) {
   }
 
   function isValidUsername(searchValue) {
-    return !!(searchValue && searchValue.match(USERNAME_REGEX))
+    return !!(searchValue && searchValue.match(USERNAME_REGEX));
   }
 
   const handleFetchSearchResults = useCallback((searchUsername) => {
@@ -69,7 +69,7 @@ export default function UserPage({ match }) {
   });
 
   const handleSearchInputChange = useCallback((searchValue) => {
-    if (!isValidUsername(searchValue) && !isEmail(searchValue)){
+    if (!isValidUsername(searchValue) && !isEmail(searchValue)) {
       clear('general');
       add({
         code: null,

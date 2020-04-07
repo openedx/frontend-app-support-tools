@@ -30,7 +30,7 @@ If you start Devstack with ``make dev.up`` that should give you everything you n
 
   ``npm start``
 
-The dev server is running at `http://localhost:8080 <http://localhost:8080>`_.
+The dev server is running at `http://localhost:18450 <http://localhost:18450>`_.
 
 Project Structure
 -----------------
