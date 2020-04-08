@@ -172,7 +172,7 @@ export async function getCourseData(courseUUID) {
   try {
     const { data } = await getAuthenticatedHttpClient()
       .get(
-        `${getConfig().DISCOVERY_BASE_URL}/api/v1/courses/${courseUUID}/`,
+        `${getConfig().DISCOVERY_API_BASE_URL}/api/v1/courses/${courseUUID}/`,
       );
     return data;
   } catch (error) {
