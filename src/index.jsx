@@ -40,8 +40,7 @@ subscribe(APP_READY, () => {
         <Header />
         <Switch>
           <Route exact path="/" render={supportLinks} />
-          <Route exact path="/users" component={UserPage} />
-          <Route path="/users/:username" component={UserPage} />
+          <Route path="/users" component={UserPage} />
         </Switch>
       </UserMessagesProvider>
     </AppProvider>,
