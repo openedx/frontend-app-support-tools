@@ -1,4 +1,4 @@
-import { getConfig } from '@edx/frontend-platform';
+import { getConfig, camelCaseObject } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
@@ -90,11 +90,52 @@ export async function getUserVerificationStatus(username) {
   }
 }
 
-export async function getAllUserData(userIdentifier) {
+export async function getRetirement(username) {
+  try {
+    let { data } = await getAuthenticatedHttpClient()
+      .get(
+        `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/retirement_information/`,
+      )
+
+    data = camelCaseObject(data)
+    const retirementRequestDate = new Date(data.retirementRequestDate);
+    let errorString = `User with username ${username} has been retired. The user requested retirement on ${retirementRequestDate}. `
+    
+    if (data.retirementDate) {
+      const retirementDate = new Date(data.retirementDate);
+      errorString = errorString.concat(`They were retired on ${date}`);
+    } else {
+      errorString = errorString.concat('Information about their retirement date is not available');
+    }
+    let error = {}
+    error.userError = {
+      code: null,
+      dismissible: true,
+      text: errorString,
+      type: 'error',
+      topic: 'general',
+    };
+    return error;
+  } catch(error) {
+    if (error.customAttributes.httpErrorStatus === 404) {
+      error.userError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the username "${username}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      return error;
+    }
+  }
+}
+
+export async function getAllUserData(username) {
   const errors = [];
   let user = null;
   let entitlements = [];
   let enrollments = [];
+  let retirement = null;
   let verificationStatus = null;
 
   try {
@@ -105,6 +146,39 @@ export async function getAllUserData(userIdentifier) {
     } else {
       throw error;
     }
+    // the user might be retired, so try getting the retirement information
+    // treat this information as an "error" so it ends up in the banner
+    retirement = await getRetirement(username)
+    errors.push(retirement.userError);
+  }
+  if (user !== null) {
+    entitlements = await getEntitlements(username);
+    enrollments = await getEnrollments(username);
+    verificationStatus = await getUserVerificationStatus(username);
+  }
+
+  return {
+    errors,
+    user,
+    entitlements,
+    enrollments,
+    verificationStatus,
+  };
+}
+
+export async function getAllUserDataByEmail(userEmail) {
+  const errors = [];
+  let user = null;
+  let entitlements = [];
+  let enrollments = [];
+  let verificationStatus = null;
+
+  try {
+    const users = await getUserByEmail(userEmail);
+    // The response should be an array of users - if it has an element, use it.
+    user = Array.isArray(users) && users.length > 0 ? users[0] : null;
+  } catch (error) {
+    errors.push(error.userError);
   }
   if (user !== null) {
     entitlements = await getEntitlements(user.username);
