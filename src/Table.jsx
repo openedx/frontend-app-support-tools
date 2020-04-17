@@ -131,13 +131,19 @@ export default class Table extends React.Component {
                   className: classNames(this.props.hasFixedColumnWidths ? width : null),
                   scope: (key === this.props.rowHeaderColumnKey) ? 'row' : null,
                 },
-                date && row[key] !== null ? moment(row[key]).format('lll') : row[key],
-              )
-            ))}
+                date ? this.getDate(row[key]) : row[key],
+              )))}
           </tr>
         ))}
       </tbody>
     );
+  }
+
+  getDate(value) {
+    if (value) {
+      return moment(value).format('lll');
+    }
+    return 'N/A';
   }
 
   render() {

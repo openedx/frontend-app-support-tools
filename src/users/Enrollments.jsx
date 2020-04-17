@@ -30,13 +30,11 @@ export default function Enrollments({
       courseId: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank">{result.courseId}</a>,
       courseStart: result.courseStart,
       courseEnd: result.courseEnd,
-      // Set upgrade deadline to null if it doesn't exist to work around https://github.com/moment/moment/issues/3180
-      upgradeDeadline: result.verifiedUpgradeDeadline || null,
+      upgradeDeadline: result.verifiedUpgradeDeadline,
       created: result.created,
       reason: result.manualEnrollment ? result.manualEnrollment.reason : '',
       lastModifiedBy: result.manualEnrollment ? result.manualEnrollment.enrolledBy : '',
-      // Set last modified to null if the timestamp doesn't exist to work around https://github.com/moment/moment/issues/3180
-      lastModified: result.manualEnrollment ? result.manualEnrollment.timeStamp || null : '',
+      lastModified: result.manualEnrollment ? result.manualEnrollment.timeStamp : '',
       active: result.isActive ? 'True' : 'False',
       mode: result.mode,
       actions: (
