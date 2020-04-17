@@ -1,6 +1,9 @@
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
+const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
+const USERNAME_REGEX = '^[\\w.@_+-]+$';
+
 export async function getEntitlements(username) {
   const { data } = await getAuthenticatedHttpClient().get(
     `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${username}`,
@@ -15,48 +18,23 @@ export async function getEnrollments(username) {
   return data;
 }
 
-export async function getUser(username) {
-  try {
-    const { data } = await getAuthenticatedHttpClient()
-      .get(
-        `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}`,
-      );
-    return data;
-  } catch (error) {
-    // We don't have good error handling in the app for any errors that may have come back
-    // from the API, so we log them to the console and tell the user to go look.  We would
-    // never do this in a customer-facing app.
-    // eslint-disable-next-line no-console
-    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
-    if (error.customAttributes.httpErrorStatus === 404) {
-      error.userError = {
-        code: null,
-        dismissible: true,
-        text: `We couldn't find a user with the username "${username}".`,
-        type: 'error',
-        topic: 'general',
-      };
-      throw error;
-    }
-
-    error.userError = {
-      code: null,
-      dismissible: true,
-      text: 'There was an error loading this user\'s data. Check the JavaScript console for detailed errors.',
-      type: 'danger',
-      topic: 'general',
-    };
-    throw error;
+export async function getUser(userIdentifier) {
+  let url = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
+  let notFoundErrorText = "We couldn't find a user with the ";
+  // I am avoiding an `else` case here because we have already validated the input
+  // to fall into one of these cases.
+  if (userIdentifier.match(EMAIL_REGEX)) {
+    url += `?email=${userIdentifier}`;
+    notFoundErrorText += `email "${userIdentifier}".`;
+  } else if (userIdentifier.match(USERNAME_REGEX)) {
+    url += `/${userIdentifier}`;
+    notFoundErrorText += `username "${userIdentifier}".`;
+  } else {
+    throw new Error('Invalid Argument!');
   }
-}
-
-export async function getUserByEmail(userEmail) {
   try {
-    const { data } = await getAuthenticatedHttpClient()
-      .get(
-        `${getConfig().LMS_BASE_URL}/api/user/v1/accounts?email=${userEmail}`,
-      );
-    return data;
+    const { data } = await getAuthenticatedHttpClient().get(url);
+    return Array.isArray(data) && data.length > 0 ? data[0] : data;
   } catch (error) {
     // We don't have good error handling in the app for any errors that may have come back
     // from the API, so we log them to the console and tell the user to go look.  We would
@@ -67,7 +45,7 @@ export async function getUserByEmail(userEmail) {
       error.userError = {
         code: null,
         dismissible: true,
-        text: `We couldn't find a user with the email "${userEmail}".`,
+        text: notFoundErrorText,
         type: 'error',
         topic: 'general',
       };
@@ -112,7 +90,7 @@ export async function getUserVerificationStatus(username) {
   }
 }
 
-export async function getAllUserData(username) {
+export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
   let entitlements = [];
@@ -120,38 +98,13 @@ export async function getAllUserData(username) {
   let verificationStatus = null;
 
   try {
-    user = await getUser(username);
+    user = await getUser(userIdentifier);
   } catch (error) {
-    errors.push(error.userError);
-  }
-  if (user !== null) {
-    entitlements = await getEntitlements(username);
-    enrollments = await getEnrollments(username);
-    verificationStatus = await getUserVerificationStatus(username);
-  }
-
-  return {
-    errors,
-    user,
-    entitlements,
-    enrollments,
-    verificationStatus,
-  };
-}
-
-export async function getAllUserDataByEmail(userEmail) {
-  const errors = [];
-  let user = null;
-  let entitlements = [];
-  let enrollments = [];
-  let verificationStatus = null;
-
-  try {
-    const users = await getUserByEmail(userEmail);
-    // The response should be an array of users - if it has an element, use it.
-    user = Array.isArray(users) && users.length > 0 ? users[0] : null;
-  } catch (error) {
-    errors.push(error.userError);
+    if (error.userError) {
+      errors.push(error.userError);
+    } else {
+      throw error;
+    }
   }
   if (user !== null) {
     entitlements = await getEntitlements(user.username);
