@@ -95,19 +95,19 @@ export async function getRetirement(username) {
     let { data } = await getAuthenticatedHttpClient()
       .get(
         `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/retirement_information/`,
-      )
+      );
 
-    data = camelCaseObject(data)
+    data = camelCaseObject(data);
     const retirementRequestDate = new Date(data.retirementRequestDate);
-    let errorString = `User with username ${username} has been retired. The user requested retirement on ${retirementRequestDate}. `
-    
+    let errorString = `User with username ${username} has been retired. The user requested retirement on ${retirementRequestDate}. `;
+
     if (data.retirementDate) {
       const retirementDate = new Date(data.retirementDate);
-      errorString = errorString.concat(`They were retired on ${date}`);
+      errorString = errorString.concat(`They were retired on ${retirementDate}`);
     } else {
       errorString = errorString.concat('Information about their retirement date is not available');
     }
-    let error = {}
+    const error = {};
     error.userError = {
       code: null,
       dismissible: true,
@@ -116,7 +116,7 @@ export async function getRetirement(username) {
       topic: 'general',
     };
     return error;
-  } catch(error) {
+  } catch (error) {
     if (error.customAttributes.httpErrorStatus === 404) {
       error.userError = {
         code: null,
@@ -143,14 +143,13 @@ export async function getAllUserData(userIdentifier) {
   } catch (error) {
     // the user might be retired, so try getting the retirement information
     // treat this information as an "error" so it ends up in the banner
-    retirement = await getRetirement(userIdentifier)
+    retirement = await getRetirement(userIdentifier);
     errors.push(retirement.userError);
     if (error.userError) {
       errors.push(error.userError);
     } else {
       throw error;
     }
-    
   }
   if (user !== null) {
     entitlements = await getEntitlements(user.username);
