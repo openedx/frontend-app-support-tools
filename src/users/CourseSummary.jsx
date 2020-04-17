@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import PageLoading from '../PageLoading';
 import Table from '../Table';
 import AlertList from '../user-messages/AlertList';
+import formatDate from '../dates/formatDate';
 
 export default function CourseSummary({
   courseData,
@@ -32,7 +32,7 @@ export default function CourseSummary({
             {
               courseRuns.map((item) => (
                 <li key={item.key}>
-                  {item.key} <b>Start:</b> {item.start ? moment(item.start).format('lll') : ''}, <b>End:</b> {item.end ? moment(item.end).format('lll') : ''}
+                  {item.key} <b>Start:</b> {formatDate(item.start)} <b>End:</b> {formatDate(item.end)}
                 </li>
               ))
             }
