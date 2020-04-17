@@ -41,7 +41,7 @@ export default function Header() {
       submenuContent: (
         <>
           <div className="mb-1"><a rel="noopener" href="https://docs.google.com/document/edit?hgd=1&id=17_FWEtnUXyeEMrj8Lu3kmXqopwHGUjKW2t61cek2ax0">Current Issues</a></div>
-          <div className="mb-1"><a rel="noopener" href="https://sites.google.com/a/edx.org/edx-support/-recent-updates">Support Site Recnet Updates</a></div>
+          <div className="mb-1"><a rel="noopener" href="https://sites.google.com/a/edx.org/edx-support/-recent-updates">Support Site Recent Updates</a></div>
         </>
       ),
     },
