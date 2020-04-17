@@ -304,7 +304,44 @@ export async function postEnrollmentChange({
         {
           code: null,
           dismissible: true,
-          text: 'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+          text: 'There was an error changing this enrollment. Check the JavaScript console for detailed errors.',
+          type: 'danger',
+          topic: 'enrollments',
+        },
+      ],
+    };
+  }
+}
+
+// TODO: Note that the API currently does not supporting creating an enrollment.
+// The API will need to be updated to support this
+export async function postEnrollmentCreation({
+  user, courseID, mode, reason,
+}) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      `${getConfig().LMS_BASE_URL}/support/enrollment/${user}`,
+      {
+        course_id: courseID,
+        mode,
+        reason,
+      },
+    );
+    return data;
+  } catch (error) {
+    if (error.customAttributes.httpErrorStatus === 400) {
+      // We don't have good error handling in the app for any errors that may have come back
+      // from the API, so we log them to the console and tell the user to go look.  We would
+      // never do this in a customer-facing app.
+      // eslint-disable-next-line no-console
+      console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    }
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error creating this enrollment. Check the JavaScript console for detailed errors.',
           type: 'danger',
           topic: 'enrollments',
         },

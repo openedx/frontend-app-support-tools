@@ -9,7 +9,7 @@ import React, {
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
-import EnrollmentForm from './EnrollmentForm';
+import EnrollmentForm, { CREATE, CHANGE } from './EnrollmentForm';
 import sort from './sort';
 import Table from '../Table';
 import formatDate from '../dates/formatDate';
@@ -70,7 +70,7 @@ export default function Enrollments({
             type="button"
             onClick={() => {
               setEnrollmentToChange(result);
-              setFormType('CHANGE');
+              setFormType(CHANGE);
             }}
             className="btn-outline-primary"
           >
@@ -136,7 +136,20 @@ export default function Enrollments({
   const tableDataSortable = [...tableData];
   return (
     <section className="mb-3">
-      <h3>Enrollments</h3>
+      <div className="d-flex flex-row justify-content-between mb-2">
+        <h3>Enrollments</h3>
+        {!formType && (
+          <Button
+            type="button"
+            className="btn-outline-primary"
+            onClick={() => {
+              setFormType(CREATE);
+            }}
+          >
+            Create New Enrollment
+          </Button>
+        )}
+      </div>
       <TransitionReplace>
         {formType != null ? (
           <EnrollmentForm
@@ -147,6 +160,7 @@ export default function Enrollments({
             changeHandler={changeHandler}
             closeHandler={() => setFormType(null)}
             forwardedRef={formRef}
+            formType={formType}
           />
         ) : (<React.Fragment key="nothing" />) }
       </TransitionReplace>
