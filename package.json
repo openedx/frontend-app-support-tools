@@ -29,7 +29,6 @@
     "url": "https://github.com/edx/frontend-app-support/issues"
   },
   "dependencies": {
-    "@edx/frontend-component-header-edx": "^3.0.8",
     "@edx/frontend-platform": "^1.3.3",
     "@edx/paragon": "7.2.0",
     "@fortawesome/fontawesome-svg-core": "1.2.27",
@@ -44,8 +43,10 @@
     "react": "16.12.0",
     "react-dom": "16.12.0",
     "react-redux": "7.1.3",
+    "react-responsive": "^8.0.3",
     "react-router": "5.1.2",
     "react-router-dom": "5.1.2",
+    "react-transition-group": "^4.3.0",
     "redux": "4.0.5"
   },
   "devDependencies": {

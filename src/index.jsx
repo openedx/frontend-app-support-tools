@@ -8,8 +8,8 @@ import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route, Link } from 'react-router-dom';
-import Header, { messages as headerMessages } from '@edx/frontend-component-header-edx';
 
+import Header from './support-header';
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
 import UserMessagesProvider from './user-messages/UserMessagesProvider';
@@ -57,6 +57,5 @@ initialize({
   requireAuthenticatedUser: true,
   messages: [
     appMessages,
-    headerMessages,
   ],
 });
