@@ -130,7 +130,7 @@ export async function getRetirement(username) {
   }
 }
 
-export async function getAllUserData(username) {
+export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
   let entitlements = [];
@@ -141,44 +141,16 @@ export async function getAllUserData(username) {
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
+    // the user might be retired, so try getting the retirement information
+    // treat this information as an "error" so it ends up in the banner
+    retirement = await getRetirement(userIdentifier)
+    errors.push(retirement.userError);
     if (error.userError) {
       errors.push(error.userError);
     } else {
       throw error;
     }
-    // the user might be retired, so try getting the retirement information
-    // treat this information as an "error" so it ends up in the banner
-    retirement = await getRetirement(username)
-    errors.push(retirement.userError);
-  }
-  if (user !== null) {
-    entitlements = await getEntitlements(username);
-    enrollments = await getEnrollments(username);
-    verificationStatus = await getUserVerificationStatus(username);
-  }
-
-  return {
-    errors,
-    user,
-    entitlements,
-    enrollments,
-    verificationStatus,
-  };
-}
-
-export async function getAllUserDataByEmail(userEmail) {
-  const errors = [];
-  let user = null;
-  let entitlements = [];
-  let enrollments = [];
-  let verificationStatus = null;
-
-  try {
-    const users = await getUserByEmail(userEmail);
-    // The response should be an array of users - if it has an element, use it.
-    user = Array.isArray(users) && users.length > 0 ? users[0] : null;
-  } catch (error) {
-    errors.push(error.userError);
+    
   }
   if (user !== null) {
     entitlements = await getEntitlements(user.username);
