@@ -151,6 +151,7 @@ class Menu extends React.Component {
     // Any extra props are attributes for the menu
     const attributes = {};
     Object.keys(this.props)
+      // eslint-disable-next-line react/forbid-foreign-prop-types
       .filter(property => Menu.propTypes[property] === undefined)
       .forEach((property) => {
         attributes[property] = this.props[property];
