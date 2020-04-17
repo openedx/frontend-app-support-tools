@@ -37,17 +37,25 @@ export default function UserPage({ location }) {
     return !!(searchValue && searchValue.match(USERNAME_REGEX));
   }
 
-  function processSearchResult(searchValue, result) {
-    if (isEmail(searchValue)) {
-      history.replace(`/users/?email=${searchValue}`);
-    } else if (isValidUsername(searchValue)) {
-      history.replace(`/users/?username=${searchValue}`);
+  function pushHistoryIfChanged(nextUrl) {
+    if (nextUrl !== location.pathname + location.search) {
+      history.push(nextUrl);
     }
+  }
 
+  function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach(error => add(error));
-      history.replace('/users/');
+      history.replace('/users');
+      document.title = 'Support Tools | edX';
+    } else if (isEmail(searchValue)) {
+      pushHistoryIfChanged(`/users/?email=${searchValue}`);
+      document.title = `Support Tools | edX | ${searchValue}`;
+    } else if (isValidUsername(searchValue)) {
+      pushHistoryIfChanged(`/users/?username=${searchValue}`);
+      document.title = `Support Tools | edX | ${searchValue}`;
     }
+
     setLoading(false);
     setSearching(false);
   }
@@ -62,7 +70,7 @@ export default function UserPage({ location }) {
         type: 'error',
         topic: 'general',
       });
-      history.replace('/users/');
+      history.replace('/users');
       return false;
     }
     return true;
@@ -83,7 +91,7 @@ export default function UserPage({ location }) {
     // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
-      history.replace('/users/');
+      history.replace('/users');
       setLoading(false);
       setSearching(false);
     }
@@ -114,13 +122,23 @@ export default function UserPage({ location }) {
     }
   }, [userIdentifier]);
 
+  useEffect(() => {
+    if (params.get('username') && params.get('username') !== userIdentifier) {
+      handleFetchSearchResults(params.get('username'));
+    } else if (params.get('email') && params.get('email') !== userIdentifier) {
+      handleFetchSearchResults(params.get('email'));
+    }
+  }, [params.get('username'), params.get('email')]);
+
   return (
     <main className="container-fluid mt-3 mb-5">
       <section className="mb-3">
         <Link to="/">&lt; Back to Tools</Link>
       </section>
       <AlertList topic="general" className="mb-3" />
-      <UserSearch userIdentifier={userIdentifier} searchHandler={handleSearchInputChange} />
+      {/* NOTE: the "key" here causes the UserSearch component to re-render completely when the
+      user identifier changes.  Doing so clears out the search box. */}
+      <UserSearch key={userIdentifier} userIdentifier={userIdentifier} searchHandler={handleSearchInputChange} />
       {loading && (
         <PageLoading
           srMessage="Loading"
