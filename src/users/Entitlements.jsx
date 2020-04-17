@@ -13,6 +13,7 @@ import Table from '../Table';
 import CourseSummary from './CourseSummary';
 import { getCourseData } from './api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
+import formatDate from '../dates/formatDate';
 
 export default function Entitlements({
   data, changeHandler, user, expanded,
@@ -65,55 +66,78 @@ export default function Entitlements({
       return [];
     }
     return data.results.map(result => ({
-      courseUuid: (
-        <Button
-          className="btn btn-link"
-          onClick={() => {
-            setFormType(null);
-            setEntitlementToReissue(undefined);
-            setCourseSummaryUUID(result.courseUuid);
-            handleCourseSummaryDataGet(result.courseUuid);
-          }}
-        >
-          {result.courseUuid}
-        </Button>
-      ),
-      mode: result.mode,
-      enrollment: result.enrollmentCourseRun ? (
-        <a
-          href={`${getConfig().LMS_BASE_URL}/courses/${result.enrollmentCourseRun}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {result.enrollmentCourseRun}
-        </a>
-      ) : 'Course Run Not Selected',
-      expiredAt: result.expiredAt,
-      created: result.created,
-      modified: result.modified,
-      orderNumber: (
-        <a
-          href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${result.orderNumber}/`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {result.orderNumber}
-        </a>
-      ),
-      actions: (
-        <Button
-          type="button"
-          disabled={!result.enrollmentCourseRun}
-          onClick={() => {
-            clearCourseSummary();
-            setEntitlementToReissue(result);
-            setFormType(REISSUE);
-          }}
-          className="btn-outline-primary"
-        >
-          Reissue
-        </Button>
-      ),
+      courseUuid: {
+        displayValue: (
+          <Button
+            className="btn btn-link"
+            onClick={() => {
+              setFormType(null);
+              setEntitlementToReissue(undefined);
+              setCourseSummaryUUID(result.courseUuid);
+              handleCourseSummaryDataGet(result.courseUuid);
+            }}
+          >
+            {result.courseUuid}
+          </Button>
+        ),
+        value: result.courseUuid,
+      },
+      mode: {
+        value: result.mode,
+      },
+      enrollment: {
+        displayValue: (result.enrollmentCourseRun ? (
+          <a
+            href={`${getConfig().LMS_BASE_URL}/courses/${result.enrollmentCourseRun}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {result.enrollmentCourseRun}
+          </a>
+        ) : 'Course Run Not Selected'),
+        value: result.enrollmentCourseRun,
+      },
+      expiredAt: {
+        displayValue: formatDate(result.expiredAt),
+        value: result.expiredAt,
+      },
+      created: {
+        displayValue: formatDate(result.created),
+        value: result.created,
+      },
+      modified: {
+        displayValue: formatDate(result.modified),
+        value: result.modified,
+      },
+      orderNumber: {
+        displayValue: (
+          <a
+            href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${result.orderNumber}/`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {result.orderNumber}
+          </a>
+        ),
+        value: result.orderNumber,
+      },
+      actions: {
+        displayValue: (
+          <Button
+            type="button"
+            disabled={!result.enrollmentCourseRun}
+            onClick={() => {
+              clearCourseSummary();
+              setEntitlementToReissue(result);
+              setFormType(REISSUE);
+            }}
+            className="btn-outline-primary"
+          >
+            Reissue
+          </Button>
+        ),
+        value: 'Resissue',
+      },
     }));
   }, [data]);
 
@@ -137,13 +161,13 @@ export default function Entitlements({
       label: 'Enrollment', key: 'enrollment', columnSortable: true, onSort: () => setSort('enrollment'), width: 'col-3',
     },
     {
-      label: 'Expired At', date: true, key: 'expiredAt', columnSortable: true, onSort: () => setSort('expiredAt'), width: 'col-3',
+      label: 'Expired At', key: 'expiredAt', columnSortable: true, onSort: () => setSort('expiredAt'), width: 'col-3',
     },
     {
-      label: 'Created', date: true, key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
+      label: 'Created', key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
     },
     {
-      label: 'Modified', date: true, key: 'modified', columnSortable: true, onSort: () => setSort('modified'), width: 'col-3',
+      label: 'Modified', key: 'modified', columnSortable: true, onSort: () => setSort('modified'), width: 'col-3',
     },
     {
       label: 'Order', key: 'orderNumber', columnSortable: true, onSort: () => setSort('orderNumber'), width: 'col-3',

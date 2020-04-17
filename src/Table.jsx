@@ -2,7 +2,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { Button } from '@edx/paragon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
@@ -123,7 +122,7 @@ export default class Table extends React.Component {
         {this.props.data.map((row, i) => (
           // eslint-disable-next-line react/no-array-index-key
           <tr key={i} className={classNames({ 'd-flex': this.props.hasFixedColumnWidths })}>
-            {this.props.columns.map(({ key, date, width }) => (
+            {this.props.columns.map(({ key, width }) => (
               React.createElement(
                 (key === this.props.rowHeaderColumnKey) ? 'th' : 'td',
                 {
@@ -131,7 +130,7 @@ export default class Table extends React.Component {
                   className: classNames(this.props.hasFixedColumnWidths ? width : null),
                   scope: (key === this.props.rowHeaderColumnKey) ? 'row' : null,
                 },
-                date && row[key] !== null ? moment(row[key]).format('lll') : row[key],
+                this.getDisplayValue(row[key]),
               )
             ))}
           </tr>
@@ -139,6 +138,20 @@ export default class Table extends React.Component {
       </tbody>
     );
   }
+
+  /*
+  *  If the element is a non null object, returns the display value for renderinng associated with
+  *  it if it has one, falling back on the internal value.
+  *  In all other cases, just renders the element as is.
+  */
+  getDisplayValue(element) {
+    if (typeof element === 'object' && element !== null) {
+      const { displayValue, value } = element;
+      return displayValue || value;
+    }
+    return element;
+  }
+
 
   render() {
     return (

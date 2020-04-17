@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import Table from '../Table';
+import formatDate from '../dates/formatDate';
 
 export default function UserSummary({ userData, verificationData }) {
   const userAccountData = [
@@ -28,7 +28,7 @@ export default function UserSummary({ userData, verificationData }) {
     },
     {
       dataName: 'Join Date/Time',
-      dataValue: moment(userData.dateJoined).format('lll'),
+      dataValue: formatDate(userData.dateJoined),
     },
 
   ];
@@ -51,9 +51,7 @@ export default function UserSummary({ userData, verificationData }) {
     },
     {
       dataName: 'Expiration Date',
-      dataValue: verificationData.expirationDatetime ? moment(
-        verificationData.expirationDatetime,
-      ).format('lll') : 'Not Available',
+      dataValue: formatDate(verificationData.expirationDatetime),
     },
     {
       dataName: 'Verified',

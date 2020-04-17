@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import EnrollmentForm from './EnrollmentForm';
 import sort from './sort';
 import Table from '../Table';
+import formatDate from '../dates/formatDate';
 
 export default function Enrollments({
   data, changeHandler, user, expanded,
@@ -27,28 +28,57 @@ export default function Enrollments({
       return [];
     }
     return data.map(result => ({
-      courseId: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank">{result.courseId}</a>,
-      courseStart: result.courseStart,
-      courseEnd: result.courseEnd,
-      upgradeDeadline: result.verifiedUpgradeDeadline,
-      created: result.created,
-      reason: result.manualEnrollment ? result.manualEnrollment.reason : '',
-      lastModifiedBy: result.manualEnrollment ? result.manualEnrollment.enrolledBy : '',
-      lastModified: result.manualEnrollment ? result.manualEnrollment.timeStamp : '',
-      active: result.isActive ? 'True' : 'False',
-      mode: result.mode,
-      actions: (
-        <Button
-          type="button"
-          onClick={() => {
-            setEnrollmentToChange(result);
-            setFormType('CHANGE');
-          }}
-          className="btn-outline-primary"
-        >
-          Change
-        </Button>
-      ),
+      courseId: {
+        displayValue: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank">{result.courseId}</a>,
+        value: result.courseId,
+      },
+      courseStart: {
+        displayValue: formatDate(result.courseStart),
+        value: result.courseStart,
+      },
+      courseEnd: {
+        displayValue: formatDate(result.courseEnd),
+        value: result.courseEnd,
+      },
+      upgradeDeadline: {
+        displayValue: formatDate(result.upgradeDeadline),
+        value: result.verifiedUpgradeDeadline,
+      },
+      created: {
+        displayValue: formatDate(result.created),
+        value: result.created,
+      },
+      reason: {
+        value: result.manualEnrollment ? result.manualEnrollment.reason : '',
+      },
+      lastModifiedBy: {
+        value: result.manualEnrollment ? result.manualEnrollment.enrolledBy : '',
+      },
+      lastModified: {
+        displayValue: result.manualEnrollment ? formatDate(result.manualEnrollment.timestamp) : '',
+        value: result.manualEnrollment ? result.manualEnrollment.timestamp : '',
+      },
+      active: {
+        value: result.isActive ? 'True' : 'False',
+      },
+      mode: {
+        value: result.mode,
+      },
+      actions: {
+        displayValue: (
+          <Button
+            type="button"
+            onClick={() => {
+              setEnrollmentToChange(result);
+              setFormType('CHANGE');
+            }}
+            className="btn-outline-primary"
+          >
+            Change
+          </Button>
+        ),
+        value: 'Change',
+      },
     }));
   }, [data]);
 
@@ -72,16 +102,16 @@ export default function Enrollments({
       label: 'Course Run ID', key: 'courseId', columnSortable: true, onSort: () => setSort('courseId'), width: 'col-3',
     },
     {
-      label: 'Course Start', date: true, key: 'courseStart', columnSortable: true, onSort: () => setSort('courseStart'), width: 'col-3',
+      label: 'Course Start', key: 'courseStart', columnSortable: true, onSort: () => setSort('courseStart'), width: 'col-3',
     },
     {
-      label: 'Course End', date: true, key: 'courseEnd', columnSortable: true, onSort: () => setSort('courseEnd'), width: 'col-3',
+      label: 'Course End', key: 'courseEnd', columnSortable: true, onSort: () => setSort('courseEnd'), width: 'col-3',
     },
     {
-      label: 'Upgrade Deadline', date: true, key: 'upgradeDeadline', columnSortable: true, onSort: () => setSort('upgradeDeadline'), width: 'col-3',
+      label: 'Upgrade Deadline', key: 'upgradeDeadline', columnSortable: true, onSort: () => setSort('upgradeDeadline'), width: 'col-3',
     },
     {
-      label: 'Enrollment Date', date: true, key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
+      label: 'Enrollment Date', key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
     },
     {
       label: 'Reason', key: 'reason', columnSortable: true, onSort: () => setSort('reason'), width: 'col-3',
@@ -90,7 +120,7 @@ export default function Enrollments({
       label: 'Last Modified By', key: 'lastModifiedBy', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
     },
     {
-      label: 'Last Modified', date: true, key: 'lastModified', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
+      label: 'Last Modified', key: 'lastModified', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
     },
     {
       label: 'Mode', key: 'mode', columnSortable: true, onSort: () => setSort('mode'), width: 'col-3',
