@@ -41,7 +41,7 @@ export default function Enrollments({
         value: result.courseEnd,
       },
       upgradeDeadline: {
-        displayValue: formatDate(result.upgradeDeadline),
+        displayValue: formatDate(result.verifiedUpgradeDeadline),
         value: result.verifiedUpgradeDeadline,
       },
       created: {
