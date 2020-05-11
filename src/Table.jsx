@@ -140,7 +140,7 @@ export default class Table extends React.Component {
   }
 
   /*
-  *  If the element is a non null object, returns the display value for renderinng associated with
+  *  If the element is a non null object, returns the display value for rendering associated with
   *  it if it has one, falling back on the internal value.
   *  In all other cases, just renders the element as is.
   */
