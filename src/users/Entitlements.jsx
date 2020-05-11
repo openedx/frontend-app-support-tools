@@ -182,7 +182,6 @@ export default function Entitlements({
   return (
     <section className="mb-3">
       <div className="d-flex flex-row justify-content-between mb-2">
-        <h3>Entitlements</h3>
         {!formType && (
         <Button
           type="button"

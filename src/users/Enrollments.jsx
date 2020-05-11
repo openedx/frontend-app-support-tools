@@ -136,7 +136,6 @@ export default function Enrollments({
   const tableDataSortable = [...tableData];
   return (
     <section className="mb-3">
-      <h3>Enrollments</h3>
       <TransitionReplace>
         {formType != null ? (
           <EnrollmentForm
