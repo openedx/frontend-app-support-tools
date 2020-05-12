@@ -62,7 +62,6 @@ export default function UserSummary({ userData, verificationData }) {
 
   return (
     <section className="mb-3">
-      <h3>User Summary</h3>
       <div className="d-flex flex-row ">
         <div className="flex-column p-4 m-3 card">
           <h4>Account</h4>
