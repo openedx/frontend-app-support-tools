@@ -14,7 +14,10 @@ const getModes = function getModes(enrollment) {
   enrollment.courseModes.map(mode => (
     modeList.push(mode.slug)
   ));
-  return modeList;
+  if (!modeList.some(mode => mode === enrollment.mode)) {
+    modeList.push(enrollment.mode);
+  }
+  return modeList.sort();
 };
 
 export default function EnrollmentForm({
