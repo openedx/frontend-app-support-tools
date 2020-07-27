@@ -18,6 +18,20 @@ export async function getEnrollments(username) {
   return data;
 }
 
+export async function getSsoRecords(username) {
+  const { data } = await getAuthenticatedHttpClient().get(
+    `${getConfig().LMS_BASE_URL}/support/sso_records/${username}`,
+  );
+  let parsedData = [];
+  if (data.length > 0) {
+    parsedData = data.map(entry => ({
+      ...entry,
+      extraData: JSON.parse(entry.extraData),
+    }));
+  }
+  return parsedData;
+}
+
 export async function getUser(userIdentifier) {
   let url = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
   let notFoundErrorText = "We couldn't find a user with the ";
@@ -96,6 +110,7 @@ export async function getAllUserData(userIdentifier) {
   let entitlements = [];
   let enrollments = [];
   let verificationStatus = null;
+  let ssoRecords = null;
 
   try {
     user = await getUser(userIdentifier);
@@ -110,6 +125,7 @@ export async function getAllUserData(userIdentifier) {
     entitlements = await getEntitlements(user.username);
     enrollments = await getEnrollments(user.username);
     verificationStatus = await getUserVerificationStatus(user.username);
+    ssoRecords = await getSsoRecords(user.username);
   }
 
   return {
@@ -118,6 +134,7 @@ export async function getAllUserData(userIdentifier) {
     entitlements,
     enrollments,
     verificationStatus,
+    ssoRecords,
   };
 }
 

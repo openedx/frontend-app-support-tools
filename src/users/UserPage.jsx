@@ -146,7 +146,11 @@ export default function UserPage({ location }) {
       )}
       {!loading && data.user && data.user.username && (
         <>
-          <UserSummary userData={data.user} verificationData={data.verificationStatus} />
+          <UserSummary
+            userData={data.user}
+            verificationData={data.verificationStatus}
+            ssoRecords={data.ssoRecords}
+          />
           <Entitlements
             user={data.user.username}
             data={data.entitlements}
