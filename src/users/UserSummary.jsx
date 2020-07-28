@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Modal, Button } from '@edx/paragon';
 
 import Table from '../Table';
 import formatDate from '../dates/formatDate';
 
-export default function UserSummary({ userData, verificationData }) {
+export default function UserSummary({
+  userData,
+  verificationData,
+  ssoRecords,
+}) {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [extraDataTitle, setExtraDataTitle] = useState('');
+  const [ssoExtraData, setSsoExtraData] = useState([]);
+
   const userAccountData = [
     {
       dataName: 'Full Name',
@@ -30,7 +39,6 @@ export default function UserSummary({ userData, verificationData }) {
       dataName: 'Join Date/Time',
       dataValue: formatDate(userData.dateJoined),
     },
-
   ];
 
   const columns = [
@@ -57,8 +65,54 @@ export default function UserSummary({ userData, verificationData }) {
       dataName: 'Verified',
       dataValue: verificationData.isVerified ? 'Yes' : 'No',
     },
-
   ];
+
+  const ssoColumns = [
+    {
+      label: 'Provider',
+      key: 'provider',
+    },
+    {
+      label: 'UID',
+      key: 'uid',
+    },
+    {
+      label: 'Modified',
+      key: 'modified',
+    },
+    {
+      label: 'Extra Data',
+      key: 'extra',
+    },
+  ];
+
+  // Modal to display extra data for SSO records
+  const openModal = (title, data) => {
+    const tableData = Object.entries(data).map(([key, value]) => ({
+      dataName: key,
+      dataValue: value,
+    }));
+    setSsoExtraData(tableData);
+    setExtraDataTitle(title);
+    setModalIsOpen(true);
+  };
+
+  const ssoData = ssoRecords.map(result => ({
+    provider: result.provider,
+    uid: result.uid,
+    modified: formatDate(result.modified),
+    extra: {
+      displayValue: Object.keys(result.extraData).length > 0 ? (
+        <Button
+          className="btn-link px-0"
+          onClick={() => openModal(result.provider, result.extraData)}
+        >
+          Show
+        </Button>
+      ) : 'N/A',
+      value: result.extraData,
+    },
+  }));
 
   return (
     <section className="mb-3">
@@ -77,6 +131,24 @@ export default function UserSummary({ userData, verificationData }) {
             columns={columns}
           />
         </div>
+        <div className="flex-column p-4 m-3 card">
+          <h4>SSO Records</h4>
+          <Table
+            data={ssoData}
+            columns={ssoColumns}
+          />
+        </div>
+        <Modal
+          open={modalIsOpen}
+          onClose={() => setModalIsOpen(false)}
+          title={extraDataTitle}
+          body={(
+            <Table
+              data={ssoExtraData}
+              columns={columns}
+            />
+          )}
+        />
       </div>
     </section>
   );
@@ -96,9 +168,11 @@ UserSummary.propTypes = {
     expirationDatetime: PropTypes.string,
     isVerified: PropTypes.bool,
   }),
+  ssoRecords: PropTypes.shape([]),
 };
 
 UserSummary.defaultProps = {
   userData: null,
   verificationData: null,
+  ssoRecords: [],
 };
