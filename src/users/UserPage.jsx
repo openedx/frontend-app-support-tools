@@ -104,6 +104,11 @@ export default function UserPage({ location }) {
     handleFetchSearchResults(searchValue);
   });
 
+  const handleUserSummaryChange = useCallback(() => {
+    setSearching(true);
+    handleFetchSearchResults(userIdentifier);
+  });
+
   const handleEntitlementsChange = useCallback(() => {
     setShowEntitlements(true);
     setShowEnrollments(false);
@@ -150,6 +155,7 @@ export default function UserPage({ location }) {
             userData={data.user}
             verificationData={data.verificationStatus}
             ssoRecords={data.ssoRecords}
+            changeHandler={handleUserSummaryChange}
           />
           <Entitlements
             user={data.user.username}

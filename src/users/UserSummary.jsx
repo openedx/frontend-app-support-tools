@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button } from '@edx/paragon';
 
+import { postTogglePasswordStatus } from './api';
 import Table from '../Table';
 import formatDate from '../dates/formatDate';
 
@@ -9,10 +10,21 @@ export default function UserSummary({
   userData,
   verificationData,
   ssoRecords,
+  changeHandler,
 }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [extraDataTitle, setExtraDataTitle] = useState('');
   const [ssoExtraData, setSsoExtraData] = useState([]);
+
+  const PASSWORD_STATUS = {
+    USABLE: 'Usable',
+    UNUSABLE: 'Unusable',
+  };
+
+  const togglePasswordStatus = () => {
+    postTogglePasswordStatus(userData.username);
+    changeHandler();
+  };
 
   const userAccountData = [
     {
@@ -38,6 +50,10 @@ export default function UserSummary({
     {
       dataName: 'Join Date/Time',
       dataValue: formatDate(userData.dateJoined),
+    },
+    {
+      dataName: 'Password Status',
+      dataValue: userData.passwordStatus,
     },
   ];
 
@@ -116,27 +132,35 @@ export default function UserSummary({
 
   return (
     <section className="mb-3">
-      <div className="d-flex flex-row ">
+      <div className="d-flex flex-row flex-wrap">
         <div className="flex-column p-4 m-3 card">
           <h4>Account</h4>
           <Table
             data={userAccountData}
             columns={columns}
           />
+          <Button
+            className={`${userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'btn-outline-danger' : 'btn-outline-primary'} toggle-password`}
+            onClick={togglePasswordStatus}
+          >
+            {userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
+          </Button>
         </div>
-        <div className="flex-column p-4 m-3 card">
-          <h4>ID Verification Status</h4>
-          <Table
-            data={userIDVerificationData}
-            columns={columns}
-          />
-        </div>
-        <div className="flex-column p-4 m-3 card">
-          <h4>SSO Records</h4>
-          <Table
-            data={ssoData}
-            columns={ssoColumns}
-          />
+        <div className="flex-column">
+          <div className="flex-column p-4 m-3 card">
+            <h4>ID Verification Status</h4>
+            <Table
+              data={userIDVerificationData}
+              columns={columns}
+            />
+          </div>
+          <div className="flex-column p-4 m-3 card">
+            <h4>SSO Records</h4>
+            <Table
+              data={ssoData}
+              columns={ssoColumns}
+            />
+          </div>
         </div>
         <Modal
           open={modalIsOpen}
@@ -162,6 +186,7 @@ UserSummary.propTypes = {
     isActive: PropTypes.bool,
     country: PropTypes.string,
     dateJoined: PropTypes.string,
+    passwordStatus: PropTypes.string,
   }),
   verificationData: PropTypes.shape({
     status: PropTypes.string,
@@ -169,6 +194,7 @@ UserSummary.propTypes = {
     isVerified: PropTypes.bool,
   }),
   ssoRecords: PropTypes.shape([]),
+  changeHandler: PropTypes.func.isRequired,
 };
 
 UserSummary.defaultProps = {

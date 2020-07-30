@@ -104,6 +104,13 @@ export async function getUserVerificationStatus(username) {
   }
 }
 
+export async function getUserPasswordStatus(userIdentifier) {
+  const { data } = await getAuthenticatedHttpClient().get(
+    `${getConfig().LMS_BASE_URL}/support/manage_user/${userIdentifier}`,
+  );
+  return data.status;
+}
+
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
@@ -126,6 +133,7 @@ export async function getAllUserData(userIdentifier) {
     enrollments = await getEnrollments(user.username);
     verificationStatus = await getUserVerificationStatus(user.username);
     ssoRecords = await getSsoRecords(user.username);
+    user.passwordStatus = await getUserPasswordStatus(user.username);
   }
 
   return {
@@ -281,4 +289,11 @@ export async function postEnrollmentChange({
       ],
     };
   }
+}
+
+export async function postTogglePasswordStatus(user) {
+  const { data } = await getAuthenticatedHttpClient().post(
+    `${getConfig().LMS_BASE_URL}/support/manage_user/${user}`,
+  );
+  return data;
 }
