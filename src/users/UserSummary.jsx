@@ -15,6 +15,8 @@ export default function UserSummary({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [extraDataTitle, setExtraDataTitle] = useState('');
   const [ssoExtraData, setSsoExtraData] = useState([]);
+  const userToggleVisible = false;
+  // TO-DO: Only expose "Disable/Enable User" for specific roles
 
   const PASSWORD_STATUS = {
     USABLE: 'Usable',
@@ -139,12 +141,14 @@ export default function UserSummary({
             data={userAccountData}
             columns={columns}
           />
-          <Button
-            className={`${userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'btn-outline-danger' : 'btn-outline-primary'} toggle-password`}
-            onClick={togglePasswordStatus}
-          >
-            {userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
-          </Button>
+          {userToggleVisible && (
+            <Button
+              className={`${userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'btn-outline-danger' : 'btn-outline-primary'} toggle-password`}
+              onClick={togglePasswordStatus}
+            >
+              {userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
+            </Button>
+          )}
         </div>
         <div className="flex-column">
           <div className="flex-column p-4 m-3 card">
