@@ -2,9 +2,6 @@
 # https://github.com/edx/open-edx-proposals/blob/master/oeps/oep-0002-bp-repo-metadata.rst#specification
 
 nick: support-tools
-owner:
-  type: team
-  team: edx/edx-aperture
 openedx-release:
   ref: master
 tags:
