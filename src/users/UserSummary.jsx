@@ -12,9 +12,12 @@ export default function UserSummary({
   ssoRecords,
   changeHandler,
 }) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [extraDataTitle, setExtraDataTitle] = useState('');
+  const [ssoModalIsOpen, setSsoModalIsOpen] = useState(false);
+  const [idvModalIsOpen, setIdvModalIsOpen] = useState(false);
+  const [extraSsoDataTitle, setSsoExtraDataTitle] = useState('');
+  const [detailIdvDataTitle, setDetailIdvDataTitle] = useState('');
   const [ssoExtraData, setSsoExtraData] = useState([]);
+  const [detailIdvData, setDetailIdvData] = useState([]);
   const userToggleVisible = false;
   // TO-DO: Only expose "Disable/Enable User" for specific roles
 
@@ -70,18 +73,41 @@ export default function UserSummary({
     },
   ];
 
-  const userIDVerificationData = [
+  const idvColumns = [
     {
-      dataName: 'Status',
-      dataValue: verificationData.status,
+      label: 'Status',
+      key: 'status',
     },
     {
-      dataName: 'Expiration Date',
-      dataValue: formatDate(verificationData.expirationDatetime),
+      label: 'Expiration Date',
+      key: 'expirationDatetime',
     },
     {
-      dataName: 'Verified',
-      dataValue: verificationData.isVerified ? 'Yes' : 'No',
+      label: 'Is Verified',
+      key: 'isVerified',
+    },
+    {
+      label: 'Details',
+      key: 'extra',
+    },
+  ];
+
+  const idvDetailsColumns = [
+    {
+      label: 'Type',
+      key: 'type',
+    },
+    {
+      label: 'Status',
+      key: 'status',
+    },
+    {
+      label: 'Expiration Date',
+      key: 'expirationDatetime',
+    },
+    {
+      label: 'Message',
+      key: 'message',
     },
   ];
 
@@ -105,14 +131,14 @@ export default function UserSummary({
   ];
 
   // Modal to display extra data for SSO records
-  const openModal = (title, data) => {
+  const openSSOModal = (title, data) => {
     const tableData = Object.entries(data).map(([key, value]) => ({
       dataName: key,
       dataValue: value,
     }));
     setSsoExtraData(tableData);
-    setExtraDataTitle(title);
-    setModalIsOpen(true);
+    setSsoExtraDataTitle(title);
+    setSsoModalIsOpen(true);
   };
 
   const ssoData = ssoRecords.map(result => ({
@@ -123,7 +149,31 @@ export default function UserSummary({
       displayValue: Object.keys(result.extraData).length > 0 ? (
         <Button
           className="btn-link px-0"
-          onClick={() => openModal(result.provider, result.extraData)}
+          onClick={() => openSSOModal(result.provider, result.extraData)}
+        >
+          Show
+        </Button>
+      ) : 'N/A',
+      value: result.extraData,
+    },
+  }));
+
+  // Modal to display extra data for Idv records
+  const openIDVModal = (title, data) => {
+    setDetailIdvData(data);
+    setDetailIdvDataTitle(title);
+    setIdvModalIsOpen(true);
+  };
+
+  const IdvData = [verificationData].map(result => ({
+    status: result.status,
+    isVerified: result.isVerified.toString(),
+    expirationDatetime: formatDate(result.expirationDatetime),
+    extra: {
+      displayValue: result.extraData.length > 0 ? (
+        <Button
+          className="btn-link px-0"
+          onClick={() => openIDVModal('ID Verification Details', result.extraData)}
         >
           Show
         </Button>
@@ -154,8 +204,8 @@ export default function UserSummary({
           <div className="flex-column p-4 m-3 card">
             <h4>ID Verification Status</h4>
             <Table
-              data={userIDVerificationData}
-              columns={columns}
+              data={IdvData}
+              columns={idvColumns}
             />
           </div>
           <div className="flex-column p-4 m-3 card">
@@ -167,13 +217,24 @@ export default function UserSummary({
           </div>
         </div>
         <Modal
-          open={modalIsOpen}
-          onClose={() => setModalIsOpen(false)}
-          title={extraDataTitle}
+          open={ssoModalIsOpen}
+          onClose={() => setSsoModalIsOpen(false)}
+          title={extraSsoDataTitle}
           body={(
             <Table
               data={ssoExtraData}
               columns={columns}
+            />
+          )}
+        />
+        <Modal
+          open={idvModalIsOpen}
+          onClose={() => setIdvModalIsOpen(false)}
+          title={detailIdvDataTitle}
+          body={(
+            <Table
+              data={detailIdvData}
+              columns={idvDetailsColumns}
             />
           )}
         />
@@ -196,6 +257,7 @@ UserSummary.propTypes = {
     status: PropTypes.string,
     expirationDatetime: PropTypes.string,
     isVerified: PropTypes.bool,
+    extraData: PropTypes.shape([]),
   }),
   ssoRecords: PropTypes.shape([]),
   changeHandler: PropTypes.func.isRequired,
