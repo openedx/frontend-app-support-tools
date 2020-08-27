@@ -109,6 +109,10 @@ export default function UserSummary({
       label: 'Message',
       key: 'message',
     },
+    {
+      label: 'Updated',
+      key: 'updatedAt',
+    },
   ];
 
   const ssoColumns = [
