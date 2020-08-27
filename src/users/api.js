@@ -77,11 +77,37 @@ export async function getUser(userIdentifier) {
   }
 }
 
+export async function getUserVerificationDetail(username) {
+  const defaultResponse = {
+    sso_verification: [],
+    ss_photo_verification: [],
+    manual_verification: [],
+  };
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/verifications/`,
+    );
+    return data;
+  } catch (error) {
+    // We don't have good error handling in the app for any errors that may have come back
+    // from the API, so we log them to the console and tell the user to go look.  We would
+    // never do this in a customer-facing app.
+    // eslint-disable-next-line no-console
+    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    if (error.customAttributes.httpErrorStatus === 404) {
+      return defaultResponse;
+    }
+    return defaultResponse;
+  }
+}
+
 export async function getUserVerificationStatus(username) {
   try {
     const { data } = await getAuthenticatedHttpClient().get(
       `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${username}/verification_status/`,
     );
+    const extraData = await getUserVerificationDetail(username);
+    data.extraData = extraData;
     return data;
   } catch (error) {
     // We don't have good error handling in the app for any errors that may have come back
@@ -94,12 +120,14 @@ export async function getUserVerificationStatus(username) {
         status: 'Not Available',
         expirationDatetime: '',
         isVerified: false,
+        extraData: null,
       };
     }
     return {
       status: 'Error, status unknown',
       expirationDatetime: '',
       isVerified: false,
+      extraData: null,
     };
   }
 }
