@@ -148,7 +148,7 @@ export default function UserSummary({
     extra: {
       displayValue: Object.keys(result.extraData).length > 0 ? (
         <Button
-          className="btn-link px-0"
+          className="btn-link px-0 neg-margin-top"
           onClick={() => openSSOModal(result.provider, result.extraData)}
         >
           Show
@@ -160,7 +160,14 @@ export default function UserSummary({
 
   // Modal to display extra data for Idv records
   const openIDVModal = (title, data) => {
-    setDetailIdvData(data);
+    const tableData = data.map(result => ({
+      type: result.type,
+      status: result.status,
+      updatedAt: formatDate(result.updatedAt),
+      expirationDatetime: formatDate(result.expirationDatetime),
+      message: result.message,
+    }));
+    setDetailIdvData(tableData);
     setDetailIdvDataTitle(title);
     setIdvModalIsOpen(true);
   };
@@ -170,9 +177,9 @@ export default function UserSummary({
     isVerified: result.isVerified.toString(),
     expirationDatetime: formatDate(result.expirationDatetime),
     extra: {
-      displayValue: result.extraData.length > 0 ? (
+      displayValue: result.extraData && result.extraData.length > 0 ? (
         <Button
-          className="btn-link px-0"
+          className="btn-link px-0 neg-margin-top"
           onClick={() => openIDVModal('ID Verification Details', result.extraData)}
         >
           Show
