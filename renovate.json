@@ -1,10 +1,12 @@
 {
   "extends": [
     "config:base",
-    "schedule:earlyMondays"
+    ":automergeLinters",
+    ":automergeTesters",
+    ":automergeMinor",
+    ":noUnscheduledUpdates"
   ],
-  "patch": {
-    "automerge": true
-  },
-  "rebaseStalePrs": true
+  "rebaseStalePrs": true,
+  "schedule": ["after 12am and before 08:30am on Monday"],
+  "timezone": "America/New_York"
 }
