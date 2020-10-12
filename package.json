@@ -38,7 +38,7 @@
     "@fortawesome/react-fontawesome": "0.1.11",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
-    "moment": "2.29.0",
+    "moment": "2.29.1",
     "prop-types": "15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
