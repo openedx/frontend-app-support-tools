@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button } from '@edx/paragon';
+import { Modal, Button, Input } from '@edx/paragon';
 
 import { postTogglePasswordStatus } from './api';
 import Table from '../Table';
@@ -14,11 +14,15 @@ export default function UserSummary({
 }) {
   const [ssoModalIsOpen, setSsoModalIsOpen] = useState(false);
   const [idvModalIsOpen, setIdvModalIsOpen] = useState(false);
+  const [disableUserModalIsOpen, setDisableUserModalIsOpen] = useState(false);
+  const [disableHistoryModalIsOpen, setDisableHistoryModalIsOpen] = useState(false);
+  const [comment, setComment] = useState('');
+  const [userPasswordHistoryData, setUserPasswordHistoryData] = useState([]);
   const [extraSsoDataTitle, setSsoExtraDataTitle] = useState('');
   const [detailIdvDataTitle, setDetailIdvDataTitle] = useState('');
   const [ssoExtraData, setSsoExtraData] = useState([]);
   const [detailIdvData, setDetailIdvData] = useState([]);
-  const userToggleVisible = false;
+  const userToggleVisible = true;
   // TO-DO: Only expose "Disable/Enable User" for specific roles
 
   const PASSWORD_STATUS = {
@@ -27,7 +31,7 @@ export default function UserSummary({
   };
 
   const togglePasswordStatus = () => {
-    postTogglePasswordStatus(userData.username);
+    postTogglePasswordStatus(userData.username, comment);
     changeHandler();
   };
 
@@ -58,7 +62,7 @@ export default function UserSummary({
     },
     {
       dataName: 'Password Status',
-      dataValue: userData.passwordStatus,
+      dataValue: userData.passwordStatus.status,
     },
   ];
 
@@ -133,6 +137,24 @@ export default function UserSummary({
       key: 'extra',
     },
   ];
+  const userPasswordHistoryColumns = [
+    {
+      label: 'Date',
+      key: 'created',
+    },
+    {
+      label: 'Comment',
+      key: 'comment',
+    },
+    {
+      label: 'Action',
+      key: 'disabled',
+    },
+    {
+      label: 'By',
+      key: 'createdBy',
+    },
+  ];
 
   // Modal to display extra data for SSO records
   const openSSOModal = (title, data) => {
@@ -175,6 +197,16 @@ export default function UserSummary({
     setDetailIdvDataTitle(title);
     setIdvModalIsOpen(true);
   };
+  const openHistoryModel = () => {
+    const tableData = userData.passwordStatus.passwordToggleHistory.map(result => ({
+      created: formatDate(result.created),
+      comment: result.comment,
+      disabled: result.disabled ? 'Disabled' : 'Enabled',
+      createdBy: result.createdBy,
+    }));
+    setUserPasswordHistoryData(tableData);
+    setDisableHistoryModalIsOpen(true);
+  };
 
   const IdvData = [verificationData].map(result => ({
     status: result.status,
@@ -203,12 +235,22 @@ export default function UserSummary({
             columns={columns}
           />
           {userToggleVisible && (
-            <Button
-              className={`${userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'btn-outline-danger' : 'btn-outline-primary'} toggle-password`}
-              onClick={togglePasswordStatus}
-            >
-              {userData.passwordStatus === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
-            </Button>
+            <div>
+              <Button
+                className={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'btn-outline-danger' : 'btn-outline-primary'} toggle-password`}
+                onClick={() => setDisableUserModalIsOpen(true)}
+              >
+                {userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
+              </Button>
+              {userData.passwordStatus.passwordToggleHistory.length > 0 && (
+                <Button
+                  className="btn-outline-primary ml-1"
+                  onClick={() => openHistoryModel()}
+                >
+                  Show history
+                </Button>
+              )}
+            </div>
           )}
         </div>
         <div className="flex-column">
@@ -249,6 +291,42 @@ export default function UserSummary({
             />
           )}
         />
+        <Modal
+          open={disableHistoryModalIsOpen}
+          onClose={() => setDisableHistoryModalIsOpen(false)}
+          title="Enable/Disable History"
+          body={(
+            <Table
+              data={userPasswordHistoryData}
+              columns={userPasswordHistoryColumns}
+            />
+          )}
+        />
+        <Modal
+          open={disableUserModalIsOpen}
+          buttons={[
+            <Button
+              variant="success"
+              className="btn-outline-primary"
+              onClick={togglePasswordStatus}
+            >
+              Confirm
+            </Button>,
+          ]}
+          onClose={() => setDisableUserModalIsOpen(false)}
+          title={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable user confirmation' : 'Enable user confirmation'}`}
+          body={(
+            <div>
+              <label htmlFor="comment">Reason: </label>
+              <Input
+                name="comment"
+                type="text"
+                value={comment}
+                onChange={(event) => setComment(event.target.value)}
+              />
+            </div>
+          )}
+        />
       </div>
     </section>
   );
@@ -262,7 +340,10 @@ UserSummary.propTypes = {
     isActive: PropTypes.bool,
     country: PropTypes.string,
     dateJoined: PropTypes.string,
-    passwordStatus: PropTypes.string,
+    passwordStatus: PropTypes.shape({
+      status: PropTypes.string,
+      passwordToggleHistory: PropTypes.shape([]),
+    }),
   }),
   verificationData: PropTypes.shape({
     status: PropTypes.string,
