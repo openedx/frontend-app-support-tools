@@ -4,10 +4,15 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 const USERNAME_REGEX = '^[\\w.@_+-]+$';
 
-export async function getEntitlements(username) {
-  const { data } = await getAuthenticatedHttpClient().get(
-    `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${username}`,
-  );
+export async function getEntitlements(username, page = 1) {
+  const baseURL = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/`;
+  const queryString = `user=${username}&page=${page}`;
+  const { data } = await getAuthenticatedHttpClient().get(`${baseURL}?${queryString}`);
+  if (data.next !== null) {
+    const nextPageData = await getEntitlements(username, data.current_page + 1);
+    data.results = data.results.concat(nextPageData.results);
+    return data;
+  }
   return data;
 }
 
@@ -146,7 +151,6 @@ export async function getAllUserData(userIdentifier) {
   let enrollments = [];
   let verificationStatus = null;
   let ssoRecords = null;
-
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
