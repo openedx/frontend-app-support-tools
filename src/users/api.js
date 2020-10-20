@@ -141,7 +141,7 @@ export async function getUserPasswordStatus(userIdentifier) {
   const { data } = await getAuthenticatedHttpClient().get(
     `${getConfig().LMS_BASE_URL}/support/manage_user/${userIdentifier}`,
   );
-  return data.status;
+  return data;
 }
 
 export async function getAllUserData(userIdentifier) {
@@ -323,9 +323,12 @@ export async function postEnrollmentChange({
   }
 }
 
-export async function postTogglePasswordStatus(user) {
+export async function postTogglePasswordStatus(user, comment) {
   const { data } = await getAuthenticatedHttpClient().post(
     `${getConfig().LMS_BASE_URL}/support/manage_user/${user}`,
+    {
+      comment,
+    },
   );
   return data;
 }
