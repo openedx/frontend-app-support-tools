@@ -7,11 +7,7 @@ export default class PageLoading extends Component {
       return null;
     }
 
-    return (
-      <span className="sr-only">
-        {this.props.srMessage}
-      </span>
-    );
+    return <span className="sr-only">{this.props.srMessage}</span>;
   }
 
   render() {

@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import PageLoading from '../PageLoading';
-import AlertList from '../user-messages/AlertList';
+import PageLoading from '../components/common/PageLoading';
 import formatDate from '../dates/formatDate';
+import AlertList from '../user-messages/AlertList';
 
 export default function CourseSummary({
   courseData,
@@ -17,22 +16,17 @@ export default function CourseSummary({
       return (
         <div>
           <ul className="list-unstyled">
-            {
-              courseRuns.map((item) => (
-                <li key={item.key}>
-                  {item.key} <b>Start:</b> {formatDate(item.start)} <b>End:</b> {formatDate(item.end)}
-                </li>
-              ))
-            }
+            {courseRuns.map((item) => (
+              <li key={item.key}>
+                {item.key} <b>Start:</b> {formatDate(item.start)} <b>End:</b>
+                {formatDate(item.end)}
+              </li>
+            ))}
           </ul>
         </div>
       );
     }
-    return (
-      <div>
-        No Course Runs available
-      </div>
-    );
+    return <div>No Course Runs available</div>;
   }
 
   function renderHideButton() {
@@ -51,11 +45,7 @@ export default function CourseSummary({
   }
   return (
     <section className="card mb-3">
-      {!courseData && !errors && (
-        <PageLoading
-          srMessage="Loading"
-        />
-      )}
+      {!courseData && !errors && <PageLoading srMessage="Loading" />}
       {errors && (
         <>
           <AlertList topic="course-summary" className="m-3" />
@@ -64,9 +54,7 @@ export default function CourseSummary({
       )}
       {courseData && !errors && (
         <div className="m-3">
-          <h4>
-            Course Summary: {courseData.title}
-          </h4>
+          <h4>Course Summary: {courseData.title}</h4>
           <table className="table">
             <tbody>
               <tr>
@@ -89,15 +77,22 @@ export default function CourseSummary({
                 <td>Marketing</td>
                 <td>
                   {courseData ? (
-                    <a href={courseData.marketingUrl} rel="noopener noreferrer" target="_blank">Marketing URL</a>
-                  ) : ''}
+                    <a
+                      href={courseData.marketingUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      Marketing URL
+                    </a>
+                  ) : (
+                    ''
+                  )}
                 </td>
               </tr>
             </tbody>
           </table>
           {renderHideButton()}
         </div>
-
       )}
     </section>
   );
@@ -110,9 +105,11 @@ CourseSummary.propTypes = {
     key: PropTypes.string,
     levelType: PropTypes.string,
     marketingUrl: PropTypes.string,
-    courseRuns: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string,
-    })),
+    courseRuns: PropTypes.arrayOf(
+      PropTypes.shape({
+        key: PropTypes.string,
+      }),
+    ),
   }),
   errors: PropTypes.bool,
   clearHandler: PropTypes.func,

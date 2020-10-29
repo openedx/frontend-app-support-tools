@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 import AlertList from '../user-messages/AlertList';
-import { postEntitlement, patchEntitlement } from './api';
+import { postEntitlement, patchEntitlement } from './data/api';
 
 export const REISSUE = 'reissue';
 export const CREATE = 'create';

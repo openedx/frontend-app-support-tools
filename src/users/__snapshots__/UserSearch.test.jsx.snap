@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Search Page renders correctly matches snapshot 1`] = `
+<section
+  className="mb-3"
+>
+  <form
+    className="form-inline"
+  >
+    <label
+      htmlFor="userIdentifier"
+    >
+      Username or Email
+    </label>
+    <input
+      className="form-control flex-grow-1 mr-1"
+      defaultValue=""
+      name="userIdentifier"
+      type="text"
+    />
+    <button
+      className="btn btn-primary"
+      onBlur={[Function]}
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      type="submit"
+    >
+      Search
+    </button>
+  </form>
+</section>
+`;

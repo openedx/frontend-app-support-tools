@@ -7,8 +7,9 @@ import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
+import SupportHomePage from './support-home/SupportHomePage';
 import Header from './support-header';
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
@@ -16,17 +17,6 @@ import UserMessagesProvider from './user-messages/UserMessagesProvider';
 
 import './index.scss';
 import './assets/favicon.ico';
-
-function supportLinks() {
-  return (
-    <main className="container-fluid m-5">
-      <h3>Support Tools</h3>
-      <ul>
-        <li><Link to="/users">Search Users</Link></li>
-      </ul>
-    </main>
-  );
-}
 
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();
@@ -39,7 +29,7 @@ subscribe(APP_READY, () => {
       <UserMessagesProvider>
         <Header />
         <Switch>
-          <Route exact path="/" render={supportLinks} />
+          <Route exact path="/" component={SupportHomePage} />
           <Route path="/users" component={UserPage} />
         </Switch>
       </UserMessagesProvider>

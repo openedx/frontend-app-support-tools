@@ -11,7 +11,7 @@ import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
 import sort from './sort';
 import Table from '../Table';
 import CourseSummary from './CourseSummary';
-import { getCourseData } from './api';
+import { getCourseData } from './data/api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 import formatDate from '../dates/formatDate';
 
