@@ -1,41 +1,33 @@
-import React, {
-  useCallback, useState, useEffect, useContext,
-} from 'react';
-import PropTypes from 'prop-types';
-
 import { camelCaseObject, getConfig, history } from '@edx/frontend-platform';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback, useContext, useEffect, useState,
+} from 'react';
 import { Link } from 'react-router-dom';
-import PageLoading from '../PageLoading';
-
-import UserSummary from './UserSummary';
+import PageLoading from '../components/common/PageLoading';
+import AlertList from '../user-messages/AlertList';
+import { USER_IDENTIFIER_INVALID_ERROR } from '../user-messages/messages';
+import UserMessagesContext from '../user-messages/UserMessagesContext';
+import { isEmail, isValidUsername } from '../utils/index';
+import { getAllUserData } from './data/api';
 import Enrollments from './Enrollments';
 import Entitlements from './Entitlements';
 import UserSearch from './UserSearch';
-import { getAllUserData } from './api';
-import UserMessagesContext from '../user-messages/UserMessagesContext';
-import AlertList from '../user-messages/AlertList';
+import UserSummary from './UserSummary';
 
 // Supports urls such as /users/?username={username} and /users/?email={email}
 export default function UserPage({ location }) {
   const url = getConfig().BASE_URL + location.pathname + location.search;
-  const params = (new URL(url)).searchParams;
-  const [userIdentifier, setUserIdentifier] = useState(params.get('username') || params.get('email') || undefined);
+  const params = new URL(url).searchParams;
+  const [userIdentifier, setUserIdentifier] = useState(
+    params.get('username') || params.get('email') || undefined,
+  );
   const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
   const [showEnrollments, setShowEnrollments] = useState(true);
   const [showEntitlements, setShowEntitlements] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
-  const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
-  const USERNAME_REGEX = '^[\\w.@_+-]+$';
-
-  function isEmail(searchValue) {
-    return !!(searchValue && searchValue.match(EMAIL_REGEX));
-  }
-
-  function isValidUsername(searchValue) {
-    return !!(searchValue && searchValue.match(USERNAME_REGEX));
-  }
 
   function pushHistoryIfChanged(nextUrl) {
     if (nextUrl !== location.pathname + location.search) {
@@ -45,7 +37,7 @@ export default function UserPage({ location }) {
 
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
-      result.errors.forEach(error => add(error));
+      result.errors.forEach((error) => add(error));
       history.replace('/users');
       document.title = 'Support Tools | edX';
     } else if (isEmail(searchValue)) {
@@ -66,7 +58,7 @@ export default function UserPage({ location }) {
       add({
         code: null,
         dismissible: true,
-        text: 'The searched username or email is invalid. Please correct the username or email and try again.',
+        text: USER_IDENTIFIER_INVALID_ERROR,
         type: 'error',
         topic: 'general',
       });
@@ -88,7 +80,7 @@ export default function UserPage({ location }) {
         setData(camelCaseObject(result));
         processSearchResult(searchValue, result);
       });
-    // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
+      // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
       history.replace('/users');
@@ -143,12 +135,12 @@ export default function UserPage({ location }) {
       <AlertList topic="general" className="mb-3" />
       {/* NOTE: the "key" here causes the UserSearch component to re-render completely when the
       user identifier changes.  Doing so clears out the search box. */}
-      <UserSearch key={userIdentifier} userIdentifier={userIdentifier} searchHandler={handleSearchInputChange} />
-      {loading && (
-        <PageLoading
-          srMessage="Loading"
-        />
-      )}
+      <UserSearch
+        key={userIdentifier}
+        userIdentifier={userIdentifier}
+        searchHandler={handleSearchInputChange}
+      />
+      {loading && <PageLoading srMessage="Loading" />}
       {!loading && data.user && data.user.username && (
         <>
           <UserSummary
@@ -172,9 +164,9 @@ export default function UserPage({ location }) {
         </>
       )}
       {!loading && !userIdentifier && (
-      <section>
-        <p>Please search for a username or email.</p>
-      </section>
+        <section>
+          <p>Please search for a username or email.</p>
+        </section>
       )}
     </main>
   );

@@ -6,7 +6,7 @@ import {
 import classNames from 'classnames';
 
 import AlertList from '../user-messages/AlertList';
-import { postEnrollmentChange } from './api';
+import { postEnrollmentChange } from './data/api';
 import UserMessagesContext from '../user-messages/UserMessagesContext';
 
 const getModes = function getModes(enrollment) {
