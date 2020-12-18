@@ -1,4 +1,4 @@
-const EMAIL_REGEX = '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
+const EMAIL_REGEX = '^[a-zA-Z0-9\'!#$&*._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 const USERNAME_REGEX = '^[\\w.@_+-]+$';
 
 // todo: No need for !!. This operation is not affecting the value.
