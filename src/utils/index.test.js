@@ -1,7 +1,7 @@
 import { isEmail, isValidUsername } from './index';
 
 describe('Test Utils', () => {
-  const validEmails = ['staff@email.com', 'admin@email.co.og'];
+  const validEmails = ['staff@email.com', 'admin@email.co.og', 'test\'1@email.com'];
   const invalidEmails = [
     '',
     ' ',
