@@ -61,6 +61,10 @@ export default function UserSummary({
       dataValue: formatDate(userData.dateJoined),
     },
     {
+      dataName: 'Last Login',
+      dataValue: formatDate(userData.lastLogin),
+    },
+    {
       dataName: 'Password Status',
       dataValue: userData.passwordStatus.status,
     },
@@ -340,6 +344,7 @@ UserSummary.propTypes = {
     isActive: PropTypes.bool,
     country: PropTypes.string,
     dateJoined: PropTypes.string,
+    lastLogin: PropTypes.string,
     passwordStatus: PropTypes.shape({
       status: PropTypes.string,
       passwordToggleHistory: PropTypes.shape([]),
