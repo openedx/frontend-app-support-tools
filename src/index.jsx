@@ -16,7 +16,6 @@ import UserPage from './users/UserPage';
 import UserMessagesProvider from './user-messages/UserMessagesProvider';
 
 import './index.scss';
-import './assets/favicon.ico';
 
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();
