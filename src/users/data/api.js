@@ -221,24 +221,11 @@ export async function getCourseData(courseUUID) {
 }
 
 export async function patchEntitlement({
-  uuid,
-  action,
-  unenrolledRun = null,
-  comments = null,
+  uuid, requestData,
 }) {
   try {
     const { data } = await getAuthenticatedHttpClient().patch(
-      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${uuid}/`,
-      {
-        expired_at: null,
-        support_details: [
-          {
-            unenrolled_run: unenrolledRun,
-            action,
-            comments,
-          },
-        ],
-      },
+      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${uuid}/`, requestData,
     );
     return data;
   } catch (error) {
@@ -265,27 +252,11 @@ export async function patchEntitlement({
 }
 
 export async function postEntitlement({
-  user,
-  courseUuid,
-  mode,
-  action,
-  comments = null,
+  requestData,
 }) {
   try {
     const { data } = await getAuthenticatedHttpClient().post(
-      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/`,
-      {
-        course_uuid: courseUuid,
-        user,
-        mode,
-        refund_locked: true,
-        support_details: [
-          {
-            action,
-            comments,
-          },
-        ],
-      },
+      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/`, requestData,
     );
     return data;
   } catch (error) {

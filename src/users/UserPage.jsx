@@ -11,7 +11,7 @@ import UserMessagesContext from '../user-messages/UserMessagesContext';
 import { isEmail, isValidUsername } from '../utils/index';
 import { getAllUserData } from './data/api';
 import Enrollments from './Enrollments';
-import Entitlements from './Entitlements';
+import Entitlements from './entitlements/Entitlements';
 import UserSearch from './UserSearch';
 import UserSummary from './UserSummary';
 

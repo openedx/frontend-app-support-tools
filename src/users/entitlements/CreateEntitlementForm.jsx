@@ -5,15 +5,13 @@ import {
 } from '@edx/paragon';
 import classNames from 'classnames';
 
-import UserMessagesContext from '../user-messages/UserMessagesContext';
-import AlertList from '../user-messages/AlertList';
-import { postEntitlement, patchEntitlement } from './data/api';
+import UserMessagesContext from '../../user-messages/UserMessagesContext';
+import AlertList from '../../user-messages/AlertList';
+import { postEntitlement } from '../data/api';
+import { CREATE } from './EntitlementActions';
+import { EntitlementPropTypes, EntitlementDefaultProps } from './PropTypes';
 
-export const REISSUE = 'reissue';
-export const CREATE = 'create';
-
-export default function EntitlementForm({
-  formType,
+export default function CreateEntitlementForm({
   entitlement,
   changeHandler,
   closeHandler,
@@ -27,50 +25,36 @@ export default function EntitlementForm({
 
   const submit = useCallback(() => {
     clear('entitlements');
-    if (formType === CREATE) {
-      postEntitlement({
+    postEntitlement({
+      requestData: {
+        course_uuid: courseUuid,
         user,
-        courseUuid,
         mode,
-        action: CREATE,
-        comments,
-      }).then((result) => {
-        if (result.errors !== undefined) {
-          result.errors.forEach(error => add(error));
-        } else {
-          changeHandler();
-        }
-      });
-    } else if (formType === REISSUE) {
-      patchEntitlement({
-        uuid: entitlement.uuid,
-        action: REISSUE,
-        unenrolledRun: entitlement.enrollmentCourseRun,
-        comments,
-      }).then((result) => {
-        if (result.errors !== undefined) {
-          result.errors.forEach(error => add(error));
-        } else {
-          changeHandler();
-        }
-      });
-    }
+        refund_locked: true,
+        support_details: [{
+          action: CREATE,
+          comments,
+        }],
+      },
+    }).then((result) => {
+      if (result.errors !== undefined) {
+        result.errors.forEach(error => add(error));
+      } else {
+        changeHandler();
+      }
+    });
   });
-
-  const isReissue = formType === REISSUE;
-  const title = isReissue ? 'Re-issue Entitlement' : 'Create Entitlement';
 
   return (
     <section className="card mb-3">
       <form className="card-body">
         <AlertList topic="entitlements" className="mb-3" />
-        <h4 className="card-title">{title}</h4>
+        <h4 className="card-title">Create Entitlement</h4>
         <h5 className="card-subtitle">All fields are required</h5>
         <div className="form-group">
           <label htmlFor="courseUuid">Course UUID</label>
           <Input
             type="text"
-            disabled={isReissue}
             id="courseUuid"
             name="courseUuid"
             value={courseUuid}
@@ -81,7 +65,6 @@ export default function EntitlementForm({
           <label htmlFor="mode">Mode</label>
           <Input
             type="select"
-            disabled={isReissue}
             id="mode"
             name="mode"
             defaultValue={mode}
@@ -128,42 +111,15 @@ export default function EntitlementForm({
   );
 }
 
-EntitlementForm.propTypes = {
-  formType: PropTypes.string.isRequired,
-  entitlement: PropTypes.shape({
-    uuid: PropTypes.string.isRequired,
-    courseUuid: PropTypes.string.isRequired,
-    enrollmentCourseRun: PropTypes.string,
-    created: PropTypes.string.isRequired,
-    modified: PropTypes.string.isRequired,
-    expiredAt: PropTypes.string,
-    mode: PropTypes.string.isRequired,
-    orderNumber: PropTypes.string,
-    supportDetails: PropTypes.arrayOf(PropTypes.shape({
-      supportUser: PropTypes.string,
-      action: PropTypes.string,
-      comments: PropTypes.string,
-      unenrolledRun: PropTypes.string,
-    })),
-    user: PropTypes.string.isRequired,
-  }),
+CreateEntitlementForm.propTypes = {
+  entitlement: EntitlementPropTypes,
   user: PropTypes.string.isRequired,
   changeHandler: PropTypes.func.isRequired,
   closeHandler: PropTypes.func.isRequired,
   forwardedRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 };
 
-EntitlementForm.defaultProps = {
-  entitlement: {
-    uuid: '',
-    courseUuid: '',
-    created: '',
-    modified: '',
-    expiredAt: '',
-    mode: 'verified',
-    orderNumber: '',
-    supportDetails: [],
-    user: '',
-  },
+CreateEntitlementForm.defaultProps = {
+  entitlement: EntitlementDefaultProps,
   forwardedRef: null,
 };
