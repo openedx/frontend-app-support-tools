@@ -12,7 +12,6 @@ import { postEntitlement, patchEntitlement } from './data/api';
 export const REISSUE = 'reissue';
 export const CREATE = 'create';
 
-
 export default function EntitlementForm({
   formType,
   entitlement,

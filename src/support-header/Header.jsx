@@ -14,8 +14,6 @@ import {
 import DesktopHeader from './DesktopHeader';
 import MobileHeader from './MobileHeader';
 
-import LogoSVG from './logo.svg';
-
 ensureConfig([
   'LMS_BASE_URL',
   'LOGOUT_URL',
@@ -139,7 +137,7 @@ export default function Header() {
   ];
 
   const props = {
-    logo: LogoSVG,
+    logo: config.LOGO_URL,
     logoAltText: 'edX',
     siteName: 'edX',
     logoDestination: getConfig().MINIMAL_HEADER ? null : `${config.LMS_BASE_URL}/dashboard`,

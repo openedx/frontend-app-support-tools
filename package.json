@@ -30,7 +30,7 @@
     "url": "https://github.com/edx/frontend-app-support/issues"
   },
   "dependencies": {
-    "@edx/frontend-platform": "1.6.1",
+    "@edx/frontend-platform": "^1.8.1",
     "@edx/paragon": "7.2.1",
     "@fortawesome/fontawesome-svg-core": "1.2.32",
     "@fortawesome/free-brands-svg-icons": "5.15.1",
@@ -51,7 +51,7 @@
     "redux": "4.0.5"
   },
   "devDependencies": {
-    "@edx/frontend-build": "3.1.20",
+    "@edx/frontend-build": "^5.5.1",
     "check-prop-types": "1.1.2",
     "codecov": "3.8.1",
     "enzyme": "3.11.0",
@@ -60,6 +60,7 @@
     "glob": "7.1.6",
     "jest": "26.6.3",
     "react-test-renderer": "17.0.1",
-    "reactifex": "1.1.1"
+    "reactifex": "1.1.1",
+    "request": "^2.88.2"
   }
 }

@@ -2,7 +2,6 @@ import React from 'react';
 import { CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
-
 function MenuTrigger({ tag, className, ...attributes }) {
   return React.createElement(tag, {
     className: `menu-trigger ${className}`,
@@ -19,7 +18,6 @@ MenuTrigger.defaultProps = {
 };
 const MenuTriggerType = <MenuTrigger />.type;
 
-
 function MenuContent({ tag, className, ...attributes }) {
   return React.createElement(tag, {
     className: ['menu-content', className].join(' '),
@@ -34,7 +32,6 @@ MenuContent.defaultProps = {
   tag: 'div',
   className: null,
 };
-
 
 class Menu extends React.Component {
   constructor(props) {
@@ -140,7 +137,6 @@ class Menu extends React.Component {
     this.close();
   }
 
-
   // Internal functions
 
   getFocusableElements() {
@@ -241,7 +237,6 @@ class Menu extends React.Component {
   }
 }
 
-
 Menu.propTypes = {
   tag: PropTypes.string,
   onClose: PropTypes.func,
@@ -263,6 +258,5 @@ Menu.defaultProps = {
   transitionTimeout: 0,
   transitionClassName: 'menu-content',
 };
-
 
 export { Menu, MenuTrigger, MenuContent };

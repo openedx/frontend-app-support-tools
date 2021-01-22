@@ -51,7 +51,6 @@ function Alert({
   );
 }
 
-
 Alert.propTypes = {
   type: PropTypes.oneOf(['error', 'danger', 'info', 'success']).isRequired,
   dismissible: PropTypes.bool,
@@ -64,6 +63,5 @@ Alert.defaultProps = {
   children: undefined,
   onDismiss: null,
 };
-
 
 export default Alert;
