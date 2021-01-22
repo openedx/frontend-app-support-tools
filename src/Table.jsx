@@ -152,7 +152,6 @@ export default class Table extends React.Component {
     return element;
   }
 
-
   render() {
     return (
       <table className={classNames(

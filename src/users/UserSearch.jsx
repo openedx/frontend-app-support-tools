@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 import { Input, Button } from '@edx/paragon';
 
-
 export default function UserSearch({ userIdentifier, searchHandler }) {
   const searchRef = useRef();
 

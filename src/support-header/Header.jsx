@@ -14,7 +14,6 @@ import {
 import DesktopHeader from './DesktopHeader';
 import MobileHeader from './MobileHeader';
 
-
 ensureConfig([
   'LMS_BASE_URL',
   'LOGOUT_URL',
