@@ -185,7 +185,7 @@ export default function Entitlements({
         {!formType && (
         <Button
           type="button"
-          className="btn-outline-primary"
+          variant="outline-primary"
           onClick={() => {
             clearCourseSummary();
             setEntitlementToReissue(undefined);
