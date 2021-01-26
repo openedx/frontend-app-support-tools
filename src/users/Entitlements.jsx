@@ -69,7 +69,7 @@ export default function Entitlements({
       courseUuid: {
         displayValue: (
           <Button
-            className="btn btn-link"
+            variant="outline-primary"
             onClick={() => {
               setFormType(null);
               setEntitlementToReissue(undefined);

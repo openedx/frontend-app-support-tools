@@ -67,7 +67,7 @@ export default class Table extends React.Component {
     if (this.props.tableSortable && column.columnSortable) {
       heading = (
         <Button
-          variant="primary-inverted"
+          variant="header"
           onClick={() => this.onSortClick(column.key)}
         >
           <span>

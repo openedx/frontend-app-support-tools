@@ -1,0 +1,6 @@
+
+// Reverting the container width to 1440px to keep the support tools styling consistent
+// See https://github.com/edx/paragon/pull/533 for paragon breaking change
+.container-fluid {
+max-width: 1440px;
+}

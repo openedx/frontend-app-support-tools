@@ -178,7 +178,8 @@ export default function UserSummary({
     extra: {
       displayValue: Object.keys(result.extraData).length > 0 ? (
         <Button
-          className="btn-link px-0 neg-margin-top"
+          variant="link"
+          className="px-0 neg-margin-top"
           onClick={() => openSSOModal(result.provider, result.extraData)}
         >
           Show
@@ -219,7 +220,7 @@ export default function UserSummary({
     extra: {
       displayValue: result.extraData && result.extraData.length > 0 ? (
         <Button
-          variant="primary"
+          variant="link"
           className="px-0 neg-margin-top"
           onClick={() => openIDVModal('ID Verification Details', result.extraData)}
         >
@@ -242,7 +243,8 @@ export default function UserSummary({
           {userToggleVisible && (
             <div>
               <Button
-                className={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'btn-danger' : 'btn-primary'} toggle-password`}
+                className="toggle-password"
+                variant={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'danger' : 'primary'}`}
                 onClick={() => setDisableUserModalIsOpen(true)}
               >
                 {userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
@@ -313,7 +315,6 @@ export default function UserSummary({
           buttons={[
             <Button
               variant="danger"
-              className="btn-outline-primary"
               onClick={togglePasswordStatus}
             >
               Confirm

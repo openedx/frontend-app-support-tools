@@ -3,6 +3,9 @@
 @import "~@edx/paragon/scss/core/core";
 @import "~@edx/brand/paragon/overrides";
 @import '~@edx/paragon/scss/edx/theme.scss';
+
 @import "./support-header/index.scss";
 
 @import "./users/index.scss";
+
+@import "./overrides.scss"
