@@ -19,7 +19,7 @@ export default function UserSearch({ userIdentifier, searchHandler }) {
       <form className="form-inline">
         <label htmlFor="userIdentifier">Username or Email</label>
         <Input ref={searchRef} className="flex-grow-1 mr-1" name="userIdentifier" type="text" defaultValue={userIdentifier} />
-        <Button type="submit" onClick={submit} className="btn-primary">Search</Button>
+        <Button type="submit" onClick={submit} variant="primary">Search</Button>
       </form>
     </section>
   );

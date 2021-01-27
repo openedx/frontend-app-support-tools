@@ -68,11 +68,11 @@ export default function Enrollments({
         displayValue: (
           <Button
             type="button"
+            variant="outline-primary"
             onClick={() => {
               setEnrollmentToChange(result);
               setFormType('CHANGE');
             }}
-            className="btn-outline-primary"
           >
             Change
           </Button>
@@ -151,7 +151,7 @@ export default function Enrollments({
       </TransitionReplace>
       <Collapsible title={`Enrollments (${tableData.length})`} defaultOpen={expanded}>
         <Table
-          className="w-100"
+          className="w-auto"
           data={tableDataSortable.sort(
             (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
           )}
