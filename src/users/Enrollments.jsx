@@ -29,7 +29,7 @@ export default function Enrollments({
     }
     return data.map(result => ({
       courseId: {
-        displayValue: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank">{result.courseId}</a>,
+        displayValue: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank" className="word_break">{result.courseId}</a>,
         value: result.courseId,
       },
       courseStart: {
