@@ -125,13 +125,13 @@ export default function Entitlements({
         displayValue: (
           <Button
             type="button"
+            variant="outline-primary"
             disabled={!result.enrollmentCourseRun}
             onClick={() => {
               clearCourseSummary();
               setEntitlementToReissue(result);
               setFormType(REISSUE);
             }}
-            className="btn-outline-primary"
           >
             Reissue
           </Button>

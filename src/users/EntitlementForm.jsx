@@ -107,8 +107,9 @@ export default function EntitlementForm({
         </div>
         <div>
           <Button
+            variant="primary"
             className={classNames(
-              'btn-primary mr-3',
+              'mr-3',
               { disabled: !(courseUuid && mode && comments) },
             )}
             onClick={submit}
@@ -116,7 +117,7 @@ export default function EntitlementForm({
             Submit
           </Button>
           <Button
-            className="btn-outline-secondary"
+            variant="outline-secondary"
             onClick={closeHandler}
           >
             Cancel

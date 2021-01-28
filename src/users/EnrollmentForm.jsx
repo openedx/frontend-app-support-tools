@@ -105,8 +105,9 @@ export default function EnrollmentForm({
         </div>
         <div>
           <Button
+            variant="primary"
             className={classNames(
-              'btn-primary mr-3',
+              'mr-3',
               { disabled: !reason },
             )}
             onClick={submit}
@@ -114,7 +115,7 @@ export default function EnrollmentForm({
             Submit
           </Button>
           <Button
-            className="btn-outline-secondary"
+            variant="outline-secondary"
             onClick={closeHandler}
           >
             Cancel
