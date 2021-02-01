@@ -7,13 +7,14 @@ import {
   Button, Collapsible, TransitionReplace,
 } from '@edx/paragon';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
-import EntitlementForm, { CREATE, REISSUE } from './EntitlementForm';
-import sort from './sort';
-import Table from '../Table';
-import CourseSummary from './CourseSummary';
-import { getCourseData } from './data/api';
-import UserMessagesContext from '../user-messages/UserMessagesContext';
-import formatDate from '../dates/formatDate';
+import EntitlementForm from './EntitlementForm';
+import { CREATE, REISSUE, EXPIRE } from './EntitlementActions';
+import sort from '../sort';
+import Table from '../../Table';
+import CourseSummary from '../CourseSummary';
+import { getCourseData } from '../data/api';
+import UserMessagesContext from '../../user-messages/UserMessagesContext';
+import formatDate from '../../dates/formatDate';
 
 export default function Entitlements({
   data, changeHandler, user, expanded,
@@ -22,7 +23,7 @@ export default function Entitlements({
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
-  const [entitlementToReissue, setEntitlementToReissue] = useState(undefined);
+  const [userEntitlement, setUserEntitlement] = useState(undefined);
   const [courseSummaryUUID, setCourseSummaryUUID] = useState(null);
   const [courseSummaryData, setCourseSummaryData] = useState(null);
   const [courseSummaryErrors, setCourseSummaryErrors] = useState(false);
@@ -65,76 +66,90 @@ export default function Entitlements({
     if (data === null) {
       return [];
     }
-    return data.results.map(result => ({
+    return data.results.map(entitlement => ({
       courseUuid: {
         displayValue: (
           <Button
             variant="outline-primary"
             onClick={() => {
               setFormType(null);
-              setEntitlementToReissue(undefined);
-              setCourseSummaryUUID(result.courseUuid);
-              handleCourseSummaryDataGet(result.courseUuid);
+              setUserEntitlement(undefined);
+              setCourseSummaryUUID(entitlement.courseUuid);
+              handleCourseSummaryDataGet(entitlement.courseUuid);
             }}
           >
-            {result.courseUuid}
+            {entitlement.courseUuid}
           </Button>
         ),
-        value: result.courseUuid,
+        value: entitlement.courseUuid,
       },
       mode: {
-        value: result.mode,
+        value: entitlement.mode,
       },
       enrollment: {
-        displayValue: (result.enrollmentCourseRun ? (
+        displayValue: (entitlement.enrollmentCourseRun ? (
           <a
-            href={`${getConfig().LMS_BASE_URL}/courses/${result.enrollmentCourseRun}`}
+            href={`${getConfig().LMS_BASE_URL}/courses/${entitlement.enrollmentCourseRun}`}
             rel="noopener noreferrer"
             target="_blank"
           >
-            {result.enrollmentCourseRun}
+            {entitlement.enrollmentCourseRun}
           </a>
         ) : 'Course Run Not Selected'),
-        value: result.enrollmentCourseRun,
+        value: entitlement.enrollmentCourseRun,
       },
       expiredAt: {
-        displayValue: formatDate(result.expiredAt),
-        value: result.expiredAt,
+        displayValue: formatDate(entitlement.expiredAt),
+        value: entitlement.expiredAt,
       },
       created: {
-        displayValue: formatDate(result.created),
-        value: result.created,
+        displayValue: formatDate(entitlement.created),
+        value: entitlement.created,
       },
       modified: {
-        displayValue: formatDate(result.modified),
-        value: result.modified,
+        displayValue: formatDate(entitlement.modified),
+        value: entitlement.modified,
       },
       orderNumber: {
         displayValue: (
           <a
-            href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${result.orderNumber}/`}
+            href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${entitlement.orderNumber}/`}
             rel="noopener noreferrer"
             target="_blank"
           >
-            {result.orderNumber}
+            {entitlement.orderNumber}
           </a>
         ),
-        value: result.orderNumber,
+        value: entitlement.orderNumber,
       },
       actions: {
         displayValue: (
-          <Button
-            type="button"
-            variant="outline-primary"
-            disabled={!result.enrollmentCourseRun}
-            onClick={() => {
-              clearCourseSummary();
-              setEntitlementToReissue(result);
-              setFormType(REISSUE);
-            }}
-          >
-            Reissue
-          </Button>
+          <div>
+            <Button
+              type="button"
+              variant="outline-primary"
+              disabled={!entitlement.enrollmentCourseRun}
+              onClick={() => {
+                clearCourseSummary();
+                setUserEntitlement(entitlement);
+                setFormType(REISSUE);
+              }}
+            >
+              Reissue
+            </Button>
+            <Button
+              type="button"
+              variant="outline-danger"
+              disabled={entitlement.expiredAt}
+              onClick={() => {
+                clearCourseSummary();
+                setUserEntitlement(entitlement);
+                setFormType(EXPIRE);
+              }}
+            >
+              Expire
+            </Button>
+          </div>
         ),
         value: 'Resissue',
       },
@@ -173,7 +188,7 @@ export default function Entitlements({
       label: 'Order', key: 'orderNumber', columnSortable: true, onSort: () => setSort('orderNumber'), width: 'col-3',
     },
     {
-      label: 'Actions', key: 'actions', columnSortable: true, onSort: () => {}, width: 'col-3',
+      label: 'Actions', key: 'actions', columnSortable: true, onSort: () => { }, width: 'col-3',
     },
   ];
 
@@ -183,17 +198,17 @@ export default function Entitlements({
     <section className="mb-3">
       <div className="d-flex flex-row justify-content-between mb-2">
         {!formType && (
-        <Button
-          type="button"
-          variant="outline-primary"
-          onClick={() => {
-            clearCourseSummary();
-            setEntitlementToReissue(undefined);
-            setFormType(CREATE);
-          }}
-        >
-          Create New Entitlement
-        </Button>
+          <Button
+            type="button"
+            variant="outline-primary"
+            onClick={() => {
+              clearCourseSummary();
+              setUserEntitlement(undefined);
+              setFormType(CREATE);
+            }}
+          >
+            Create New Entitlement
+          </Button>
         )}
       </div>
       <TransitionReplace>
@@ -201,14 +216,14 @@ export default function Entitlements({
           <EntitlementForm
             key="entitlement-form"
             user={user}
-            entitlement={entitlementToReissue}
+            entitlement={userEntitlement}
             formType={formType}
             changeHandler={changeHandler}
-            submitHandler={() => {}}
+            submitHandler={() => { }}
             closeHandler={() => setFormType(null)}
             forwardedRef={formRef}
           />
-        ) : (<React.Fragment key="nothing" />) }
+        ) : (<React.Fragment key="nothing" />)}
       </TransitionReplace>
       <TransitionReplace>
         {courseSummaryUUID !== null ? (
@@ -222,7 +237,7 @@ export default function Entitlements({
             errors={courseSummaryErrors}
             forwardedRef={summaryRef}
           />
-        ) : (<React.Fragment key="nothing" />) }
+        ) : (<React.Fragment key="nothing" />)}
       </TransitionReplace>
       <Collapsible title={`Entitlements (${tableData.length})`} defaultOpen={expanded}>
         <Table
