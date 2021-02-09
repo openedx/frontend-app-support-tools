@@ -139,6 +139,7 @@ export default function Entitlements({
             </Button>
             <Button
               type="button"
+              className="mt-2"
               variant="outline-danger"
               disabled={entitlement.expiredAt}
               onClick={() => {

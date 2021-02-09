@@ -234,47 +234,51 @@ export default function UserSummary({
   return (
     <section className="mb-3">
       <div className="d-flex flex-row flex-wrap">
-        <div className="flex-column p-4 m-3 card">
-          <h4>Account</h4>
-          <Table
-            data={userAccountData}
-            columns={columns}
-          />
-          {userToggleVisible && (
-            <div>
-              <Button
-                className="toggle-password"
-                variant={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'danger' : 'primary'}`}
-                onClick={() => setDisableUserModalIsOpen(true)}
-              >
-                {userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
-              </Button>
-              {userData.passwordStatus.passwordToggleHistory.length > 0 && (
+        <div className="col-sm-6">
+          <div className="flex-column p-4 m-3 card">
+            <h4>Account</h4>
+            <Table
+              data={userAccountData}
+              columns={columns}
+            />
+            {userToggleVisible && (
+              <div>
                 <Button
-                  variant="outline-primary"
-                  className="ml-1"
-                  onClick={() => openHistoryModel()}
+                  className="toggle-password"
+                  variant={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'danger' : 'primary'}`}
+                  onClick={() => setDisableUserModalIsOpen(true)}
                 >
-                  Show history
+                  {userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
                 </Button>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="flex-column">
-          <div className="flex-column p-4 m-3 card">
-            <h4>ID Verification Status</h4>
-            <Table
-              data={IdvData}
-              columns={idvColumns}
-            />
+                {userData.passwordStatus.passwordToggleHistory.length > 0 && (
+                  <Button
+                    variant="outline-primary"
+                    className="ml-1"
+                    onClick={() => openHistoryModel()}
+                  >
+                    Show history
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
-          <div className="flex-column p-4 m-3 card">
-            <h4>SSO Records</h4>
-            <Table
-              data={ssoData}
-              columns={ssoColumns}
-            />
+        </div>
+        <div className="col-sm-6">
+          <div className="flex-column">
+            <div className="flex-column p-4 m-3 card">
+              <h4>ID Verification Status</h4>
+              <Table
+                data={IdvData}
+                columns={idvColumns}
+              />
+            </div>
+            <div className="flex-column p-4 m-3 card">
+              <h4>SSO Records</h4>
+              <Table
+                data={ssoData}
+                columns={ssoColumns}
+              />
+            </div>
           </div>
         </div>
         <Modal
