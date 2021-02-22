@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Local Components
+import { Dropdown, AvatarButton } from '@edx/paragon';
 import { Menu, MenuTrigger, MenuContent } from './Menu';
-import Avatar from './Avatar';
 import { LinkedLogo, Logo } from './Logo';
 
 // Assets
@@ -49,28 +49,39 @@ export default class MobileHeader extends React.Component {
     });
   }
 
+  renderUserMenu() {
+    const {
+      loggedIn,
+      avatar,
+      username,
+    } = this.props;
+
+    return (
+      <Dropdown>
+        <Dropdown.Toggle showLabel={false} size="md" as={AvatarButton} src={avatar}>
+          {username}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu alignRight>
+          {loggedIn ? this.renderUserMenuItems() : this.renderLoggedOutItems()}
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
+
   renderUserMenuItems() {
     const { userMenu } = this.props;
 
     return userMenu.map(({ type, href, content }) => (
-      <li className="nav-item" key={`${type}-${content}`}>
-        <a className="nav-link" href={href}>{content}</a>
-      </li>
+      <Dropdown.Item className={`dropdown-${type}`} key={`${type}-${content}`} href={href}>{content}</Dropdown.Item>
     ));
   }
 
   renderLoggedOutItems() {
     const { loggedOutItems } = this.props;
 
-    return loggedOutItems.map(({ type, href, content }, i, arr) => (
-      <li className="nav-item px-3 my-2" key={`${type}-${content}`}>
-        <a
-          className={i < arr.length - 1 ? 'btn btn-block btn-outline-primary' : 'btn btn-block btn-primary'}
-          href={href}
-        >
-          {content}
-        </a>
-      </li>
+    return loggedOutItems.map(({ type, href, content }) => (
+      <Dropdown.Item className={`dropdown-${type}`} key={`${type}-${content}`} href={href}>{content}</Dropdown.Item>
     ));
   }
 
@@ -79,9 +90,6 @@ export default class MobileHeader extends React.Component {
       logo,
       logoAltText,
       logoDestination,
-      loggedIn,
-      avatar,
-      username,
       stickyOnMobile,
       mainMenu,
     } = this.props;
@@ -119,19 +127,7 @@ export default class MobileHeader extends React.Component {
           { logoDestination === null ? <Logo className="logo" src={logo} alt={logoAltText} /> : <LinkedLogo className="logo" {...logoProps} itemType="http://schema.org/Organization" />}
         </div>
         <div className="w-100 d-flex justify-content-end align-items-center">
-          <Menu tag="nav" aria-label="Secondary" className="position-static">
-            <MenuTrigger
-              tag="button"
-              className="icon-button"
-              aria-label="Account Menu"
-              title="Account Menu"
-            >
-              <Avatar size="1.5rem" src={avatar} alt={username} />
-            </MenuTrigger>
-            <MenuContent tag="ul" className="nav flex-column pin-left pin-right border-top shadow py-2">
-              {loggedIn ? this.renderUserMenuItems() : this.renderLoggedOutItems()}
-            </MenuContent>
-          </Menu>
+          {this.renderUserMenu()}
         </div>
       </header>
     );

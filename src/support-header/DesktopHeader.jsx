@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Local Components
+import { Dropdown, AvatarButton } from '@edx/paragon';
 import { Menu, MenuTrigger, MenuContent } from './Menu';
-import Avatar from './Avatar';
 import { LinkedLogo, Logo } from './Logo';
 
 // Assets
@@ -49,41 +49,37 @@ export default class DesktopHeader extends React.Component {
 
   renderUserMenu() {
     const {
-      userMenu,
+      loggedIn,
       avatar,
       username,
     } = this.props;
 
     return (
-      <Menu transitionClassName="menu-dropdown" transitionTimeout={0}>
-        <MenuTrigger
-          tag="button"
-          aria-label={`Account menu for ${username}`}
-          className="btn btn-light d-inline-flex align-items-center pl-2 pr-3"
-        >
-          <Avatar size="1.5em" src={avatar} alt="" className="mr-2" />
-          {username} <CaretIcon role="img" aria-hidden focusable="false" />
-        </MenuTrigger>
-        <MenuContent className="mb-0 dropdown-menu show dropdown-menu-right pin-right shadow py-2">
-          {userMenu.map(({ type, href, content }) => (
-            <a className={`dropdown-${type}`} key={`${type}-${content}`} href={href}>{content}</a>
-          ))}
-        </MenuContent>
-      </Menu>
+      <Dropdown>
+        <Dropdown.Toggle as={AvatarButton} src={avatar}>
+          {username}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu alignRight>
+          {loggedIn ? this.renderUserMenuItems() : this.renderLoggedOutItems()}
+        </Dropdown.Menu>
+      </Dropdown>
     );
+  }
+
+  renderUserMenuItems() {
+    const { userMenu } = this.props;
+
+    return userMenu.map(({ type, href, content }) => (
+      <Dropdown.Item className={`dropdown-${type}`} key={`${type}-${content}`} href={href}>{content}</Dropdown.Item>
+    ));
   }
 
   renderLoggedOutItems() {
     const { loggedOutItems } = this.props;
 
-    return loggedOutItems.map((item, i, arr) => (
-      <a
-        key={`${item.type}-${item.content}`}
-        className={i < arr.length - 1 ? 'btn mr-2 btn-link' : 'btn mr-2 btn-outline-primary'}
-        href={item.href}
-      >
-        {item.content}
-      </a>
+    return loggedOutItems.map(({ type, href, content }) => (
+      <Dropdown.Item className={`dropdown-${type}`} key={`${type}-${content}`} href={href}>{content}</Dropdown.Item>
     ));
   }
 
@@ -92,7 +88,6 @@ export default class DesktopHeader extends React.Component {
       logo,
       logoAltText,
       logoDestination,
-      loggedIn,
     } = this.props;
     const logoProps = { src: logo, alt: logoAltText, href: logoDestination };
 
@@ -111,7 +106,7 @@ export default class DesktopHeader extends React.Component {
               aria-label="Secondary"
               className="nav secondary-menu-container align-items-center ml-auto"
             >
-              {loggedIn ? this.renderUserMenu() : this.renderLoggedOutItems()}
+              {this.renderUserMenu()}
             </nav>
           </div>
         </div>
