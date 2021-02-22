@@ -2,7 +2,7 @@
 
 exports[`SupportLinksPage matches snapshot 1`] = `
 <main
-  className="container-fluid m-5"
+  className="container-fluid mt-3 mb-5"
 >
   <h3>
     Support Tools

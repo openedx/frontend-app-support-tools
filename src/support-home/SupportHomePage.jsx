@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const SupportHomePage = () => (
-  <main className="container-fluid m-5">
+  <main className="container-fluid mt-3 mb-5">
     <h3>Support Tools</h3>
     <ul>
       <li>
