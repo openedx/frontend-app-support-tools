@@ -45,6 +45,10 @@ export default function UserSummary({
       dataValue: userData.username,
     },
     {
+      dataName: 'LMS User ID',
+      dataValue: userData.id,
+    },
+    {
       dataName: 'Email',
       dataValue: userData.email,
     },
@@ -347,6 +351,7 @@ UserSummary.propTypes = {
   userData: PropTypes.shape({
     name: PropTypes.string,
     username: PropTypes.string,
+    id: PropTypes.number,
     email: PropTypes.string,
     isActive: PropTypes.bool,
     country: PropTypes.string,
