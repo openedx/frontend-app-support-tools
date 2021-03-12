@@ -74,6 +74,9 @@ describe('User Summary Component Tests', () => {
       disableDialogModal.find('button.btn-danger').hostNodes().simulate('click');
 
       expect(UserSummaryData.changeHandler).toHaveBeenCalled();
+      disableDialogModal.find('button.btn-link').simulate('click');
+      disableDialogModal = wrapper.find('Modal#user-account-status-toggle');
+      expect(disableDialogModal.prop('open')).toEqual(false);
       mockApiCall.mockRestore();
     });
   });
@@ -119,13 +122,13 @@ describe('User Summary Component Tests', () => {
         {
           created: Date().toLocaleString(),
           comment: 'Test Disabled',
-          disabled: 'Disabled',
+          disabled: false,
           createdBy: 'staff',
         },
         {
           created: Date().toLocaleString(),
           comment: 'Test Enable',
-          disabled: 'Enabled',
+          disabled: true,
           createdBy: 'staff',
         },
       ];
@@ -146,6 +149,10 @@ describe('User Summary Component Tests', () => {
 
       expect(historyModal.prop('open')).toEqual(true);
       expect(historyModal.find('table tbody tr')).toHaveLength(2);
+
+      historyModal.find('button.btn-link').simulate('click');
+      historyModal = wrapper.find('Modal#password-history');
+      expect(historyModal.prop('open')).toEqual(false);
     });
   });
 
@@ -189,6 +196,10 @@ describe('User Summary Component Tests', () => {
       expect(extraDataModal.prop('open')).toEqual(true);
       expect(extraDataModal.find('table tbody tr')).toHaveLength(2);
       expect(extraDataModal.prop('title')).toEqual('ID Verification Details');
+
+      extraDataModal.find('button.btn-link').simulate('click');
+      extraDataModal = wrapper.find('Modal#idv-extra-data');
+      expect(extraDataModal.prop('open')).toEqual(false);
     });
   });
 
@@ -222,6 +233,10 @@ describe('User Summary Component Tests', () => {
       expect(extraDataModal.prop('open')).toEqual(true);
       // The length here corresponds to dict keys in ssoExtraData
       expect(extraDataModal.find('table tbody tr')).toHaveLength(3);
+
+      extraDataModal.find('button.btn-link').simulate('click');
+      extraDataModal = wrapper.find('Modal#sso-extra-data');
+      expect(extraDataModal.prop('open')).toEqual(false);
     });
   });
 });

@@ -30,6 +30,11 @@ describe('Course Summary', () => {
     expect(wrapper.html()).toEqual(expect.stringContaining('No Course Runs available'));
   });
 
+  it('Render loading page if data is not present', () => {
+    wrapper = mount(<CourseSummary {...CourseSummaryData} courseData={null} errors={false} />);
+    expect(wrapper.find('PageLoading').html()).toEqual(expect.stringContaining('Loading'));
+  });
+
   it('Hide Course Summary Button', () => {
     const hideButton = wrapper.find('button.btn-outline-secondary');
     expect(hideButton.text()).toEqual('Hide');
