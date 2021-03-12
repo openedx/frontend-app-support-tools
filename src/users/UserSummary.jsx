@@ -272,6 +272,7 @@ export default function UserSummary({
             <div className="flex-column p-4 m-3 card">
               <h4>ID Verification Status</h4>
               <Table
+                id="idv-data"
                 data={IdvData}
                 columns={idvColumns}
               />
@@ -279,6 +280,7 @@ export default function UserSummary({
             <div className="flex-column p-4 m-3 card">
               <h4>SSO Records</h4>
               <Table
+                id="sso-data"
                 data={ssoData}
                 columns={ssoColumns}
               />
@@ -289,6 +291,7 @@ export default function UserSummary({
           open={ssoModalIsOpen}
           onClose={() => setSsoModalIsOpen(false)}
           title={extraSsoDataTitle}
+          id="sso-extra-data"
           body={(
             <Table
               data={ssoExtraData}
@@ -300,6 +303,7 @@ export default function UserSummary({
           open={idvModalIsOpen}
           onClose={() => setIdvModalIsOpen(false)}
           title={detailIdvDataTitle}
+          id="idv-extra-data"
           body={(
             <Table
               data={detailIdvData}
@@ -311,6 +315,7 @@ export default function UserSummary({
           open={disableHistoryModalIsOpen}
           onClose={() => setDisableHistoryModalIsOpen(false)}
           title="Enable/Disable History"
+          id="password-history"
           body={(
             <Table
               data={userPasswordHistoryData}
@@ -320,6 +325,7 @@ export default function UserSummary({
         />
         <Modal
           open={disableUserModalIsOpen}
+          id="user-account-status-toggle"
           buttons={[
             <Button
               variant="danger"
