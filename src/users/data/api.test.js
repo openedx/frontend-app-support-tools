@@ -6,8 +6,14 @@ import enrollmentsData from './test/enrollments';
 import * as api from './api';
 
 describe('API', () => {
-  const testEmail = 'email@example.com';
   const testUsername = 'username';
+  const testEmail = 'email@example.com';
+  const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
+  const enrollmentsApiUrl = `${getConfig().LMS_BASE_URL}/support/enrollment/${testUsername}`;
+  const passwordStatusApiUrl = `${getConfig().LMS_BASE_URL}/support/manage_user/${testUsername}`;
+  const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
+  const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
+
   let mockAdapter;
 
   const throwError = (errorCode, dataString) => {
@@ -28,7 +34,6 @@ describe('API', () => {
   });
 
   describe('SSO Records Fetch', () => {
-    const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
 
     it('No SSO data is Returned', async () => {
       mockAdapter.onGet(ssoRecordsApiUrl).reply(200, []);
@@ -62,7 +67,6 @@ describe('API', () => {
 
   describe('Enrollments Fetch', () => {
     it('Enrollments Response', async () => {
-      const enrollmentsApiUrl = `${getConfig().LMS_BASE_URL}/support/enrollment/${testUsername}`;
       mockAdapter.onGet(enrollmentsApiUrl).reply(200, enrollmentsData);
       const expectedData = { ...enrollmentsData };
       delete expectedData.changeHandler;
@@ -74,7 +78,6 @@ describe('API', () => {
 
   describe('User Password Status Fetch', () => {
     it('Password Status Data', async () => {
-      const apiUrl = `${getConfig().LMS_BASE_URL}/support/manage_user/${testUsername}`;
       const expectedData = {
         username: testUsername,
         date_joined: Date().toLocaleString(),
@@ -83,7 +86,7 @@ describe('API', () => {
         password_toggle_history: [],
         email: testEmail,
       };
-      mockAdapter.onGet(apiUrl).reply(200, expectedData);
+      mockAdapter.onGet(passwordStatusApiUrl).reply(200, expectedData);
 
       const response = await api.getUserPasswordStatus(testUsername);
       expect(response).toEqual(expectedData);
@@ -96,18 +99,70 @@ describe('API', () => {
       ss_photo_verification: [],
       manual_verification: [],
     };
-    const verificationApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
 
     it('default response is returned if error is raised', async () => {
-      mockAdapter.onGet(verificationApiUrl).reply(() => throwError(500, ''));
+      mockAdapter.onGet(verificationDetailsApiUrl).reply(() => throwError(500, ''));
       const response = await api.getUserVerificationDetail(testUsername);
       expect(response).toEqual(defaultResponse);
     });
 
     it('default response is returned if 404 is raised', async () => {
-      mockAdapter.onGet(verificationApiUrl).reply(() => throwError(404, ''));
+      mockAdapter.onGet(verificationDetailsApiUrl).reply(() => throwError(404, ''));
       const response = await api.getUserVerificationDetail(testUsername);
       expect(response).toEqual(defaultResponse);
+    });
+
+    it('Successfully fetched data is returned', async () => {
+      const expectedData = [
+        {
+          type: 'Manual',
+          status: 'Approved',
+          expiration_datetime: Date().toLocaleString(),
+          updated_at: Date().toLocaleString(),
+          message: '',
+          receipt_id: 'receipt_id',
+        },
+      ];
+      mockAdapter.onGet(verificationDetailsApiUrl).reply(200, expectedData);
+      const response = await api.getUserVerificationDetail(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('User Verification Status Fetch', () => {
+    const defaultResponseTemplate = {
+      status: 'Not Available',
+      expirationDatetime: '',
+      isVerified: false,
+      extraData: null,
+    };
+
+    it('404 error response', async () => {
+      mockAdapter.onGet(verificationStatusApiUrl).reply(() => throwError(404, ''));
+      const expectedData = { ...defaultResponseTemplate };
+      const response = await api.getUserVerificationStatus(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('default error response', async () => {
+      mockAdapter.onGet(verificationStatusApiUrl).reply(() => throwError(500, ''));
+      const expectedData = { ...defaultResponseTemplate, status: 'Error, status unknown' };
+      const response = await api.getUserVerificationStatus(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('Successful Status Fetch', async () => {
+      const apiResponseData = {
+        status: 'approved',
+        is_verified: false,
+        expiration_datetime: Date().toLocaleString(),
+      };
+      const expectedData = { ...apiResponseData, extraData: {} };
+      mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
+      mockAdapter.onGet(verificationStatusApiUrl).reply(200, apiResponseData);
+
+      const response = await api.getUserVerificationStatus(testUsername);
+      expect(response).toEqual(expectedData);
     });
   });
 });
