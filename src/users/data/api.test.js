@@ -4,7 +4,6 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 import enrollmentsData from './test/enrollments';
 import * as api from './api';
-import { del } from 'request';
 
 describe('API', () => {
   const testUsername = 'username';
