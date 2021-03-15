@@ -320,4 +320,48 @@ describe('API', () => {
       }
     });
   });
+
+  describe('All User Data ', () => {
+    const successDictResponse = {
+      username: testUsername,
+      email: testEmail,
+      is_active: true,
+    };
+
+    it('Unsuccessful User Data Retrieval', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the email "${testEmail}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(() => throwError(404, ''));
+      try {
+        await api.getAllUserData(testEmail);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
+    });
+
+    it('Successful User Data Retrieval', async () => {
+      mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successDictResponse);
+      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, { results: [], next: null });
+      mockAdapter.onGet(enrollmentsApiUrl).reply(200, {});
+      mockAdapter.onGet(ssoRecordsApiUrl).reply(200, []);
+      mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
+      mockAdapter.onGet(verificationStatusApiUrl).reply(200, {});
+      mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
+
+      const response = await api.getAllUserData(testUsername);
+      expect(response).toEqual({
+        errors: [],
+        user: { ...successDictResponse, passwordStatus: {} },
+        ssoRecords: [],
+        verificationStatus: { extraData: {} },
+        enrollments: {},
+        entitlements: { results: [], next: null },
+      });
+    });
+  });
 });
