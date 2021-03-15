@@ -8,10 +8,11 @@ import * as api from './api';
 describe('API', () => {
   const testUsername = 'username';
   const testEmail = 'email@example.com';
+  const userAccountApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
   const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
   const enrollmentsApiUrl = `${getConfig().LMS_BASE_URL}/support/enrollment/${testUsername}`;
-  const entitlementsApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${testUsername}`;
   const passwordStatusApiUrl = `${getConfig().LMS_BASE_URL}/support/manage_user/${testUsername}`;
+  const entitlementsApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${testUsername}`;
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
 
@@ -226,6 +227,97 @@ describe('API', () => {
 
       const response = await api.getEntitlements(testUsername);
       expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('User Account Details', () => {
+    const successDictResponse = {
+      username: testUsername,
+      email: testEmail,
+      is_active: true,
+    };
+    const successListResponse = [
+      successDictResponse,
+    ];
+
+    test.each(['Invalid Email', '%invalid'])('Invalid Identifiers', async (identifier) => {
+      await expect(() => api.getUser(identifier)).rejects.toThrowError(new Error('Invalid Argument!'));
+    });
+
+    test.each([successDictResponse, successListResponse])('Successful Fetch by email', async (successResponse) => {
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(200, successResponse);
+      const response = await api.getUser(testEmail);
+      expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
+    });
+
+    test.each([successDictResponse, successListResponse])('Successful Fetch by username', async (successResponse) => {
+      mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successResponse);
+      const response = await api.getUser(testUsername);
+      expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
+    });
+
+    it('Username retrieval 404 failure', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the username "${testUsername}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(() => throwError(404, ''));
+      try {
+        await api.getUser(testUsername);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
+    });
+
+    it('Username retrieval generic failure', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: "There was an error loading this user's data. Check the JavaScript console for detailed errors.",
+        type: 'danger',
+        topic: 'general',
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(() => throwError(500, ''));
+      try {
+        await api.getUser(testUsername);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
+    });
+
+    it('Email retrieval 404 failure', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the email "${testEmail}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(() => throwError(404, ''));
+      try {
+        await api.getUser(testEmail);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
+    });
+
+    it('Email retrieval generic failure', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: "There was an error loading this user's data. Check the JavaScript console for detailed errors.",
+        type: 'danger',
+        topic: 'general',
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(() => throwError(500, ''));
+      try {
+        await api.getUser(testEmail);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
     });
   });
 });
