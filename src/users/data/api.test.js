@@ -10,6 +10,7 @@ describe('API', () => {
   const testEmail = 'email@example.com';
   const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
   const enrollmentsApiUrl = `${getConfig().LMS_BASE_URL}/support/enrollment/${testUsername}`;
+  const entitlementsApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${testUsername}`;
   const passwordStatusApiUrl = `${getConfig().LMS_BASE_URL}/support/manage_user/${testUsername}`;
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
@@ -34,7 +35,6 @@ describe('API', () => {
   });
 
   describe('SSO Records Fetch', () => {
-
     it('No SSO data is Returned', async () => {
       mockAdapter.onGet(ssoRecordsApiUrl).reply(200, []);
       const response = await api.getSsoRecords(testUsername);
@@ -162,6 +162,69 @@ describe('API', () => {
       mockAdapter.onGet(verificationStatusApiUrl).reply(200, apiResponseData);
 
       const response = await api.getUserVerificationStatus(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('Entitlements Fetch', () => {
+    const defaultResult = {
+      course_uuid: 'test_uuid',
+      created: Date.toLocaleString(),
+      expired_at: null,
+      mode: 'no-id-professional',
+      modified: Date.toLocaleString(),
+      order_number: null,
+      refund_locked: true,
+      support_details: [],
+      user: testUsername,
+      uuid: 'uuid',
+    };
+    it('Single page result', async () => {
+      const expectedData = {
+        count: 1,
+        current_page: 1,
+        next: null,
+        results: [
+          defaultResult,
+        ],
+      };
+      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, expectedData);
+
+      const response = await api.getEntitlements(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('Multi page result', async () => {
+      const firstPageResult = {
+        count: 2,
+        current_page: 1,
+        next: 2,
+        results: [
+          defaultResult,
+        ],
+      };
+      const secondPageResult = {
+        count: 2,
+        current_page: 2,
+        next: null,
+        results: [
+          defaultResult,
+        ],
+      };
+
+      const expectedData = {
+        count: 2,
+        current_page: 1,
+        next: 2,
+        results: [
+          defaultResult,
+          defaultResult,
+        ],
+      };
+      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, firstPageResult);
+      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=2`).reply(200, secondPageResult);
+
+      const response = await api.getEntitlements(testUsername);
       expect(response).toEqual(expectedData);
     });
   });
