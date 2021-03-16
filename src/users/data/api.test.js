@@ -479,5 +479,46 @@ describe('API', () => {
         expect(response).toEqual(expectedData);
       });
     });
+
+    describe('Post Enrollment Change', () => {
+      const apiCallData = {
+        user: testUsername,
+        courseID: 'course-v1:testX',
+        oldMode: 'audit',
+        newMode: 'verified',
+        reason: 'test mode change',
+      };
+
+      const requestData = {
+        course_id: 'course-v1:testX',
+        new_mode: 'verified',
+        old_mode: 'audit',
+        reason: 'test mode change',
+      };
+
+      it('Unsuccessful enrollment change', async () => {
+        const expectedError = {
+          code: null,
+          dismissible: true,
+          text:
+            'There was an error submitting this enrollment. Check the JavaScript console for detailed errors.',
+          type: 'danger',
+          topic: 'enrollments',
+        };
+        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
+        const response = await api.postEnrollmentChange({ ...apiCallData });
+        expect(...response.errors).toEqual(expectedError);
+      });
+
+      it('Successful enrollment change', async () => {
+        const expectedSuccessResponse = {
+          topic: 'enrollments',
+          message: 'enrollment mode changed',
+        };
+        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(200, expectedSuccessResponse);
+        const response = await api.postEnrollmentChange({ ...apiCallData });
+        expect(response).toEqual(expectedSuccessResponse);
+      });
+    });
   });
 });
