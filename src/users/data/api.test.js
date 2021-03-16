@@ -364,4 +364,62 @@ describe('API', () => {
       });
     });
   });
+
+  describe('Toggle Password Status', () => {
+    const togglePasswordApiUrl = `${getConfig().LMS_BASE_URL}/support/manage_user/${testUsername}`;
+
+    it('Toggle Password Status Response', async () => {
+      const comment = 'Toggling Password Status';
+      const expectedResponse = { success: true };
+      mockAdapter.onPost(togglePasswordApiUrl, { comment }).reply(200, expectedResponse);
+
+      const response = await api.postTogglePasswordStatus(testUsername, comment);
+      expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  describe('Get Course Data', () => {
+    const courseUUID = 'uuid';
+
+    const courseDataApiUrl = `${getConfig().DISCOVERY_API_BASE_URL}/api/v1/courses/${courseUUID}/`;
+
+    it('Course Not Found', async () => {
+      mockAdapter.onGet(courseDataApiUrl).reply(() => throwError(404, ''));
+      const courseNotFoundResponse = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find summary data for this Course "${courseUUID}".`,
+        type: 'error',
+        topic: 'course-summary',
+      };
+
+      const response = await api.getCourseData(courseUUID);
+      expect(...response.errors).toEqual(courseNotFoundResponse);
+    });
+
+    it('Error fetching course summary', async () => {
+      mockAdapter.onGet(courseDataApiUrl).reply(() => throwError(500, ''));
+      const courseError = {
+        code: null,
+        dismissible: true,
+        text: `Error finding summary data for this Course "${courseUUID}".`,
+        type: 'danger',
+        topic: 'course-summary',
+      };
+
+      const response = await api.getCourseData(courseUUID);
+      expect(...response.errors).toEqual(courseError);
+    });
+
+    it('Successful course summary fetch', async () => {
+      const expectedData = {
+        uuid: courseUUID,
+        title: 'Test Course',
+      };
+      mockAdapter.onGet(courseDataApiUrl).reply(200, expectedData);
+
+      const response = await api.getCourseData(courseUUID);
+      expect(response).toEqual(expectedData);
+    });
+  });
 });
