@@ -66,17 +66,6 @@ describe('API', () => {
     });
   });
 
-  describe('Enrollments Fetch', () => {
-    it('Enrollments Response', async () => {
-      mockAdapter.onGet(enrollmentsApiUrl).reply(200, enrollmentsData);
-      const expectedData = { ...enrollmentsData };
-      delete expectedData.changeHandler;
-
-      const response = await api.getEnrollments(testUsername);
-      expect(response).toEqual(expectedData);
-    });
-  });
-
   describe('User Password Status Fetch', () => {
     it('Password Status Data', async () => {
       const expectedData = {
@@ -163,69 +152,6 @@ describe('API', () => {
       mockAdapter.onGet(verificationStatusApiUrl).reply(200, apiResponseData);
 
       const response = await api.getUserVerificationStatus(testUsername);
-      expect(response).toEqual(expectedData);
-    });
-  });
-
-  describe('Entitlements Fetch', () => {
-    const defaultResult = {
-      course_uuid: 'test_uuid',
-      created: Date.toLocaleString(),
-      expired_at: null,
-      mode: 'no-id-professional',
-      modified: Date.toLocaleString(),
-      order_number: null,
-      refund_locked: true,
-      support_details: [],
-      user: testUsername,
-      uuid: 'uuid',
-    };
-    it('Single page result', async () => {
-      const expectedData = {
-        count: 1,
-        current_page: 1,
-        next: null,
-        results: [
-          defaultResult,
-        ],
-      };
-      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, expectedData);
-
-      const response = await api.getEntitlements(testUsername);
-      expect(response).toEqual(expectedData);
-    });
-
-    it('Multi page result', async () => {
-      const firstPageResult = {
-        count: 2,
-        current_page: 1,
-        next: 2,
-        results: [
-          defaultResult,
-        ],
-      };
-      const secondPageResult = {
-        count: 2,
-        current_page: 2,
-        next: null,
-        results: [
-          defaultResult,
-        ],
-      };
-
-      const expectedData = {
-        count: 2,
-        current_page: 1,
-        next: 2,
-        results: [
-          defaultResult,
-          defaultResult,
-        ],
-      };
-      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, firstPageResult);
-      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=2`).reply(200, secondPageResult);
-
-      const response = await api.getEntitlements(testUsername);
       expect(response).toEqual(expectedData);
     });
   });
@@ -420,6 +346,138 @@ describe('API', () => {
 
       const response = await api.getCourseData(courseUUID);
       expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('Entitlements Operations', () => {
+    const entitlementUuid = 'uuid';
+
+    const requestData = {
+      action: 'REISSUE',
+      comments: 'Reissue Entitlement',
+      enrollmentCourseRun: 'course-v1:testX',
+    };
+
+    const expectedError = {
+      code: null,
+      dismissible: true,
+      text:
+        'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+      type: 'danger',
+      topic: 'entitlements',
+    };
+
+    const expectedSuccessfulResponseData = {
+      uuid: entitlementUuid,
+      topic: 'entitlements',
+    };
+
+    describe('Entitlements Fetch', () => {
+      const defaultResult = {
+        course_uuid: 'test_uuid',
+        created: Date.toLocaleString(),
+        expired_at: null,
+        mode: 'no-id-professional',
+        modified: Date.toLocaleString(),
+        order_number: null,
+        refund_locked: true,
+        support_details: [],
+        user: testUsername,
+        uuid: 'uuid',
+      };
+      it('Single page result', async () => {
+        const expectedData = {
+          count: 1,
+          current_page: 1,
+          next: null,
+          results: [
+            defaultResult,
+          ],
+        };
+        mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, expectedData);
+
+        const response = await api.getEntitlements(testUsername);
+        expect(response).toEqual(expectedData);
+      });
+
+      it('Multi page result', async () => {
+        const firstPageResult = {
+          count: 2,
+          current_page: 1,
+          next: 2,
+          results: [
+            defaultResult,
+          ],
+        };
+        const secondPageResult = {
+          count: 2,
+          current_page: 2,
+          next: null,
+          results: [
+            defaultResult,
+          ],
+        };
+
+        const expectedData = {
+          count: 2,
+          current_page: 1,
+          next: 2,
+          results: [
+            defaultResult,
+            defaultResult,
+          ],
+        };
+        mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, firstPageResult);
+        mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=2`).reply(200, secondPageResult);
+
+        const response = await api.getEntitlements(testUsername);
+        expect(response).toEqual(expectedData);
+      });
+    });
+
+    describe('Patch Entitlements', () => {
+      const patchEntitlementsApiUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${entitlementUuid}/`;
+
+      it('Unsuccessful patch', async () => {
+        mockAdapter.onPatch(patchEntitlementsApiUrl, requestData).reply(() => throwError(400, ''));
+        const response = await api.patchEntitlement({ uuid: entitlementUuid, requestData });
+        expect(...response.errors).toEqual(expectedError);
+      });
+
+      it('Successful patch', async () => {
+        mockAdapter.onPatch(patchEntitlementsApiUrl, requestData).reply(200, expectedSuccessfulResponseData);
+        const response = await api.patchEntitlement({ uuid: entitlementUuid, requestData });
+        expect(response).toEqual(expectedSuccessfulResponseData);
+      });
+    });
+
+    describe('Post Entitlements', () => {
+      const postEntitlementApiUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/`;
+
+      it('Unsuccessful post', async () => {
+        mockAdapter.onPost(postEntitlementApiUrl, requestData).reply(() => throwError(400, ''));
+        const response = await api.postEntitlement({ requestData });
+        expect(...response.errors).toEqual(expectedError);
+      });
+
+      it('Successful post', async () => {
+        mockAdapter.onPost(postEntitlementApiUrl, requestData).reply(200, expectedSuccessfulResponseData);
+        const response = await api.postEntitlement({ requestData });
+        expect(response).toEqual(expectedSuccessfulResponseData);
+      });
+    });
+  });
+
+  describe('Enrollment Operations', () => {
+    describe('Enrollments Fetch', () => {
+      it('Enrollments Response', async () => {
+        mockAdapter.onGet(enrollmentsApiUrl).reply(200, enrollmentsData);
+        const expectedData = { ...enrollmentsData };
+        delete expectedData.changeHandler;
+
+        const response = await api.getEnrollments(testUsername);
+        expect(response).toEqual(expectedData);
+      });
     });
   });
 });
