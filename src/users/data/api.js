@@ -314,7 +314,7 @@ export async function postEnrollmentChange({
           code: null,
           dismissible: true,
           text:
-            'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
+            'There was an error submitting this enrollment. Check the JavaScript console for detailed errors.',
           type: 'danger',
           topic: 'enrollments',
         },
