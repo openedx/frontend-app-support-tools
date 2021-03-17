@@ -63,6 +63,7 @@
     "jest": "26.6.3",
     "react-test-renderer": "17.0.1",
     "reactifex": "1.1.1",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "@testing-library/react": "10.3.0"
   }
 }
