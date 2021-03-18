@@ -18,7 +18,8 @@
     "start": "fedx-scripts webpack-dev-server --progress",
     "debug-test": "node --inspect-brk node_modules/.bin/jest --coverage --runInBand",
     "test": "TZ=UTC fedx-scripts jest --coverage --runInBand",
-    "snapshot": "fedx-scripts jest --updateSnapshot"
+    "snapshot": "fedx-scripts jest --updateSnapshot",
+    "test:pact": "fedx-scripts jest --runInBand --setupFiles ./pact/setup.js --setupFilesAfterEnv ./pact/jest-wrapper.js --testMatch \"**/*.test.pact.js\""
   },
   "author": "edX",
   "license": "AGPL-3.0",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@edx/frontend-build": "^5.5.1",
+    "@pact-foundation/pact": "^9.15.3",
     "axios-mock-adapter": "^1.19.0",
     "check-prop-types": "1.1.2",
     "codecov": "3.8.1",
