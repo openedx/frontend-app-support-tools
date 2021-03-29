@@ -91,6 +91,7 @@ export default function CreateEntitlementForm({
         <div>
           <Button
             variant="primary"
+            disabled={!(courseUuid && mode && comments)}
             className={classNames(
               'mr-3',
               { disabled: !(courseUuid && mode && comments) },

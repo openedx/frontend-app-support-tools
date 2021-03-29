@@ -88,6 +88,7 @@ export default function ExpireEntitlementForm({
               'btn-primary mr-3',
               { disabled: !(courseUuid && mode && comments) },
             )}
+            disabled={!(courseUuid && mode && comments)}
             onClick={submit}
           >
             Submit
