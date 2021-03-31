@@ -14,7 +14,15 @@ const entitlementsData = {
         supportDetails: [{
           supportUser: 'admin',
           action: 'CREATE',
+          actionCreated: Date().toLocaleString(),
           comments: 'creating entitlement',
+          unenrolledRun: null,
+        },
+        {
+          supportUser: 'admin',
+          action: 'EXPIRE',
+          actionCreated: Date().toLocaleString(),
+          comments: 'expiring entitlement',
           unenrolledRun: null,
         },
         ],
