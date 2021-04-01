@@ -1,4 +1,4 @@
-import { getConfig } from '@edx/frontend-platform';
+import { getConfig, ensureConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import * as messages from '../../user-messages/messages';
 import { isEmail, isValidUsername } from '../../utils/index';
@@ -156,6 +156,44 @@ export async function getUserPasswordStatus(userIdentifier) {
   return data;
 }
 
+ensureConfig([
+  'LICENSE_MANAGER_URL',
+], 'getLicense');
+
+export async function getLicense(userEmail) {
+  const defaultResponse = {
+    status: '',
+    results: [],
+  };
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`,
+      { user_email: userEmail },
+    );
+    defaultResponse.results = data;
+    return defaultResponse;
+  } catch (error) {
+    let errorStatus = -1;
+
+    if ('customAttributes' in error) {
+      errorStatus = error.customAttributes.httpErrorStatus;
+    }
+
+    if (errorStatus === 404) {
+      defaultResponse.status = 'No record found';
+    } else if (errorStatus === 400) {
+      defaultResponse.status = 'User email is not provided';
+    } else if (errorStatus === 403) {
+      defaultResponse.status = 'Forbidden: User does not have permission to view this data';
+    } else if (errorStatus === 401) {
+      defaultResponse.status = 'Unauthenticated: Could not autheticate user to view this data';
+    } else {
+      defaultResponse.status = 'Unable to connect to the service';
+    }
+    return defaultResponse;
+  }
+}
+
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
@@ -163,6 +201,7 @@ export async function getAllUserData(userIdentifier) {
   let enrollments = [];
   let verificationStatus = null;
   let ssoRecords = null;
+  let licenses = [];
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
@@ -178,6 +217,7 @@ export async function getAllUserData(userIdentifier) {
     verificationStatus = await getUserVerificationStatus(user.username);
     ssoRecords = await getSsoRecords(user.username);
     user.passwordStatus = await getUserPasswordStatus(user.username);
+    licenses = await getLicense(user.email);
   }
 
   return {
@@ -187,6 +227,7 @@ export async function getAllUserData(userIdentifier) {
     enrollments,
     verificationStatus,
     ssoRecords,
+    licenses,
   };
 }
 

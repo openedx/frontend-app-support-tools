@@ -15,6 +15,7 @@ describe('API', () => {
   const entitlementsApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${testUsername}`;
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
+  const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
 
   let mockAdapter;
 
@@ -278,6 +279,7 @@ describe('API', () => {
       mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
       mockAdapter.onGet(verificationStatusApiUrl).reply(200, {});
       mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
+      mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(200, []);
 
       const response = await api.getAllUserData(testUsername);
       expect(response).toEqual({
@@ -287,6 +289,7 @@ describe('API', () => {
         verificationStatus: { extraData: {} },
         enrollments: {},
         entitlements: { results: [], next: null },
+        licenses: { results: [], status: '' },
       });
     });
   });
@@ -529,6 +532,54 @@ describe('API', () => {
         mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(200, expectedSuccessResponse);
         const response = await api.postEnrollmentChange({ ...apiCallData });
         expect(response).toEqual(expectedSuccessResponse);
+      });
+
+      it('Successful license fetch with data', async () => {
+        const expectedSuccessResponse = [
+          {
+            status: 'unassigned',
+            assigned_date: null,
+            activation_date: null,
+            revoked_date: null,
+            last_remind_date: null,
+            subscription_plan_title: 'test',
+            subscription_plan_expiration_date: '2021-04-01',
+            activation_link: 'http://localhost:8734/test/licenses/None/activate',
+          },
+        ];
+        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(200, expectedSuccessResponse);
+        const response = await api.getLicense(testEmail);
+        expect(response).toEqual({ results: expectedSuccessResponse, status: '' });
+      });
+
+      it('Unsuccessful license fetch when no email provided', async () => {
+        mockAdapter.onPost(licensesApiUrl, { user_email: null }).reply(() => throwError(400, ''));
+        const response = await api.getLicense(null);
+        expect(response).toEqual({ results: [], status: 'User email is not provided' });
+      });
+
+      it('Unsuccessful license fetch when no record found', async () => {
+        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(() => throwError(404, ''));
+        const response = await api.getLicense(testEmail);
+        expect(response).toEqual({ results: [], status: 'No record found' });
+      });
+
+      it('Unsuccessful license fetch when user does not have permission to license manager', async () => {
+        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(() => throwError(403, ''));
+        const response = await api.getLicense(testEmail);
+        expect(response).toEqual({ results: [], status: 'Forbidden: User does not have permission to view this data' });
+      });
+
+      it('Unsuccessful license fetch when user is not authenticated', async () => {
+        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(() => throwError(401, ''));
+        const response = await api.getLicense(testEmail);
+        expect(response).toEqual({ results: [], status: 'Unauthenticated: Could not autheticate user to view this data' });
+      });
+
+      it('Unsuccessful license fetch when unexpected error comes', async () => {
+        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(() => throwError(500, ''));
+        const response = await api.getLicense(testEmail);
+        expect(response).toEqual({ results: [], status: 'Unable to connect to the service' });
       });
     });
   });
