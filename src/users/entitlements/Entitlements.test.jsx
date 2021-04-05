@@ -48,6 +48,30 @@ describe('Entitlements Listing', () => {
     expect(collapsible.text()).toEqual('Entitlements (0)');
   });
 
+  it('Support Details data', () => {
+    wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} />);
+    const tableRowsLengths = [2, 0];
+
+    const tableData = wrapper.find('table.table');
+    tableData.find('tbody tr').forEach((row, i) => {
+      const detailButton = row.find('button#details');
+      expect(detailButton.text()).toEqual('Details');
+      let supportDetailsModal = wrapper.find('Modal#support-details');
+      expect(supportDetailsModal.prop('open')).toEqual(false);
+      detailButton.simulate('click');
+
+      supportDetailsModal = wrapper.find('Modal#support-details');
+      expect(supportDetailsModal.prop('open')).toEqual(true);
+      expect(supportDetailsModal.prop('title')).toEqual('Entitlement Support Details');
+      expect(supportDetailsModal.find('table thead tr th')).toHaveLength(5);
+      expect(supportDetailsModal.find('table tbody tr')).toHaveLength(tableRowsLengths[i]);
+      supportDetailsModal.find('button.btn-link').simulate('click');
+
+      supportDetailsModal = wrapper.find('Modal#support-details');
+      expect(supportDetailsModal.prop('open')).toEqual(false);
+    });
+  });
+
   describe('Expire and Reissue entitlement buttons', () => {
     describe('Expire Entitlement button', () => {
       it('Disabled Expire entitlement button', () => {
@@ -98,7 +122,7 @@ describe('Entitlements Listing', () => {
         const tableData = wrapper.find('table.table');
 
         tableData.find('tbody tr').forEach(row => {
-          const reissueButton = row.find('button.btn-outline-primary').last();
+          const reissueButton = row.find('button#reissue').last();
           expect(reissueButton.text()).toEqual('Reissue');
           expect(reissueButton.prop('disabled')).toBeTruthy();
         });

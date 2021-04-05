@@ -4,7 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 
 import {
-  Button, Collapsible, TransitionReplace,
+  Button, Collapsible, Modal, TransitionReplace,
 } from '@edx/paragon';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import EntitlementForm from './EntitlementForm';
@@ -27,6 +27,9 @@ export default function Entitlements({
   const [courseSummaryUUID, setCourseSummaryUUID] = useState(null);
   const [courseSummaryData, setCourseSummaryData] = useState(null);
   const [courseSummaryErrors, setCourseSummaryErrors] = useState(false);
+  const [entitlementDetailModalIsOpen, setEntitlementDetailModalIsOpen] = useState(false);
+  const [entitlementSupportDetailsTitle, setEntitlementSupportDetailsTitle] = useState('');
+  const [entitlementSupportDetails, setEntitlementSupportDetails] = useState([]);
   const formRef = useRef(null);
   const summaryRef = useRef(null);
 
@@ -44,6 +47,20 @@ export default function Entitlements({
     setCourseSummaryUUID(null);
     setCourseSummaryErrors(false);
   }
+
+  // Modal to display Support Details for each Entitlement
+  const openEntitlementsSupportDetailsModal = (title, supportDetails) => {
+    const tableData = supportDetails.map(supportDetail => ({
+      action: supportDetail.action,
+      comments: supportDetail.comments,
+      actionCreated: formatDate(supportDetail.created),
+      supportUser: supportDetail.supportUser,
+      unenrolledRun: supportDetail.unenrolledRun,
+    }));
+    setEntitlementSupportDetails(tableData);
+    setEntitlementSupportDetailsTitle(title);
+    setEntitlementDetailModalIsOpen(true);
+  };
 
   const handleCourseSummaryDataGet = useCallback((courseUUID) => {
     if (courseUUID !== null && courseUUID !== undefined) {
@@ -126,8 +143,19 @@ export default function Entitlements({
         displayValue: (
           <div>
             <Button
+              id="details"
               type="button"
               variant="outline-primary"
+              onClick={() => {
+                openEntitlementsSupportDetailsModal('Entitlement Support Details', entitlement.supportDetails);
+              }}
+            >
+              Details
+            </Button>
+            <Button
+              id="reissue"
+              type="button"
+              variant="outline-primary mt-2 mr-2"
               disabled={!entitlement.enrollmentCourseRun}
               onClick={() => {
                 clearCourseSummary();
@@ -139,8 +167,7 @@ export default function Entitlements({
             </Button>
             <Button
               type="button"
-              className="mt-2"
-              variant="outline-danger"
+              variant="outline-danger mt-2"
               disabled={entitlement.expiredAt}
               onClick={() => {
                 clearCourseSummary();
@@ -193,6 +220,24 @@ export default function Entitlements({
     },
   ];
 
+  const supportDetailsColumn = [
+    {
+      label: 'Action', key: 'action', width: 'col-3',
+    },
+    {
+      label: 'Comments', key: 'comments', width: 'col-3',
+    },
+    {
+      label: 'Action Creation Timestamp', key: 'actionCreated', width: 'col-3',
+    },
+    {
+      label: 'Support User', key: 'supportUser', width: 'col-3',
+    },
+    {
+      label: 'Unenrolled Run', key: 'unenrolledRun', width: 'col-3',
+    },
+  ];
+
   const tableDataSortable = [...tableData];
 
   return (
@@ -240,6 +285,18 @@ export default function Entitlements({
           />
         ) : (<React.Fragment key="nothing" />)}
       </TransitionReplace>
+      <Modal
+        open={entitlementDetailModalIsOpen}
+        onClose={() => setEntitlementDetailModalIsOpen(false)}
+        title={entitlementSupportDetailsTitle}
+        id="support-details"
+        body={(
+          <Table
+            data={entitlementSupportDetails}
+            columns={supportDetailsColumn}
+          />
+        )}
+      />
       <Collapsible title={`Entitlements (${tableData.length})`} defaultOpen={expanded}>
         <Table
           className="w-100"
