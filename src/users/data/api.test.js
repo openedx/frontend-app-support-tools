@@ -304,6 +304,17 @@ describe('API', () => {
     });
   });
 
+  describe('Reset Password', () => {
+    const resetPasswordApiUrl = `${getConfig().LMS_BASE_URL}/account/password`;
+
+    it('Reset Password Response', async () => {
+      const expectedResponse = { };
+      mockAdapter.onPost(resetPasswordApiUrl, { email: testEmail }).reply(200, expectedResponse);
+      const response = await api.postResetPassword(testEmail);
+      expect(response).toEqual(expectedResponse);
+    });
+  });
+
   describe('Get Course Data', () => {
     const courseUUID = 'uuid';
 

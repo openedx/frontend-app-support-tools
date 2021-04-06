@@ -51,14 +51,14 @@ describe('User Summary Component Tests', () => {
 
   describe('Disable User Button', () => {
     it('Disable User button for active user', () => {
-      const passwordActionButton = wrapper.find('.toggle-password').hostNodes();
+      const passwordActionButton = wrapper.find('#toggle-password').hostNodes();
       expect(passwordActionButton.text()).toEqual('Disable User');
       expect(passwordActionButton.disabled).toBeFalsy();
     });
 
     it('Disable User Modal', () => {
       const mockApiCall = jest.spyOn(api, 'postTogglePasswordStatus').mockImplementation(() => {});
-      const passwordActionButton = wrapper.find('.toggle-password').hostNodes();
+      const passwordActionButton = wrapper.find('#toggle-password').hostNodes();
       let disableDialogModal = wrapper.find('Modal#user-account-status-toggle');
 
       expect(disableDialogModal.prop('open')).toEqual(false);
@@ -89,14 +89,14 @@ describe('User Summary Component Tests', () => {
     });
 
     it('Enable User button for disabled user', () => {
-      const passwordActionButton = wrapper.find('.toggle-password').hostNodes();
+      const passwordActionButton = wrapper.find('#toggle-password').hostNodes();
       expect(passwordActionButton.text()).toEqual('Enable User');
       expect(passwordActionButton.disabled).toBeFalsy();
     });
 
     it('Enable User Modal', () => {
       const mockApiCall = jest.spyOn(api, 'postTogglePasswordStatus').mockImplementation(() => {});
-      const passwordActionButton = wrapper.find('.toggle-password').hostNodes();
+      const passwordActionButton = wrapper.find('#toggle-password').hostNodes();
       let enableUserModal = wrapper.find('Modal#user-account-status-toggle');
 
       expect(enableUserModal.prop('open')).toEqual(false);
@@ -112,6 +112,37 @@ describe('User Summary Component Tests', () => {
       enableUserModal.find('button.btn-danger').hostNodes().simulate('click');
 
       expect(UserSummaryData.changeHandler).toHaveBeenCalled();
+      mockApiCall.mockRestore();
+    });
+  });
+
+  describe('Reset Password Button', () => {
+    it('Reset Password button for a User', () => {
+      const passwordResetButton = wrapper.find('#reset-password').hostNodes();
+      expect(passwordResetButton.text()).toEqual('Reset Password');
+    });
+
+    it('Reset Password Modal', () => {
+      const mockApiCall = jest.spyOn(api, 'postResetPassword').mockImplementation(() => {});
+      const passwordResetButton = wrapper.find('#reset-password').hostNodes();
+      let resetPasswordModal = wrapper.find('Modal#user-account-reset-password');
+
+      expect(resetPasswordModal.prop('open')).toEqual(false);
+      expect(passwordResetButton.text()).toEqual('Reset Password');
+
+      passwordResetButton.simulate('click');
+      resetPasswordModal = wrapper.find('Modal#user-account-reset-password');
+
+      expect(resetPasswordModal.prop('open')).toEqual(true);
+      expect(resetPasswordModal.prop('title')).toEqual('Reset Password');
+      const confirmLabel = resetPasswordModal.find('label');
+      expect(confirmLabel.text()).toContain('Do you wish to proceed?');
+      resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
+
+      expect(UserSummaryData.changeHandler).toHaveBeenCalled();
+      resetPasswordModal.find('button.btn-link').simulate('click');
+      resetPasswordModal = wrapper.find('Modal#user-account-reset-password');
+      expect(resetPasswordModal.prop('open')).toEqual(false);
       mockApiCall.mockRestore();
     });
   });
@@ -137,11 +168,11 @@ describe('User Summary Component Tests', () => {
       wrapper = mount(<UserSummary {...UserSummaryData} userData={userData} />);
     });
     it('Password History Modal', () => {
-      const passwordHistoryButton = wrapper.find('button.ml-1');
+      const passwordHistoryButton = wrapper.find('button#toggle-password-history');
       let historyModal = wrapper.find('Modal#password-history');
 
       expect(historyModal.prop('open')).toEqual(false);
-      expect(passwordHistoryButton.text()).toEqual('Show history');
+      expect(passwordHistoryButton.text()).toEqual('Show History');
       expect(passwordHistoryButton.disabled).toBeFalsy();
 
       passwordHistoryButton.simulate('click');

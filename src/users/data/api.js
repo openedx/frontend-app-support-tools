@@ -332,3 +332,13 @@ export async function postTogglePasswordStatus(user, comment) {
   );
   return data;
 }
+
+export async function postResetPassword(email) {
+  const { data } = await getAuthenticatedHttpClient().post(
+    `${getConfig().LMS_BASE_URL}/account/password`,
+    {
+      email,
+    },
+  );
+  return data;
+}
