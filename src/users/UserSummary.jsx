@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Input } from '@edx/paragon';
 
-import { postTogglePasswordStatus } from './data/api';
+import { postTogglePasswordStatus, postResetPassword } from './data/api';
 import Table from '../Table';
 import formatDate from '../dates/formatDate';
 
@@ -16,6 +16,7 @@ export default function UserSummary({
   const [idvModalIsOpen, setIdvModalIsOpen] = useState(false);
   const [disableUserModalIsOpen, setDisableUserModalIsOpen] = useState(false);
   const [disableHistoryModalIsOpen, setDisableHistoryModalIsOpen] = useState(false);
+  const [resetPasswordModalIsOpen, setResetPasswordModalIsOpen] = useState(false);
   const [comment, setComment] = useState('');
   const [userPasswordHistoryData, setUserPasswordHistoryData] = useState([]);
   const [extraSsoDataTitle, setSsoExtraDataTitle] = useState('');
@@ -32,6 +33,11 @@ export default function UserSummary({
 
   const togglePasswordStatus = () => {
     postTogglePasswordStatus(userData.username, comment);
+    changeHandler();
+  };
+
+  const resetPassword = () => {
+    postResetPassword(userData.email);
     changeHandler();
   };
 
@@ -248,19 +254,25 @@ export default function UserSummary({
             {userToggleVisible && (
               <div>
                 <Button
-                  className="toggle-password"
+                  id="toggle-password"
                   variant={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'danger' : 'primary'}`}
                   onClick={() => setDisableUserModalIsOpen(true)}
                 >
                   {userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
                 </Button>
+                <Button
+                  id="reset-password"
+                  variant="btn btn-danger ml-1"
+                  onClick={() => setResetPasswordModalIsOpen(true)}
+                >Reset Password
+                </Button>
                 {userData.passwordStatus.passwordToggleHistory.length > 0 && (
                   <Button
-                    variant="outline-primary"
-                    className="ml-1"
+                    id="toggle-password-history"
+                    variant="outline-primary ml-1"
                     onClick={() => openHistoryModel()}
                   >
-                    Show history
+                    Show History
                   </Button>
                 )}
               </div>
@@ -345,6 +357,29 @@ export default function UserSummary({
                 value={comment}
                 onChange={(event) => setComment(event.target.value)}
               />
+            </div>
+          )}
+        />
+        <Modal
+          open={resetPasswordModalIsOpen}
+          id="user-account-reset-password"
+          buttons={[
+            <Button
+              variant="danger"
+              onClick={resetPassword}
+            >
+              Confirm
+            </Button>,
+          ]}
+          onClose={() => setResetPasswordModalIsOpen(false)}
+          title="Reset Password"
+          body={(
+            <div>
+              { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
+              <label>
+                We will send a message with password recovery instructions to this email address {userData.email}.
+                Do you wish to proceed?
+              </label>
             </div>
           )}
         />
