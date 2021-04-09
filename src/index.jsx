@@ -1,10 +1,11 @@
 import 'babel-polyfill';
 
 import {
-  APP_INIT_ERROR, APP_READY, subscribe, initialize,
+  APP_INIT_ERROR, APP_READY, subscribe, initialize, mergeConfig,
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
@@ -16,6 +17,10 @@ import UserPage from './users/UserPage';
 import UserMessagesProvider from './user-messages/UserMessagesProvider';
 
 import './index.scss';
+
+mergeConfig({
+  LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
+});
 
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();

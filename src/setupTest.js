@@ -8,6 +8,10 @@ import { MockAuthService } from '@edx/frontend-platform/auth';
 
 Enzyme.configure({ adapter: new Adapter() });
 
+mergeConfig({
+  LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
+});
+
 initialize({
   handlers: {
     config: () => {

@@ -11,6 +11,7 @@ import UserMessagesContext from '../user-messages/UserMessagesContext';
 import { isEmail, isValidUsername } from '../utils/index';
 import { getAllUserData } from './data/api';
 import Enrollments from './Enrollments';
+import Licenses from './Licenses';
 import Entitlements from './entitlements/Entitlements';
 import UserSearch from './UserSearch';
 import UserSummary from './UserSummary';
@@ -27,6 +28,7 @@ export default function UserPage({ location }) {
   const [loading, setLoading] = useState(false);
   const [showEnrollments, setShowEnrollments] = useState(true);
   const [showEntitlements, setShowEntitlements] = useState(false);
+  const [showLicenses, setShowLicenses] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   function pushHistoryIfChanged(nextUrl) {
@@ -93,6 +95,7 @@ export default function UserPage({ location }) {
     setSearching(true);
     setShowEntitlements(false);
     setShowEnrollments(true);
+    setShowLicenses(false);
     handleFetchSearchResults(searchValue);
   });
 
@@ -103,12 +106,14 @@ export default function UserPage({ location }) {
 
   const handleEntitlementsChange = useCallback(() => {
     setShowEntitlements(true);
+    setShowLicenses(true);
     setShowEnrollments(false);
     handleFetchSearchResults(userIdentifier);
   });
 
   const handleEnrollmentsChange = useCallback(() => {
     setShowEntitlements(false);
+    setShowLicenses(false);
     setShowEnrollments(true);
     handleFetchSearchResults(userIdentifier);
   });
@@ -149,6 +154,11 @@ export default function UserPage({ location }) {
             ssoRecords={data.ssoRecords}
             changeHandler={handleUserSummaryChange}
           />
+          <Licenses
+            data={data.licenses.results}
+            status={data.licenses.status}
+            expanded={showLicenses}
+          />
           <Entitlements
             user={data.user.username}
             data={data.entitlements}
@@ -161,6 +171,7 @@ export default function UserPage({ location }) {
             changeHandler={handleEnrollmentsChange}
             expanded={showEnrollments}
           />
+
         </>
       )}
       {!loading && !userIdentifier && (
