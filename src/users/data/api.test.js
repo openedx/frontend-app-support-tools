@@ -312,7 +312,7 @@ describe('API', () => {
 
     it('Reset Password Response', async () => {
       const expectedResponse = { };
-      mockAdapter.onPost(resetPasswordApiUrl, { email: testEmail }).reply(200, expectedResponse);
+      mockAdapter.onPost(resetPasswordApiUrl, `email_from_support_tools=${testEmail}`).reply(200, expectedResponse);
       const response = await api.postResetPassword(testEmail);
       expect(response).toEqual(expectedResponse);
     });
