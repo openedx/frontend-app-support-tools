@@ -1,12 +1,11 @@
-import { getConfig, ensureConfig } from '@edx/frontend-platform';
+import { ensureConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import * as messages from '../../user-messages/messages';
-import { isEmail, isValidUsername } from '../../utils/index';
+import * as messages from '../../userMessages/messages';
+import * as AppUrls from './urls';
+import { isEmail } from '../../utils/index';
 
 export async function getEntitlements(username, page = 1) {
-  const baseURL = `${
-    getConfig().LMS_BASE_URL
-  }/api/entitlements/v1/entitlements/`;
+  const baseURL = AppUrls.getEntitlementUrl();
   const queryString = `user=${username}&page=${page}`;
   const { data } = await getAuthenticatedHttpClient().get(
     `${baseURL}?${queryString}`,
@@ -21,14 +20,14 @@ export async function getEntitlements(username, page = 1) {
 
 export async function getEnrollments(username) {
   const { data } = await getAuthenticatedHttpClient().get(
-    `${getConfig().LMS_BASE_URL}/support/enrollment/${username}`,
+    AppUrls.getEnrollmentsUrl(username),
   );
   return data;
 }
 
 export async function getSsoRecords(username) {
   const { data } = await getAuthenticatedHttpClient().get(
-    `${getConfig().LMS_BASE_URL}/support/sso_records/${username}`,
+    AppUrls.getSSORecordsUrl(username),
   );
   let parsedData = [];
   if (data.length > 0) {
@@ -41,18 +40,7 @@ export async function getSsoRecords(username) {
 }
 
 export async function getUser(userIdentifier) {
-  let url = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
-  const identifierIsEmail = isEmail(userIdentifier);
-  const identifierIsUsername = isValidUsername(userIdentifier);
-
-  // todo: we have already validated the input to fall into one of these cases.
-  // The following `if` is not required.
-  if (!(identifierIsEmail || identifierIsUsername)) {
-    throw new Error('Invalid Argument!');
-  }
-  url = identifierIsEmail
-    ? (url += `?email=${userIdentifier}`)
-    : (url += `/${userIdentifier}`);
+  const url = AppUrls.getUserAccountUrl(userIdentifier);
 
   try {
     const { data } = await getAuthenticatedHttpClient().get(url);
@@ -63,7 +51,7 @@ export async function getUser(userIdentifier) {
     // never do this in a customer-facing app.
     // eslint-disable-next-line no-console
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
-    const notFoundErrorText = (identifierIsEmail
+    const notFoundErrorText = (isEmail(userIdentifier)
       ? messages.USER_EMAIL_IDENTIFIER_NOT_FOUND_ERROR
       : messages.USERNAME_IDENTIFIER_NOT_FOUND_ERROR
     ).replace('{identifier}', userIdentifier);
@@ -98,9 +86,7 @@ export async function getUserVerificationDetail(username) {
   };
   try {
     const { data } = await getAuthenticatedHttpClient().get(
-      `${
-        getConfig().LMS_BASE_URL
-      }/api/user/v1/accounts/${username}/verifications/`,
+      AppUrls.getUserVerificationDetailUrl(username),
     );
     return data;
   } catch (error) {
@@ -109,9 +95,6 @@ export async function getUserVerificationDetail(username) {
     // never do this in a customer-facing app.
     // eslint-disable-next-line no-console
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
-    if (error.customAttributes.httpErrorStatus === 404) {
-      return defaultResponse;
-    }
     return defaultResponse;
   }
 }
@@ -119,9 +102,7 @@ export async function getUserVerificationDetail(username) {
 export async function getUserVerificationStatus(username) {
   try {
     const { data } = await getAuthenticatedHttpClient().get(
-      `${
-        getConfig().LMS_BASE_URL
-      }/api/user/v1/accounts/${username}/verification_status/`,
+      AppUrls.getUserVerificationStatusUrl(username),
     );
     const extraData = await getUserVerificationDetail(username);
     data.extraData = extraData;
@@ -151,7 +132,7 @@ export async function getUserVerificationStatus(username) {
 
 export async function getUserPasswordStatus(userIdentifier) {
   const { data } = await getAuthenticatedHttpClient().get(
-    `${getConfig().LMS_BASE_URL}/support/manage_user/${userIdentifier}`,
+    AppUrls.getUserPasswordStatusUrl(userIdentifier),
   );
   return data;
 }
@@ -167,7 +148,7 @@ export async function getLicense(userEmail) {
   };
   try {
     const { data } = await getAuthenticatedHttpClient().post(
-      `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`,
+      AppUrls.getLicenseManagerUrl(),
       { user_email: userEmail },
     );
     defaultResponse.results = data;
@@ -234,7 +215,7 @@ export async function getAllUserData(userIdentifier) {
 export async function getCourseData(courseUUID) {
   try {
     const { data } = await getAuthenticatedHttpClient().get(
-      `${getConfig().DISCOVERY_API_BASE_URL}/api/v1/courses/${courseUUID}/`,
+      AppUrls.getCourseDataUrl(courseUUID),
     );
     return data;
   } catch (error) {
@@ -266,7 +247,7 @@ export async function patchEntitlement({
 }) {
   try {
     const { data } = await getAuthenticatedHttpClient().patch(
-      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/${uuid}/`, requestData,
+      AppUrls.getEntitlementUrl(uuid), requestData,
     );
     return data;
   } catch (error) {
@@ -297,7 +278,7 @@ export async function postEntitlement({
 }) {
   try {
     const { data } = await getAuthenticatedHttpClient().post(
-      `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/`, requestData,
+      AppUrls.getEntitlementUrl(), requestData,
     );
     return data;
   } catch (error) {
@@ -332,7 +313,7 @@ export async function postEnrollmentChange({
 }) {
   try {
     const { data } = await getAuthenticatedHttpClient().post(
-      `${getConfig().LMS_BASE_URL}/support/enrollment/${user}`,
+      AppUrls.getEnrollmentChangeUrl(user),
       {
         course_id: courseID,
         new_mode: newMode,
@@ -366,7 +347,7 @@ export async function postEnrollmentChange({
 
 export async function postTogglePasswordStatus(user, comment) {
   const { data } = await getAuthenticatedHttpClient().post(
-    `${getConfig().LMS_BASE_URL}/support/manage_user/${user}`,
+    AppUrls.getTogglePasswordStatusUrl(user),
     {
       comment,
     },
@@ -376,7 +357,7 @@ export async function postTogglePasswordStatus(user, comment) {
 
 export async function postResetPassword(email) {
   const { data } = await getAuthenticatedHttpClient().post(
-    `${getConfig().LMS_BASE_URL}/account/password`, `email_from_support_tools=${email}`,
+    AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`,
   );
   return data;
 }

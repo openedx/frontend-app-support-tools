@@ -2,11 +2,11 @@ import { mount } from 'enzyme';
 import { waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { waitForComponentToPaint } from '../setupTest';
+import { waitForComponentToPaint } from '../../setupTest';
 import EnrollmentForm from './EnrollmentForm';
-import enrollmentFormData from './data/test/enrollmentForm';
-import UserMessagesProvider from '../user-messages/UserMessagesProvider';
-import * as api from './data/api';
+import enrollmentFormData from '../data/test/enrollmentForm';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
+import * as api from '../data/api';
 
 const EnrollmentFormWrapper = (props) => (
   <UserMessagesProvider>

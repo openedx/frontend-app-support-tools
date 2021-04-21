@@ -9,12 +9,11 @@ import {
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import EntitlementForm from './EntitlementForm';
 import { CREATE, REISSUE, EXPIRE } from './EntitlementActions';
-import sort from '../sort';
 import Table from '../../Table';
-import CourseSummary from '../CourseSummary';
+import CourseSummary from '../courseSummary/CourseSummary';
 import { getCourseData } from '../data/api';
-import UserMessagesContext from '../../user-messages/UserMessagesContext';
-import formatDate from '../../dates/formatDate';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
+import { formatDate, sort } from '../../utils';
 
 export default function Entitlements({
   data, changeHandler, user, expanded,

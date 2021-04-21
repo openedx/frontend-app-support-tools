@@ -4,7 +4,7 @@ import { Modal, Button, Input } from '@edx/paragon';
 
 import { postTogglePasswordStatus, postResetPassword } from './data/api';
 import Table from '../Table';
-import formatDate from '../dates/formatDate';
+import { formatDate } from '../utils';
 
 export default function UserSummary({
   userData,

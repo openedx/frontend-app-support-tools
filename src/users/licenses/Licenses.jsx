@@ -5,9 +5,8 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { Collapsible, Badge } from '@edx/paragon';
-import sort from './sort';
-import Table from '../Table';
-import formatDate from '../dates/formatDate';
+import Table from '../../Table';
+import { formatDate, sort } from '../../utils';
 
 export default function Licenses({
   data, status, expanded,

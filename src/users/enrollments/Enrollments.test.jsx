@@ -2,8 +2,8 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import Enrollments from './Enrollments';
-import enrollmentsData from './data/test/enrollments';
-import UserMessagesProvider from '../user-messages/UserMessagesProvider';
+import enrollmentsData from '../data/test/enrollments';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 
 const EnrollmentPageWrapper = (props) => (
   <UserMessagesProvider>

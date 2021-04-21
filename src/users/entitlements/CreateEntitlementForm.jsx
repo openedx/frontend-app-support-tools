@@ -5,8 +5,8 @@ import {
 } from '@edx/paragon';
 import classNames from 'classnames';
 
-import UserMessagesContext from '../../user-messages/UserMessagesContext';
-import AlertList from '../../user-messages/AlertList';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
+import AlertList from '../../userMessages/AlertList';
 import { postEntitlement } from '../data/api';
 import { CREATE } from './EntitlementActions';
 import { EntitlementPropTypes, EntitlementDefaultProps } from './PropTypes';

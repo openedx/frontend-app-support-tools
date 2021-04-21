@@ -3,7 +3,7 @@ import React from 'react';
 
 import EntitlementForm from './EntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
-import UserMessagesProvider from '../../user-messages/UserMessagesProvider';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import { CREATE, REISSUE, EXPIRE } from './EntitlementActions';
 
 const EntitlementFormWrapper = (props) => (

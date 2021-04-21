@@ -2,8 +2,8 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import Licenses from './Licenses';
-import licensesData from './data/test/licenses';
-import UserMessagesProvider from '../user-messages/UserMessagesProvider';
+import licensesData from '../data/test/licenses';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 
 const LicensesPageWrapper = (props) => (
   <UserMessagesProvider>

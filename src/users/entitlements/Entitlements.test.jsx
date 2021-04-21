@@ -5,7 +5,7 @@ import { waitForComponentToPaint } from '../../setupTest';
 import Entitlements from './Entitlements';
 import entitlementsData from '../data/test/entitlements';
 import CourseSummaryData from '../data/test/courseSummary';
-import UserMessageProvider from '../../user-messages/UserMessagesProvider';
+import UserMessageProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
 const EntitlementsPageWrapper = (props) => (
