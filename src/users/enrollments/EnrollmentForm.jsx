@@ -5,9 +5,9 @@ import {
 } from '@edx/paragon';
 import classNames from 'classnames';
 
-import AlertList from '../user-messages/AlertList';
-import { postEnrollmentChange } from './data/api';
-import UserMessagesContext from '../user-messages/UserMessagesContext';
+import AlertList from '../../userMessages/AlertList';
+import { postEnrollmentChange } from '../data/api';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
 
 const getModes = function getModes(enrollment) {
   const modeList = [];

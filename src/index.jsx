@@ -10,11 +10,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
 
-import SupportHomePage from './support-home/SupportHomePage';
-import Header from './support-header';
+import SupportHomePage from './supportHome/SupportHomePage';
+import Header from './supportHeader';
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
-import UserMessagesProvider from './user-messages/UserMessagesProvider';
+import UserMessagesProvider from './userMessages/UserMessagesProvider';
 
 import './index.scss';
 

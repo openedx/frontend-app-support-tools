@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PageLoading from '../components/common/PageLoading';
-import formatDate from '../dates/formatDate';
-import AlertList from '../user-messages/AlertList';
+import PageLoading from '../../components/common/PageLoading';
+import { formatDate } from '../../utils';
+import AlertList from '../../userMessages/AlertList';
 
 export default function CourseSummary({
   courseData,

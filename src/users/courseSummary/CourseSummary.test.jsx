@@ -2,7 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import CourseSummary from './CourseSummary';
-import CourseSummaryData from './data/test/courseSummary';
+import CourseSummaryData from '../data/test/courseSummary';
 
 describe('Course Summary', () => {
   let wrapper;

@@ -7,13 +7,9 @@ import { Menu, MenuTrigger, MenuContent } from './Menu';
 import { LinkedLogo, Logo } from './Logo';
 
 // Assets
-import { CaretIcon } from './Icons';
+import { MenuIcon } from './Icons';
 
-export default class DesktopHeader extends React.Component {
-  constructor(props) { // eslint-disable-line no-useless-constructor
-    super(props);
-  }
-
+export default class MobileHeader extends React.Component {
   renderMainMenu() {
     const { mainMenu } = this.props;
 
@@ -30,16 +26,18 @@ export default class DesktopHeader extends React.Component {
 
       if (type === 'item') {
         return (
-          <a key={`${type}-${content}`} className="nav-link" href={href}>{content}</a>
+          <a key={`${type}-${content}`} className="nav-link" href={href}>
+            {content}
+          </a>
         );
       }
 
       return (
-        <Menu key={`${type}-${content}`} tag="div" className="nav-item" respondToPointerEvents>
-          <MenuTrigger tag="a" className="nav-link d-inline-flex align-items-center" href={href}>
-            {content} <CaretIcon role="img" aria-hidden focusable="false" />
+        <Menu key={`${type}-${content}`} tag="div" className="nav-item">
+          <MenuTrigger tag="a" role="button" tabIndex="0" className="nav-link">
+            {content}
           </MenuTrigger>
-          <MenuContent className="shadow py-2">
+          <MenuContent className="position-static pin-left pin-right py-2 ml-4">
             {submenuContent}
           </MenuContent>
         </Menu>
@@ -56,7 +54,7 @@ export default class DesktopHeader extends React.Component {
 
     return (
       <Dropdown>
-        <Dropdown.Toggle as={AvatarButton} src={avatar}>
+        <Dropdown.Toggle showLabel={false} size="md" as={AvatarButton} src={avatar}>
           {username}
         </Dropdown.Toggle>
 
@@ -88,38 +86,56 @@ export default class DesktopHeader extends React.Component {
       logo,
       logoAltText,
       logoDestination,
+      stickyOnMobile,
+      mainMenu,
     } = this.props;
     const logoProps = { src: logo, alt: logoAltText, href: logoDestination };
+    const stickyClassName = stickyOnMobile ? 'sticky-top' : '';
 
     return (
-      <header className="site-header-desktop">
-        <div className="container-fluid">
-          <div className="nav-container position-relative d-flex align-items-center">
-            { logoDestination === null ? <Logo className="logo" src={logo} alt={logoAltText} /> : <LinkedLogo className="logo" {...logoProps} />}
-            <nav
-              aria-label="Main"
-              className="nav main-nav"
-            >
-              {this.renderMainMenu()}
-            </nav>
-            <nav
-              aria-label="Secondary"
-              className="nav secondary-menu-container align-items-center ml-auto"
-            >
-              {this.renderUserMenu()}
-            </nav>
-          </div>
+      <header
+        aria-label="Main"
+        className={`site-header-mobile d-flex justify-content-between align-items-center shadow ${stickyClassName}`}
+      >
+        <div className="w-100 d-flex justify-content-start">
+          {mainMenu.length > 0
+            ? (
+              <Menu className="position-static">
+                <MenuTrigger
+                  tag="button"
+                  className="icon-button"
+                  aria-label="Main Menu"
+                  title="Main Menu"
+                >
+                  <MenuIcon role="img" aria-hidden focusable="false" style={{ width: '1.5rem', height: '1.5rem' }} />
+                </MenuTrigger>
+                <MenuContent
+                  tag="nav"
+                  aria-label="Main"
+                  className="nav flex-column pin-left pin-right border-top shadow py-2"
+                >
+                  {this.renderMainMenu()}
+                </MenuContent>
+              </Menu>
+            ) : null }
+        </div>
+        <div className="w-100 d-flex justify-content-center">
+          { logoDestination === null ? <Logo className="logo" src={logo} alt={logoAltText} /> : <LinkedLogo className="logo" {...logoProps} itemType="http://schema.org/Organization" />}
+        </div>
+        <div className="w-100 d-flex justify-content-end align-items-center">
+          {this.renderUserMenu()}
         </div>
       </header>
     );
   }
 }
 
-DesktopHeader.propTypes = {
+MobileHeader.propTypes = {
   mainMenu: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.array,
   ]),
+
   userMenu: PropTypes.arrayOf(PropTypes.shape({
     type: PropTypes.oneOf(['item', 'menu']),
     href: PropTypes.string,
@@ -136,9 +152,10 @@ DesktopHeader.propTypes = {
   avatar: PropTypes.string,
   username: PropTypes.string,
   loggedIn: PropTypes.bool,
+  stickyOnMobile: PropTypes.bool,
 };
 
-DesktopHeader.defaultProps = {
+MobileHeader.defaultProps = {
   mainMenu: [],
   userMenu: [],
   loggedOutItems: [],
@@ -148,4 +165,6 @@ DesktopHeader.defaultProps = {
   avatar: null,
   username: null,
   loggedIn: false,
+  stickyOnMobile: true,
+
 };

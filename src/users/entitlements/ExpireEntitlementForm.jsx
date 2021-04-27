@@ -5,8 +5,8 @@ import {
 } from '@edx/paragon';
 import classNames from 'classnames';
 
-import UserMessagesContext from '../../user-messages/UserMessagesContext';
-import AlertList from '../../user-messages/AlertList';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
+import AlertList from '../../userMessages/AlertList';
 import { patchEntitlement } from '../data/api';
 import { EXPIRE } from './EntitlementActions';
 import { EntitlementPropTypes, EntitlementDefaultProps } from './PropTypes';
@@ -84,8 +84,9 @@ export default function ExpireEntitlementForm({
         </div>
         <div>
           <Button
+            variant="primary"
             className={classNames(
-              'btn-primary mr-3',
+              'mr-3',
               { disabled: !(courseUuid && mode && comments) },
             )}
             disabled={!(courseUuid && mode && comments)}

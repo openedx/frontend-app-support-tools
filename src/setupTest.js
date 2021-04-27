@@ -29,7 +29,6 @@ initialize({
   authService: MockAuthService,
 });
 
-// eslint-disable-next-line import/prefer-default-export
 export function checkProps(component, expectedProps) {
   return checkPropTypes(
     // eslint-disable-next-line react/forbid-foreign-prop-types

@@ -5,7 +5,7 @@ import React from 'react';
 import { waitForComponentToPaint } from '../../setupTest';
 import ExpireEntitlementForm from './ExpireEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
-import UserMessagesProvider from '../../user-messages/UserMessagesProvider';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
 const ExpireEntitlementFormWrapper = (props) => (

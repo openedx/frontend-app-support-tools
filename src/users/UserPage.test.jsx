@@ -6,8 +6,8 @@ import { MemoryRouter } from 'react-router-dom';
 import renderer from 'react-test-renderer';
 import { checkProps } from '../setupTest';
 
-import * as messages from '../user-messages/messages';
-import UserMessagesProvider from '../user-messages/UserMessagesProvider';
+import * as messages from '../userMessages/messages';
+import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import UserPage from './UserPage';
 
 jest.mock('@edx/frontend-platform/auth');

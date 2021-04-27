@@ -5,13 +5,13 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 import PageLoading from '../components/common/PageLoading';
-import AlertList from '../user-messages/AlertList';
-import { USER_IDENTIFIER_INVALID_ERROR } from '../user-messages/messages';
-import UserMessagesContext from '../user-messages/UserMessagesContext';
+import AlertList from '../userMessages/AlertList';
+import { USER_IDENTIFIER_INVALID_ERROR } from '../userMessages/messages';
+import UserMessagesContext from '../userMessages/UserMessagesContext';
 import { isEmail, isValidUsername } from '../utils/index';
 import { getAllUserData } from './data/api';
-import Enrollments from './Enrollments';
-import Licenses from './Licenses';
+import Enrollments from './enrollments/Enrollments';
+import Licenses from './licenses/Licenses';
 import Entitlements from './entitlements/Entitlements';
 import UserSearch from './UserSearch';
 import UserSummary from './UserSummary';

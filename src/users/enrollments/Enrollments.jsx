@@ -10,9 +10,8 @@ import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import EnrollmentForm from './EnrollmentForm';
-import sort from './sort';
-import Table from '../Table';
-import formatDate from '../dates/formatDate';
+import Table from '../../Table';
+import { formatDate, sort } from '../../utils';
 
 export default function Enrollments({
   data, changeHandler, user, expanded,
