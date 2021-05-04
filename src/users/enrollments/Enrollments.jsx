@@ -10,6 +10,7 @@ import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import EnrollmentForm from './EnrollmentForm';
+import EnrollmentExtra from './EnrollmentExtra';
 import Table from '../../Table';
 import { formatDate, sort } from '../../utils';
 
@@ -20,7 +21,25 @@ export default function Enrollments({
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
   const [enrollmentToChange, setEnrollmentToChange] = useState(undefined);
+  const [enrollmentExtraData, setEnrollmentExtraData] = useState(undefined);
   const formRef = useRef(null);
+  const extraRef = useRef(null);
+
+  function setupEnrollmentExtraData(enrollment) {
+    const extraData = {
+      courseName: enrollment.courseName,
+      lastModified: enrollment.manualEnrollment ? formatDate(enrollment.manualEnrollment.timeStamp) : 'N/A',
+      lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
+      reason: enrollment.manualEnrollment && enrollment.manualEnrollment.reason ? enrollment.manualEnrollment.reason : 'N/A',
+    };
+    setEnrollmentExtraData(extraData);
+  }
+
+  useLayoutEffect(() => {
+    if (enrollmentExtraData !== undefined) {
+      extraRef.current.focus();
+    }
+  });
 
   const tableData = useMemo(() => {
     if (data === null || data.length === 0) {
@@ -30,6 +49,9 @@ export default function Enrollments({
       courseId: {
         displayValue: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank" className="word_break">{result.courseId}</a>,
         value: result.courseId,
+      },
+      courseName: {
+        value: result.courseName,
       },
       courseStart: {
         displayValue: formatDate(result.courseStart),
@@ -47,15 +69,8 @@ export default function Enrollments({
         displayValue: formatDate(result.created),
         value: result.created,
       },
-      reason: {
-        value: result.manualEnrollment ? result.manualEnrollment.reason : '',
-      },
-      lastModifiedBy: {
-        value: result.manualEnrollment ? result.manualEnrollment.enrolledBy : '',
-      },
-      lastModified: {
-        displayValue: result.manualEnrollment ? formatDate(result.manualEnrollment.timestamp) : '',
-        value: result.manualEnrollment ? result.manualEnrollment.timestamp : '',
+      pacing: {
+        value: result.pacingType,
       },
       active: {
         value: result.isActive ? 'True' : 'False',
@@ -65,16 +80,29 @@ export default function Enrollments({
       },
       actions: {
         displayValue: (
-          <Button
-            type="button"
-            variant="outline-primary"
-            onClick={() => {
-              setEnrollmentToChange(result);
-              setFormType('CHANGE');
-            }}
-          >
-            Change
-          </Button>
+          <div>
+            <Button
+              type="button"
+              variant="outline-primary"
+              id="enrollment-change"
+              onClick={() => {
+                setEnrollmentToChange(result);
+                setFormType('CHANGE');
+              }}
+            >
+              Change
+            </Button>
+            <Button
+              type="button"
+              id="extra-data"
+              variant="primary mt-2 mr-2"
+              onClick={() => {
+                setupEnrollmentExtraData(result);
+              }}
+            >
+              Show Extra
+            </Button>
+          </div>
         ),
         value: 'Change',
       },
@@ -101,6 +129,9 @@ export default function Enrollments({
       label: 'Course Run ID', key: 'courseId', columnSortable: true, onSort: () => setSort('courseId'), width: 'col-3',
     },
     {
+      label: 'Course Title', key: 'courseName', columnSortable: true, onSort: () => setSort('courseName'), width: 'col-3',
+    },
+    {
       label: 'Course Start', key: 'courseStart', columnSortable: true, onSort: () => setSort('courseStart'), width: 'col-3',
     },
     {
@@ -113,13 +144,7 @@ export default function Enrollments({
       label: 'Enrollment Date', key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
     },
     {
-      label: 'Reason', key: 'reason', columnSortable: true, onSort: () => setSort('reason'), width: 'col-3',
-    },
-    {
-      label: 'Last Modified By', key: 'lastModifiedBy', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
-    },
-    {
-      label: 'Last Modified', key: 'lastModified', columnSortable: true, onSort: () => setSort('lastModifiedBy'), width: 'col-3',
+      label: 'Pacing Type', key: 'pacing', columnSortable: true, onSort: () => setSort('pacing'), width: 'col-3',
     },
     {
       label: 'Mode', key: 'mode', columnSortable: true, onSort: () => setSort('mode'), width: 'col-3',
@@ -145,6 +170,15 @@ export default function Enrollments({
             changeHandler={changeHandler}
             closeHandler={() => setFormType(null)}
             forwardedRef={formRef}
+          />
+        ) : (<React.Fragment key="nothing" />) }
+      </TransitionReplace>
+      <TransitionReplace>
+        {enrollmentExtraData !== undefined ? (
+          <EnrollmentExtra
+            closeHandler={() => setEnrollmentExtraData(undefined)}
+            enrollmentExtraData={enrollmentExtraData}
+            forwardedRef={extraRef}
           />
         ) : (<React.Fragment key="nothing" />) }
       </TransitionReplace>

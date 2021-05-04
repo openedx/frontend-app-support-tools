@@ -34,7 +34,7 @@ describe('Course Enrollments Listing', () => {
     const dataTable = wrapper.find('table.table');
     dataTable.find('tbody tr').forEach(row => {
       const courseId = row.find('a').text();
-      row.find('button.btn-outline-primary').simulate('click');
+      row.find('button#enrollment-change').simulate('click');
       const enrollmentForm = wrapper.find('EnrollmentForm');
       expect(enrollmentForm.html()).toEqual(expect.stringContaining(courseId));
       enrollmentForm.find('button.btn-outline-secondary').simulate('click');
