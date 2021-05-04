@@ -39,6 +39,8 @@ describe('Enrollment Change form', () => {
       const apiMock = jest.spyOn(api, 'postEnrollmentChange').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
+      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
+      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
       wrapper.find('button.btn-primary').simulate('click');
       expect(apiMock).toHaveBeenCalledTimes(1);

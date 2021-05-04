@@ -48,6 +48,28 @@ describe('Entitlements Listing', () => {
     expect(collapsible.text()).toEqual('Entitlements (0)');
   });
 
+  it('Sorting Columns Button Enabled by default', () => {
+    const dataTable = wrapper.find('table.table');
+    const tableHeaders = dataTable.find('thead tr th');
+
+    tableHeaders.forEach(header => {
+      const sortButton = header.find('button.btn-header');
+      expect(sortButton.disabled).toBeFalsy();
+    });
+  });
+
+  it('Sorting Columns Button work correctly', () => {
+    const dataTable = wrapper.find('table.table').hostNodes();
+    const sortButtons = dataTable.find('thead tr th button.btn-header');
+
+    sortButtons.forEach(sortButton => {
+      sortButton.simulate('click');
+      expect(wrapper.find('svg.fa-sort-down')).toHaveLength(1);
+      sortButton.simulate('click');
+      expect(wrapper.find('svg.fa-sort-up')).toHaveLength(1);
+    });
+  });
+
   it('Support Details data', () => {
     wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} />);
     const tableRowsLengths = [2, 0];

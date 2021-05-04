@@ -51,4 +51,17 @@ describe('Course Enrollments Listing', () => {
       expect(sortButton.disabled).toBeFalsy();
     });
   });
+
+  it('Sorting Columns Button work correctly', () => {
+    const dataTable = wrapper.find('table.table');
+    const tableHeaders = dataTable.find('thead tr th');
+
+    tableHeaders.forEach(header => {
+      const sortButton = header.find('button.btn-header');
+      sortButton.simulate('click');
+      expect(wrapper.find('svg.fa-sort-down')).toHaveLength(1);
+      sortButton.simulate('click');
+      expect(wrapper.find('svg.fa-sort-up')).toHaveLength(1);
+    });
+  });
 });

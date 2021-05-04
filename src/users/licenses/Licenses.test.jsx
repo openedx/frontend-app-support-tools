@@ -40,6 +40,19 @@ describe('User Licenses Listing', () => {
     });
   });
 
+  it('Sorting Columns Button work correctly', () => {
+    const dataTable = wrapper.find('table.table');
+    const tableHeaders = dataTable.find('thead tr th');
+
+    tableHeaders.forEach(header => {
+      const sortButton = header.find('button.btn-header');
+      sortButton.simulate('click');
+      expect(wrapper.find('svg.fa-sort-down')).toHaveLength(1);
+      sortButton.simulate('click');
+      expect(wrapper.find('svg.fa-sort-up')).toHaveLength(1);
+    });
+  });
+
   it('Table Header Lenght', () => {
     const dataTable = wrapper.find('table.table');
     const tableHeaders = dataTable.find('thead tr th');
