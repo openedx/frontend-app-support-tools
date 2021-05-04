@@ -42,6 +42,18 @@ describe('Course Enrollments Listing', () => {
     });
   });
 
+  it('Enrollment extra data is rendered for individual enrollment', () => {
+    const dataTable = wrapper.find('table.table');
+    dataTable.find('tbody tr').forEach(row => {
+      const courseName = row.find('td').at(1).text();
+      row.find('button#extra-data').simulate('click');
+      const enrollmentExtra = wrapper.find('EnrollmentExtra');
+      expect(enrollmentExtra.html()).toEqual(expect.stringContaining(courseName));
+      enrollmentExtra.find('button.btn-outline-secondary').simulate('click');
+      expect(wrapper.find('EnrollmentExtra')).toEqual({});
+    });
+  });
+
   it('Sorting Columns Button Enabled by default', () => {
     const dataTable = wrapper.find('table.table');
     const tableHeaders = dataTable.find('thead tr th');

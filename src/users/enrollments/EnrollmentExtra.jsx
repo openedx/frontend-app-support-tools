@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-indent */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,40 +6,40 @@ export default function EnrollmentExtra({
 }) {
   return (
     <section className="card mb-3">
-        <div className="m-3">
-          <h4>Course Title: {enrollmentExtraData.courseName}</h4>
-      <table className="table">
-        <tbody>
+      <div className="m-3">
+        <h4>Course Title: {enrollmentExtraData.courseName}</h4>
+        <table className="table">
+          <tbody>
 
-          <tr>
-            <td>Last Modified</td>
-            <td>{enrollmentExtraData.lastModified}</td>
-          </tr>
+            <tr>
+              <td>Last Modified</td>
+              <td>{enrollmentExtraData.lastModified}</td>
+            </tr>
 
-          <tr>
-            <td>Last Modified By</td>
-            <td>{enrollmentExtraData.lastModifiedBy}</td>
-          </tr>
+            <tr>
+              <td>Last Modified By</td>
+              <td>{enrollmentExtraData.lastModifiedBy}</td>
+            </tr>
 
-          <tr>
-            <td>Reason</td>
-            <td>{enrollmentExtraData.reason}</td>
-          </tr>
-        </tbody>
+            <tr>
+              <td>Reason</td>
+              <td>{enrollmentExtraData.reason}</td>
+            </tr>
+          </tbody>
 
-      </table>
+        </table>
 
-      <div className="d-flex flex-row justify-content-end mb-2">
-        <button
-          onClick={closeHandler}
-          className="btn btn-outline-secondary"
-          type="button"
-          ref={forwardedRef}
-        >
+        <div className="d-flex flex-row justify-content-end mb-2">
+          <button
+            onClick={closeHandler}
+            className="btn btn-outline-secondary"
+            type="button"
+            ref={forwardedRef}
+          >
             Hide
-        </button>
-      </div>
+          </button>
         </div>
+      </div>
     </section>
   );
 }
