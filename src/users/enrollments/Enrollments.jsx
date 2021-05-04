@@ -69,7 +69,7 @@ export default function Enrollments({
         displayValue: formatDate(result.created),
         value: result.created,
       },
-      pacing: {
+      pacingType: {
         value: result.pacingType,
       },
       active: {
@@ -144,7 +144,7 @@ export default function Enrollments({
       label: 'Enrollment Date', key: 'created', columnSortable: true, onSort: () => setSort('created'), width: 'col-3',
     },
     {
-      label: 'Pacing Type', key: 'pacing', columnSortable: true, onSort: () => setSort('pacing'), width: 'col-3',
+      label: 'Pacing Type', key: 'pacingType', columnSortable: true, onSort: () => setSort('pacing'), width: 'col-3',
     },
     {
       label: 'Mode', key: 'mode', columnSortable: true, onSort: () => setSort('mode'), width: 'col-3',
