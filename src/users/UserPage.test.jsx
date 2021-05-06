@@ -54,6 +54,17 @@ describe('User Page', () => {
         throw error;
       });
     };
+    it('when user identifier is empty', () => {
+      const emptyUsername = '';
+      location.search = `?username=${emptyUsername}`;
+      const wrapper = mount(<UserPageWrapper location={location} />);
+
+      const searchInput = wrapper.find('input[name="userIdentifier"]');
+      const alert = wrapper.find('.alert');
+
+      expect(searchInput).toHaveLength(1);
+      expect(alert).toHaveLength(0);
+    });
     it('when user identifier is invalid', () => {
       const invalidUsername = 'invalid username';
       location.search = `?username=${invalidUsername}`;
@@ -81,6 +92,7 @@ describe('User Page', () => {
 
       const alert = wrapper.find('.alert');
       expect(alert).toHaveLength(1);
+      expect(document.title).toEqual('Support Tools | edX');
       expect(alert.text()).toEqual(expectedAlert);
     });
     it('when user email is not found', async () => {

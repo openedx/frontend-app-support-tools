@@ -114,7 +114,6 @@ export default function Licenses({
           )}
           columns={columns}
           tableSortable
-          defaultSortedColumn="status"
           defaultSortDirection="desc"
         />
       </Collapsible>

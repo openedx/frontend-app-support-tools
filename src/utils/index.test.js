@@ -1,4 +1,6 @@
-import { isEmail, isValidUsername, formatDate } from './index';
+import {
+  isEmail, isValidUsername, formatDate, sort,
+} from './index';
 
 describe('Test Utils', () => {
   describe('test user identifier', () => {
@@ -41,6 +43,31 @@ describe('Test Utils', () => {
     it('returns N/A if data is not provided', () => {
       expect(formatDate('')).toEqual('N/A');
       expect(formatDate()).toEqual('N/A');
+    });
+  });
+
+  describe('Sort', () => {
+    const sortDict1 = {
+      name: 'string',
+      id: { value: 1 },
+      list: ['array value 1', 'array value 2'],
+    };
+    const sortDict2 = {
+      name: 'string2',
+      id: { value: 2 },
+      list: ['array value 3', 'array value 4'],
+    };
+    it('sorts in ascending order', () => {
+      expect(sort(sortDict1, sortDict2, 'id', 'asc')).toEqual(-1);
+      expect(sort(sortDict2, sortDict1, 'id', 'asc')).toEqual(1);
+    });
+    it('sorts in descending order', () => {
+      expect(sort(sortDict1, sortDict2, 'id', 'desc')).toEqual(1);
+      expect(sort(sortDict2, sortDict1, 'id', 'desc')).toEqual(-1);
+    });
+    it('when the values are equal', () => {
+      expect(sort(sortDict1, sortDict1, 'id', 'asc')).toEqual(0);
+      expect(sort(sortDict1, sortDict1, 'id', 'asc')).toEqual(0);
     });
   });
 });

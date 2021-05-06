@@ -43,6 +43,8 @@ describe('Create Entitlement Form', () => {
       const apiMock = jest.spyOn(api, 'postEntitlement').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
+      wrapper.find('input#courseUuid').simulate('change', { target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' } });
+      wrapper.find('select#mode').simulate('change', { target: { value: 'professional' } });
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
       const submitButton = wrapper.find('button.btn-primary');
       expect(submitButton.prop('disabled')).toBeFalsy();
