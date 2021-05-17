@@ -65,3 +65,7 @@ export const getTogglePasswordStatusUrl = user => `${
 export const getResetPasswordUrl = () => `${
   LMS_BASE_URL
 }/account/password`;
+
+export const getAccountActivationUrl = (activationKey) => `${
+  LMS_BASE_URL
+}/activate/${activationKey}`;

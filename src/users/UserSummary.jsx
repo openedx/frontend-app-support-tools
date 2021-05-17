@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Input } from '@edx/paragon';
-
 import { postTogglePasswordStatus, postResetPassword } from './data/api';
 import Table from '../Table';
 import { formatDate } from '../utils';
+import { getAccountActivationUrl } from './data/urls';
 
 export default function UserSummary({
   userData,
@@ -241,11 +241,28 @@ export default function UserSummary({
     },
   }));
 
+  if (!userData.isActive) {
+    let dataValue;
+    if (userData.activationKey !== null) {
+      dataValue = {
+        displayValue: <a href={getAccountActivationUrl(userData.activationKey)} rel="noopener noreferrer" target="_blank" className="word_break">{userData.activationKey}</a>,
+      };
+    } else {
+      dataValue = 'N/A';
+    }
+
+    userAccountData.splice(5, 0,
+      {
+        dataName: 'Activation Key/Link',
+        dataValue,
+      });
+  }
+
   return (
     <section className="mb-3">
       <div className="d-flex flex-row flex-wrap">
         <div className="col-sm-6">
-          <div className="flex-column p-4 m-3 card">
+          <div id="account-table" className="flex-column p-4 m-3 card">
             <h4>Account</h4>
             <Table
               data={userAccountData}
@@ -394,6 +411,7 @@ UserSummary.propTypes = {
     username: PropTypes.string,
     id: PropTypes.number,
     email: PropTypes.string,
+    activationKey: PropTypes.string,
     isActive: PropTypes.bool,
     country: PropTypes.string,
     dateJoined: PropTypes.string,

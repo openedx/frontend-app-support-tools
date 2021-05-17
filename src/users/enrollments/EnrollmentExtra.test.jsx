@@ -5,7 +5,7 @@ import EnrollmentExtra from './EnrollmentExtra';
 
 const props = {
   enrollmentExtraData: {
-    lastModified: new Date(2021, 0, 1, 0, 0, 0, 0).toLocaleString(),
+    lastModified: new Date(2021, 0, 1, 0, 0, 0, 0).toLocaleString('en-US'),
     lastModifiedBy: 'edX',
     reason: 'Test',
     courseName: 'Test Course',
