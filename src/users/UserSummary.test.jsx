@@ -5,6 +5,18 @@ import * as api from './data/api';
 import UserSummary from './UserSummary';
 import UserSummaryData from './data/test/userSummary';
 
+const getActivationKeyRow = (data) => {
+  const wrapper = mount(<UserSummary {...data} />);
+  const dataTable = wrapper.find('#account-table table');
+  const rowName = dataTable.find('tbody tr').at(5).find('td').at(0);
+  const rowValue = dataTable.find('tbody tr').at(5).find('td').at(1);
+
+  return {
+    rowName,
+    rowValue,
+  };
+};
+
 describe('User Summary Component Tests', () => {
   let wrapper;
 
@@ -26,6 +38,7 @@ describe('User Summary Component Tests', () => {
       expect(ComponentUserData.lastLogin).toEqual(ExpectedUserData.lastLogin);
       expect(ComponentUserData.dateJoined).toEqual(ExpectedUserData.dateJoined);
       expect(ComponentUserData.passwordStatus).toEqual(ExpectedUserData.passwordStatus);
+      expect(ComponentUserData.activationKey).toEqual(ExpectedUserData.activationKey);
     });
 
     it('Verification Data Values', () => {
@@ -46,6 +59,38 @@ describe('User Summary Component Tests', () => {
       expect(ComponentSsoData.provider).toEqual(ExpectedSsoData.provider);
       expect(ComponentSsoData.modified).toEqual(ExpectedSsoData.modified);
       expect(ComponentSsoData.extraData).toEqual(ExpectedSsoData.extraData);
+    });
+  });
+
+  describe('Registration Activation Field', () => {
+    it('Active User Data', () => {
+      const { rowName, rowValue } = getActivationKeyRow(UserSummaryData);
+      expect(rowName.text()).not.toEqual('Activation Key/Link');
+      expect(rowValue.text()).not.toEqual(UserSummaryData.userData.activationKey);
+    });
+
+    it('Inactive User Data ', () => {
+      const InActiveUserData = { ...UserSummaryData.userData, isActive: false };
+      const InActiveUserSummaryData = { ...UserSummaryData, userData: InActiveUserData };
+      const { rowName, rowValue } = getActivationKeyRow(InActiveUserSummaryData);
+      expect(rowName.text()).toEqual('Activation Key/Link');
+      expect(rowValue.text()).toEqual(UserSummaryData.userData.activationKey);
+    });
+
+    it('Active User With No Registration Data ', () => {
+      const InActiveUserData = { ...UserSummaryData.userData, activationKey: null };
+      const InActiveUserSummaryData = { ...UserSummaryData, userData: InActiveUserData };
+      const { rowName, rowValue } = getActivationKeyRow(InActiveUserSummaryData);
+      expect(rowName.text()).not.toEqual('Activation Key/Link');
+      expect(rowValue.text()).not.toEqual(UserSummaryData.userData.activationKey);
+    });
+
+    it('Inactive User With No Registration Data ', () => {
+      const InActiveUserData = { ...UserSummaryData.userData, activationKey: null, isActive: false };
+      const InActiveUserSummaryData = { ...UserSummaryData, userData: InActiveUserData };
+      const { rowName, rowValue } = getActivationKeyRow(InActiveUserSummaryData);
+      expect(rowName.text()).toEqual('Activation Key/Link');
+      expect(rowValue.text()).toEqual('N/A');
     });
   });
 

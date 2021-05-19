@@ -4,6 +4,7 @@ const UserSummaryData = {
     username: 'edx',
     email: 'edx@example.com',
     id: 1,
+    activationKey: 'db2f834f90fd49afaa3ca2a68a1ae9e1',
     isActive: true,
     country: 'US',
     dateJoined: null,
