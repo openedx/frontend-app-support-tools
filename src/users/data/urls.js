@@ -21,7 +21,7 @@ export const getUserAccountUrl = userIdentifier => {
   }
 
   baseUrl = identifierIsEmail
-    ? (baseUrl += `?email=${userIdentifier}`)
+    ? (baseUrl += `?email=${encodeURIComponent(userIdentifier)}`)
     : (baseUrl += `/${userIdentifier}`);
   return baseUrl;
 };

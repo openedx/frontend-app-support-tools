@@ -1,4 +1,4 @@
-import { camelCaseObject, getConfig, history } from '@edx/frontend-platform';
+import { camelCaseObject, history } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useState,
@@ -18,8 +18,19 @@ import UserSummary from './UserSummary';
 
 // Supports urls such as /users/?username={username} and /users/?email={email}
 export default function UserPage({ location }) {
-  const url = getConfig().BASE_URL + location.pathname + location.search;
-  const params = new URL(url).searchParams;
+  // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2=value2}
+  const params = new Map(
+    location.search
+      .slice(1) // removes '?' mark from start
+      .split('&')
+      .map(queryParams => queryParams.split('=')),
+  );
+
+  if (params.has('email')) {
+    const email = params.get('email');
+    params.set('email', decodeURIComponent(email));
+  }
+
   const [userIdentifier, setUserIdentifier] = useState(
     params.get('username') || params.get('email') || undefined,
   );
