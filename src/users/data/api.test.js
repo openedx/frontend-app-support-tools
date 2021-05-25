@@ -172,8 +172,18 @@ describe('API', () => {
     });
 
     test.each([successDictResponse, successListResponse])('Successful Fetch by email', async (successResponse) => {
-      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(200, successResponse);
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(200, successResponse);
       const response = await api.getUser(testEmail);
+      expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
+    });
+
+    test.each([successDictResponse, successListResponse])('Successful Fetch by email with +', async (responseType) => {
+      const testEmailWithPlus = 'email+1@example.com';
+      const successResponse = {
+        ...Array.isArray(responseType) ? responseType[0] : responseType, testEmail: testEmailWithPlus,
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmailWithPlus)}`).reply(200, successResponse);
+      const response = await api.getUser(testEmailWithPlus);
       expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
     });
 
@@ -223,7 +233,7 @@ describe('API', () => {
         type: 'error',
         topic: 'general',
       };
-      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(() => throwError(404, ''));
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(() => throwError(404, ''));
       try {
         await api.getUser(testEmail);
       } catch (error) {
@@ -239,7 +249,7 @@ describe('API', () => {
         type: 'danger',
         topic: 'general',
       };
-      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(() => throwError(500, ''));
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(() => throwError(500, ''));
       try {
         await api.getUser(testEmail);
       } catch (error) {
@@ -263,7 +273,7 @@ describe('API', () => {
         type: 'error',
         topic: 'general',
       };
-      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${testEmail}`).reply(() => throwError(404, ''));
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(() => throwError(404, ''));
       try {
         await api.getAllUserData(testEmail);
       } catch (error) {
