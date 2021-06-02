@@ -1,4 +1,34 @@
-const enrollmentsData = {
+export const changeEnrollmentFormData = {
+  user: 'edX',
+  enrollment: {
+    courseId: 'course-v1:testX+test123+2030',
+    courseStart: Date().toLocaleString(),
+    verifiedUpgradeDeadline: Date().toLocaleString(),
+    courseEnd: Date().toLocaleString(),
+    created: Date().toLocaleString(),
+    courseModes: [
+      {
+        slug: 'verified',
+      },
+    ],
+    isActive: true,
+    mode: 'audit',
+    manualEnrollment: {
+      reason: 'Test Enrollment',
+      enrolledBy: 'edX',
+      timestamp: Date().toLocaleString(),
+    },
+  },
+  changeHandler: jest.fn(() => {}),
+  closeHandler: jest.fn(() => {}),
+};
+
+export const createEnrollmentFormData = {
+  user: 'edX',
+  closeHandler: jest.fn(() => {}),
+};
+
+export const enrollmentsData = {
   data: [{
     courseId: 'course-v1:testX+test123+2030',
     courseStart: Date().toLocaleString(),
@@ -42,5 +72,3 @@ const enrollmentsData = {
   changeHandler: jest.fn(() => {}),
   expanded: true,
 };
-
-export default enrollmentsData;

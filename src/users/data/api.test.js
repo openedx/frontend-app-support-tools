@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
-import enrollmentsData from './test/enrollments';
+import { enrollmentsData } from './test/enrollments';
 import * as api from './api';
 
 describe('API', () => {
@@ -504,7 +504,46 @@ describe('API', () => {
       });
     });
 
-    describe('Post Enrollment Change', () => {
+    describe('Post Enrollment', () => {
+      const apiCallData = {
+        user: testUsername,
+        courseID: 'course-v1:testX',
+        mode: 'audit',
+        reason: 'test enrollment create',
+      };
+
+      const requestData = {
+        course_id: 'course-v1:testX',
+        mode: 'audit',
+        reason: 'test enrollment create',
+      };
+
+      it('Unsuccessful enrollment create', async () => {
+        const expectedError = {
+          code: null,
+          dismissible: true,
+          text:
+          'There was an error creating the enrollment. Check the JavaScript console for detailed errors.',
+          type: 'danger',
+          topic: 'enrollments',
+        };
+        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
+        const response = await api.postEnrollment({ ...apiCallData });
+        expect(...response.errors).toEqual(expectedError);
+      });
+
+      it('Successful enrollment create', async () => {
+        const expectedSuccessResponse = {
+          topic: 'enrollments',
+          message: 'enrollment created',
+        };
+        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(200, expectedSuccessResponse);
+        const response = await api.postEnrollment({ ...apiCallData });
+        expect(response).toEqual(expectedSuccessResponse);
+      });
+    });
+
+    describe('Patch Enrollment Change', () => {
       const apiCallData = {
         user: testUsername,
         courseID: 'course-v1:testX',
@@ -529,8 +568,8 @@ describe('API', () => {
           type: 'danger',
           topic: 'enrollments',
         };
-        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
-        const response = await api.postEnrollmentChange({ ...apiCallData });
+        mockAdapter.onPatch(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
+        const response = await api.patchEnrollment({ ...apiCallData });
         expect(...response.errors).toEqual(expectedError);
       });
 
@@ -539,8 +578,8 @@ describe('API', () => {
           topic: 'enrollments',
           message: 'enrollment mode changed',
         };
-        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(200, expectedSuccessResponse);
-        const response = await api.postEnrollmentChange({ ...apiCallData });
+        mockAdapter.onPatch(enrollmentsApiUrl, requestData).reply(200, expectedSuccessResponse);
+        const response = await api.patchEnrollment({ ...apiCallData });
         expect(response).toEqual(expectedSuccessResponse);
       });
 

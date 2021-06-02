@@ -11,6 +11,7 @@ import { getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import EnrollmentForm from './EnrollmentForm';
 import EnrollmentExtra from './EnrollmentExtra';
+import { CREATE, CHANGE } from './constants';
 import Table from '../../Table';
 import { formatDate, sort } from '../../utils';
 
@@ -87,7 +88,7 @@ export default function Enrollments({
               id="enrollment-change"
               onClick={() => {
                 setEnrollmentToChange(result);
-                setFormType('CHANGE');
+                setFormType(CHANGE);
               }}
             >
               Change
@@ -160,11 +161,27 @@ export default function Enrollments({
   const tableDataSortable = [...tableData];
   return (
     <section className="mb-3">
+      <div className="d-flex flex-row justify-content-between mb-2">
+        {!formType && (
+          <Button
+            id="create-enrollment-button"
+            type="button"
+            variant="outline-primary"
+            onClick={() => {
+              setEnrollmentToChange(undefined);
+              setFormType(CREATE);
+            }}
+          >
+            Create New Enrollment
+          </Button>
+        )}
+      </div>
       <TransitionReplace>
         {formType != null ? (
           <EnrollmentForm
             key="enrollment-form"
             enrollment={enrollmentToChange}
+            formType={formType}
             user={user}
             submitHandler={() => {}}
             changeHandler={changeHandler}

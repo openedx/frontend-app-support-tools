@@ -2,7 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import Enrollments from './Enrollments';
-import enrollmentsData from '../data/test/enrollments';
+import { enrollmentsData } from '../data/test/enrollments';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 
 const EnrollmentPageWrapper = (props) => (
@@ -30,15 +30,23 @@ describe('Course Enrollments Listing', () => {
     expect(collapsible.text()).toEqual('Enrollments (0)');
   });
 
+  it('Enrollment create form is rendered', () => {
+    const createEnrollmentButton = wrapper.find('button#create-enrollment-button');
+    createEnrollmentButton.simulate('click');
+    const createEnrollmentForm = wrapper.find('CreateEnrollmentForm');
+    createEnrollmentForm.find('button.btn-outline-secondary').simulate('click');
+    expect(wrapper.find('CreateEnrollmentForm')).toEqual({});
+  });
+
   it('Enrollment change form is rendered for individual enrollment', () => {
     const dataTable = wrapper.find('table.table');
     dataTable.find('tbody tr').forEach(row => {
       const courseId = row.find('a').text();
       row.find('button#enrollment-change').simulate('click');
-      const enrollmentForm = wrapper.find('EnrollmentForm');
-      expect(enrollmentForm.html()).toEqual(expect.stringContaining(courseId));
-      enrollmentForm.find('button.btn-outline-secondary').simulate('click');
-      expect(wrapper.find('EnrollmentForm')).toEqual({});
+      const changeEnrollmentForm = wrapper.find('ChangeEnrollmentForm');
+      expect(changeEnrollmentForm.html()).toEqual(expect.stringContaining(courseId));
+      changeEnrollmentForm.find('button.btn-outline-secondary').simulate('click');
+      expect(wrapper.find('changeEnrollmentForm')).toEqual({});
     });
   });
 

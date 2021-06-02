@@ -304,7 +304,43 @@ export async function postEntitlement({
   }
 }
 
-export async function postEnrollmentChange({
+export async function postEnrollment({
+  user,
+  courseID,
+  mode,
+  reason,
+}) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      AppUrls.getEnrollmentsUrl(user),
+      {
+        course_id: courseID,
+        mode,
+        reason,
+      },
+    );
+    return data;
+  } catch (error) {
+    if (error.customAttributes.httpErrorStatus === 400) {
+      // eslint-disable-next-line no-console
+      console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    }
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text:
+            'There was an error creating the enrollment. Check the JavaScript console for detailed errors.',
+          type: 'danger',
+          topic: 'enrollments',
+        },
+      ],
+    };
+  }
+}
+
+export async function patchEnrollment({
   user,
   courseID,
   newMode,
@@ -312,8 +348,8 @@ export async function postEnrollmentChange({
   reason,
 }) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(
-      AppUrls.getEnrollmentChangeUrl(user),
+    const { data } = await getAuthenticatedHttpClient().patch(
+      AppUrls.getEnrollmentsUrl(user),
       {
         course_id: courseID,
         new_mode: newMode,

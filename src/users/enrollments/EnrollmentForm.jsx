@@ -1,139 +1,51 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button, Input, InputSelect,
-} from '@edx/paragon';
-import classNames from 'classnames';
-
-import AlertList from '../../userMessages/AlertList';
-import { postEnrollmentChange } from '../data/api';
-import UserMessagesContext from '../../userMessages/UserMessagesContext';
-
-const getModes = function getModes(enrollment) {
-  const modeList = [];
-  enrollment.courseModes.map(mode => (
-    modeList.push(mode.slug)
-  ));
-  if (!modeList.some(mode => mode === enrollment.mode)) {
-    modeList.push(enrollment.mode);
-  }
-  return modeList.sort();
-};
+import { CREATE, CHANGE } from './constants';
+import CreateEnrollmentForm from './CreateEnrollmentForm';
+import ChangeEnrollmentForm from './ChangeEnrollmentForm';
 
 export default function EnrollmentForm({
-  user,
+  formType,
   enrollment,
   changeHandler,
   closeHandler,
+  user,
   forwardedRef,
 }) {
-  const [mode, setMode] = useState(enrollment.mode);
-  const [reason, setReason] = useState('');
-  const [comments, setComments] = useState('');
-  const { add } = useContext(UserMessagesContext);
-
-  const submit = useCallback(() => {
-    const sendReason = (reason === 'other') ? comments : reason;
-    postEnrollmentChange({
-      user,
-      courseID: enrollment.courseId,
-      oldMode: enrollment.mode,
-      newMode: mode,
-      reason: sendReason,
-    }).then((result) => {
-      if (result.errors !== undefined) {
-        result.errors.forEach(error => add(error));
-      } else {
-        changeHandler();
-      }
-    });
-  });
-
-  const reasons = [
-    { label: '--', value: '' },
-    { label: 'Financial Assistance', value: 'Financial Assistance' },
-    { label: 'Upset Learner', value: 'Upset Learner' },
-    { label: 'Teaching Assistant', value: 'Teaching Assistant' },
-    { label: 'Other', value: 'other' },
-  ];
-
-  return (
-    <section className="card mb-3">
-      <form className="card-body">
-        <AlertList topic="enrollments" className="mb-3" />
-        <h4 className="card-title">Change Enrollment</h4>
-        <div className="form-group">
-          <h5>Current Enrollment Data</h5>
-          <div className="mb-1"><strong>Course Run ID:</strong> {enrollment.courseId}</div>
-          <div className="mb-1"><strong>Mode:</strong> {enrollment.mode}</div>
-          <div className="mb-1"><strong>Active:</strong> {enrollment.isActive.toString()}</div>
-        </div>
-        <hr />
-        <div className="form-group">
-          <h5 className="card-subtitle">All fields are required</h5>
-          <InputSelect
-            label="New Mode"
-            type="select"
-            options={getModes(enrollment)}
-            id="mode"
-            name="mode"
-            value={enrollment.mode}
-            onChange={(event) => setMode(event)}
-          />
-        </div>
-        <div className="form-group">
-          <InputSelect
-            label="Reason for change"
-            type="select"
-            options={reasons}
-            id="reason"
-            name="reason"
-            value=""
-            onChange={(event) => setReason(event)}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="comments">Explain if other</label>
-          <Input
-            type="textarea"
-            id="comments"
-            name="comments"
-            defaultValue=""
-            onChange={(event) => setComments(event.target.value)}
-            ref={forwardedRef}
-          />
-        </div>
-        <div>
-          <Button
-            variant="primary"
-            className={classNames(
-              'mr-3',
-              { disabled: !reason },
-            )}
-            onClick={submit}
-          >
-            Submit
-          </Button>
-          <Button
-            variant="outline-secondary"
-            onClick={closeHandler}
-          >
-            Cancel
-          </Button>
-        </div>
-      </form>
-    </section>
-  );
+  if (formType === CHANGE) {
+    return (
+      <ChangeEnrollmentForm
+        key="enrollment-form"
+        enrollment={enrollment}
+        user={user}
+        submitHandler={() => {}}
+        changeHandler={changeHandler}
+        closeHandler={closeHandler}
+        forwardedRef={forwardedRef}
+      />
+    );
+  } if (formType === CREATE) {
+    return (
+      <CreateEnrollmentForm
+        key="enrollment-form"
+        user={user}
+        submitHandler={() => {}}
+        closeHandler={closeHandler}
+        forwardedRef={forwardedRef}
+      />
+    );
+  }
 }
 
 EnrollmentForm.propTypes = {
+  formType: PropTypes.string.isRequired,
   enrollment: PropTypes.shape({
     courseId: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
     isActive: PropTypes.bool.isRequired,
   }),
   user: PropTypes.string.isRequired,
-  changeHandler: PropTypes.func.isRequired,
+  changeHandler: PropTypes.func,
   closeHandler: PropTypes.func.isRequired,
   forwardedRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 };

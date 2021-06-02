@@ -54,10 +54,6 @@ export const getEntitlementUrl = (uuid = null) => {
   return `${LMS_BASE_URL}/api/entitlements/v1/entitlements/${postfix}`;
 };
 
-export const getEnrollmentChangeUrl = user => `${
-  LMS_BASE_URL
-}/support/enrollment/${user}`;
-
 export const getTogglePasswordStatusUrl = user => `${
   LMS_BASE_URL
 }/support/manage_user/${user}`;
