@@ -41,6 +41,7 @@
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
     "moment": "2.29.1",
+    "newrelic": "5.13.1",
     "prop-types": "15.7.2",
     "react": "16.14.0",
     "react-dom": "16.14.0",
