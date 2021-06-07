@@ -163,6 +163,7 @@ export default function UserPage({ location }) {
             userData={data.user}
             verificationData={data.verificationStatus}
             ssoRecords={data.ssoRecords}
+            onboardingData={data.onboardingStatus}
             changeHandler={handleUserSummaryChange}
           />
           <Licenses

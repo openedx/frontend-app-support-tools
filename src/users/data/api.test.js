@@ -16,6 +16,7 @@ describe('API', () => {
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
+  const onboardingStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/edx_proctoring/v1/user_onboarding/status`;
 
   let mockAdapter;
 
@@ -34,6 +35,44 @@ describe('API', () => {
 
   afterEach(() => {
     mockAdapter.reset();
+  });
+
+  describe('Onboarding Status Fetch', () => {
+    const expectedSuccessResponse = {
+      onboardingStatus: 'verified',
+      expirationDate: null,
+      onboardingLink: null,
+      onboardingPastDue: null,
+      onboardingReleaseDate: null,
+      reviewRequirementsUrl: null,
+    };
+
+    // prepare enrollments data
+    const { data } = enrollmentsData;
+    data[1].mode = 'verified';
+    data[1].course_id = data[1].courseId;
+    const url = `${onboardingStatusApiUrl}?course_id=${encodeURIComponent(data[1].courseId)}&username=${encodeURIComponent(testUsername)}`;
+
+    it('Successful Fetch ', async () => {
+      mockAdapter.onGet(url).reply(200, expectedSuccessResponse);
+
+      const response = await api.getOnboardingStatus(data, testUsername);
+      expect(response).toEqual(expectedSuccessResponse);
+    });
+
+    it('No Record for Onboaring Status Fetch ', async () => {
+      mockAdapter.onGet(url).reply(() => throwError(404, ''));
+
+      const response = await api.getOnboardingStatus(data, testUsername);
+      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'No Record Found' });
+    });
+
+    it('Unexpected error', async () => {
+      mockAdapter.onGet(url).reply(() => throwError(500, ''));
+
+      const response = await api.getOnboardingStatus(data, testUsername);
+      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'Error while fetching data' });
+    });
   });
 
   describe('SSO Records Fetch', () => {
@@ -265,6 +304,15 @@ describe('API', () => {
       is_active: true,
     };
 
+    const onboardingDefaultResponse = {
+      onboardingStatus: null,
+      expirationDate: null,
+      onboardingLink: null,
+      onboardingPastDue: null,
+      onboardingReleaseDate: null,
+      reviewRequirementsUrl: null,
+    };
+
     it('Unsuccessful User Data Retrieval', async () => {
       const expectedUserError = {
         code: null,
@@ -284,12 +332,13 @@ describe('API', () => {
     it('Successful User Data Retrieval', async () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successDictResponse);
       mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, { results: [], next: null });
-      mockAdapter.onGet(enrollmentsApiUrl).reply(200, {});
+      mockAdapter.onGet(enrollmentsApiUrl).reply(200, []);
       mockAdapter.onGet(ssoRecordsApiUrl).reply(200, []);
       mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
       mockAdapter.onGet(verificationStatusApiUrl).reply(200, {});
       mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
       mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(200, []);
+      mockAdapter.onGet(onboardingStatusApiUrl).reply(200, onboardingDefaultResponse);
 
       const response = await api.getAllUserData(testUsername);
       expect(response).toEqual({
@@ -297,9 +346,10 @@ describe('API', () => {
         user: { ...successDictResponse, passwordStatus: {} },
         ssoRecords: [],
         verificationStatus: { extraData: {} },
-        enrollments: {},
+        enrollments: [],
         entitlements: { results: [], next: null },
         licenses: { results: [], status: '' },
+        onboardingStatus: { ...onboardingDefaultResponse, onboardingStatus: 'No Paid Enrollment' },
       });
     });
   });

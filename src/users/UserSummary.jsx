@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Input } from '@edx/paragon';
+import { getConfig } from '@edx/frontend-platform';
 import { postTogglePasswordStatus, postResetPassword } from './data/api';
 import Table from '../Table';
-import { formatDate } from '../utils';
+import { formatDate, titleCase } from '../utils';
 import { getAccountActivationUrl } from './data/urls';
 
 export default function UserSummary({
   userData,
   verificationData,
   ssoRecords,
+  onboardingData,
   changeHandler,
 }) {
   const [ssoModalIsOpen, setSsoModalIsOpen] = useState(false);
@@ -151,6 +153,7 @@ export default function UserSummary({
       key: 'extra',
     },
   ];
+
   const userPasswordHistoryColumns = [
     {
       label: 'Date',
@@ -241,6 +244,35 @@ export default function UserSummary({
     },
   }));
 
+  const proctoringData = [onboardingData].map(result => ({
+    status: result.onboardingStatus ? titleCase(result.onboardingStatus) : 'Not Started',
+    expirationDate: formatDate(result.expirationDate),
+    onboardingReleaseDate: formatDate(result.onboardingReleaseDate),
+    onboardingLink: result.onboardingLink ? {
+      displayValue: <a href={`${getConfig().LMS_BASE_URL}${result.onboardingLink}`} rel="noopener noreferrer" target="_blank" className="word_break">Link</a>,
+      value: result.onboardingLink,
+    } : 'N/A',
+  }));
+
+  const proctoringColumns = [
+    {
+      label: 'Onboarding Status',
+      key: 'status',
+    },
+    {
+      label: 'Expiration Date',
+      key: 'expirationDate',
+    },
+    {
+      label: 'Release Date',
+      key: 'onboardingReleaseDate',
+    },
+    {
+      label: 'Onboarding Link',
+      key: 'onboardingLink',
+    },
+  ];
+
   if (!userData.isActive) {
     let dataValue;
     if (userData.activationKey !== null) {
@@ -304,6 +336,14 @@ export default function UserSummary({
                 id="idv-data"
                 data={IdvData}
                 columns={idvColumns}
+              />
+            </div>
+            <div className="flex-column p-4 m-3 card">
+              <h4>Proctoring Information</h4>
+              <Table
+                id="proctoring-data"
+                data={proctoringData}
+                columns={proctoringColumns}
               />
             </div>
             <div className="flex-column p-4 m-3 card">
@@ -428,6 +468,12 @@ UserSummary.propTypes = {
     extraData: PropTypes.shape([]),
   }),
   ssoRecords: PropTypes.shape([]),
+  onboardingData: PropTypes.shape({
+    onboardingStatus: PropTypes.string,
+    expirationDate: PropTypes.string,
+    onboardingLink: PropTypes.string,
+    onboardingReleaseDate: PropTypes.string,
+  }),
   changeHandler: PropTypes.func.isRequired,
 };
 
@@ -435,4 +481,5 @@ UserSummary.defaultProps = {
   userData: null,
   verificationData: null,
   ssoRecords: [],
+  onboardingData: null,
 };

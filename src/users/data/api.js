@@ -2,7 +2,7 @@ import { ensureConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import * as messages from '../../userMessages/messages';
 import * as AppUrls from './urls';
-import { isEmail } from '../../utils/index';
+import { isEmail } from '../../utils';
 
 export async function getEntitlements(username, page = 1) {
   const baseURL = AppUrls.getEntitlementUrl();
@@ -175,6 +175,47 @@ export async function getLicense(userEmail) {
   }
 }
 
+export async function getOnboardingStatus(enrollments, username) {
+  const defaultResponse = {
+    onboardingStatus: null,
+    expirationDate: null,
+    onboardingLink: null,
+    onboardingPastDue: null,
+    onboardingReleaseDate: null,
+    reviewRequirementsUrl: null,
+  };
+
+  // get most recent paid enrollment
+  const paidEnrollments = enrollments.filter((course) => course.mode === 'verified' || course.mode === 'professional');
+  paidEnrollments.sort((a, b) => (a.created < b.created));
+
+  if (paidEnrollments.length === 0) {
+    return {
+      ...defaultResponse,
+      onboardingStatus: 'No Paid Enrollment',
+    };
+  }
+
+  const courseId = paidEnrollments[0].course_id;
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getOnboardingStatusUrl(courseId, username),
+    );
+    return data;
+  } catch (error) {
+    if ('customAttributes' in error && error.customAttributes.httpErrorStatus === 404) {
+      return {
+        ...defaultResponse,
+        onboardingStatus: 'No Record Found',
+      };
+    }
+    return {
+      ...defaultResponse,
+      onboardingStatus: 'Error while fetching data',
+    };
+  }
+}
+
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
@@ -183,6 +224,7 @@ export async function getAllUserData(userIdentifier) {
   let verificationStatus = null;
   let ssoRecords = null;
   let licenses = [];
+  let onboardingStatus = {};
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
@@ -199,6 +241,7 @@ export async function getAllUserData(userIdentifier) {
     ssoRecords = await getSsoRecords(user.username);
     user.passwordStatus = await getUserPasswordStatus(user.username);
     licenses = await getLicense(user.email);
+    onboardingStatus = await getOnboardingStatus(enrollments, user.username);
   }
 
   return {
@@ -209,6 +252,7 @@ export async function getAllUserData(userIdentifier) {
     verificationStatus,
     ssoRecords,
     licenses,
+    onboardingStatus,
   };
 }
 
