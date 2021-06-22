@@ -4,6 +4,7 @@ import React from 'react';
 import * as api from './data/api';
 import UserSummary from './UserSummary';
 import UserSummaryData from './data/test/userSummary';
+import { formatDate, titleCase } from '../utils';
 
 const getActivationKeyRow = (data) => {
   const wrapper = mount(<UserSummary {...data} />);
@@ -59,6 +60,40 @@ describe('User Summary Component Tests', () => {
       expect(ComponentSsoData.provider).toEqual(ExpectedSsoData.provider);
       expect(ComponentSsoData.modified).toEqual(ExpectedSsoData.modified);
       expect(ComponentSsoData.extraData).toEqual(ExpectedSsoData.extraData);
+    });
+    it('Onboarding Status Data Values', () => {
+      const ComponentOnboardingData = wrapper.prop('onboardingData');
+      const ExpectedOnboardingData = UserSummaryData.onboardingData;
+
+      expect(ComponentOnboardingData.onboardingStatus).toEqual(ExpectedOnboardingData.onboardingStatus);
+      expect(ComponentOnboardingData.expirationDate).toEqual(ExpectedOnboardingData.expirationDate);
+      expect(ComponentOnboardingData.onboardingReleaseDate).toEqual(ExpectedOnboardingData.onboardingReleaseDate);
+      expect(ComponentOnboardingData.onboardingLink).toEqual(ExpectedOnboardingData.onboardingLink);
+    });
+  });
+
+  describe('Onboarding Status Data', () => {
+    it('Onboarding Status', () => {
+      const dataTable = wrapper.find('Table#proctoring-data');
+      const dataBody = dataTable.find('tbody tr td');
+      expect(dataBody).toHaveLength(4);
+      expect(dataBody.at(0).text()).toEqual(titleCase(UserSummaryData.onboardingData.onboardingStatus));
+      expect(dataBody.at(1).text()).toEqual(formatDate(UserSummaryData.onboardingData.expirationDate));
+      expect(dataBody.at(2).text()).toEqual(formatDate(UserSummaryData.onboardingData.onboardingReleaseDate));
+      expect(dataBody.at(3).text()).toEqual('Link');
+    });
+
+    it('No Onboarding Status Data', () => {
+      const onboardingData = { ...UserSummaryData.onboardingData, onboardingStatus: null, onboardingLink: null };
+      const userData = { ...UserSummaryData, onboardingData };
+      wrapper = mount(<UserSummary {...userData} />);
+      const dataTable = wrapper.find('Table#proctoring-data');
+      const dataBody = dataTable.find('tbody tr td');
+      expect(dataBody).toHaveLength(4);
+      expect(dataBody.at(0).text()).toEqual('Not Started');
+      expect(dataBody.at(1).text()).toEqual(formatDate(UserSummaryData.onboardingData.expirationDate));
+      expect(dataBody.at(2).text()).toEqual(formatDate(UserSummaryData.onboardingData.onboardingReleaseDate));
+      expect(dataBody.at(3).text()).toEqual('N/A');
     });
   });
 

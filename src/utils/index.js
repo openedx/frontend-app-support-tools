@@ -26,3 +26,8 @@ export function sort(firstElement, secondElement, key, direction) {
   }
   return 0;
 }
+
+/** Convert a string containing space and/or underscore (snake_case) into titleCase. e.g. hello_world -> Hello World */
+export function titleCase(str) {
+  return str.toLowerCase().replace(/_/g, ' ').replace(/\b(\w)/g, s => s.toUpperCase());
+}

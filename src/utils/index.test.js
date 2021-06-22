@@ -1,5 +1,5 @@
 import {
-  isEmail, isValidUsername, formatDate, sort,
+  isEmail, isValidUsername, formatDate, sort, titleCase,
 } from './index';
 
 describe('Test Utils', () => {
@@ -68,6 +68,26 @@ describe('Test Utils', () => {
     it('when the values are equal', () => {
       expect(sort(sortDict1, sortDict1, 'id', 'asc')).toEqual(0);
       expect(sort(sortDict1, sortDict1, 'id', 'asc')).toEqual(0);
+    });
+  });
+
+  describe('titleCase', () => {
+    it('empty string', () => {
+      expect(titleCase('')).toEqual('');
+      expect(titleCase(' ')).toEqual(' ');
+    });
+    it('one word string', () => {
+      expect(titleCase('hello')).toEqual('Hello');
+      expect(titleCase('title')).toEqual('Title');
+    });
+    it('string with spaces', () => {
+      expect(titleCase('hello world')).toEqual('Hello World');
+      expect(titleCase('title case')).toEqual('Title Case');
+    });
+    it('string with underscore', () => {
+      expect(titleCase('hello_world')).toEqual('Hello World');
+      expect(titleCase('title_case')).toEqual('Title Case');
+      expect(titleCase('onboarding_exam_details')).toEqual('Onboarding Exam Details');
     });
   });
 });
