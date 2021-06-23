@@ -1,5 +1,5 @@
 import {
-  isEmail, isValidUsername, formatDate, sort, titleCase,
+  isEmail, isValidUsername, formatDate, sort, titleCase, sortedCompareDates,
 } from './index';
 
 describe('Test Utils', () => {
@@ -88,6 +88,43 @@ describe('Test Utils', () => {
       expect(titleCase('hello_world')).toEqual('Hello World');
       expect(titleCase('title_case')).toEqual('Title Case');
       expect(titleCase('onboarding_exam_details')).toEqual('Onboarding Exam Details');
+    });
+  });
+
+  describe('sortedCompareDates', () => {
+    const dates = [
+      '2022-04-06T20:49:53.428771Z',
+      '2022-04-06T20:49:53.428771Z',
+      '2021-04-06T20:49:53.428771Z',
+      '2020-04-06T20:49:53.428771Z',
+      '2021-04-06T10:49:53.428771Z',
+    ];
+
+    const ascSortedDates = [
+      '2020-04-06T20:49:53.428771Z',
+      '2021-04-06T10:49:53.428771Z',
+      '2021-04-06T20:49:53.428771Z',
+      '2022-04-06T20:49:53.428771Z',
+      '2022-04-06T20:49:53.428771Z',
+    ];
+
+    const dscSortedDates = [
+      '2022-04-06T20:49:53.428771Z',
+      '2022-04-06T20:49:53.428771Z',
+      '2021-04-06T20:49:53.428771Z',
+      '2021-04-06T10:49:53.428771Z',
+      '2020-04-06T20:49:53.428771Z',
+    ];
+
+    it('dates in asc order', () => {
+      expect(dates.sort(
+        (a, b) => sortedCompareDates(a, b, true),
+      )).toEqual(ascSortedDates);
+    });
+    it('dates in dsc order', () => {
+      expect(dates.sort(
+        (a, b) => sortedCompareDates(a, b, false),
+      )).toEqual(dscSortedDates);
     });
   });
 });

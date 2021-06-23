@@ -244,16 +244,6 @@ export default function UserSummary({
     },
   }));
 
-  const proctoringData = [onboardingData].map(result => ({
-    status: result.onboardingStatus ? titleCase(result.onboardingStatus) : 'Not Started',
-    expirationDate: formatDate(result.expirationDate),
-    onboardingReleaseDate: formatDate(result.onboardingReleaseDate),
-    onboardingLink: result.onboardingLink ? {
-      displayValue: <a href={`${getConfig().LMS_BASE_URL}${result.onboardingLink}`} rel="noopener noreferrer" target="_blank" className="word_break">Link</a>,
-      value: result.onboardingLink,
-    } : 'N/A',
-  }));
-
   const proctoringColumns = [
     {
       label: 'Onboarding Status',
@@ -264,14 +254,19 @@ export default function UserSummary({
       key: 'expirationDate',
     },
     {
-      label: 'Release Date',
-      key: 'onboardingReleaseDate',
-    },
-    {
       label: 'Onboarding Link',
       key: 'onboardingLink',
     },
   ];
+
+  const proctoringData = [onboardingData].map(result => ({
+    status: result.onboardingStatus ? titleCase(result.onboardingStatus) : 'Not Started',
+    expirationDate: formatDate(result.expirationDate),
+    onboardingLink: result.onboardingLink ? {
+      displayValue: <a href={`${getConfig().LMS_BASE_URL}${result.onboardingLink}`} rel="noopener noreferrer" target="_blank" className="word_break">Link</a>,
+      value: result.onboardingLink,
+    } : 'N/A',
+  }));
 
   if (!userData.isActive) {
     let dataValue;
@@ -472,7 +467,6 @@ UserSummary.propTypes = {
     onboardingStatus: PropTypes.string,
     expirationDate: PropTypes.string,
     onboardingLink: PropTypes.string,
-    onboardingReleaseDate: PropTypes.string,
   }),
   changeHandler: PropTypes.func.isRequired,
 };

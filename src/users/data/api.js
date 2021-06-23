@@ -2,7 +2,7 @@ import { ensureConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import * as messages from '../../userMessages/messages';
 import * as AppUrls from './urls';
-import { isEmail } from '../../utils';
+import { isEmail, sortedCompareDates } from '../../utils';
 
 export async function getEntitlements(username, page = 1) {
   const baseURL = AppUrls.getEntitlementUrl();
@@ -187,7 +187,9 @@ export async function getOnboardingStatus(enrollments, username) {
 
   // get most recent paid enrollment
   const paidEnrollments = enrollments.filter((course) => course.mode === 'verified' || course.mode === 'professional');
-  paidEnrollments.sort((a, b) => (a.created < b.created));
+
+  // sort courses on enrollments created with most recent enrollment on top
+  paidEnrollments.sort((x, y) => sortedCompareDates(x.created, y.created, false));
 
   if (paidEnrollments.length === 0) {
     return {
