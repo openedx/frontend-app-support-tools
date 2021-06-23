@@ -76,11 +76,10 @@ describe('User Summary Component Tests', () => {
     it('Onboarding Status', () => {
       const dataTable = wrapper.find('Table#proctoring-data');
       const dataBody = dataTable.find('tbody tr td');
-      expect(dataBody).toHaveLength(4);
+      expect(dataBody).toHaveLength(3);
       expect(dataBody.at(0).text()).toEqual(titleCase(UserSummaryData.onboardingData.onboardingStatus));
       expect(dataBody.at(1).text()).toEqual(formatDate(UserSummaryData.onboardingData.expirationDate));
-      expect(dataBody.at(2).text()).toEqual(formatDate(UserSummaryData.onboardingData.onboardingReleaseDate));
-      expect(dataBody.at(3).text()).toEqual('Link');
+      expect(dataBody.at(2).text()).toEqual('Link');
     });
 
     it('No Onboarding Status Data', () => {
@@ -89,11 +88,10 @@ describe('User Summary Component Tests', () => {
       wrapper = mount(<UserSummary {...userData} />);
       const dataTable = wrapper.find('Table#proctoring-data');
       const dataBody = dataTable.find('tbody tr td');
-      expect(dataBody).toHaveLength(4);
+      expect(dataBody).toHaveLength(3);
       expect(dataBody.at(0).text()).toEqual('Not Started');
       expect(dataBody.at(1).text()).toEqual(formatDate(UserSummaryData.onboardingData.expirationDate));
-      expect(dataBody.at(2).text()).toEqual(formatDate(UserSummaryData.onboardingData.onboardingReleaseDate));
-      expect(dataBody.at(3).text()).toEqual('N/A');
+      expect(dataBody.at(2).text()).toEqual('N/A');
     });
   });
 

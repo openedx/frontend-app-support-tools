@@ -31,3 +31,10 @@ export function sort(firstElement, secondElement, key, direction) {
 export function titleCase(str) {
   return str.toLowerCase().replace(/_/g, ' ').replace(/\b(\w)/g, s => s.toUpperCase());
 }
+
+/**  Compare dates function for array.sort() */
+export function sortedCompareDates(x, y, asc) {
+  const a = new Date(x);
+  const b = new Date(y);
+  return asc ? a - b : b - a;
+}
