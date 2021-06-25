@@ -122,7 +122,9 @@ describe('Certificate component', () => {
 
     it('Successful certificate generation flow', async () => {
       generateApiMock = jest.spyOn(api, 'generateCertificate').mockImplementationOnce(() => Promise.resolve({}));
-      apiMock = jest.spyOn(api, 'getCertificate').mockImplementation(() => Promise.resolve(downloadableCertificate));
+      apiMock = jest.spyOn(api, 'getCertificate').mockImplementationOnce(() => Promise.resolve(downloadableCertificate));
+      // 2nd call to get certificate after generaion would yield regenerate certificate data.
+      jest.spyOn(api, 'getCertificate').mockImplementationOnce(() => Promise.resolve(regeneratableCertificate));
 
       wrapper = mount(<CertificateWrapper {...props} />);
       await waitForComponentToPaint(wrapper);
@@ -138,11 +140,14 @@ describe('Certificate component', () => {
       expect(generateApiMock).toHaveBeenCalledTimes(1);
       expect(wrapper.find('h3').text()).toEqual('Status: Generating New Certificate ');
 
-      // Once the generation api call is successful, the status text and button will revert.
+      // Once the generation api call is successful, the status text will revert
+      // and button will change into regenerate button.
       await waitForComponentToPaint(wrapper);
-      generateButton = wrapper.find('button#generate-certificate');
+      const regenerateButton = wrapper.find('button#regenerate-certificate');
       expect(wrapper.find('h3').length).toEqual(0);
-      expect(generateButton.prop('disabled')).toBeFalsy();
+      expect(regenerateButton.text()).toEqual('Regenerate');
+      expect(regenerateButton.prop('disabled')).toBeFalsy();
+      expect(apiMock).toHaveBeenCalledTimes(2);
     });
 
     it('Unsuccessful certificate generation flow', async () => {

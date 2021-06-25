@@ -5,6 +5,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { enrollmentsData } from './test/enrollments';
 import { downloadableCertificate } from './test/certificates';
 import * as api from './api';
+import * as urls from './urls';
 
 describe('API', () => {
   const testUsername = 'username';
@@ -19,9 +20,9 @@ describe('API', () => {
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
   const onboardingStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/edx_proctoring/v1/user_onboarding/status`;
-  const certificatesUrl = `${getConfig().LMS_BASE_URL}/certificates/search?user=${testUsername}&course_id=${testCourseId}`;
-  const generateCertificateUrl = `${getConfig().LMS_BASE_URL}/certificates/generate`;
-  const regenerateCertificateUrl = `${getConfig().LMS_BASE_URL}/certificates/regenerate`;
+  const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
+  const generateCertificateUrl = urls.generateCertificateUrl();
+  const regenerateCertificateUrl = urls.regenerateCertificateUrl();
 
   let mockAdapter;
 
