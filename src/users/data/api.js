@@ -443,3 +443,74 @@ export async function postResetPassword(email) {
   );
   return data;
 }
+
+export async function getCertificate(username, courseKey) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getCertificateUrl(username, courseKey),
+    );
+    return Array.isArray(data) && data.length > 0 ? data[0] : data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: error.message,
+          type: 'danger',
+          topic: 'certificates',
+        },
+      ],
+    };
+  }
+}
+
+export async function generateCertificate(username, courseKey) {
+  const formData = new FormData();
+  formData.append('username', username);
+  formData.append('course_key', courseKey);
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      AppUrls.generateCertificateUrl(),
+      formData,
+    );
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: error.message,
+          type: 'danger',
+          topic: 'certificates',
+        },
+      ],
+    };
+  }
+}
+
+export async function regenerateCertificate(username, courseKey) {
+  const formData = new FormData();
+  formData.append('username', username);
+  formData.append('course_key', courseKey);
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      AppUrls.regenerateCertificateUrl(),
+      formData,
+    );
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: error.message,
+          type: 'danger',
+          topic: 'certificates',
+        },
+      ],
+    };
+  }
+}

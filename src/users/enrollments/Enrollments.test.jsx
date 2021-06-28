@@ -1,9 +1,11 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
+import { waitForComponentToPaint } from '../../setupTest';
 import Enrollments from './Enrollments';
 import { enrollmentsData } from '../data/test/enrollments';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
+import * as api from '../data/api';
 
 const EnrollmentPageWrapper = (props) => (
   <UserMessagesProvider>
@@ -60,6 +62,26 @@ describe('Course Enrollments Listing', () => {
       enrollmentExtra.find('button.btn-outline-secondary').simulate('click');
       expect(wrapper.find('EnrollmentExtra')).toEqual({});
     });
+  });
+
+  it('View Certificate action', async () => {
+    /**
+     * Testing the certificate fetch on first row only. Async painting in the loop was causing
+     * the test to pass data across the loop, causing inconsistent behavior..
+     */
+    const dataRow = wrapper.find('table.table tbody tr').at(0);
+    const courseName = dataRow.find('td').at(1).text();
+    const apiMock = jest.spyOn(api, 'getCertificate').mockImplementationOnce(() => Promise.resolve({ courseKey: courseName }));
+    dataRow.find('button#certificate').simulate('click');
+
+    await waitForComponentToPaint(wrapper);
+    const certificates = wrapper.find('Certificates');
+    expect(certificates.html()).toEqual(expect.stringContaining(courseName));
+
+    expect(apiMock).toHaveBeenCalledTimes(1);
+    certificates.find('button.btn-outline-secondary').simulate('click');
+    expect(wrapper.find('Certificates')).toEqual({});
+    apiMock.mockReset();
   });
 
   it('Sorting Columns Button Enabled by default', () => {

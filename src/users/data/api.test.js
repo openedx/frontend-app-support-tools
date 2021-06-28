@@ -3,11 +3,14 @@ import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 import { enrollmentsData } from './test/enrollments';
+import { downloadableCertificate } from './test/certificates';
 import * as api from './api';
+import * as urls from './urls';
 
 describe('API', () => {
   const testUsername = 'username';
   const testEmail = 'email@example.com';
+  const testCourseId = 'course-v1:testX+test123+2030';
   const userAccountApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
   const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
   const enrollmentsApiUrl = `${getConfig().LMS_BASE_URL}/support/enrollment/${testUsername}`;
@@ -17,6 +20,9 @@ describe('API', () => {
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
   const onboardingStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/edx_proctoring/v1/user_onboarding/status`;
+  const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
+  const generateCertificateUrl = urls.generateCertificateUrl();
+  const regenerateCertificateUrl = urls.regenerateCertificateUrl();
 
   let mockAdapter;
 
@@ -30,7 +36,7 @@ describe('API', () => {
   };
 
   beforeEach(() => {
-    mockAdapter = new MockAdapter(getAuthenticatedHttpClient());
+    mockAdapter = new MockAdapter(getAuthenticatedHttpClient(), { onNoMatch: 'throwException' });
   });
 
   afterEach(() => {
@@ -680,6 +686,74 @@ describe('API', () => {
         const response = await api.getLicense(testEmail);
         expect(response).toEqual({ results: [], status: 'Unable to connect to the service' });
       });
+    });
+  });
+
+  describe('Certificate Operations', () => {
+    const successDictResponse = downloadableCertificate;
+    const successListResponse = [successDictResponse];
+    const expectedError = {
+      code: null,
+      dismissible: true,
+      text: '',
+      type: 'danger',
+      topic: 'certificates',
+    };
+
+    test.each([successDictResponse, successListResponse])('Successful Certificate Fetch', async (successResponse) => {
+      mockAdapter.onGet(certificatesUrl).reply(200, successResponse);
+      const response = await api.getCertificate(testUsername, testCourseId);
+      expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
+    });
+
+    it('Unsuccessful Certificates fetch', async () => {
+      mockAdapter.onGet(certificatesUrl).reply(() => throwError(400, ''));
+      const response = await api.getCertificate(testUsername, testCourseId);
+      expect(...response.errors).toEqual(expectedError);
+    });
+
+    it('Successful generate Certificate', async () => {
+      /**
+       * No data is added in the post request check because axios-mock-adapter fails
+       * with formData in post request.
+       * See: https://github.com/ctimmerm/axios-mock-adapter/issues/253
+       */
+      mockAdapter.onPost(generateCertificateUrl).reply(200, successDictResponse);
+      const response = await api.generateCertificate(testUsername, testCourseId);
+      expect(response).toEqual(successDictResponse);
+    });
+
+    it('Unsuccessful generate Certificate', async () => {
+      /**
+       * No data is added in the post request check because axios-mock-adapter fails
+       * with formData in post request.
+       * See: https://github.com/ctimmerm/axios-mock-adapter/issues/253
+       */
+      mockAdapter.onPost(generateCertificateUrl).reply(() => throwError(400, ''));
+      const response = await api.generateCertificate(testUsername, testCourseId);
+      expect(...response.errors).toEqual(expectedError);
+    });
+
+    it('Successful regenerate Certificate', async () => {
+      /**
+       * No data is added in the post request check because axios-mock-adapter fails
+       * with formData in post request.
+       * See: https://github.com/ctimmerm/axios-mock-adapter/issues/253
+       */
+      mockAdapter.onPost(regenerateCertificateUrl).reply(200, successDictResponse);
+      const response = await api.regenerateCertificate(testUsername, testCourseId);
+      expect(response).toEqual(successDictResponse);
+    });
+
+    it('Unsuccessful regenerate Certificate', async () => {
+      /**
+       * No data is added in the post request check because axios-mock-adapter fails
+       * with formData in post request.
+       * See: https://github.com/ctimmerm/axios-mock-adapter/issues/253
+       */
+      mockAdapter.onPost(regenerateCertificateUrl).reply(() => throwError(400, ''));
+      const response = await api.regenerateCertificate(testUsername, testCourseId);
+      expect(...response.errors).toEqual(expectedError);
     });
   });
 });

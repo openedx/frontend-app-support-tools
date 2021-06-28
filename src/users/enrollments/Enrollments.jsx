@@ -9,6 +9,7 @@ import React, {
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
+import Certificates from './Certificates';
 import EnrollmentForm from './EnrollmentForm';
 import EnrollmentExtra from './EnrollmentExtra';
 import { CREATE, CHANGE } from './constants';
@@ -23,6 +24,7 @@ export default function Enrollments({
   const [formType, setFormType] = useState(null);
   const [enrollmentToChange, setEnrollmentToChange] = useState(undefined);
   const [enrollmentExtraData, setEnrollmentExtraData] = useState(undefined);
+  const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const formRef = useRef(null);
   const extraRef = useRef(null);
 
@@ -33,11 +35,12 @@ export default function Enrollments({
       lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
       reason: enrollment.manualEnrollment && enrollment.manualEnrollment.reason ? enrollment.manualEnrollment.reason : 'N/A',
     };
+    setSelectedCourseId(undefined);
     setEnrollmentExtraData(extraData);
   }
 
   useLayoutEffect(() => {
-    if (enrollmentExtraData !== undefined) {
+    if (enrollmentExtraData !== undefined && selectedCourseId === undefined) {
       extraRef.current.focus();
     }
   });
@@ -102,6 +105,16 @@ export default function Enrollments({
               }}
             >
               Show Extra
+            </Button>
+            <Button
+              type="button"
+              id="certificate"
+              variant="outline-primary mt-2 mr-2"
+              onClick={() => {
+                setSelectedCourseId(result.courseId);
+              }}
+            >
+              View Certificate
             </Button>
           </div>
         ),
@@ -196,6 +209,16 @@ export default function Enrollments({
             closeHandler={() => setEnrollmentExtraData(undefined)}
             enrollmentExtraData={enrollmentExtraData}
             forwardedRef={extraRef}
+          />
+        ) : (<React.Fragment key="nothing" />) }
+      </TransitionReplace>
+      <TransitionReplace>
+        {selectedCourseId !== undefined ? (
+          <Certificates
+            key="certificates-data"
+            closeHandler={() => setSelectedCourseId(undefined)}
+            courseId={selectedCourseId}
+            username={user}
           />
         ) : (<React.Fragment key="nothing" />) }
       </TransitionReplace>
