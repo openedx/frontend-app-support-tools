@@ -2,23 +2,37 @@ import React, {
   useMemo,
   useState,
   useCallback,
+  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import { Collapsible, Badge } from '@edx/paragon';
+import { camelCaseObject } from '@edx/frontend-platform';
 import Table from '../../Table';
 import { formatDate, sort } from '../../utils';
+import { getLicense } from '../data/api';
 
 export default function Licenses({
-  data, status, expanded,
+  userEmail, expanded,
 }) {
   const [sortColumn, setSortColumn] = useState('status');
   const [sortDirection, setSortDirection] = useState('desc');
+  const [licenses, setLicensesData] = useState([]);
+  const [status, setStatus] = useState('Loading...');
+
+  useEffect(() => {
+    getLicense(userEmail).then((data) => {
+      const camelCaseData = camelCaseObject(data);
+      setLicensesData(camelCaseData.results);
+      setStatus(camelCaseData.status);
+    });
+  }, [userEmail]);
+
   const responseStatus = useMemo(() => status, [status]);
   const tableData = useMemo(() => {
-    if (data === null || data.length === 0) {
+    if (licenses === null || licenses.length === 0) {
       return [];
     }
-    return data.map(result => ({
+    return licenses.map(result => ({
       status: {
         value: result.status,
       },
@@ -50,7 +64,7 @@ export default function Licenses({
         value: result.activationLink,
       },
     }));
-  }, [data]);
+  }, [licenses]);
 
   const setSort = useCallback((column) => {
     if (sortColumn === column) {
@@ -122,22 +136,11 @@ export default function Licenses({
 }
 
 Licenses.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    status: PropTypes.string,
-    assignedDate: PropTypes.string,
-    revokedDate: PropTypes.string,
-    activationDate: PropTypes.string,
-    subscriptionPlanTitle: PropTypes.string,
-    lastRemindDate: PropTypes.string,
-    activationLink: PropTypes.string,
-    subscriptionPlanExpirationDate: PropTypes.string,
-  })),
-  status: PropTypes.string,
+  userEmail: PropTypes.string,
   expanded: PropTypes.bool,
 };
 
 Licenses.defaultProps = {
-  data: null,
-  status: '',
+  userEmail: null,
   expanded: false,
 };

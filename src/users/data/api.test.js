@@ -354,7 +354,6 @@ describe('API', () => {
       mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
       mockAdapter.onGet(verificationStatusApiUrl).reply(200, {});
       mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
-      mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(200, []);
       mockAdapter.onGet(onboardingStatusApiUrl).reply(200, onboardingDefaultResponse);
 
       const response = await api.getAllUserData(testUsername);
@@ -365,7 +364,6 @@ describe('API', () => {
         verificationStatus: { extraData: {} },
         enrollments: [],
         entitlements: { results: [], next: null },
-        licenses: { results: [], status: '' },
         onboardingStatus: { ...onboardingDefaultResponse, onboardingStatus: 'No Paid Enrollment' },
       });
     });

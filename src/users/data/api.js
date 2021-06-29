@@ -225,7 +225,6 @@ export async function getAllUserData(userIdentifier) {
   let enrollments = [];
   let verificationStatus = null;
   let ssoRecords = null;
-  let licenses = [];
   let onboardingStatus = {};
   try {
     user = await getUser(userIdentifier);
@@ -242,7 +241,6 @@ export async function getAllUserData(userIdentifier) {
     verificationStatus = await getUserVerificationStatus(user.username);
     ssoRecords = await getSsoRecords(user.username);
     user.passwordStatus = await getUserPasswordStatus(user.username);
-    licenses = await getLicense(user.email);
     onboardingStatus = await getOnboardingStatus(enrollments, user.username);
   }
 
@@ -253,7 +251,6 @@ export async function getAllUserData(userIdentifier) {
     enrollments,
     verificationStatus,
     ssoRecords,
-    licenses,
     onboardingStatus,
   };
 }
