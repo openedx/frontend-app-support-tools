@@ -185,8 +185,8 @@ export async function getOnboardingStatus(enrollments, username) {
     reviewRequirementsUrl: null,
   };
 
-  // get most recent paid enrollment
-  const paidEnrollments = enrollments.filter((course) => course.mode === 'verified' || course.mode === 'professional');
+  // get most recent paid active enrollment
+  const paidEnrollments = enrollments.filter((enrollment) => enrollment.is_active && (enrollment.mode === 'verified' || enrollment.mode === 'professional'));
 
   // sort courses on enrollments created with most recent enrollment on top
   paidEnrollments.sort((x, y) => sortedCompareDates(x.created, y.created, false));

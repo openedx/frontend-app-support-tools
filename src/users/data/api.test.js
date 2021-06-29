@@ -57,7 +57,18 @@ describe('API', () => {
     const { data } = enrollmentsData;
     data[1].mode = 'verified';
     data[1].course_id = data[1].courseId;
-    const url = `${onboardingStatusApiUrl}?course_id=${encodeURIComponent(data[1].courseId)}&username=${encodeURIComponent(testUsername)}`;
+    data[1].is_active = data[1].isActive; // false
+    let url = `${onboardingStatusApiUrl}?course_id=${encodeURIComponent(data[1].course_id)}&username=${encodeURIComponent(testUsername)}`;
+
+    it('No Active Paid Enrollment ', async () => {
+      mockAdapter.onGet(url).reply(() => throwError(404, ''));
+
+      const response = await api.getOnboardingStatus(data, testUsername);
+      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'No Record Found' });
+    });
+
+    data[1].is_active = true;
+    url = `${onboardingStatusApiUrl}?course_id=${encodeURIComponent(data[1].course_id)}&username=${encodeURIComponent(testUsername)}`;
 
     it('Successful Fetch ', async () => {
       mockAdapter.onGet(url).reply(200, expectedSuccessResponse);
