@@ -1,5 +1,5 @@
 import React, {
-  useMemo, useState, useCallback, useRef, useLayoutEffect, useContext,
+  useMemo, useState, useCallback, useRef, useLayoutEffect, useContext, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -9,14 +9,16 @@ import {
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import EntitlementForm from './EntitlementForm';
 import { CREATE, REISSUE, EXPIRE } from './EntitlementActions';
+import PageLoading from '../../components/common/PageLoading';
 import Table from '../../Table';
 import CourseSummary from '../courseSummary/CourseSummary';
-import { getCourseData } from '../data/api';
+import { getCourseData, getEntitlements } from '../data/api';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { formatDate, sort } from '../../utils';
+import AlertList from '../../userMessages/AlertList';
 
 export default function Entitlements({
-  data, changeHandler, user, expanded,
+  changeHandler, user, expanded,
 }) {
   const { add, clear } = useContext(UserMessagesContext);
   const [sortColumn, setSortColumn] = useState('created');
@@ -26,11 +28,24 @@ export default function Entitlements({
   const [courseSummaryUUID, setCourseSummaryUUID] = useState(null);
   const [courseSummaryData, setCourseSummaryData] = useState(null);
   const [courseSummaryErrors, setCourseSummaryErrors] = useState(false);
+  const [entitlementData, setEntitlementData] = useState(null);
   const [entitlementDetailModalIsOpen, setEntitlementDetailModalIsOpen] = useState(false);
   const [entitlementSupportDetailsTitle, setEntitlementSupportDetailsTitle] = useState('');
   const [entitlementSupportDetails, setEntitlementSupportDetails] = useState([]);
   const formRef = useRef(null);
   const summaryRef = useRef(null);
+
+  useEffect(() => {
+    getEntitlements(user).then((result) => {
+      const camelCaseResult = camelCaseObject(result);
+      if (camelCaseResult.errors) {
+        camelCaseResult.errors.forEach(error => add(error));
+        setEntitlementData({ results: [] });
+      } else {
+        setEntitlementData(camelCaseResult);
+      }
+    });
+  }, [user]);
 
   useLayoutEffect(() => {
     if (formType != null) {
@@ -79,10 +94,10 @@ export default function Entitlements({
   });
 
   const tableData = useMemo(() => {
-    if (data === null) {
+    if (entitlementData === null) {
       return [];
     }
-    return data.results.map(entitlement => ({
+    return entitlementData.results.map(entitlement => ({
       courseUuid: {
         displayValue: (
           <Button
@@ -155,7 +170,7 @@ export default function Entitlements({
               id="reissue"
               type="button"
               variant="outline-primary mt-2 mr-2"
-              disabled={!entitlement.enrollmentCourseRun}
+              disabled={Boolean(!entitlement.enrollmentCourseRun)}
               onClick={() => {
                 clearCourseSummary();
                 setUserEntitlement(entitlement);
@@ -167,7 +182,7 @@ export default function Entitlements({
             <Button
               type="button"
               variant="outline-danger mt-2"
-              disabled={entitlement.expiredAt}
+              disabled={Boolean(entitlement.expiredAt)}
               onClick={() => {
                 clearCourseSummary();
                 setUserEntitlement(entitlement);
@@ -181,7 +196,7 @@ export default function Entitlements({
         value: 'Resissue',
       },
     }));
-  }, [data]);
+  }, [entitlementData]);
 
   const setSort = useCallback((column) => {
     if (sortColumn === column) {
@@ -256,6 +271,7 @@ export default function Entitlements({
           </Button>
         )}
       </div>
+      <AlertList topic="entitlements" className="mb-3" />
       <TransitionReplace>
         {formType !== null ? (
           <EntitlementForm
@@ -297,31 +313,32 @@ export default function Entitlements({
         )}
       />
       <Collapsible title={`Entitlements (${tableData.length})`} defaultOpen={expanded}>
-        <Table
-          className="w-100"
-          data={tableDataSortable.sort(
-            (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
+        {!entitlementData
+          ? <PageLoading srMessage="Loading" />
+          : (
+            <Table
+              className="w-100"
+              data={tableDataSortable.sort(
+                (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
+              )}
+              columns={columns}
+              tableSortable
+              defaultSortedColumn="created"
+              defaultSortDirection="desc"
+            />
           )}
-          columns={columns}
-          tableSortable
-          defaultSortedColumn="created"
-          defaultSortDirection="desc"
-        />
+
       </Collapsible>
     </section>
   );
 }
 
 Entitlements.propTypes = {
-  data: PropTypes.shape({
-    results: PropTypes.arrayOf(PropTypes.object),
-  }),
   changeHandler: PropTypes.func.isRequired,
   user: PropTypes.string.isRequired,
   expanded: PropTypes.bool,
 };
 
 Entitlements.defaultProps = {
-  data: null,
   expanded: false,
 };

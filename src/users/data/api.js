@@ -5,17 +5,31 @@ import * as AppUrls from './urls';
 import { isEmail, sortedCompareDates } from '../../utils';
 
 export async function getEntitlements(username, page = 1) {
-  const baseURL = AppUrls.getEntitlementUrl();
-  const queryString = `user=${username}&page=${page}`;
-  const { data } = await getAuthenticatedHttpClient().get(
-    `${baseURL}?${queryString}`,
-  );
-  if (data.next !== null) {
-    const nextPageData = await getEntitlements(username, data.current_page + 1);
-    data.results = data.results.concat(nextPageData.results);
+  try {
+    const baseURL = AppUrls.getEntitlementUrl();
+    const queryString = `user=${username}&page=${page}`;
+    const { data } = await getAuthenticatedHttpClient().get(
+      `${baseURL}?${queryString}`,
+    );
+    if (data.next !== null) {
+      const nextPageData = await getEntitlements(username, data.current_page + 1);
+      data.results = data.results.concat(nextPageData.results);
+      return data;
+    }
     return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: JSON.parse(error.customAttributes.httpErrorResponseData),
+          type: 'danger',
+          topic: 'entitlements',
+        },
+      ],
+    };
   }
-  return data;
 }
 
 export async function getEnrollments(username) {
@@ -221,7 +235,6 @@ export async function getOnboardingStatus(enrollments, username) {
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
-  let entitlements = [];
   let enrollments = [];
   let verificationStatus = null;
   let ssoRecords = null;
@@ -236,7 +249,6 @@ export async function getAllUserData(userIdentifier) {
     }
   }
   if (user !== null) {
-    entitlements = await getEntitlements(user.username);
     enrollments = await getEnrollments(user.username);
     verificationStatus = await getUserVerificationStatus(user.username);
     ssoRecords = await getSsoRecords(user.username);
@@ -247,7 +259,6 @@ export async function getAllUserData(userIdentifier) {
   return {
     errors,
     user,
-    entitlements,
     enrollments,
     verificationStatus,
     ssoRecords,

@@ -348,7 +348,6 @@ describe('API', () => {
 
     it('Successful User Data Retrieval', async () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successDictResponse);
-      mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(200, { results: [], next: null });
       mockAdapter.onGet(enrollmentsApiUrl).reply(200, []);
       mockAdapter.onGet(ssoRecordsApiUrl).reply(200, []);
       mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
@@ -363,7 +362,6 @@ describe('API', () => {
         ssoRecords: [],
         verificationStatus: { extraData: {} },
         enrollments: [],
-        entitlements: { results: [], next: null },
         onboardingStatus: { ...onboardingDefaultResponse, onboardingStatus: 'No Paid Enrollment' },
       });
     });
@@ -474,6 +472,11 @@ describe('API', () => {
         user: testUsername,
         uuid: 'uuid',
       };
+      it('Unsuccessful fetch', async () => {
+        mockAdapter.onGet(`${entitlementsApiBaseUrl}&page=1`).reply(() => throwError(400, 'There was an error fetching entitlements.'));
+        const response = await api.getEntitlements(testUsername);
+        expect(...response.errors).toEqual({ ...expectedError, text: 'There was an error fetching entitlements.' });
+      });
       it('Single page result', async () => {
         const expectedData = {
           count: 1,
