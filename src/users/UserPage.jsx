@@ -172,7 +172,6 @@ export default function UserPage({ location }) {
           />
           <Entitlements
             user={data.user.username}
-            data={data.entitlements}
             changeHandler={handleEntitlementsChange}
             expanded={showEntitlements}
           />

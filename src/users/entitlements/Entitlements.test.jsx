@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import { waitForComponentToPaint } from '../../setupTest';
 import Entitlements from './Entitlements';
-import entitlementsData from '../data/test/entitlements';
+import { entitlementsData, entitlementsErrors } from '../data/test/entitlements';
 import CourseSummaryData from '../data/test/courseSummary';
 import UserMessageProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
@@ -16,9 +16,16 @@ const EntitlementsPageWrapper = (props) => (
 
 describe('Entitlements Listing', () => {
   let wrapper;
+  const props = {
+    user: 'edX',
+    expanded: true,
+    changeHandler: jest.fn(() => {}),
+  };
 
-  beforeEach(() => {
-    wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} />);
+  beforeEach(async () => {
+    jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
+    wrapper = mount(<EntitlementsPageWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
   });
 
   afterEach(() => {
@@ -42,10 +49,22 @@ describe('Entitlements Listing', () => {
     expect(collapsible.text()).toEqual('Entitlements (2)');
   });
 
-  it('No entitlements data', () => {
-    wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} data={null} />);
+  it('No entitlements data', async () => {
+    jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve({ results: [] }));
+    wrapper = mount(<EntitlementsPageWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
     const collapsible = wrapper.find('CollapsibleAdvanced').find('.collapsible-trigger').hostNodes();
     expect(collapsible.text()).toEqual('Entitlements (0)');
+  });
+
+  it('Error fetching entitlements', async () => {
+    jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsErrors));
+    wrapper = mount(<EntitlementsPageWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
+
+    const alert = wrapper.find('div.alert');
+    console.log(alert);
+    expect(alert.test).toEqual(entitlementsErrors.errors.text);
   });
 
   it('Sorting Columns Button Enabled by default', () => {
@@ -71,7 +90,6 @@ describe('Entitlements Listing', () => {
   });
 
   it('Support Details data', () => {
-    wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} />);
     const tableRowsLengths = [2, 0];
 
     const tableData = wrapper.find('table.table');
@@ -94,86 +112,61 @@ describe('Entitlements Listing', () => {
     });
   });
 
-  describe('Expire and Reissue entitlement buttons', () => {
-    describe('Expire Entitlement button', () => {
-      it('Disabled Expire entitlement button', () => {
-        const tableData = wrapper.find('table.table');
-        tableData.find('tbody tr').forEach(row => {
-          const expireButton = row.find('button.btn-outline-danger');
+  describe('Expire Entitlement button', () => {
+    it('Disabled Expire entitlement button', () => {
+      const tableData = wrapper.find('table.table');
+      // We're only checking row 0 of the table since it has the button Expire Button disabled
+      const row = tableData.find('tbody tr').at(0);
+      const expireButton = row.find('button.btn-outline-danger');
 
-          expect(expireButton.text()).toEqual('Expire');
-          expect(expireButton.prop('disabled')).toBeTruthy();
-        });
-      });
-
-      it('Enabled Expire entitlement button', () => {
-        let data = [...entitlementsData.data.results];
-        data = data.map(item => (
-          {
-            ...item,
-            expiredAt: null,
-          }
-        ));
-        wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} data={{ results: data }} />);
-        const tableData = wrapper.find('table.table');
-        tableData.find('tbody tr').forEach(row => {
-          const expireButton = row.find('button.btn-outline-danger');
-
-          expect(expireButton.text()).toEqual('Expire');
-          expect(expireButton.prop('disabled')).toBeFalsy();
-          expireButton.simulate('click');
-
-          const expireEntitlementForm = wrapper.find('ExpireEntitlementForm');
-          expect(expireEntitlementForm.html()).toEqual(expect.stringContaining('Expire Entitlement'));
-          expireEntitlementForm.find('button.btn-outline-secondary').simulate('click');
-          expect(wrapper.find('ExpireEntitlementForm')).toEqual({});
-        });
-      });
+      expect(expireButton.text()).toEqual('Expire');
+      expect(expireButton.prop('disabled')).toBeTruthy();
     });
 
-    describe('Reissue entitlement button', () => {
-      it('Disabled Reissue entitlement button', () => {
-        let data = [...entitlementsData.data.results];
-        data = data.map(item => (
-          {
-            ...item,
-            enrollmentCourseRun: null,
-          }
-        ));
-        wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} data={{ results: data }} />);
-        const tableData = wrapper.find('table.table');
+    it('Enabled Expire entitlement button', () => {
+      const tableData = wrapper.find('table.table');
+      // We're only checking row 1 of the table since the expire button is not disabled
+      const row = tableData.find('tbody tr').at(1);
+      const expireButton = row.find('button.btn-outline-danger');
 
-        tableData.find('tbody tr').forEach(row => {
-          const reissueButton = row.find('button#reissue').last();
-          expect(reissueButton.text()).toEqual('Reissue');
-          expect(reissueButton.prop('disabled')).toBeTruthy();
-        });
-      });
-      it('Enabled Reissue entitlement button', () => {
-        const tableData = wrapper.find('table.table');
-        tableData.find('tbody tr').forEach((row) => {
-          const reissueButton = row.find('button.btn-outline-primary').last();
+      expect(expireButton.text()).toEqual('Expire');
+      expect(expireButton.prop('disabled')).toBeFalsy();
+      expireButton.simulate('click');
 
-          expect(reissueButton.text()).toEqual('Reissue');
-          expect(reissueButton.prop('disabled')).toBeFalsy();
-          reissueButton.simulate('click');
+      const expireEntitlementForm = wrapper.find('ExpireEntitlementForm');
+      expect(expireEntitlementForm.html()).toEqual(expect.stringContaining('Expire Entitlement'));
+      expireEntitlementForm.find('button.btn-outline-secondary').simulate('click');
+      expect(wrapper.find('ExpireEntitlementForm')).toEqual({});
+    });
+  });
 
-          const reissueEntitlementForm = wrapper.find('ReissueEntitlementForm');
-          expect(reissueEntitlementForm.html()).toEqual(expect.stringContaining('Reissue Entitlement'));
-          reissueEntitlementForm.find('button.btn-outline-secondary').simulate('click');
-          expect(wrapper.find('ReissueEntitlementForm')).toEqual({});
-        });
-      });
+  describe('Reissue entitlement button', () => {
+    it('Enabled Reissue entitlement button', () => {
+      const tableData = wrapper.find('table.table');
+      // We're only checking row 0 of the table since the Reissue button is not disabled
+      const row = tableData.find('tbody tr').at(0);
+      const reissueButton = row.find('button#reissue').last();
+
+      expect(reissueButton.text()).toEqual('Reissue');
+      expect(reissueButton.prop('disabled')).toBeFalsy();
+      reissueButton.simulate('click');
+
+      const reissueEntitlementForm = wrapper.find('ReissueEntitlementForm');
+      expect(reissueEntitlementForm.html()).toEqual(expect.stringContaining('Reissue Entitlement'));
+      reissueEntitlementForm.find('button.btn-outline-secondary').simulate('click');
+      expect(wrapper.find('ReissueEntitlementForm')).toEqual({});
+    });
+    it('Disabled Reissue entitlement button', () => {
+      const tableData = wrapper.find('table.table');
+      // We're only checking row 1 of the table since it has the button Reissue Button disabled
+      const row = tableData.find('tbody tr').at(1);
+      const reissueButton = row.find('button#reissue').last();
+      expect(reissueButton.text()).toEqual('Reissue');
+      expect(reissueButton.prop('disabled')).toBeTruthy();
     });
   });
 
   describe('Course Summary button', () => {
-    beforeEach(() => {
-      // Having only one element in the table to avoid unexpected behavior on async operations per row
-      const data = [entitlementsData.data.results[0]];
-      wrapper = mount(<EntitlementsPageWrapper {...entitlementsData} data={{ results: data }} />);
-    });
-
     it('Successful course summary fetch', async () => {
       const apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(CourseSummaryData.courseData));
       const row = wrapper.find('table.table').find('tbody tr').first();
