@@ -167,8 +167,7 @@ export default function UserPage({ location }) {
             changeHandler={handleUserSummaryChange}
           />
           <Licenses
-            data={data.licenses.results}
-            status={data.licenses.status}
+            userEmail={data.user.email}
             expanded={showLicenses}
           />
           <Entitlements

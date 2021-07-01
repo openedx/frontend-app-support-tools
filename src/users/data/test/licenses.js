@@ -1,5 +1,5 @@
 const licensesData = {
-  data: [
+  results: [
     {
       status: 'unassigned',
       assignedDate: null,
@@ -22,7 +22,6 @@ const licensesData = {
     },
   ],
   status: '',
-  expanded: true,
 };
 
 export default licensesData;
