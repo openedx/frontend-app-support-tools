@@ -6,7 +6,7 @@ exports[`<PageLoading /> snapshot matches correctly 1`] = `
     className="d-flex justify-content-center align-items-center flex-column"
     style={
       Object {
-        "height": "50vh",
+        "height": "20vh",
       }
     }
   >

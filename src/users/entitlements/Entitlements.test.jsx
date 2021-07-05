@@ -5,13 +5,13 @@ import { waitForComponentToPaint } from '../../setupTest';
 import Entitlements from './Entitlements';
 import { entitlementsData, entitlementsErrors } from '../data/test/entitlements';
 import CourseSummaryData from '../data/test/courseSummary';
-import UserMessageProvider from '../../userMessages/UserMessagesProvider';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
 const EntitlementsPageWrapper = (props) => (
-  <UserMessageProvider>
+  <UserMessagesProvider>
     <Entitlements {...props} />
-  </UserMessageProvider>
+  </UserMessagesProvider>
 );
 
 describe('Entitlements Listing', () => {
@@ -63,8 +63,7 @@ describe('Entitlements Listing', () => {
     await waitForComponentToPaint(wrapper);
 
     const alert = wrapper.find('div.alert');
-    console.log(alert);
-    expect(alert.test).toEqual(entitlementsErrors.errors.text);
+    expect(alert.text()).toEqual(entitlementsErrors.errors[0].text);
   });
 
   it('Sorting Columns Button Enabled by default', () => {

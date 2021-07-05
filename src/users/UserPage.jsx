@@ -161,8 +161,6 @@ export default function UserPage({ location }) {
         <>
           <UserSummary
             userData={data.user}
-            verificationData={data.verificationStatus}
-            ssoRecords={data.ssoRecords}
             onboardingData={data.onboardingStatus}
             changeHandler={handleUserSummaryChange}
           />
