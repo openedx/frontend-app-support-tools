@@ -99,6 +99,24 @@ describe('API', () => {
       expect(response).toEqual([]);
     });
 
+    it('default error response', async () => {
+      const errorResponse = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'Not Available',
+            type: 'danger',
+            topic: 'ssoRecords',
+          },
+        ],
+      };
+      mockAdapter.onGet(ssoRecordsApiUrl).reply(() => throwError(500, 'Not Available'));
+      const expectedData = { ...errorResponse };
+      const response = await api.getSsoRecords(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
     it('Valid SSO data is Returned', async () => {
       const apiResponseData = [
         {
@@ -178,10 +196,15 @@ describe('API', () => {
 
   describe('User Verification Status Fetch', () => {
     const defaultResponseTemplate = {
-      status: 'Not Available',
-      expirationDatetime: '',
-      isVerified: false,
-      extraData: null,
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'Verification Status not found',
+          type: 'danger',
+          topic: 'idvStatus',
+        },
+      ],
     };
 
     it('404 error response', async () => {
@@ -192,8 +215,19 @@ describe('API', () => {
     });
 
     it('default error response', async () => {
-      mockAdapter.onGet(verificationStatusApiUrl).reply(() => throwError(500, ''));
-      const expectedData = { ...defaultResponseTemplate, status: 'Error, status unknown' };
+      const errorResponse = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'Not Available',
+            type: 'danger',
+            topic: 'idvStatus',
+          },
+        ],
+      };
+      mockAdapter.onGet(verificationStatusApiUrl).reply(() => throwError(500, 'Not Available'));
+      const expectedData = { ...errorResponse };
       const response = await api.getUserVerificationStatus(testUsername);
       expect(response).toEqual(expectedData);
     });
@@ -349,9 +383,6 @@ describe('API', () => {
     it('Successful User Data Retrieval', async () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successDictResponse);
       mockAdapter.onGet(enrollmentsApiUrl).reply(200, []);
-      mockAdapter.onGet(ssoRecordsApiUrl).reply(200, []);
-      mockAdapter.onGet(verificationDetailsApiUrl).reply(200, {});
-      mockAdapter.onGet(verificationStatusApiUrl).reply(200, {});
       mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
       mockAdapter.onGet(onboardingStatusApiUrl).reply(200, onboardingDefaultResponse);
 
@@ -359,8 +390,6 @@ describe('API', () => {
       expect(response).toEqual({
         errors: [],
         user: { ...successDictResponse, passwordStatus: {} },
-        ssoRecords: [],
-        verificationStatus: { extraData: {} },
         enrollments: [],
         onboardingStatus: { ...onboardingDefaultResponse, onboardingStatus: 'No Paid Enrollment' },
       });

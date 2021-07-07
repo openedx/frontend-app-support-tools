@@ -6,25 +6,19 @@ import { postTogglePasswordStatus, postResetPassword } from './data/api';
 import Table from '../Table';
 import { formatDate, titleCase } from '../utils';
 import { getAccountActivationUrl } from './data/urls';
+import IdentityVerificationStatus from './IdentityVerificationStatus';
+import SingleSignOnRecords from './SingleSignOnRecords';
 
 export default function UserSummary({
   userData,
-  verificationData,
-  ssoRecords,
   onboardingData,
   changeHandler,
 }) {
-  const [ssoModalIsOpen, setSsoModalIsOpen] = useState(false);
-  const [idvModalIsOpen, setIdvModalIsOpen] = useState(false);
   const [disableUserModalIsOpen, setDisableUserModalIsOpen] = useState(false);
   const [disableHistoryModalIsOpen, setDisableHistoryModalIsOpen] = useState(false);
   const [resetPasswordModalIsOpen, setResetPasswordModalIsOpen] = useState(false);
   const [comment, setComment] = useState('');
   const [userPasswordHistoryData, setUserPasswordHistoryData] = useState([]);
-  const [extraSsoDataTitle, setSsoExtraDataTitle] = useState('');
-  const [detailIdvDataTitle, setDetailIdvDataTitle] = useState('');
-  const [ssoExtraData, setSsoExtraData] = useState([]);
-  const [detailIdvData, setDetailIdvData] = useState([]);
   const userToggleVisible = true;
   // TO-DO: Only expose "Disable/Enable User" for specific roles
 
@@ -93,67 +87,6 @@ export default function UserSummary({
     },
   ];
 
-  const idvColumns = [
-    {
-      label: 'Status',
-      key: 'status',
-    },
-    {
-      label: 'Expiration Date',
-      key: 'expirationDatetime',
-    },
-    {
-      label: 'Is Verified',
-      key: 'isVerified',
-    },
-    {
-      label: 'Details',
-      key: 'extra',
-    },
-  ];
-
-  const idvDetailsColumns = [
-    {
-      label: 'Type',
-      key: 'type',
-    },
-    {
-      label: 'Status',
-      key: 'status',
-    },
-    {
-      label: 'Expiration Date',
-      key: 'expirationDatetime',
-    },
-    {
-      label: 'Message',
-      key: 'message',
-    },
-    {
-      label: 'Updated',
-      key: 'updatedAt',
-    },
-  ];
-
-  const ssoColumns = [
-    {
-      label: 'Provider',
-      key: 'provider',
-    },
-    {
-      label: 'UID',
-      key: 'uid',
-    },
-    {
-      label: 'Modified',
-      key: 'modified',
-    },
-    {
-      label: 'Extra Data',
-      key: 'extra',
-    },
-  ];
-
   const userPasswordHistoryColumns = [
     {
       label: 'Date',
@@ -173,48 +106,6 @@ export default function UserSummary({
     },
   ];
 
-  // Modal to display extra data for SSO records
-  const openSSOModal = (title, data) => {
-    const tableData = Object.entries(data).map(([key, value]) => ({
-      dataName: key,
-      dataValue: value,
-    }));
-    setSsoExtraData(tableData);
-    setSsoExtraDataTitle(title);
-    setSsoModalIsOpen(true);
-  };
-
-  const ssoData = ssoRecords.map(result => ({
-    provider: result.provider,
-    uid: result.uid,
-    modified: formatDate(result.modified),
-    extra: {
-      displayValue: Object.keys(result.extraData).length > 0 ? (
-        <Button
-          variant="link"
-          className="px-0 neg-margin-top"
-          onClick={() => openSSOModal(result.provider, result.extraData)}
-        >
-          Show
-        </Button>
-      ) : 'N/A',
-      value: result.extraData,
-    },
-  }));
-
-  // Modal to display extra data for Idv records
-  const openIDVModal = (title, data) => {
-    const tableData = data.map(result => ({
-      type: result.type,
-      status: result.status,
-      updatedAt: formatDate(result.updatedAt),
-      expirationDatetime: formatDate(result.expirationDatetime),
-      message: result.message,
-    }));
-    setDetailIdvData(tableData);
-    setDetailIdvDataTitle(title);
-    setIdvModalIsOpen(true);
-  };
   const openHistoryModel = () => {
     const tableData = userData.passwordStatus.passwordToggleHistory.map(result => ({
       created: formatDate(result.created),
@@ -225,24 +116,6 @@ export default function UserSummary({
     setUserPasswordHistoryData(tableData);
     setDisableHistoryModalIsOpen(true);
   };
-
-  const IdvData = [verificationData].map(result => ({
-    status: result.status,
-    isVerified: result.isVerified.toString(),
-    expirationDatetime: formatDate(result.expirationDatetime),
-    extra: {
-      displayValue: result.extraData && result.extraData.length > 0 ? (
-        <Button
-          variant="link"
-          className="px-0 neg-margin-top"
-          onClick={() => openIDVModal('ID Verification Details', result.extraData)}
-        >
-          Show
-        </Button>
-      ) : 'N/A',
-      value: result.extraData,
-    },
-  }));
 
   const proctoringColumns = [
     {
@@ -326,14 +199,6 @@ export default function UserSummary({
         <div className="col-sm-6">
           <div className="flex-column">
             <div className="flex-column p-4 m-3 card">
-              <h4>ID Verification Status</h4>
-              <Table
-                id="idv-data"
-                data={IdvData}
-                columns={idvColumns}
-              />
-            </div>
-            <div className="flex-column p-4 m-3 card">
               <h4>Proctoring Information</h4>
               <Table
                 id="proctoring-data"
@@ -341,40 +206,10 @@ export default function UserSummary({
                 columns={proctoringColumns}
               />
             </div>
-            <div className="flex-column p-4 m-3 card">
-              <h4>SSO Records</h4>
-              <Table
-                id="sso-data"
-                data={ssoData}
-                columns={ssoColumns}
-              />
-            </div>
+            <IdentityVerificationStatus username={userData.username} />
+            <SingleSignOnRecords username={userData.username} />
           </div>
         </div>
-        <Modal
-          open={ssoModalIsOpen}
-          onClose={() => setSsoModalIsOpen(false)}
-          title={extraSsoDataTitle}
-          id="sso-extra-data"
-          body={(
-            <Table
-              data={ssoExtraData}
-              columns={columns}
-            />
-          )}
-        />
-        <Modal
-          open={idvModalIsOpen}
-          onClose={() => setIdvModalIsOpen(false)}
-          title={detailIdvDataTitle}
-          id="idv-extra-data"
-          body={(
-            <Table
-              data={detailIdvData}
-              columns={idvDetailsColumns}
-            />
-          )}
-        />
         <Modal
           open={disableHistoryModalIsOpen}
           onClose={() => setDisableHistoryModalIsOpen(false)}
@@ -456,13 +291,6 @@ UserSummary.propTypes = {
       passwordToggleHistory: PropTypes.shape([]),
     }),
   }),
-  verificationData: PropTypes.shape({
-    status: PropTypes.string,
-    expirationDatetime: PropTypes.string,
-    isVerified: PropTypes.bool,
-    extraData: PropTypes.shape([]),
-  }),
-  ssoRecords: PropTypes.shape([]),
   onboardingData: PropTypes.shape({
     onboardingStatus: PropTypes.string,
     expirationDate: PropTypes.string,
@@ -473,7 +301,5 @@ UserSummary.propTypes = {
 
 UserSummary.defaultProps = {
   userData: null,
-  verificationData: null,
-  ssoRecords: [],
   onboardingData: null,
 };

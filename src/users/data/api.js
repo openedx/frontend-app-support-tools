@@ -40,17 +40,31 @@ export async function getEnrollments(username) {
 }
 
 export async function getSsoRecords(username) {
-  const { data } = await getAuthenticatedHttpClient().get(
-    AppUrls.getSSORecordsUrl(username),
-  );
-  let parsedData = [];
-  if (data.length > 0) {
-    parsedData = data.map((entry) => ({
-      ...entry,
-      extraData: JSON.parse(entry.extraData),
-    }));
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getSSORecordsUrl(username),
+    );
+    let parsedData = [];
+    if (data.length > 0) {
+      parsedData = data.map((entry) => ({
+        ...entry,
+        extraData: JSON.parse(entry.extraData),
+      }));
+    }
+    return parsedData;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: JSON.parse(error.customAttributes.httpErrorResponseData),
+          type: 'danger',
+          topic: 'ssoRecords',
+        },
+      ],
+    };
   }
-  return parsedData;
 }
 
 export async function getUser(userIdentifier) {
@@ -122,24 +136,29 @@ export async function getUserVerificationStatus(username) {
     data.extraData = extraData;
     return data;
   } catch (error) {
-    // We don't have good error handling in the app for any errors that may have come back
-    // from the API, so we log them to the console and tell the user to go look.  We would
-    // never do this in a customer-facing app.
-    // eslint-disable-next-line no-console
-    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
     if (error.customAttributes.httpErrorStatus === 404) {
       return {
-        status: 'Not Available',
-        expirationDatetime: '',
-        isVerified: false,
-        extraData: null,
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'Verification Status not found',
+            type: 'danger',
+            topic: 'idvStatus',
+          },
+        ],
       };
     }
     return {
-      status: 'Error, status unknown',
-      expirationDatetime: '',
-      isVerified: false,
-      extraData: null,
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: JSON.parse(error.customAttributes.httpErrorResponseData),
+          type: 'danger',
+          topic: 'idvStatus',
+        },
+      ],
     };
   }
 }
@@ -236,8 +255,6 @@ export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
   let enrollments = [];
-  let verificationStatus = null;
-  let ssoRecords = null;
   let onboardingStatus = {};
   try {
     user = await getUser(userIdentifier);
@@ -250,8 +267,6 @@ export async function getAllUserData(userIdentifier) {
   }
   if (user !== null) {
     enrollments = await getEnrollments(user.username);
-    verificationStatus = await getUserVerificationStatus(user.username);
-    ssoRecords = await getSsoRecords(user.username);
     user.passwordStatus = await getUserPasswordStatus(user.username);
     onboardingStatus = await getOnboardingStatus(enrollments, user.username);
   }
@@ -260,8 +275,6 @@ export async function getAllUserData(userIdentifier) {
     errors,
     user,
     enrollments,
-    verificationStatus,
-    ssoRecords,
     onboardingStatus,
   };
 }

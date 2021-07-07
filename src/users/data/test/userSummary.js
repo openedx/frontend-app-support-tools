@@ -15,18 +15,6 @@ const UserSummaryData = {
     },
   },
   changeHandler: jest.fn(() => {}),
-  ssoRecords: [{
-    provider: 'edX',
-    uid: 'uid',
-    modified: null,
-    extraData: [],
-  }],
-  verificationData: {
-    status: 'verified',
-    expirationDatetime: null,
-    isVerified: true,
-    extraData: [],
-  },
   onboardingData: {
     onboardingStatus: 'verified',
     expirationDate: null,

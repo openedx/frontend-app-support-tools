@@ -5,24 +5,31 @@ import * as api from './data/api';
 import UserSummary from './UserSummary';
 import UserSummaryData from './data/test/userSummary';
 import { formatDate, titleCase } from '../utils';
+import UserMessagesProvider from '../userMessages/UserMessagesProvider';
+import idvStatusData from './data/test/idvStatus';
+import ssoRecordsData from './data/test/ssoRecords';
 
-const getActivationKeyRow = (data) => {
-  const wrapper = mount(<UserSummary {...data} />);
-  const dataTable = wrapper.find('#account-table table');
-  const rowName = dataTable.find('tbody tr').at(5).find('td').at(0);
-  const rowValue = dataTable.find('tbody tr').at(5).find('td').at(1);
-
-  return {
-    rowName,
-    rowValue,
-  };
-};
+const UserSummaryWrapper = (props) => (
+  <UserMessagesProvider>
+    <UserSummary {...props} />
+  </UserMessagesProvider>
+);
 
 describe('User Summary Component Tests', () => {
   let wrapper;
 
+  const mountUserSummaryWrapper = (data) => {
+    jest.spyOn(api, 'getUserVerificationStatus').mockImplementationOnce(() => Promise.resolve(idvStatusData));
+    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
+    wrapper = mount(<UserSummaryWrapper {...data} />);
+  };
+
   beforeEach(() => {
-    wrapper = mount(<UserSummary {...UserSummaryData} />);
+    mountUserSummaryWrapper(UserSummaryData);
+  });
+
+  afterEach(() => {
+    wrapper.unmount();
   });
 
   describe('Default Correct Data Values', () => {
@@ -40,26 +47,6 @@ describe('User Summary Component Tests', () => {
       expect(ComponentUserData.dateJoined).toEqual(ExpectedUserData.dateJoined);
       expect(ComponentUserData.passwordStatus).toEqual(ExpectedUserData.passwordStatus);
       expect(ComponentUserData.activationKey).toEqual(ExpectedUserData.activationKey);
-    });
-
-    it('Verification Data Values', () => {
-      const ComponentVerificationData = wrapper.prop('verificationData');
-      const ExpectedVerificationData = UserSummaryData.verificationData;
-
-      expect(ComponentVerificationData.status).toEqual(ExpectedVerificationData.status);
-      expect(ComponentVerificationData.extraData).toEqual(ExpectedVerificationData.extraData);
-      expect(ComponentVerificationData.isVerified).toEqual(ExpectedVerificationData.isVerified);
-      expect(ComponentVerificationData.expirationDatetime).toEqual(ExpectedVerificationData.expirationDatetime);
-    });
-
-    it('SSO Data Values', () => {
-      const ComponentSsoData = wrapper.prop('ssoRecords');
-      const ExpectedSsoData = UserSummaryData.ssoRecords;
-
-      expect(ComponentSsoData.uid).toEqual(ExpectedSsoData.uid);
-      expect(ComponentSsoData.provider).toEqual(ExpectedSsoData.provider);
-      expect(ComponentSsoData.modified).toEqual(ExpectedSsoData.modified);
-      expect(ComponentSsoData.extraData).toEqual(ExpectedSsoData.extraData);
     });
     it('Onboarding Status Data Values', () => {
       const ComponentOnboardingData = wrapper.prop('onboardingData');
@@ -85,7 +72,7 @@ describe('User Summary Component Tests', () => {
     it('No Onboarding Status Data', () => {
       const onboardingData = { ...UserSummaryData.onboardingData, onboardingStatus: null, onboardingLink: null };
       const userData = { ...UserSummaryData, onboardingData };
-      wrapper = mount(<UserSummary {...userData} />);
+      mountUserSummaryWrapper(userData);
       const dataTable = wrapper.find('Table#proctoring-data');
       const dataBody = dataTable.find('tbody tr td');
       expect(dataBody).toHaveLength(3);
@@ -96,6 +83,18 @@ describe('User Summary Component Tests', () => {
   });
 
   describe('Registration Activation Field', () => {
+    const getActivationKeyRow = (data) => {
+      mountUserSummaryWrapper(data);
+      const dataTable = wrapper.find('#account-table table');
+      const rowName = dataTable.find('tbody tr').at(5).find('td').at(0);
+      const rowValue = dataTable.find('tbody tr').at(5).find('td').at(1);
+
+      return {
+        rowName,
+        rowValue,
+      };
+    };
+
     it('Active User Data', () => {
       const { rowName, rowValue } = getActivationKeyRow(UserSummaryData);
       expect(rowName.text()).not.toEqual('Activation Key/Link');
@@ -163,7 +162,7 @@ describe('User Summary Component Tests', () => {
     beforeEach(() => {
       const passwordStatusData = { ...UserSummaryData.userData.passwordStatus, status: 'Unusable' };
       const userData = { ...UserSummaryData.userData, passwordStatus: passwordStatusData };
-      wrapper = mount(<UserSummary {...UserSummaryData} userData={userData} />);
+      mountUserSummaryWrapper({ ...UserSummaryData, userData });
     });
 
     it('Enable User button for disabled user', () => {
@@ -243,7 +242,7 @@ describe('User Summary Component Tests', () => {
       ];
       const passwordStatusData = { ...UserSummaryData.userData.passwordStatus, passwordToggleHistory: passwordHistory };
       const userData = { ...UserSummaryData.userData, passwordStatus: passwordStatusData };
-      wrapper = mount(<UserSummary {...UserSummaryData} userData={userData} />);
+      mountUserSummaryWrapper({ ...UserSummaryData, userData });
     });
     it('Password History Modal', () => {
       const passwordHistoryButton = wrapper.find('button#toggle-password-history');
@@ -262,90 +261,6 @@ describe('User Summary Component Tests', () => {
       historyModal.find('button.btn-link').simulate('click');
       historyModal = wrapper.find('Modal#password-history');
       expect(historyModal.prop('open')).toEqual(false);
-    });
-  });
-
-  describe('ID Verification', () => {
-    it('No extra idv data', () => {
-      const idvData = wrapper.find('Table#idv-data');
-      const extraDataButton = idvData.find('button.btn-link');
-      expect(extraDataButton).toHaveLength(0);
-    });
-
-    it('Extra idv data', () => {
-      const idvData = [
-        {
-          type: 'Manual',
-          status: 'Denied',
-          updatedAt: Date().toLocaleString(),
-          expirationDatetime: Date().toLocaleString(),
-          message: 'Missing Photo',
-        },
-        {
-          type: 'Manual',
-          status: 'Approved',
-          updatedAt: Date().toLocaleString(),
-          expirationDatetime: Date().toLocaleString(),
-          message: null,
-        },
-      ];
-      const verificationData = { ...UserSummaryData.verificationData, extraData: idvData };
-      wrapper = mount(<UserSummary {...UserSummaryData} verificationData={verificationData} />);
-
-      const idvDataTable = wrapper.find('Table#idv-data');
-      const extraDataButton = idvDataTable.find('button.btn-link');
-      let extraDataModal = wrapper.find('Modal#idv-extra-data');
-
-      expect(extraDataButton.text()).toEqual('Show');
-      expect(extraDataModal.prop('open')).toEqual(false);
-
-      extraDataButton.simulate('click');
-      extraDataModal = wrapper.find('Modal#idv-extra-data');
-
-      expect(extraDataModal.prop('open')).toEqual(true);
-      expect(extraDataModal.find('table tbody tr')).toHaveLength(2);
-      expect(extraDataModal.prop('title')).toEqual('ID Verification Details');
-
-      extraDataModal.find('button.btn-link').simulate('click');
-      extraDataModal = wrapper.find('Modal#idv-extra-data');
-      expect(extraDataModal.prop('open')).toEqual(false);
-    });
-  });
-
-  describe('SSO', () => {
-    it('No extra sso data', () => {
-      const idvData = wrapper.find('Table#sso-data');
-      const extraDataButton = idvData.find('button.btn-link');
-      expect(extraDataButton).toHaveLength(0);
-    });
-
-    it('Extra sso data', () => {
-      const ssoExtraData = {
-        type: 'Manual',
-        status: 'active',
-        updatedAt: Date().toLocaleString(),
-      };
-      const ssoRecords = [...UserSummaryData.ssoRecords];
-      ssoRecords[0].extraData = ssoExtraData;
-      wrapper = mount(<UserSummary {...UserSummaryData} ssoRecords={ssoRecords} />);
-
-      const ssoDataTable = wrapper.find('Table#sso-data');
-      const extraDataButton = ssoDataTable.find('button.btn-link');
-      let extraDataModal = wrapper.find('Modal#sso-extra-data');
-
-      expect(extraDataButton.text()).toEqual('Show');
-      expect(extraDataModal.prop('open')).toEqual(false);
-
-      extraDataButton.simulate('click');
-      extraDataModal = wrapper.find('Modal#sso-extra-data');
-
-      expect(extraDataModal.prop('open')).toEqual(true);
-      // The length here corresponds to dict keys in ssoExtraData
-      expect(extraDataModal.find('table tbody tr')).toHaveLength(3);
-
-      extraDataModal.find('button.btn-link').simulate('click');
-      extraDataModal = wrapper.find('Modal#sso-extra-data');
-      expect(extraDataModal.prop('open')).toEqual(false);
     });
   });
 });
