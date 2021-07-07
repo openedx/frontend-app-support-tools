@@ -4,9 +4,10 @@ import React from 'react';
 import * as api from './data/api';
 import UserSummary from './UserSummary';
 import UserSummaryData from './data/test/userSummary';
-import { formatDate, titleCase } from '../utils';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import idvStatusData from './data/test/idvStatus';
+import enrollmentsData from './data/test/enrollments';
+import onboardingStatusData from './data/test/onboardingStatus';
 import ssoRecordsData from './data/test/ssoRecords';
 
 const UserSummaryWrapper = (props) => (
@@ -20,6 +21,8 @@ describe('User Summary Component Tests', () => {
 
   const mountUserSummaryWrapper = (data) => {
     jest.spyOn(api, 'getUserVerificationStatus').mockImplementationOnce(() => Promise.resolve(idvStatusData));
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
+    jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingStatusData));
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
     wrapper = mount(<UserSummaryWrapper {...data} />);
   };
@@ -47,38 +50,6 @@ describe('User Summary Component Tests', () => {
       expect(ComponentUserData.dateJoined).toEqual(ExpectedUserData.dateJoined);
       expect(ComponentUserData.passwordStatus).toEqual(ExpectedUserData.passwordStatus);
       expect(ComponentUserData.activationKey).toEqual(ExpectedUserData.activationKey);
-    });
-    it('Onboarding Status Data Values', () => {
-      const ComponentOnboardingData = wrapper.prop('onboardingData');
-      const ExpectedOnboardingData = UserSummaryData.onboardingData;
-
-      expect(ComponentOnboardingData.onboardingStatus).toEqual(ExpectedOnboardingData.onboardingStatus);
-      expect(ComponentOnboardingData.expirationDate).toEqual(ExpectedOnboardingData.expirationDate);
-      expect(ComponentOnboardingData.onboardingReleaseDate).toEqual(ExpectedOnboardingData.onboardingReleaseDate);
-      expect(ComponentOnboardingData.onboardingLink).toEqual(ExpectedOnboardingData.onboardingLink);
-    });
-  });
-
-  describe('Onboarding Status Data', () => {
-    it('Onboarding Status', () => {
-      const dataTable = wrapper.find('Table#proctoring-data');
-      const dataBody = dataTable.find('tbody tr td');
-      expect(dataBody).toHaveLength(3);
-      expect(dataBody.at(0).text()).toEqual(titleCase(UserSummaryData.onboardingData.onboardingStatus));
-      expect(dataBody.at(1).text()).toEqual(formatDate(UserSummaryData.onboardingData.expirationDate));
-      expect(dataBody.at(2).text()).toEqual('Link');
-    });
-
-    it('No Onboarding Status Data', () => {
-      const onboardingData = { ...UserSummaryData.onboardingData, onboardingStatus: null, onboardingLink: null };
-      const userData = { ...UserSummaryData, onboardingData };
-      mountUserSummaryWrapper(userData);
-      const dataTable = wrapper.find('Table#proctoring-data');
-      const dataBody = dataTable.find('tbody tr td');
-      expect(dataBody).toHaveLength(3);
-      expect(dataBody.at(0).text()).toEqual('Not Started');
-      expect(dataBody.at(1).text()).toEqual(formatDate(UserSummaryData.onboardingData.expirationDate));
-      expect(dataBody.at(2).text()).toEqual('N/A');
     });
   });
 

@@ -255,7 +255,6 @@ export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
   let enrollments = [];
-  let onboardingStatus = {};
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
@@ -268,14 +267,12 @@ export async function getAllUserData(userIdentifier) {
   if (user !== null) {
     enrollments = await getEnrollments(user.username);
     user.passwordStatus = await getUserPasswordStatus(user.username);
-    onboardingStatus = await getOnboardingStatus(enrollments, user.username);
   }
 
   return {
     errors,
     user,
     enrollments,
-    onboardingStatus,
   };
 }
 
