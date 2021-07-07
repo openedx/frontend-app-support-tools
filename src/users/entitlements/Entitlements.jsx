@@ -36,6 +36,7 @@ export default function Entitlements({
   const summaryRef = useRef(null);
 
   useEffect(() => {
+    clear('entitlements');
     getEntitlements(user).then((result) => {
       const camelCaseResult = camelCaseObject(result);
       if (camelCaseResult.errors) {

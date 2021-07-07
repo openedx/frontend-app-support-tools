@@ -18,10 +18,10 @@ export default function IdentityVerificationStatus({
   const [detailIdvData, setDetailIdvData] = useState([]);
   const [isIdvModalOpen, setIsIdvModalOpen] = useState(false);
   useEffect(() => {
+    clear('idvStatus');
     getUserVerificationStatus(username).then((result) => {
       const camelCaseResult = camelCaseObject(result);
       if (camelCaseResult.errors) {
-        clear('idvStatus');
         camelCaseResult.errors.forEach(error => add(error));
         setVerificationData({});
       } else {

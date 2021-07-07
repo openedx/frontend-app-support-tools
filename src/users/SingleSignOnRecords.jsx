@@ -18,10 +18,10 @@ export default function SingleSignOnRecords({
   const [ssoRecords, setSsoRecords] = useState(null);
   const { add, clear } = useContext(UserMessagesContext);
   useEffect(() => {
+    clear('ssoRecords');
     getSsoRecords(username).then((result) => {
       const camelCaseResult = camelCaseObject(result);
       if (camelCaseResult.errors) {
-        clear('ssoRecords');
         camelCaseResult.errors.forEach(error => add(error));
         setSsoRecords({});
       } else {
