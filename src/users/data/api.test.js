@@ -19,7 +19,6 @@ describe('API', () => {
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
-  const onboardingStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/edx_proctoring/v1/user_onboarding/status`;
   const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
   const generateCertificateUrl = urls.generateCertificateUrl();
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
@@ -53,23 +52,17 @@ describe('API', () => {
       reviewRequirementsUrl: null,
     };
 
+    it('No Active Paid Enrollment ', async () => {
+      const response = await api.getOnboardingStatus([], testUsername);
+      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'No Paid Enrollment' });
+    });
+
     // prepare enrollments data
     const { data } = enrollmentsData;
     data[1].mode = 'verified';
     data[1].course_id = data[1].courseId;
-    data[1].is_active = data[1].isActive; // false
-    let url = `${onboardingStatusApiUrl}?course_id=${encodeURIComponent(data[1].course_id)}&username=${encodeURIComponent(testUsername)}`;
-
-    it('No Active Paid Enrollment ', async () => {
-      mockAdapter.onGet(url).reply(() => throwError(404, ''));
-
-      const response = await api.getOnboardingStatus(data, testUsername);
-      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'No Record Found' });
-    });
-
     data[1].is_active = true;
-    url = `${onboardingStatusApiUrl}?course_id=${encodeURIComponent(data[1].course_id)}&username=${encodeURIComponent(testUsername)}`;
-
+    const url = urls.getOnboardingStatusUrl(data[1].course_id, testUsername);
     it('Successful Fetch ', async () => {
       mockAdapter.onGet(url).reply(200, expectedSuccessResponse);
 
@@ -355,15 +348,6 @@ describe('API', () => {
       is_active: true,
     };
 
-    const onboardingDefaultResponse = {
-      onboardingStatus: null,
-      expirationDate: null,
-      onboardingLink: null,
-      onboardingPastDue: null,
-      onboardingReleaseDate: null,
-      reviewRequirementsUrl: null,
-    };
-
     it('Unsuccessful User Data Retrieval', async () => {
       const expectedUserError = {
         code: null,
@@ -384,14 +368,12 @@ describe('API', () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successDictResponse);
       mockAdapter.onGet(enrollmentsApiUrl).reply(200, []);
       mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
-      mockAdapter.onGet(onboardingStatusApiUrl).reply(200, onboardingDefaultResponse);
 
       const response = await api.getAllUserData(testUsername);
       expect(response).toEqual({
         errors: [],
         user: { ...successDictResponse, passwordStatus: {} },
         enrollments: [],
-        onboardingStatus: { ...onboardingDefaultResponse, onboardingStatus: 'No Paid Enrollment' },
       });
     });
   });

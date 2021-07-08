@@ -161,7 +161,6 @@ export default function UserPage({ location }) {
         <>
           <UserSummary
             userData={data.user}
-            onboardingData={data.onboardingStatus}
             changeHandler={handleUserSummaryChange}
           />
           <Licenses
