@@ -174,7 +174,6 @@ export default function UserPage({ location }) {
           />
           <Enrollments
             user={data.user.username}
-            data={data.enrollments}
             changeHandler={handleEnrollmentsChange}
             expanded={showEnrollments}
           />

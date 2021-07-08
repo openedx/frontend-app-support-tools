@@ -1,10 +1,9 @@
 import { mount } from 'enzyme';
 import React from 'react';
-
-import { waitForComponentToPaint } from '../../setupTest';
 import Enrollments from './Enrollments';
 import { enrollmentsData } from '../data/test/enrollments';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
+import { waitForComponentToPaint } from '../../setupTest';
 import * as api from '../data/api';
 
 const EnrollmentPageWrapper = (props) => (
@@ -15,9 +14,16 @@ const EnrollmentPageWrapper = (props) => (
 
 describe('Course Enrollments Listing', () => {
   let wrapper;
+  const props = {
+    user: 'edX',
+    changeHandler: jest.fn(() => {}),
+    expanded: true,
+  };
 
-  beforeEach(() => {
-    wrapper = mount(<EnrollmentPageWrapper {...enrollmentsData} />);
+  beforeEach(async () => {
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
+    wrapper = mount(<EnrollmentPageWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
   });
 
   it('default collapsible with enrollment data', () => {
@@ -25,9 +31,10 @@ describe('Course Enrollments Listing', () => {
     expect(collapsible.text()).toEqual('Enrollments (2)');
   });
 
-  it('No Enrollment Data', () => {
-    const enrollmentData = { ...enrollmentsData, data: [] };
-    wrapper = mount(<Enrollments {...enrollmentData} />);
+  it('No Enrollment Data', async () => {
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve([]));
+    wrapper = mount(<Enrollments {...props} />);
+    await waitForComponentToPaint(wrapper);
     const collapsible = wrapper.find('CollapsibleAdvanced').find('.collapsible-trigger').hostNodes();
     expect(collapsible.text()).toEqual('Enrollments (0)');
   });

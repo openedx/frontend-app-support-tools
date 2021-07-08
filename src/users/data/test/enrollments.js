@@ -28,8 +28,8 @@ export const createEnrollmentFormData = {
   closeHandler: jest.fn(() => {}),
 };
 
-export const enrollmentsData = {
-  data: [{
+export const enrollmentsData = [
+  {
     courseId: 'course-v1:testX+test123+2030',
     courseStart: Date().toLocaleString(),
     courseName: 'Test Course 1',
@@ -67,8 +67,4 @@ export const enrollmentsData = {
     ],
     manualEnrollment: {},
   },
-  ],
-  user: 'edX',
-  changeHandler: jest.fn(() => {}),
-  expanded: true,
-};
+];

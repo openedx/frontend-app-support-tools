@@ -4,24 +4,28 @@ import React, {
   useCallback,
   useRef,
   useLayoutEffect,
+  useEffect,
 } from 'react';
 
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
-import { getConfig } from '@edx/frontend-platform';
+import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import Certificates from './Certificates';
 import EnrollmentForm from './EnrollmentForm';
 import EnrollmentExtra from './EnrollmentExtra';
 import { CREATE, CHANGE } from './constants';
+import PageLoading from '../../components/common/PageLoading';
 import Table from '../../Table';
 import { formatDate, sort } from '../../utils';
+import { getEnrollments } from '../data/api';
 
 export default function Enrollments({
-  data, changeHandler, user, expanded,
+  changeHandler, user, expanded,
 }) {
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
+  const [enrollmentData, setEnrollmentData] = useState(null);
   const [enrollmentToChange, setEnrollmentToChange] = useState(undefined);
   const [enrollmentExtraData, setEnrollmentExtraData] = useState(undefined);
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
@@ -39,6 +43,13 @@ export default function Enrollments({
     setEnrollmentExtraData(extraData);
   }
 
+  useEffect(() => {
+    getEnrollments(user).then((result) => {
+      const camelCaseResult = camelCaseObject(result);
+      setEnrollmentData(camelCaseResult);
+    });
+  }, [user]);
+
   useLayoutEffect(() => {
     if (enrollmentExtraData !== undefined && selectedCourseId === undefined) {
       extraRef.current.focus();
@@ -46,41 +57,41 @@ export default function Enrollments({
   });
 
   const tableData = useMemo(() => {
-    if (data === null || data.length === 0) {
+    if (enrollmentData === null || enrollmentData.length === 0) {
       return [];
     }
-    return data.map(result => ({
+    return enrollmentData.map(enrollment => ({
       courseId: {
-        displayValue: <a href={`${getConfig().LMS_BASE_URL}/courses/${result.courseId}`} rel="noopener noreferrer" target="_blank" className="word_break">{result.courseId}</a>,
-        value: result.courseId,
+        displayValue: <a href={`${getConfig().LMS_BASE_URL}/courses/${enrollment.courseId}`} rel="noopener noreferrer" target="_blank" className="word_break">{enrollment.courseId}</a>,
+        value: enrollment.courseId,
       },
       courseName: {
-        value: result.courseName,
+        value: enrollment.courseName,
       },
       courseStart: {
-        displayValue: formatDate(result.courseStart),
-        value: result.courseStart,
+        displayValue: formatDate(enrollment.courseStart),
+        value: enrollment.courseStart,
       },
       courseEnd: {
-        displayValue: formatDate(result.courseEnd),
-        value: result.courseEnd,
+        displayValue: formatDate(enrollment.courseEnd),
+        value: enrollment.courseEnd,
       },
       upgradeDeadline: {
-        displayValue: formatDate(result.verifiedUpgradeDeadline),
-        value: result.verifiedUpgradeDeadline,
+        displayValue: formatDate(enrollment.verifiedUpgradeDeadline),
+        value: enrollment.verifiedUpgradeDeadline,
       },
       created: {
-        displayValue: formatDate(result.created),
-        value: result.created,
+        displayValue: formatDate(enrollment.created),
+        value: enrollment.created,
       },
       pacingType: {
-        value: result.pacingType,
+        value: enrollment.pacingType,
       },
       active: {
-        value: result.isActive ? 'True' : 'False',
+        value: enrollment.isActive ? 'True' : 'False',
       },
       mode: {
-        value: result.mode,
+        value: enrollment.mode,
       },
       actions: {
         displayValue: (
@@ -90,7 +101,7 @@ export default function Enrollments({
               variant="outline-primary"
               id="enrollment-change"
               onClick={() => {
-                setEnrollmentToChange(result);
+                setEnrollmentToChange(enrollment);
                 setFormType(CHANGE);
               }}
             >
@@ -101,7 +112,7 @@ export default function Enrollments({
               id="extra-data"
               variant="primary mt-2 mr-2"
               onClick={() => {
-                setupEnrollmentExtraData(result);
+                setupEnrollmentExtraData(enrollment);
               }}
             >
               Show Extra
@@ -111,7 +122,7 @@ export default function Enrollments({
               id="certificate"
               variant="outline-primary mt-2 mr-2"
               onClick={() => {
-                setSelectedCourseId(result.courseId);
+                setSelectedCourseId(enrollment.courseId);
               }}
             >
               View Certificate
@@ -121,7 +132,7 @@ export default function Enrollments({
         value: 'Change',
       },
     }));
-  }, [data]);
+  }, [enrollmentData]);
 
   const setSort = useCallback((column) => {
     if (sortColumn === column) {
@@ -223,29 +234,31 @@ export default function Enrollments({
         ) : (<React.Fragment key="nothing" />) }
       </TransitionReplace>
       <Collapsible title={`Enrollments (${tableData.length})`} defaultOpen={expanded}>
-        <Table
-          className="w-auto"
-          data={tableDataSortable.sort(
-            (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
-          )}
-          columns={columns}
-          tableSortable
-          defaultSortedColumn="created"
-          defaultSortDirection="desc"
-        />
+        {enrollmentData
+          ? (
+            <Table
+              className="w-auto"
+              data={tableDataSortable.sort(
+                (firstElement, secondElement) => sort(firstElement, secondElement, sortColumn, sortDirection),
+              )}
+              columns={columns}
+              tableSortable
+              defaultSortedColumn="created"
+              defaultSortDirection="desc"
+            />
+          )
+          : <PageLoading srMessage="Loading" />}
       </Collapsible>
     </section>
   );
 }
 
 Enrollments.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object),
   changeHandler: PropTypes.func.isRequired,
   user: PropTypes.string.isRequired,
   expanded: PropTypes.bool,
 };
 
 Enrollments.defaultProps = {
-  data: null,
   expanded: false,
 };
