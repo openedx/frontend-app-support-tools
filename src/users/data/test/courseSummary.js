@@ -1,4 +1,4 @@
-const CourseSummaryData = {
+const courseSummaryData = {
   courseData: {
     title: 'Test Course',
     uuid: '1234-5678-12345678',
@@ -18,7 +18,6 @@ const CourseSummaryData = {
       },
     ],
   },
-  clearHandler: jest.fn(() => {}),
 };
 
-export default CourseSummaryData;
+export default courseSummaryData;
