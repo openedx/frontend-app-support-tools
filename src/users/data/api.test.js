@@ -58,7 +58,7 @@ describe('API', () => {
     });
 
     // prepare enrollments data
-    const { data } = enrollmentsData;
+    const data = enrollmentsData;
     data[1].mode = 'verified';
     data[1].course_id = data[1].courseId;
     data[1].is_active = true;
@@ -366,14 +366,12 @@ describe('API', () => {
 
     it('Successful User Data Retrieval', async () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(200, successDictResponse);
-      mockAdapter.onGet(enrollmentsApiUrl).reply(200, []);
       mockAdapter.onGet(passwordStatusApiUrl).reply(200, {});
 
       const response = await api.getAllUserData(testUsername);
       expect(response).toEqual({
         errors: [],
         user: { ...successDictResponse, passwordStatus: {} },
-        enrollments: [],
       });
     });
   });
@@ -575,11 +573,11 @@ describe('API', () => {
     describe('Enrollments Fetch', () => {
       it('Enrollments Response', async () => {
         mockAdapter.onGet(enrollmentsApiUrl).reply(200, enrollmentsData);
-        const expectedData = { ...enrollmentsData };
+        const expectedData = { ...enrollmentsData[0] };
         delete expectedData.changeHandler;
 
         const response = await api.getEnrollments(testUsername);
-        expect(response).toEqual(expectedData);
+        expect(response[0]).toEqual(expectedData);
       });
     });
 
