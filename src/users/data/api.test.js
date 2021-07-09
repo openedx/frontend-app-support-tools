@@ -42,6 +42,18 @@ describe('API', () => {
     mockAdapter.reset();
   });
 
+  const enrollmentErrors = {
+    errors: [
+      {
+        code: null,
+        dismissible: true,
+        text: 'An unexpected error occurred. Please try refreshing the page.',
+        type: 'danger',
+        topic: 'enrollments',
+      },
+    ],
+  };
+
   describe('Onboarding Status Fetch', () => {
     const expectedSuccessResponse = {
       onboardingStatus: 'verified',
@@ -81,6 +93,11 @@ describe('API', () => {
       mockAdapter.onGet(url).reply(() => throwError(500, ''));
 
       const response = await api.getOnboardingStatus(data, testUsername);
+      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'Error while fetching data' });
+    });
+
+    it('Unexpected error fetching enrollments', async () => {
+      const response = await api.getOnboardingStatus(enrollmentErrors, testUsername);
       expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'Error while fetching data' });
     });
   });
@@ -578,6 +595,13 @@ describe('API', () => {
 
         const response = await api.getEnrollments(testUsername);
         expect(response[0]).toEqual(expectedData);
+      });
+
+      it('Enrollments Errors', async () => {
+        mockAdapter.onGet(enrollmentsApiUrl).reply(() => throwError(500, 'An unexpected error occurred. Please try refreshing the page.'));
+
+        const response = await api.getEnrollments(testUsername);
+        expect(response).toEqual(enrollmentErrors);
       });
     });
 
