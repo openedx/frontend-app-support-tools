@@ -26,6 +26,10 @@ describe('Course Enrollments Listing', () => {
     await waitForComponentToPaint(wrapper);
   });
 
+  afterEach(() => {
+    wrapper.unmount();
+  });
+
   it('default collapsible with enrollment data', () => {
     const collapsible = wrapper.find('CollapsibleAdvanced').find('.collapsible-trigger').hostNodes();
     expect(collapsible.text()).toEqual('Enrollments (2)');
@@ -33,10 +37,30 @@ describe('Course Enrollments Listing', () => {
 
   it('No Enrollment Data', async () => {
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve([]));
-    wrapper = mount(<Enrollments {...props} />);
+    wrapper = mount(<EnrollmentPageWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
     const collapsible = wrapper.find('CollapsibleAdvanced').find('.collapsible-trigger').hostNodes();
     expect(collapsible.text()).toEqual('Enrollments (0)');
+  });
+
+  it('Error fetching enrollments', async () => {
+    const enrollmentErrors = {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'An unexpected error occurred. Please try refreshing the page.',
+          type: 'danger',
+          topic: 'enrollments',
+        },
+      ],
+    };
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentErrors));
+    wrapper = mount(<EnrollmentPageWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
+
+    const alert = wrapper.find('div.alert');
+    expect(alert.text()).toEqual(enrollmentErrors.errors[0].text);
   });
 
   it('Enrollment create form is rendered', () => {

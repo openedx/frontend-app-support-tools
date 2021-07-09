@@ -5,6 +5,7 @@ import React, {
   useRef,
   useLayoutEffect,
   useEffect,
+  useContext,
 } from 'react';
 
 import { Button, TransitionReplace, Collapsible } from '@edx/paragon';
@@ -15,13 +16,16 @@ import EnrollmentForm from './EnrollmentForm';
 import EnrollmentExtra from './EnrollmentExtra';
 import { CREATE, CHANGE } from './constants';
 import PageLoading from '../../components/common/PageLoading';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import Table from '../../Table';
 import { formatDate, sort } from '../../utils';
 import { getEnrollments } from '../data/api';
+import AlertList from '../../userMessages/AlertList';
 
 export default function Enrollments({
   changeHandler, user, expanded,
 }) {
+  const { add, clear } = useContext(UserMessagesContext);
   const [sortColumn, setSortColumn] = useState('created');
   const [sortDirection, setSortDirection] = useState('desc');
   const [formType, setFormType] = useState(null);
@@ -44,9 +48,15 @@ export default function Enrollments({
   }
 
   useEffect(() => {
+    clear('enrollments');
     getEnrollments(user).then((result) => {
       const camelCaseResult = camelCaseObject(result);
-      setEnrollmentData(camelCaseResult);
+      if (camelCaseResult.errors) {
+        camelCaseResult.errors.forEach(error => add(error));
+        setEnrollmentData([]);
+      } else {
+        setEnrollmentData(camelCaseResult);
+      }
     });
   }, [user]);
 
@@ -200,6 +210,7 @@ export default function Enrollments({
           </Button>
         )}
       </div>
+      <AlertList topic="enrollments" className="mb-3" />
       <TransitionReplace>
         {formType != null ? (
           <EnrollmentForm

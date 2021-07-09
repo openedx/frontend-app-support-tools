@@ -33,10 +33,24 @@ export async function getEntitlements(username, page = 1) {
 }
 
 export async function getEnrollments(username) {
-  const { data } = await getAuthenticatedHttpClient().get(
-    AppUrls.getEnrollmentsUrl(username),
-  );
-  return data;
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getEnrollmentsUrl(username),
+    );
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: JSON.parse(error.customAttributes.httpErrorResponseData),
+          type: 'danger',
+          topic: 'enrollments',
+        },
+      ],
+    };
+  }
 }
 
 export async function getSsoRecords(username) {
@@ -217,6 +231,13 @@ export async function getOnboardingStatus(enrollments, username) {
     onboardingReleaseDate: null,
     reviewRequirementsUrl: null,
   };
+
+  if (enrollments.errors) {
+    return {
+      ...defaultResponse,
+      onboardingStatus: 'Error while fetching data',
+    };
+  }
 
   // get most recent paid active enrollment
   const paidEnrollments = enrollments.filter((enrollment) => enrollment.is_active && (enrollment.mode === 'verified' || enrollment.mode === 'professional'));
