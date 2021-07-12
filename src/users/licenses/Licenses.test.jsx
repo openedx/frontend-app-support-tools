@@ -30,6 +30,7 @@ describe('User Licenses Listing', () => {
     wrapper = mount(<LicensesPageWrapper {...props} />);
     const collapsible = wrapper.find('CollapsibleAdvanced').find('.collapsible-trigger').hostNodes();
     expect(collapsible.text()).toEqual('Licenses (0)Fetch Status: Loading...');
+    await waitForComponentToPaint(wrapper);
   });
 
   it('No License Data', async () => {

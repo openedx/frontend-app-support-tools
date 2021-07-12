@@ -1,38 +1,45 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
+import { waitForComponentToPaint } from '../../setupTest';
 import CourseSummary from './CourseSummary';
-import CourseSummaryData from '../data/test/courseSummary';
+import courseSummaryData from '../data/test/courseSummary';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
+import * as api from '../data/api';
+
+const CourseSummaryWrapper = (props) => (
+  <UserMessagesProvider>
+    <CourseSummary {...props} />
+  </UserMessagesProvider>
+);
 
 describe('Course Summary', () => {
   let wrapper;
+  const props = {
+    courseUUID: 'course-uuid',
+    clearHandler: jest.fn(() => {}),
+  };
 
-  beforeEach(() => {
-    wrapper = mount(<CourseSummary {...CourseSummaryData} />);
+  beforeEach(async () => {
+    jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData));
+    wrapper = mount(<CourseSummaryWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
   });
 
-  it('Default Prop Values', () => {
-    const componentPropData = wrapper.prop('courseData');
-    const expectedPropData = CourseSummaryData.courseData;
-
-    expect(componentPropData.key).toEqual(expectedPropData.key);
-    expect(componentPropData.uuid).toEqual(expectedPropData.uuid);
-    expect(componentPropData.title).toEqual(expectedPropData.title);
-    expect(componentPropData.level).toEqual(expectedPropData.level);
-    expect(componentPropData.marketingUrl).toEqual(expectedPropData.marketingUrl);
-    expect(componentPropData.courseRuns).toMatchObject(expectedPropData.courseRuns);
-  });
-
-  it('Missing Course Run Information', () => {
-    const courseData = { ...CourseSummaryData.courseData, courseRuns: [] };
-    const summaryData = { ...CourseSummaryData, courseData };
-    wrapper = mount(<CourseSummary {...CourseSummaryData} courseData={summaryData} />);
+  it('Missing Course Run Information', async () => {
+    const courseData = { ...courseSummaryData.courseData, courseRuns: [] };
+    const summaryData = { ...courseSummaryData, courseData };
+    jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(summaryData));
+    wrapper = mount(<CourseSummaryWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
     expect(wrapper.html()).toEqual(expect.stringContaining('No Course Runs available'));
   });
 
-  it('Render loading page if data is not present', () => {
-    wrapper = mount(<CourseSummary {...CourseSummaryData} courseData={null} errors={false} />);
+  it('Render loading page correctly', async () => {
+    jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve({ ...courseSummaryData, courseData: null }));
+    wrapper = mount(<CourseSummaryWrapper {...props} />);
     expect(wrapper.find('PageLoading').html()).toEqual(expect.stringContaining('Loading'));
+    await waitForComponentToPaint(wrapper);
   });
 
   it('Hide Course Summary Button', () => {

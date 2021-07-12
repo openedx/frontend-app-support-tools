@@ -12,7 +12,7 @@ import { CREATE, REISSUE, EXPIRE } from './EntitlementActions';
 import PageLoading from '../../components/common/PageLoading';
 import Table from '../../Table';
 import CourseSummary from '../courseSummary/CourseSummary';
-import { getCourseData, getEntitlements } from '../data/api';
+import { getEntitlements } from '../data/api';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { formatDate, sort } from '../../utils';
 import AlertList from '../../userMessages/AlertList';
@@ -26,8 +26,6 @@ export default function Entitlements({
   const [formType, setFormType] = useState(null);
   const [userEntitlement, setUserEntitlement] = useState(undefined);
   const [courseSummaryUUID, setCourseSummaryUUID] = useState(null);
-  const [courseSummaryData, setCourseSummaryData] = useState(null);
-  const [courseSummaryErrors, setCourseSummaryErrors] = useState(false);
   const [entitlementData, setEntitlementData] = useState(null);
   const [entitlementDetailModalIsOpen, setEntitlementDetailModalIsOpen] = useState(false);
   const [entitlementSupportDetailsTitle, setEntitlementSupportDetailsTitle] = useState('');
@@ -51,17 +49,8 @@ export default function Entitlements({
   useLayoutEffect(() => {
     if (formType != null) {
       formRef.current.focus();
-    } else if (formType === null && (courseSummaryData != null || courseSummaryErrors)) {
-      summaryRef.current.focus();
     }
   });
-
-  function clearCourseSummary() {
-    clear('course-summary');
-    setCourseSummaryData(null);
-    setCourseSummaryUUID(null);
-    setCourseSummaryErrors(false);
-  }
 
   // Modal to display Support Details for each Entitlement
   const openEntitlementsSupportDetailsModal = (title, supportDetails) => {
@@ -77,23 +66,6 @@ export default function Entitlements({
     setEntitlementDetailModalIsOpen(true);
   };
 
-  const handleCourseSummaryDataGet = useCallback((courseUUID) => {
-    if (courseUUID !== null && courseUUID !== undefined) {
-      setCourseSummaryData(null);
-      getCourseData(courseUUID).then((result) => {
-        const camelResult = camelCaseObject(result);
-        clear('course-summary');
-        if (camelResult.errors) {
-          camelResult.errors.forEach(error => add(error));
-          setCourseSummaryErrors(true);
-        } else {
-          setCourseSummaryErrors(false);
-          setCourseSummaryData(camelResult);
-        }
-      });
-    }
-  });
-
   const tableData = useMemo(() => {
     if (entitlementData === null) {
       return [];
@@ -107,7 +79,6 @@ export default function Entitlements({
               setFormType(null);
               setUserEntitlement(undefined);
               setCourseSummaryUUID(entitlement.courseUuid);
-              handleCourseSummaryDataGet(entitlement.courseUuid);
             }}
           >
             {entitlement.courseUuid}
@@ -173,7 +144,7 @@ export default function Entitlements({
               variant="outline-primary mt-2 mr-2"
               disabled={Boolean(!entitlement.enrollmentCourseRun)}
               onClick={() => {
-                clearCourseSummary();
+                setCourseSummaryUUID(null);
                 setUserEntitlement(entitlement);
                 setFormType(REISSUE);
               }}
@@ -185,7 +156,7 @@ export default function Entitlements({
               variant="outline-danger mt-2"
               disabled={Boolean(entitlement.expiredAt)}
               onClick={() => {
-                clearCourseSummary();
+                setCourseSummaryUUID(null);
                 setUserEntitlement(entitlement);
                 setFormType(EXPIRE);
               }}
@@ -263,7 +234,7 @@ export default function Entitlements({
             type="button"
             variant="outline-primary"
             onClick={() => {
-              clearCourseSummary();
+              setCourseSummaryUUID(null);
               setUserEntitlement(undefined);
               setFormType(CREATE);
             }}
@@ -293,10 +264,8 @@ export default function Entitlements({
             key="course-summary"
             courseUUID={courseSummaryUUID}
             clearHandler={() => {
-              clearCourseSummary();
+              setCourseSummaryUUID(null);
             }}
-            courseData={courseSummaryData}
-            errors={courseSummaryErrors}
             forwardedRef={summaryRef}
           />
         ) : (<React.Fragment key="nothing" />)}

@@ -1,15 +1,41 @@
-import React from 'react';
+import React, {
+  useEffect, useState, useContext, useLayoutEffect,
+} from 'react';
 import PropTypes from 'prop-types';
+import { camelCaseObject } from '@edx/frontend-platform';
 import PageLoading from '../../components/common/PageLoading';
 import { formatDate } from '../../utils';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import AlertList from '../../userMessages/AlertList';
+import { getCourseData } from '../data/api';
 
 export default function CourseSummary({
-  courseData,
-  errors,
+  courseUUID,
   clearHandler,
   forwardedRef,
 }) {
+  const { add, clear } = useContext(UserMessagesContext);
+  const [courseSummaryErrors, setCourseSummaryErrors] = useState(false);
+  const [courseSummaryData, setCourseSummaryData] = useState(null);
+  useEffect(() => {
+    clear('course-summary');
+    if (courseUUID !== null && courseUUID !== undefined) {
+      setCourseSummaryData(null);
+      getCourseData(courseUUID).then((result) => {
+        const camelCaseResult = camelCaseObject(result);
+        if (camelCaseResult.errors) {
+          camelCaseResult.errors.forEach(error => add(error));
+          setCourseSummaryErrors(true);
+        } else {
+          setCourseSummaryErrors(false);
+          setCourseSummaryData(camelCaseResult);
+        }
+      });
+    }
+  }, [courseUUID]);
+  useLayoutEffect(() => {
+    if (forwardedRef && forwardedRef.current) { forwardedRef.current.focus(); }
+  });
   function renderCourseRuns(data) {
     const { courseRuns } = data;
     if (courseRuns) {
@@ -45,48 +71,44 @@ export default function CourseSummary({
   }
   return (
     <section className="card mb-3">
-      {!courseData && !errors && <PageLoading srMessage="Loading" />}
-      {errors && (
+      {!courseSummaryData && !courseSummaryErrors && <PageLoading srMessage="Loading" />}
+      {courseSummaryErrors && (
         <>
           <AlertList topic="course-summary" className="m-3" />
           {renderHideButton()}
         </>
       )}
-      {courseData && !errors && (
+      {courseSummaryData && !courseSummaryErrors && (
         <div className="m-3">
-          <h4>Course Summary: {courseData.title}</h4>
+          <h4>Course Summary: {courseSummaryData.title}</h4>
           <table className="table">
             <tbody>
               <tr>
                 <td>UUID</td>
-                <td>{courseData ? courseData.uuid : ''}</td>
+                <td>{courseSummaryData.uuid}</td>
               </tr>
               <tr>
                 <td>Course Key</td>
-                <td>{courseData ? courseData.key : ''}</td>
+                <td>{courseSummaryData.key}</td>
               </tr>
               <tr>
                 <td>Course Runs</td>
-                <td>{renderCourseRuns(courseData)}</td>
+                <td>{renderCourseRuns(courseSummaryData)}</td>
               </tr>
               <tr>
                 <td>Level</td>
-                <td>{courseData ? courseData.levelType : ''}</td>
+                <td>{courseSummaryData.levelType}</td>
               </tr>
               <tr>
                 <td>Marketing</td>
                 <td>
-                  {courseData ? (
-                    <a
-                      href={courseData.marketingUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      Marketing URL
-                    </a>
-                  ) : (
-                    ''
-                  )}
+                  <a
+                    href={courseSummaryData.marketingUrl}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Marketing URL
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -99,26 +121,12 @@ export default function CourseSummary({
 }
 
 CourseSummary.propTypes = {
-  courseData: PropTypes.shape({
-    title: PropTypes.string,
-    uuid: PropTypes.string,
-    key: PropTypes.string,
-    levelType: PropTypes.string,
-    marketingUrl: PropTypes.string,
-    courseRuns: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string,
-      }),
-    ),
-  }),
-  errors: PropTypes.bool,
+  courseUUID: PropTypes.string.isRequired,
   clearHandler: PropTypes.func,
   forwardedRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
 };
 
 CourseSummary.defaultProps = {
-  courseData: null,
-  errors: false,
   clearHandler: null,
   forwardedRef: null,
 };
