@@ -27,6 +27,10 @@ export default function Certificates({
   const certificateRef = useRef(null);
 
   useEffect(() => {
+    setCertificateData(undefined);
+  }, [courseId]);
+
+  useEffect(() => {
     if ((certificate === undefined && !displayCertErrors) || (courseId !== oldCourseId)) {
       getCertificate(username, courseId).then((result) => {
         const camelCaseResult = camelCaseObject(result);
