@@ -14,6 +14,7 @@ import SupportHomePage from './supportHome/SupportHomePage';
 import Header from './supportHeader';
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
+// import UserPageV2 from './users/v2/UserPage';
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 
 import './index.scss';
@@ -35,6 +36,7 @@ subscribe(APP_READY, () => {
         <Switch>
           <Route exact path="/" component={SupportHomePage} />
           <Route path="/users" component={UserPage} />
+          {/* <Route path="/usersv2" component={UserPageV2} /> */}
         </Switch>
       </UserMessagesProvider>
     </AppProvider>,

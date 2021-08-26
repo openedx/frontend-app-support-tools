@@ -49,12 +49,14 @@
     "react-responsive": "8.1.0",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
+    "react-table": "^7.6.3",
     "react-transition-group": "4.4.1",
     "redux": "4.0.5"
   },
   "devDependencies": {
     "@edx/frontend-build": "^5.5.1",
     "@testing-library/react": "10.3.0",
+    "@types/react-table": "^7.7.2",
     "axios-mock-adapter": "^1.19.0",
     "check-prop-types": "1.1.2",
     "codecov": "3.8.1",
