@@ -1,40 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button, Input } from '@edx/paragon';
-import { postTogglePasswordStatus, postResetPassword } from './data/api';
 import Table from '../Table';
 import { formatDate } from '../utils';
 import { getAccountActivationUrl } from './data/urls';
 import IdentityVerificationStatus from './IdentityVerificationStatus';
 import OnboardingStatus from './OnboardingStatus';
 import SingleSignOnRecords from './SingleSignOnRecords';
+import TogglePasswordStatus from './account-actions/TogglePasswordStatus';
+import ResetPassword from './account-actions/ResetPassword';
+import PasswordHistory from './account-actions/PasswordHistory';
 
 export default function UserSummary({
   userData,
   changeHandler,
 }) {
-  const [disableUserModalIsOpen, setDisableUserModalIsOpen] = useState(false);
-  const [disableHistoryModalIsOpen, setDisableHistoryModalIsOpen] = useState(false);
-  const [resetPasswordModalIsOpen, setResetPasswordModalIsOpen] = useState(false);
-  const [comment, setComment] = useState('');
-  const [userPasswordHistoryData, setUserPasswordHistoryData] = useState([]);
   const userToggleVisible = true;
   // TO-DO: Only expose "Disable/Enable User" for specific roles
-
-  const PASSWORD_STATUS = {
-    USABLE: 'Usable',
-    UNUSABLE: 'Unusable',
-  };
-
-  const togglePasswordStatus = () => {
-    postTogglePasswordStatus(userData.username, comment);
-    changeHandler();
-  };
-
-  const resetPassword = () => {
-    postResetPassword(userData.email);
-    changeHandler();
-  };
 
   const userAccountData = [
     {
@@ -86,36 +67,6 @@ export default function UserSummary({
     },
   ];
 
-  const userPasswordHistoryColumns = [
-    {
-      label: 'Date',
-      key: 'created',
-    },
-    {
-      label: 'Comment',
-      key: 'comment',
-    },
-    {
-      label: 'Action',
-      key: 'disabled',
-    },
-    {
-      label: 'By',
-      key: 'createdBy',
-    },
-  ];
-
-  const openHistoryModel = () => {
-    const tableData = userData.passwordStatus.passwordToggleHistory.map(result => ({
-      created: formatDate(result.created),
-      comment: result.comment,
-      disabled: result.disabled ? 'Disabled' : 'Enabled',
-      createdBy: result.createdBy,
-    }));
-    setUserPasswordHistoryData(tableData);
-    setDisableHistoryModalIsOpen(true);
-  };
-
   if (!userData.isActive) {
     let dataValue;
     if (userData.activationKey !== null) {
@@ -144,29 +95,19 @@ export default function UserSummary({
               columns={columns}
             />
             {userToggleVisible && (
-              <div>
-                <Button
-                  id="toggle-password"
-                  variant={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'danger' : 'primary'}`}
-                  onClick={() => setDisableUserModalIsOpen(true)}
-                >
-                  {userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable User' : 'Enable User'}
-                </Button>
-                <Button
-                  id="reset-password"
-                  variant="btn btn-danger ml-1"
-                  onClick={() => setResetPasswordModalIsOpen(true)}
-                >Reset Password
-                </Button>
-                {userData.passwordStatus.passwordToggleHistory.length > 0 && (
-                  <Button
-                    id="toggle-password-history"
-                    variant="outline-primary ml-1"
-                    onClick={() => openHistoryModel()}
-                  >
-                    Show History
-                  </Button>
-                )}
+              <div className="row ml-2">
+                <TogglePasswordStatus
+                  username={userData.username}
+                  passwordStatus={userData.passwordStatus}
+                  changeHandler={changeHandler}
+                />
+                <ResetPassword
+                  email={userData.email}
+                  changeHandler={changeHandler}
+                />
+                <PasswordHistory
+                  passwordStatus={userData.passwordStatus}
+                />
               </div>
             )}
           </div>
@@ -178,66 +119,6 @@ export default function UserSummary({
             <SingleSignOnRecords username={userData.username} />
           </div>
         </div>
-        <Modal
-          open={disableHistoryModalIsOpen}
-          onClose={() => setDisableHistoryModalIsOpen(false)}
-          title="Enable/Disable History"
-          id="password-history"
-          body={(
-            <Table
-              data={userPasswordHistoryData}
-              columns={userPasswordHistoryColumns}
-            />
-          )}
-        />
-        <Modal
-          open={disableUserModalIsOpen}
-          id="user-account-status-toggle"
-          buttons={[
-            <Button
-              variant="danger"
-              onClick={togglePasswordStatus}
-            >
-              Confirm
-            </Button>,
-          ]}
-          onClose={() => setDisableUserModalIsOpen(false)}
-          title={`${userData.passwordStatus.status === PASSWORD_STATUS.USABLE ? 'Disable user confirmation' : 'Enable user confirmation'}`}
-          body={(
-            <div>
-              <label htmlFor="comment">Reason: </label>
-              <Input
-                name="comment"
-                type="text"
-                value={comment}
-                onChange={(event) => setComment(event.target.value)}
-              />
-            </div>
-          )}
-        />
-        <Modal
-          open={resetPasswordModalIsOpen}
-          id="user-account-reset-password"
-          buttons={[
-            <Button
-              variant="danger"
-              onClick={resetPassword}
-            >
-              Confirm
-            </Button>,
-          ]}
-          onClose={() => setResetPasswordModalIsOpen(false)}
-          title="Reset Password"
-          body={(
-            <div>
-              { /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
-              <label>
-                We will send a message with password recovery instructions to this email address {userData.email}.
-                Do you wish to proceed?
-              </label>
-            </div>
-          )}
-        />
       </div>
     </section>
   );
