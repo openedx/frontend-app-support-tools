@@ -10,7 +10,19 @@ const UserSummaryData = {
     dateJoined: null,
     lastLogin: null,
     passwordStatus: {
-      passwordToggleHistory: [],
+      passwordToggleHistory: [
+        {
+          created: Date().toLocaleString(),
+          comment: 'Test Disabled',
+          disabled: false,
+          createdBy: 'staff',
+        },
+        {
+          created: Date().toLocaleString(),
+          comment: 'Test Enable',
+          disabled: true,
+          createdBy: 'staff',
+        }],
       status: 'Usable',
     },
   },
