@@ -20,7 +20,8 @@ describe('Single Sign On Records', () => {
   };
 
   beforeEach(async () => {
-    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
+    const ssoData = { ...ssoRecordsData[0], extraData: [] };
+    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve([ssoData]));
     wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
   });
@@ -32,8 +33,8 @@ describe('Single Sign On Records', () => {
   });
 
   it('No extra sso data', () => {
-    const idvData = wrapper.find('Table#sso-data');
-    const extraDataButton = idvData.find('button.btn-link');
+    const ssoData = wrapper.find('Table#sso-data');
+    const extraDataButton = ssoData.find('button.btn-link');
     expect(extraDataButton).toHaveLength(0);
   });
 
@@ -69,9 +70,9 @@ describe('Single Sign On Records', () => {
     wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
 
-    const ssoDataTable = wrapper.find('Table#sso-data');
-    const extraDataButton = ssoDataTable.find('button.btn-link');
-    let extraDataModal = wrapper.find('Modal#sso-extra-data');
+    const ssoDataTable = wrapper.find('Table#sso-data').at(0);
+    const extraDataButton = ssoDataTable.find('button.btn-link').at(0);
+    let extraDataModal = wrapper.find('Modal#sso-extra-data').at(0);
 
     expect(extraDataButton.text()).toEqual('Show');
     expect(extraDataModal.prop('open')).toEqual(false);

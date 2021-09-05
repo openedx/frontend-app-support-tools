@@ -1,4 +1,3 @@
-
 // Reverting the container width to 1440px to keep the support tools styling consistent
 // See https://github.com/edx/paragon/pull/533 for paragon breaking change
 
@@ -18,6 +17,20 @@
     margin: 0;
     padding: 0.5rem;
     border-bottom: 1px solid silver;
+  }
+}
+
+.sso-table {
+  font-size: small;
+  width: auto;
+  th {
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid black;
+  }
+  td {
+    margin: 0;
+    padding: 0.5rem;
   }
 }
 

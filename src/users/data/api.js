@@ -60,10 +60,20 @@ export async function getSsoRecords(username) {
     );
     let parsedData = [];
     if (data.length > 0) {
-      parsedData = data.map((entry) => ({
-        ...entry,
-        extraData: JSON.parse(entry.extraData),
-      }));
+      parsedData = data.map((entry) => {
+        const extraData = JSON.parse(entry.extraData);
+
+        Object.keys(extraData).forEach((key) => {
+          extraData[key] = Array.isArray(extraData[key]) && extraData[key].length > 0
+            ? extraData[key][0]
+            : extraData[key];
+        });
+
+        return {
+          ...entry,
+          extraData,
+        };
+      });
     }
     return parsedData;
   } catch (error) {

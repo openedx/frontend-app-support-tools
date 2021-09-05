@@ -15,6 +15,7 @@ import EntitlementsV2 from '../entitlements/v2/Entitlements';
 import UserSearch from '../UserSearch';
 import UserSummary from '../UserSummary';
 import EnrollmentsV2 from '../enrollments/v2/Enrollments';
+import SingleSignOnRecords from './SingleSignOnRecords';
 
 // Supports urls such as /users/?username={username} and /users/?email={email}
 export default function UserPage({ location }) {
@@ -158,6 +159,9 @@ export default function UserPage({ location }) {
           <UserSummary
             userData={data.user}
             changeHandler={handleUserSummaryChange}
+          />
+          <SingleSignOnRecords
+            username={data.user.username}
           />
           <Licenses
             userEmail={data.user.email}
