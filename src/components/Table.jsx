@@ -85,7 +85,7 @@ export default function Table({
 
 Table.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.shape({
-    header: PropTypes.string.isRequired,
+    Header: PropTypes.string.isRequired,
     accessor: PropTypes.string.isRequired,
     sortable: PropTypes.bool,
   })).isRequired,

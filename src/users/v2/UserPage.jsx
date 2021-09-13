@@ -11,7 +11,7 @@ import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { isEmail, isValidUsername } from '../../utils/index';
 import { getAllUserData } from '../data/api';
 import Licenses from '../licenses/Licenses';
-import Entitlements from '../entitlements/Entitlements';
+import EntitlementsV2 from '../entitlements/v2/Entitlements';
 import UserSearch from '../UserSearch';
 import UserSummary from '../UserSummary';
 import EnrollmentsV2 from '../enrollments/v2/Enrollments';
@@ -163,7 +163,7 @@ export default function UserPage({ location }) {
             userEmail={data.user.email}
             expanded={showLicenses}
           />
-          <Entitlements
+          <EntitlementsV2
             user={data.user.username}
             changeHandler={handleEntitlementsChange}
             expanded={showEntitlements}
