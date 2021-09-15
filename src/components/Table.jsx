@@ -49,7 +49,7 @@ export default function Table({
           {rows.map((row) => {
             prepareRow(row);
             return (
-              <React.Fragment {...row.getRowProps()}>
+              <React.Fragment {...row.key}>
                 <tr>
                   {row.cells.map(cell => (
                     <td {...cell.getCellProps()}>{cell.render('Cell')}</td>

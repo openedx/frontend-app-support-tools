@@ -25,6 +25,7 @@ export const changeEnrollmentFormData = {
 
 export const createEnrollmentFormData = {
   user: 'edX',
+  changeHandler: jest.fn(() => {}),
   closeHandler: jest.fn(() => {}),
 };
 

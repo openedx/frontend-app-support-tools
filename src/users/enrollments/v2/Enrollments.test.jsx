@@ -65,9 +65,11 @@ describe('Course Enrollments V2 Listing', () => {
   it('Enrollment create form is rendered', () => {
     const createEnrollmentButton = wrapper.find('button#create-enrollment-button');
     createEnrollmentButton.simulate('click');
-    const createEnrollmentForm = wrapper.find('CreateEnrollmentForm');
-    expect(createEnrollmentForm.find('h4').text()).toEqual(expect.stringContaining('Create New Enrollment'));
-    createEnrollmentForm.find('button.btn-outline-secondary').simulate('click');
+    const createFormModal = wrapper.find('Modal#create-enrollment');
+    expect(createFormModal.html()).toEqual(expect.stringContaining('Create New Enrollment'));
+    expect(createFormModal.prop('open')).toEqual(true);
+
+    createFormModal.find('button.btn-link').simulate('click');
     expect(wrapper.find('CreateEnrollmentForm')).toEqual({});
   });
 
@@ -78,9 +80,11 @@ describe('Course Enrollments V2 Listing', () => {
     dataRow = wrapper.find('table tbody tr').at(0);
     dataRow.find('.dropdown-menu.show a').at(0).simulate('click');
 
-    const changeEnrollmentForm = wrapper.find('ChangeEnrollmentForm');
-    expect(changeEnrollmentForm.html()).toEqual(expect.stringContaining(courseId));
-    changeEnrollmentForm.find('button.btn-outline-secondary').simulate('click');
+    const changeFormModal = wrapper.find('Modal#change-enrollment');
+    expect(changeFormModal.html()).toEqual(expect.stringContaining(courseId));
+    expect(changeFormModal.prop('open')).toEqual(true);
+
+    changeFormModal.find('button.btn-link').simulate('click');
     expect(wrapper.find('changeEnrollmentForm')).toEqual({});
   });
 
