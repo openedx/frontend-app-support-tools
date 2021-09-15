@@ -9,7 +9,7 @@ import {
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-import EntitlementForm from '../EntitlementForm';
+import EntitlementForm from './EntitlementForm';
 import { CREATE, REISSUE, EXPIRE } from '../EntitlementActions';
 import PageLoading from '../../../components/common/PageLoading';
 import CourseSummary from '../../courseSummary/CourseSummary';
@@ -20,7 +20,7 @@ import { formatDate } from '../../../utils';
 import AlertList from '../../../userMessages/AlertList';
 
 export default function Entitlements({
-  changeHandler, user,
+  user,
 }) {
   const { add, clear } = useContext(UserMessagesContext);
   const [formType, setFormType] = useState(null);
@@ -30,18 +30,22 @@ export default function Entitlements({
   const formRef = useRef(null);
   const summaryRef = useRef(null);
 
+  const changeHandler = () => setEntitlementData(null);
+
   useEffect(() => {
-    clear('entitlements');
-    getEntitlements(user).then((result) => {
-      const camelCaseResult = camelCaseObject(result);
-      if (camelCaseResult.errors) {
-        camelCaseResult.errors.forEach(error => add(error));
-        setEntitlementData({ results: [] });
-      } else {
-        setEntitlementData(camelCaseResult);
-      }
-    });
-  }, [user]);
+    if (entitlementData === null) {
+      clear('entitlements');
+      getEntitlements(user).then((result) => {
+        const camelCaseResult = camelCaseObject(result);
+        if (camelCaseResult.errors) {
+          camelCaseResult.errors.forEach(error => add(error));
+          setEntitlementData({ results: [] });
+        } else {
+          setEntitlementData(camelCaseResult);
+        }
+      });
+    }
+  }, [user, entitlementData]);
 
   const tableData = useMemo(() => {
     if (entitlementData === null) {
@@ -104,7 +108,7 @@ export default function Entitlements({
                 setUserEntitlement(entitlement);
                 setFormType(REISSUE);
               }}
-              disabled={Boolean(!entitlement.enrollmentCourseRun)}
+              disabled={Boolean(entitlement.enrollmentCourseRun || !entitlement.expiredAt)}
               className="small"
             >
               Reissue
@@ -235,24 +239,22 @@ export default function Entitlements({
 
   return (
     <section className="mb-3">
-      {!formType && (
-        <div className="row">
-          <h3 className="ml-4 mr-auto">Entitlements ({tableData.length})</h3>
-          <Button
-            id="create-enrollment-button"
-            type="button"
-            variant="outline-primary mr-4"
-            size="sm"
-            onClick={() => {
-              setCourseSummaryUUID(null);
-              setUserEntitlement(undefined);
-              setFormType(CREATE);
-            }}
-          >
-            Create New Entitlement
-          </Button>
-        </div>
-      )}
+      <div className="row">
+        <h3 className="ml-4 mr-auto">Entitlements ({tableData.length})</h3>
+        <Button
+          id="create-enrollment-button"
+          type="button"
+          variant="outline-primary mr-4"
+          size="sm"
+          onClick={() => {
+            setCourseSummaryUUID(null);
+            setUserEntitlement(undefined);
+            setFormType(CREATE);
+          }}
+        >
+          Create New Entitlement
+        </Button>
+      </div>
 
       {!entitlementData
         ? <PageLoading srMessage="Loading" />
@@ -297,6 +299,5 @@ export default function Entitlements({
 }
 
 Entitlements.propTypes = {
-  changeHandler: PropTypes.func.isRequired,
   user: PropTypes.string.isRequired,
 };

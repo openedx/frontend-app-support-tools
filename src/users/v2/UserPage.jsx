@@ -38,7 +38,6 @@ export default function UserPage({ location }) {
   const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
-  const [showEntitlements, setShowEntitlements] = useState(false);
   const [showLicenses, setShowLicenses] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
@@ -104,19 +103,12 @@ export default function UserPage({ location }) {
 
   const handleSearchInputChange = useCallback((searchValue) => {
     setSearching(true);
-    setShowEntitlements(false);
     setShowLicenses(false);
     handleFetchSearchResults(searchValue);
   });
 
   const handleUserSummaryChange = useCallback(() => {
     setSearching(true);
-    handleFetchSearchResults(userIdentifier);
-  });
-
-  const handleEntitlementsChange = useCallback(() => {
-    setShowEntitlements(true);
-    setShowLicenses(true);
     handleFetchSearchResults(userIdentifier);
   });
 
@@ -163,8 +155,6 @@ export default function UserPage({ location }) {
           />
           <EntitlementsV2
             user={data.user.username}
-            changeHandler={handleEntitlementsChange}
-            expanded={showEntitlements}
           />
           <EnrollmentsV2
             user={data.user.username}
