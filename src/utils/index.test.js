@@ -1,5 +1,5 @@
 import {
-  isEmail, isValidUsername, formatDate, sort, titleCase, sortedCompareDates,
+  isEmail, isValidUsername, formatDate, sort, titleCase, sortedCompareDates, isValidCourseID,
 } from './index';
 
 describe('Test Utils', () => {
@@ -16,14 +16,18 @@ describe('Test Utils', () => {
     ];
     const validUsername = ['staff', 'admin123'];
     const invalidUsername = ['', ' ', undefined, 'invalid username', '%invalid'];
-    test.each(validEmails)('isEmail return true for %s', (email) => {
+
+    const validCourseID = ['course-v1:testX+test101+2020', 'course-v1/testX/test101/2020'];
+    const invalidCourseID = ['invalid-course-id', 'course-v1:testX+test101', 'no-id'];
+
+    test.each(validEmails)('isEmail returns true for %s', (email) => {
       expect(isEmail(email)).toBe(true);
     });
-    test.each(invalidEmails)('isEmail return false for %s', (email) => {
+    test.each(invalidEmails)('isEmail returns false for %s', (email) => {
       expect(isEmail(email)).toBe(false);
     });
 
-    test.each(validUsername)('isValidUsername return true for %s', (username) => {
+    test.each(validUsername)('isValidUsername returns true for %s', (username) => {
       expect(isValidUsername(username)).toBe(true);
     });
     test.each(invalidUsername)(
@@ -32,6 +36,14 @@ describe('Test Utils', () => {
         expect(isValidUsername(username)).toBe(false);
       },
     );
+
+    test.each(validCourseID)('isValidCourseID returns true for %s', (courseId) => {
+      expect(isValidCourseID(courseId)).toBe(true);
+    });
+
+    test.each(invalidCourseID)('isValidCourseID returns false for %s', (courseId) => {
+      expect(isValidCourseID(courseId)).toBe(false);
+    });
   });
 
   describe('Format Date', () => {
