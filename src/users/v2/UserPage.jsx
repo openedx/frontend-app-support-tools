@@ -120,12 +120,6 @@ export default function UserPage({ location }) {
     handleFetchSearchResults(userIdentifier);
   });
 
-  const handleEnrollmentsChange = useCallback(() => {
-    setShowEntitlements(false);
-    setShowLicenses(false);
-    handleFetchSearchResults(userIdentifier);
-  });
-
   useEffect(() => {
     if (!searching) {
       handleFetchSearchResults(userIdentifier);
@@ -174,7 +168,6 @@ export default function UserPage({ location }) {
           />
           <EnrollmentsV2
             user={data.user.username}
-            changeHandler={handleEnrollmentsChange}
           />
 
         </>

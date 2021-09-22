@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import Certificates from '../Certificates';
-import EnrollmentForm from '../EnrollmentForm';
+import EnrollmentForm from './EnrollmentForm';
 import { CREATE, CHANGE } from '../constants';
 import PageLoading from '../../../components/common/PageLoading';
 import UserMessagesContext from '../../../userMessages/UserMessagesContext';
@@ -26,7 +26,7 @@ import { getEnrollments } from '../../data/api';
 import AlertList from '../../../userMessages/AlertList';
 
 export default function Enrollments({
-  changeHandler, user,
+  user,
 }) {
   const { add, clear } = useContext(UserMessagesContext);
   const [formType, setFormType] = useState(null);
@@ -35,18 +35,22 @@ export default function Enrollments({
   const [selectedCourseId, setSelectedCourseId] = useState(undefined);
   const formRef = useRef(null);
 
+  const changeHandler = () => setEnrollmentData(null);
+
   useEffect(() => {
-    clear('enrollments');
-    getEnrollments(user).then((result) => {
-      const camelCaseResult = camelCaseObject(result);
-      if (camelCaseResult.errors) {
-        camelCaseResult.errors.forEach(error => add(error));
-        setEnrollmentData([]);
-      } else {
-        setEnrollmentData(camelCaseResult);
-      }
-    });
-  }, [user]);
+    if (enrollmentData === null) {
+      clear('enrollments');
+      getEnrollments(user).then((result) => {
+        const camelCaseResult = camelCaseObject(result);
+        if (camelCaseResult.errors) {
+          camelCaseResult.errors.forEach(error => add(error));
+          setEnrollmentData([]);
+        } else {
+          setEnrollmentData(camelCaseResult);
+        }
+      });
+    }
+  }, [user, enrollmentData]);
 
   const tableData = useMemo(() => {
     if (enrollmentData === null || enrollmentData.length === 0) {
@@ -201,7 +205,6 @@ export default function Enrollments({
 
   return (
     <section className="mb-3">
-      {!formType && (
       <div className="row">
         <h3 className="ml-4 mr-auto">Enrollments ({tableData.length})</h3>
         <Button
@@ -217,7 +220,6 @@ export default function Enrollments({
           Create New Enrollment
         </Button>
       </div>
-      )}
       {enrollmentData
         ? (
           <TableV2
@@ -259,6 +261,5 @@ export default function Enrollments({
 }
 
 Enrollments.propTypes = {
-  changeHandler: PropTypes.func.isRequired,
   user: PropTypes.string.isRequired,
 };
