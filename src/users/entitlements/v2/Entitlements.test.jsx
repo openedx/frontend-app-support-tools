@@ -37,10 +37,12 @@ describe('Entitlements V2 Listing', () => {
     expect(entitlementButton.prop('disabled')).toBeFalsy();
     entitlementButton.simulate('click');
 
-    const createEntitlementForm = wrapper.find('CreateEntitlementForm');
-    expect(createEntitlementForm.html()).toEqual(expect.stringContaining('Create Entitlement'));
-    createEntitlementForm.find('button.btn-outline-secondary').simulate('click');
-    expect(wrapper.find('CreateEntitlementForm')).toEqual({});
+    let createFormModal = wrapper.find('Modal#create-entitlement');
+    expect(createFormModal.prop('open')).toEqual(true);
+    expect(createFormModal.html()).toEqual(expect.stringContaining('Create New Entitlement'));
+    wrapper.find('button.btn-link').simulate('click');
+    createFormModal = wrapper.find('Modal#create-entitlement');
+    expect(createFormModal.prop('open')).toEqual(false);
   });
 
   it('entitlements data', () => {
@@ -84,7 +86,12 @@ describe('Entitlements V2 Listing', () => {
   });
 
   describe('Reissue entitlement button', () => {
-    it('Enabled Reissue entitlement button', () => {
+    it('Enabled Reissue entitlement button', async () => {
+      entitlementsData.results[0] = { ...entitlementsData.results[0], enrollmentCourseRun: null };
+      jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
+      wrapper = mount(<EntitlementsPageWrapper {...props} />);
+      await waitForComponentToPaint(wrapper);
+
       // We're only checking row 0 of the table since the Reissue button is not disabled
       let dataRow = wrapper.find('table tbody tr').at(0);
       dataRow.find('.dropdown button').simulate('click');
@@ -94,10 +101,12 @@ describe('Entitlements V2 Listing', () => {
       expect(expireOption.html()).not.toEqual(expect.stringContaining('disabled'));
       expireOption.simulate('click');
 
-      const expireEntitlementForm = wrapper.find('ReissueEntitlementForm');
-      expect(expireEntitlementForm.html()).toEqual(expect.stringContaining('Reissue Entitlement'));
-      expireEntitlementForm.find('button.btn-outline-secondary').simulate('click');
-      expect(wrapper.find('ExpireEntitlementForm')).toEqual({});
+      let reissueFormModal = wrapper.find('Modal#reissue-entitlement');
+      expect(reissueFormModal.prop('open')).toEqual(true);
+      expect(reissueFormModal.html()).toEqual(expect.stringContaining('Reissue Entitlement'));
+      wrapper.find('button.btn-link').simulate('click');
+      reissueFormModal = wrapper.find('Modal#reissue-entitlement');
+      expect(reissueFormModal.prop('open')).toEqual(false);
     });
 
     it('Disabled Reissue entitlement button', () => {
@@ -132,10 +141,12 @@ describe('Entitlements V2 Listing', () => {
       expect(expireOption.html()).not.toEqual(expect.stringContaining('disabled'));
       expireOption.simulate('click');
 
-      const expireEntitlementForm = wrapper.find('ExpireEntitlementForm');
-      expect(expireEntitlementForm.html()).toEqual(expect.stringContaining('Expire Entitlement'));
-      expireEntitlementForm.find('button.btn-outline-secondary').simulate('click');
-      expect(wrapper.find('ExpireEntitlementForm')).toEqual({});
+      let expireFormModal = wrapper.find('Modal#expire-entitlement');
+      expect(expireFormModal.prop('open')).toEqual(true);
+      expect(expireFormModal.html()).toEqual(expect.stringContaining('Expire Entitlement'));
+      wrapper.find('button.btn-link').simulate('click');
+      expireFormModal = wrapper.find('Modal#expire-entitlement');
+      expect(expireFormModal.prop('open')).toEqual(false);
     });
   });
 
