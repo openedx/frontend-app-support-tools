@@ -1,5 +1,6 @@
 import moment from 'moment';
 
+const COURSE_ID_REGEX = '[^/+]+(/|\\+)[^/+]+(/|\\+)[^/?]+';
 const EMAIL_REGEX = '^[a-zA-Z0-9\'!#$&*._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 const USERNAME_REGEX = '^[\\w.@_+-]+$';
 
@@ -14,6 +15,8 @@ export const formatDate = (date) => {
 export const isEmail = (value) => Boolean(value && value.match(EMAIL_REGEX));
 
 export const isValidUsername = (searchValue) => Boolean(searchValue && searchValue.match(USERNAME_REGEX));
+
+export const isValidCourseID = (value) => Boolean(value && value.match(COURSE_ID_REGEX));
 
 export function sort(firstElement, secondElement, key, direction) {
   const directionIsAsc = direction === 'asc';

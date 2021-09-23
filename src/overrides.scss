@@ -26,11 +26,22 @@
   th {
     margin: 0;
     padding: 0.5rem;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid gray;
   }
   td {
     margin: 0;
     padding: 0.5rem;
+    border-bottom: 1px solid gray;
+  }
+}
+
+.fbe-table {
+  @extend .sso-table;
+  font-size: medium;
+
+  tr:last-child th,
+  tr:last-child td {
+    border-bottom: none;
   }
 }
 
