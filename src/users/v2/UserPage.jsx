@@ -10,12 +10,8 @@ import { USER_IDENTIFIER_INVALID_ERROR } from '../../userMessages/messages';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { isEmail, isValidUsername } from '../../utils/index';
 import { getAllUserData } from '../data/api';
-import Licenses from '../licenses/Licenses';
-import EntitlementsV2 from '../entitlements/v2/Entitlements';
 import UserSearch from '../UserSearch';
-import UserSummary from '../UserSummary';
-import EnrollmentsV2 from '../enrollments/v2/Enrollments';
-import SingleSignOnRecords from './SingleSignOnRecords';
+import LearnerInformation from './LearnerInformation';
 
 // Supports urls such as /users/?username={username} and /users/?email={email}
 export default function UserPage({ location }) {
@@ -38,7 +34,6 @@ export default function UserPage({ location }) {
   const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
-  const [showLicenses, setShowLicenses] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   function pushHistoryIfChanged(nextUrl) {
@@ -100,16 +95,14 @@ export default function UserPage({ location }) {
       setSearching(false);
     }
   });
-
-  const handleSearchInputChange = useCallback((searchValue) => {
-    setSearching(true);
-    setShowLicenses(false);
-    handleFetchSearchResults(searchValue);
-  });
-
   const handleUserSummaryChange = useCallback(() => {
     setSearching(true);
     handleFetchSearchResults(userIdentifier);
+  });
+
+  const handleSearchInputChange = useCallback((searchValue) => {
+    setSearching(true);
+    handleFetchSearchResults(searchValue);
   });
 
   useEffect(() => {
@@ -141,26 +134,10 @@ export default function UserPage({ location }) {
       />
       {loading && <PageLoading srMessage="Loading" />}
       {!loading && data.user && data.user.username && (
-        <>
-          <UserSummary
-            userData={data.user}
-            changeHandler={handleUserSummaryChange}
-          />
-          <SingleSignOnRecords
-            username={data.user.username}
-          />
-          <Licenses
-            userEmail={data.user.email}
-            expanded={showLicenses}
-          />
-          <EntitlementsV2
-            user={data.user.username}
-          />
-          <EnrollmentsV2
-            user={data.user.username}
-          />
-
-        </>
+        <LearnerInformation
+          user={data.user}
+          changeHandler={handleUserSummaryChange}
+        />
       )}
       {!loading && !userIdentifier && (
         <section>

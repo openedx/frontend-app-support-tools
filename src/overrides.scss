@@ -1,6 +1,16 @@
 // Reverting the container width to 1440px to keep the support tools styling consistent
 // See https://github.com/edx/paragon/pull/533 for paragon breaking change
 
+.learner-information {
+  color: black;
+  .nav-link.active {
+    border-color: #fff;
+    color: #00262B;
+    border-bottom-color: #00262B;
+    border-width: medium;
+  }
+}
+
 .container-fluid {
   max-width: 1440px;
 }
