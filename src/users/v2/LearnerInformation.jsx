@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab } from '@edx/paragon';
-import UserSummary from '../UserSummary';
+import UserSummary from './UserSummary';
 import EnrollmentsV2 from '../enrollments/v2/Enrollments';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import Licenses from '../licenses/v2/Licenses';

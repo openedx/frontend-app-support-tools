@@ -69,5 +69,14 @@ export default function PasswordHistory({
 }
 
 PasswordHistory.propTypes = {
-  passwordStatus: PropTypes.string.isRequired,
+  passwordStatus: PropTypes.shape({
+    passwordToggleHistory: PropTypes.arrayOf(PropTypes.shape(
+      {
+        created: PropTypes.string.isRequired,
+        comment: PropTypes.string.isRequired,
+        disabled: PropTypes.bool.isRequired,
+        createdBy: PropTypes.string.isRequired,
+      },
+    )),
+  }).isRequired,
 };

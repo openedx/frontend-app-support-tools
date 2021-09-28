@@ -1,12 +1,14 @@
 // Reverting the container width to 1440px to keep the support tools styling consistent
 // See https://github.com/edx/paragon/pull/533 for paragon breaking change
 
+$darkCyan: #00262b;
+
 .learner-information {
   color: black;
   .nav-link.active {
     border-color: #fff;
-    color: #00262B;
-    border-bottom-color: #00262B;
+    color: $darkCyan;
+    border-bottom-color: $darkCyan;
     border-width: medium;
   }
 }
@@ -47,6 +49,35 @@
 
 .badge-status {
   border-radius: 3px;
+}
+
+.account-info {
+  font-size: large;
+  width: auto;
+  border: none;
+  border-radius: 0;
+
+  border-right: 1px solid lightgray;
+
+  table th {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid lightgray;
+    width: 30%;
+  }
+  table td {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid lightgray;
+    word-break: break-word;
+    width: 70%;
+  }
+}
+
+.account-actions {
+  border: 1px solid lightgray;
+  font-size: medium;
+  border-radius: 0.375rem;
 }
 
 .fbe-table {

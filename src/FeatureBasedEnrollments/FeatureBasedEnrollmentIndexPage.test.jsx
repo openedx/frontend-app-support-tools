@@ -39,6 +39,7 @@ describe('Feature Based Enrollment Index Page', () => {
   });
 
   it('default page render with query param course id', async () => {
+    const apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
     location.search = `?course_id=${courseId}`;
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
 
@@ -50,6 +51,7 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(homePageLink.text()).toEqual('< Back to Tools');
     expect(courseIdInput.prop('defaultValue')).toEqual(courseId);
     expect(searchButton.text()).toEqual('Search');
+    apiMock.mockReset();
   });
 
   it('valid search value', async () => {

@@ -60,6 +60,8 @@ export default function TogglePasswordStatus({
 
 TogglePasswordStatus.propTypes = {
   username: PropTypes.string.isRequired,
-  passwordStatus: PropTypes.string.isRequired,
+  passwordStatus: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+  }).isRequired,
   changeHandler: PropTypes.func.isRequired,
 };

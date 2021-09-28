@@ -67,7 +67,7 @@ describe('Learners and Enrollments component', () => {
 
     const accountInfo = wrapper.find('.tab-content div#learner-information-tabpane-account');
     expect(accountInfo.html()).toEqual(expect.stringContaining('active'));
-    expect(accountInfo.find('#account-table h4').text()).toEqual('Account');
+    expect(accountInfo.find('#account-table h3').text()).toEqual('Account Details');
   });
 
   it('Enrollments/Entitlements Tab', () => {
