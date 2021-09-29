@@ -90,6 +90,12 @@ $darkCyan: #00262b;
   }
 }
 
+.certificate-info-table {
+  @extend .sso-table;
+  width: 100%;
+  font-size: large;
+}
+
 .custom-expander-table {
   font-size: small;
   margin-left: 10%;
