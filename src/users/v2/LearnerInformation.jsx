@@ -4,7 +4,7 @@ import { Tabs, Tab } from '@edx/paragon';
 import UserSummary from '../UserSummary';
 import EnrollmentsV2 from '../enrollments/v2/Enrollments';
 import SingleSignOnRecords from './SingleSignOnRecords';
-import Licenses from '../licenses/Licenses';
+import Licenses from '../licenses/v2/Licenses';
 import EntitlementsV2 from '../entitlements/v2/Entitlements';
 
 export default function LearnerInformation({

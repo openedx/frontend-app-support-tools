@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
+import {
+  Row, Col,
+} from '@edx/paragon';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { getSsoRecords } from '../data/api';
 import PageLoading from '../../components/common/PageLoading';
@@ -30,15 +33,13 @@ export default function SingleSignOnRecords({ username }) {
       {/* eslint-disable-next-line no-nested-ternary */}
       {ssoRecords ? (
         ssoRecords.length ? (
-          <div id="sso-records-list" className="ml-3">
+          <Row id="sso-records-list">
             {ssoRecords.map(record => (
-              <>
-                <div className="row">
-                  <SingleSignOnRecordCard ssoRecord={record} />
-                </div>
-              </>
+              <Col xs={12}>
+                <SingleSignOnRecordCard ssoRecord={record} />
+              </Col>
             ))}
-          </div>
+          </Row>
         ) : (
           <p className="ml-4">No SSO Records were Found.</p>
         ))
