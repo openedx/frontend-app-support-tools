@@ -47,6 +47,15 @@ $darkCyan: #00262b;
   }
 }
 
+.idv-table {
+  @extend .custom-table;
+  font-size: medium;
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
 .badge-status {
   border-radius: 3px;
 }
