@@ -15,7 +15,7 @@ import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
-import Certificates from '../Certificates';
+import Certificates from './Certificates';
 import EnrollmentForm from './EnrollmentForm';
 import { CREATE, CHANGE } from '../constants';
 import PageLoading from '../../../components/common/PageLoading';

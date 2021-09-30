@@ -143,7 +143,7 @@ describe('Course Enrollments V2 Listing', () => {
     expect(certificates.html()).toEqual(expect.stringContaining(courseName));
 
     expect(apiMock).toHaveBeenCalledTimes(1);
-    certificates.find('button.btn-outline-secondary').simulate('click');
+    certificates.find('button.btn-link').simulate('click');
     expect(wrapper.find('Certificates')).toEqual({});
     apiMock.mockReset();
   });
