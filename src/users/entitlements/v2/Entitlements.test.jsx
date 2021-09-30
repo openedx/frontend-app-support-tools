@@ -15,6 +15,7 @@ const EntitlementsPageWrapper = (props) => (
 );
 
 describe('Entitlements V2 Listing', () => {
+  let apiMock;
   let wrapper;
   const props = {
     user: 'edX',
@@ -22,12 +23,13 @@ describe('Entitlements V2 Listing', () => {
   };
 
   beforeEach(async () => {
-    jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
+    apiMock = jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
     wrapper = mount(<EntitlementsPageWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
   });
 
   afterEach(() => {
+    apiMock.mockRestore();
     wrapper.unmount();
   });
 
@@ -152,7 +154,7 @@ describe('Entitlements V2 Listing', () => {
 
   describe('Course Summary button', () => {
     it('Successful course summary fetch', async () => {
-      const apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(CourseSummaryData.courseData));
+      apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(CourseSummaryData.courseData));
 
       const dataRow = wrapper.find('table tbody tr').at(0);
       const courseUuidButton = dataRow.find('td').at(3).find('a');
@@ -164,14 +166,14 @@ describe('Entitlements V2 Listing', () => {
       let courseSummary = wrapper.find('CourseSummary');
       expect(courseSummary).not.toBeUndefined();
       expect(courseSummary.html()).toEqual(expect.stringContaining(CourseSummaryData.courseData.uuid));
-      courseSummary.find('button.btn-outline-secondary').simulate('click');
+      courseSummary.find('button.btn-link').simulate('click');
       courseSummary = wrapper.find('CourseSummary');
       expect(courseSummary).toEqual({});
       apiMock.mockReset();
     });
 
     it('Unsuccessful course summary fetch', async () => {
-      const apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve({
+      apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve({
         errors: [
           {
             code: null,

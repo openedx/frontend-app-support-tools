@@ -96,6 +96,25 @@ $darkCyan: #00262b;
   font-size: large;
 }
 
+.course-summary-table {
+  @extend .certificate-info-table
+}
+
+.course-runs-table {
+  font-size: small;
+  width: 100%;
+  th {
+    margin: 0;
+    padding: 0.5rem;
+  }
+  td {
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 0px;
+    border-top: 1px solid silver;
+  }
+}
+
 .custom-expander-table {
   font-size: small;
   margin-left: 10%;
