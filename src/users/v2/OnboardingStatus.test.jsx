@@ -28,7 +28,7 @@ describe('Onboarding Status', () => {
     await waitForComponentToPaint(wrapper);
   });
 
-  it('Onboaridng props', () => {
+  it('Onboarding props', () => {
     const username = wrapper.prop('username');
 
     expect(username).toEqual(props.username);

@@ -98,7 +98,7 @@ export default function IdentityVerificationStatus({
       expirationDatetime: formatDate(result.expirationDatetime),
       extra: result.extraData && result.extraData.length > 0 ? (
         <Hyperlink
-          destination="https://www.edx.org"
+          destination="#"
           target="_blank"
           onClick={e => {
             e.preventDefault();
