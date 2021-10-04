@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useState,
 } from 'react';
-import { Link } from 'react-router-dom';
 import PageLoading from '../../components/common/PageLoading';
 import AlertList from '../../userMessages/AlertList';
 import { USER_IDENTIFIER_INVALID_ERROR } from '../../userMessages/messages';
@@ -45,13 +44,13 @@ export default function UserPage({ location }) {
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach((error) => add(error));
-      history.replace('/usersv2');
+      history.replace('/v2/learner_information');
       document.title = 'Support Tools | edX';
     } else if (isEmail(searchValue)) {
-      pushHistoryIfChanged(`/usersv2/?email=${searchValue}`);
+      pushHistoryIfChanged(`/v2/learner_information/?email=${searchValue}`);
       document.title = `Support Tools | edX | ${searchValue}`;
     } else if (isValidUsername(searchValue)) {
-      pushHistoryIfChanged(`/usersv2/?username=${searchValue}`);
+      pushHistoryIfChanged(`/v2/learner_information/?username=${searchValue}`);
       document.title = `Support Tools | edX | ${searchValue}`;
     }
 
@@ -69,7 +68,7 @@ export default function UserPage({ location }) {
         type: 'error',
         topic: 'general',
       });
-      history.replace('/users');
+      history.replace('/v2/learner_information');
       return false;
     }
     return true;
@@ -90,7 +89,7 @@ export default function UserPage({ location }) {
       // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
-      history.replace('/users');
+      history.replace('/v2/learner_information');
       setLoading(false);
       setSearching(false);
     }
@@ -120,10 +119,7 @@ export default function UserPage({ location }) {
   }, [params.get('username'), params.get('email')]);
 
   return (
-    <main className="ml-5 mr-5 mt-3 mb-5">
-      <section className="mb-3">
-        <Link to="/">&lt; Back to Tools</Link>
-      </section>
+    <main className="mt-3 mb-5">
       <AlertList topic="general" className="mb-3" />
       {/* NOTE: the "key" here causes the UserSearch component to re-render completely when the
       user identifier changes.  Doing so clears out the search box. */}
@@ -138,11 +134,6 @@ export default function UserPage({ location }) {
           user={data.user}
           changeHandler={handleUserSummaryChange}
         />
-      )}
-      {!loading && !userIdentifier && (
-        <section>
-          <p>Please search for a username or email.</p>
-        </section>
       )}
     </main>
   );

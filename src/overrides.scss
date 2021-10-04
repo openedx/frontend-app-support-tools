@@ -1,6 +1,3 @@
-// Reverting the container width to 1440px to keep the support tools styling consistent
-// See https://github.com/edx/paragon/pull/533 for paragon breaking change
-
 $darkCyan: #00262b;
 
 .learner-information {
@@ -14,6 +11,8 @@ $darkCyan: #00262b;
 }
 
 .container-fluid {
+  // Reverting the container width to 1440px to keep the support tools styling consistent
+  // See https://github.com/edx/paragon/pull/533 for paragon breaking change
   max-width: 1440px;
 }
 
@@ -114,4 +113,19 @@ $darkCyan: #00262b;
 
 .text-center {
   margin: auto;
+}
+
+.support-tools-tab {
+  border-bottom: none;
+
+  .nav-link {
+    border: 1px solid lightgray;
+    color: black;
+  }
+
+  .nav-link.active {
+    background-color: $darkCyan;
+    color: white;
+    font-weight: normal;
+  }
 }

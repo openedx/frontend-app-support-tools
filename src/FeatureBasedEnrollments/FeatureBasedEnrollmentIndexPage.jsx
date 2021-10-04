@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { Input, Button } from '@edx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
@@ -47,7 +46,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         type: 'error',
         topic: 'featureBasedEnrollmentGeneral',
       });
-      history.replace('/feature_based_enrollments');
+      history.replace('/v2/feature_based_enrollments');
       return false;
     }
     return true;
@@ -60,9 +59,9 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         return;
       }
       setSearchValue(inputValue);
-      pushHistoryIfChanged(`/feature_based_enrollments/?course_id=${inputValue}`);
+      pushHistoryIfChanged(`/v2/feature_based_enrollments/?course_id=${inputValue}`);
     } else if (inputValue === '') {
-      history.replace('/feature_based_enrollments');
+      history.replace('/v2/feature_based_enrollments');
     }
   });
 
@@ -82,19 +81,15 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
   }, []);
 
   return (
-    <main className="ml-5 mr-5 mt-3 mb-5">
-
-      <section className="mb-3">
-        <Link to="/">&lt; Back to Tools</Link>
-      </section>
+    <main className="mt-3 mb-5">
 
       <AlertList topic="featureBasedEnrollmentGeneral" className="mb-3" />
 
       <section className="mb-3">
         <form className="form-inline">
           <label htmlFor="courseId">Course ID</label>
-          <Input ref={searchRef} className="flex-grow-1 mr-1" name="courseId" type="text" defaultValue={searchValue} />
-          <Button type="submit" onClick={submit} variant="primary">Search</Button>
+          <Input ref={searchRef} className="mr-1 col-sm-4" name="courseId" type="text" defaultValue={searchValue} />
+          <Button type="submit" onClick={submit} className="ml-1 col-sm-1" variant="primary">Search</Button>
         </form>
       </section>
 

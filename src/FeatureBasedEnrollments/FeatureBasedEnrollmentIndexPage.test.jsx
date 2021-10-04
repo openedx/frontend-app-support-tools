@@ -22,18 +22,15 @@ describe('Feature Based Enrollment Index Page', () => {
   const courseId = 'course-v1:testX+test123+2030';
 
   beforeEach(() => {
-    location = { pathname: '/feature_based_enrollments', search: '' };
+    location = { pathname: '/v2/feature_based_enrollments', search: '' };
   });
 
   it('default page render', async () => {
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
 
-    const homePageLink = wrapper.find('a');
     const courseIdInput = wrapper.find('input[name="courseId"]');
     const searchButton = wrapper.find('button.btn-primary');
 
-    expect(homePageLink.prop('href')).toEqual('/');
-    expect(homePageLink.text()).toEqual('< Back to Tools');
     expect(courseIdInput.prop('defaultValue')).toEqual(undefined);
     expect(searchButton.text()).toEqual('Search');
   });
@@ -42,13 +39,11 @@ describe('Feature Based Enrollment Index Page', () => {
     const apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
     location.search = `?course_id=${courseId}`;
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    await waitForComponentToPaint(wrapper);
 
-    const homePageLink = wrapper.find('a');
     const courseIdInput = wrapper.find('input[name="courseId"]');
     const searchButton = wrapper.find('button.btn-primary');
 
-    expect(homePageLink.prop('href')).toEqual('/');
-    expect(homePageLink.text()).toEqual('< Back to Tools');
     expect(courseIdInput.prop('defaultValue')).toEqual(courseId);
     expect(searchButton.text()).toEqual('Search');
     apiMock.mockReset();
@@ -66,7 +61,7 @@ describe('Feature Based Enrollment Index Page', () => {
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
     expect(wrapper.find('Card')).toHaveLength(2);
-    expect(history.push).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
+    expect(history.push).toHaveBeenCalledWith(`/v2/feature_based_enrollments/?course_id=${courseId}`);
 
     apiMock.mockReset();
     history.push.mockReset();
@@ -83,7 +78,7 @@ describe('Feature Based Enrollment Index Page', () => {
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
-    expect(history.replace).toHaveBeenCalledWith('/feature_based_enrollments');
+    expect(history.replace).toHaveBeenCalledWith('/v2/feature_based_enrollments');
 
     apiMock.mockReset();
     history.replace.mockReset();
@@ -101,7 +96,7 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
     expect(wrapper.find('.alert').text()).toEqual('Supplied course ID "invalid-value" is either invalid or incorrect.');
-    expect(history.replace).toHaveBeenCalledWith('/feature_based_enrollments');
+    expect(history.replace).toHaveBeenCalledWith('/v2/feature_based_enrollments');
 
     apiMock.mockReset();
     history.replace.mockReset();
