@@ -12,7 +12,7 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import EntitlementForm from './EntitlementForm';
 import { CREATE, REISSUE, EXPIRE } from '../EntitlementActions';
 import PageLoading from '../../../components/common/PageLoading';
-import CourseSummary from '../../courseSummary/CourseSummary';
+import CourseSummary from '../../courseSummary/v2/CourseSummary';
 import TableV2 from '../../../components/Table';
 import { getEntitlements } from '../../data/api';
 import UserMessagesContext from '../../../userMessages/UserMessagesContext';
@@ -28,7 +28,6 @@ export default function Entitlements({
   const [courseSummaryUUID, setCourseSummaryUUID] = useState(null);
   const [entitlementData, setEntitlementData] = useState(null);
   const formRef = useRef(null);
-  const summaryRef = useRef(null);
 
   const changeHandler = () => setEntitlementData(null);
 
@@ -285,12 +284,10 @@ export default function Entitlements({
       <TransitionReplace>
         {courseSummaryUUID !== null ? (
           <CourseSummary
-            key="course-summary"
             courseUUID={courseSummaryUUID}
-            clearHandler={() => {
+            closeHandler={() => {
               setCourseSummaryUUID(null);
             }}
-            forwardedRef={summaryRef}
           />
         ) : (<React.Fragment key="nothing" />)}
       </TransitionReplace>
