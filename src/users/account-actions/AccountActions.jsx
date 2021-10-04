@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import TogglePasswordStatus from './TogglePasswordStatus';
-import ResetPassword from './ResetPassword';
-import PasswordHistory from './PasswordHistory';
+import TogglePasswordStatus from './v2/TogglePasswordStatus';
+import ResetPassword from './v2/ResetPassword';
+import PasswordHistory from './v2/PasswordHistory';
 
 export default function AccountActions({ userData, changeHandler }) {
   return (
