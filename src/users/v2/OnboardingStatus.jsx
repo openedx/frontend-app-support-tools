@@ -55,7 +55,7 @@ export default function OnboardingStatus({
           id="proctoring-data"
           data={proctoringData}
           columns={proctoringColumns}
-          styleName="idv-table"
+          styleName="idv-table word_break"
         />
       ) : <PageLoading srMessage="Loading.." /> }
     </div>

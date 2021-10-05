@@ -58,7 +58,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
           </Card.Title>
 
           <TableV2
-            styleName="sso-table"
+            styleName="sso-table word_break"
             id="sso-data-new"
             data={[data]}
             columns={columns}

@@ -124,7 +124,7 @@ export default function IdentityVerificationStatus({
           <TableV2
             data={detailIdvData}
             columns={idvDetailsColumns}
-            styleName="custom-table"
+            styleName="custom-table word_break"
           />
           )}
       />
@@ -138,7 +138,7 @@ export default function IdentityVerificationStatus({
               id="idv-data"
               data={IdvData}
               columns={idvColumns}
-              styleName="idv-table"
+              styleName="idv-table word_break"
             />
           ) : <></>
         ) : <PageLoading srMessage="Loading" />}
