@@ -24,7 +24,7 @@ export default function Table({
   );
 
   return (
-    <>
+    <div className="table-responsive">
       <table {...getTableProps()} className={styleName}>
         <thead>
           {headerGroups.map(headerGroup => (
@@ -79,7 +79,7 @@ export default function Table({
         </tbody>
       </table>
       <br />
-    </>
+    </div>
   );
 }
 

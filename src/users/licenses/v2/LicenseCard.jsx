@@ -77,7 +77,7 @@ export default function LicenseCard({
           <TableV2
             data={tableData}
             columns={columns}
-            styleName="sso-table word_break"
+            styleName="sso-table"
             id="license-data-new"
           />
         </Card.Body>
