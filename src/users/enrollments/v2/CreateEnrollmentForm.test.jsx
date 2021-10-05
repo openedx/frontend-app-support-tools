@@ -48,11 +48,14 @@ describe('Enrollment Create form', () => {
       wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
       wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'test create enrollment' } });
+      expect(wrapper.find('div.spinner-border').length).toEqual(0);
       wrapper.find('button.btn-primary').simulate('click');
+      expect(wrapper.find('div.spinner-border').length).toEqual(1);
       expect(apiMock).toHaveBeenCalledTimes(1);
 
       await waitForComponentToPaint(wrapper);
       expect(wrapper.find('.alert').text()).toEqual('New Enrollment successfully created.');
+      expect(wrapper.find('div.spinner-border').length).toEqual(0);
       apiMock.mockReset();
     });
 

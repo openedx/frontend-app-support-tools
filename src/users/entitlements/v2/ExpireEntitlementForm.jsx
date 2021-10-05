@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Button, Input, Modal,
 } from '@edx/paragon';
-import classNames from 'classnames';
 
 import UserMessagesContext from '../../../userMessages/UserMessagesContext';
 import AlertList from '../../../userMessages/AlertList';
@@ -20,12 +19,14 @@ export default function ExpireEntitlementForm({
 }) {
   const [comments, setComments] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(true);
-  const [hideOnSubmit, setHideOnSubmit] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+  const [hideSubmit, setHideSubmit] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback(() => {
     const now = new Date().toISOString();
     clear('expireEntitlement');
+    setShowLoader(true);
     patchEntitlement({
       uuid: entitlement.uuid,
       requestData: makeRequestData({
@@ -45,10 +46,11 @@ export default function ExpireEntitlementForm({
           type: 'success',
           topic: 'expireEntitlement',
         };
-        setHideOnSubmit(true);
+        setHideSubmit(true);
         add(successMessage);
         changeHandler();
       }
+      setShowLoader(false);
     });
   });
 
@@ -81,7 +83,7 @@ export default function ExpireEntitlementForm({
         placeholder="Explanation"
         defaultValue=""
         onChange={(event) => setComments(event.target.value)}
-        disabled={hideOnSubmit}
+        disabled={hideSubmit}
         ref={forwardedRef}
       />
     </form>
@@ -102,18 +104,19 @@ export default function ExpireEntitlementForm({
         expireEntitlementForm
       )}
       buttons={[
-        <Button
-          variant="primary"
-          className={classNames(
-            'mr-3',
-            { disabled: !(entitlement.courseUuid && entitlement.mode && comments) },
-          )}
-          disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
-          hidden={hideOnSubmit}
-          onClick={submit}
-        >
-          Submit
-        </Button>,
+        showLoader
+          ? (<div className="spinner-border text-primary" role="status" />)
+          : (
+            <Button
+              variant="primary"
+              className="mr-3"
+              disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
+              hidden={hideSubmit}
+              onClick={submit}
+            >
+              Submit
+            </Button>
+          ),
       ]}
     />
   );

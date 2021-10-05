@@ -20,10 +20,12 @@ export default function CreateEnrollmentForm({
   const [reason, setReason] = useState('');
   const [comments, setComments] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback(() => {
     clear('createEnrollments');
+    setShowLoader(true);
     const sendReason = (reason === 'other') ? comments : reason;
     postEnrollment({
       user,
@@ -44,6 +46,7 @@ export default function CreateEnrollmentForm({
         add(successMessage);
         changeHandler();
       }
+      setShowLoader(false);
     });
   });
 
@@ -104,14 +107,18 @@ export default function CreateEnrollmentForm({
         createEnrollmentForm
       )}
       buttons={[
-        <Button
-          variant="primary"
-          disabled={!(courseID && reason)}
-          className="mr-3"
-          onClick={submit}
-        >
-          Submit
-        </Button>,
+        showLoader
+          ? (<div className="spinner-border text-primary" role="status" />)
+          : (
+            <Button
+              variant="primary"
+              disabled={!(courseID && reason)}
+              className="mr-3"
+              onClick={submit}
+            >
+              Submit
+            </Button>
+          ),
       ]}
     />
   );

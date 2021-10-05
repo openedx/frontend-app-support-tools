@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Button, Input, Modal,
 } from '@edx/paragon';
-import classNames from 'classnames';
 
 import UserMessagesContext from '../../../userMessages/UserMessagesContext';
 import AlertList from '../../../userMessages/AlertList';
@@ -22,12 +21,12 @@ export default function CreateEntitlementForm({
   const [mode, setMode] = useState(entitlement.mode);
   const [comments, setComments] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(true);
-  const [disableSubmit, setDisableSubmit] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback(() => {
     clear('createEntitlement');
-    setDisableSubmit(true);
+    setShowLoader(true);
     postEntitlement({
       requestData: {
         course_uuid: courseUuid,
@@ -40,7 +39,7 @@ export default function CreateEntitlementForm({
         }],
       },
     }).then((result) => {
-      setDisableSubmit(false);
+      setShowLoader(false);
       if (result.errors !== undefined) {
         result.errors.forEach(error => add(error));
       } else {
@@ -110,17 +109,18 @@ export default function CreateEntitlementForm({
         createEntitlementForm
       )}
       buttons={[
-        <Button
-          variant="primary"
-          disabled={!(courseUuid && mode && comments) || (disableSubmit)}
-          className={classNames(
-            'mr-3',
-            { disabled: !(courseUuid && mode && comments) || (disableSubmit) },
-          )}
-          onClick={submit}
-        >
-          Submit
-        </Button>,
+        showLoader
+          ? (<div className="spinner-border text-primary" role="status" />)
+          : (
+            <Button
+              variant="primary"
+              disabled={!(courseUuid && mode && comments)}
+              className="mr-3"
+              onClick={submit}
+            >
+              Submit
+            </Button>
+          ),
       ]}
     />
   );
