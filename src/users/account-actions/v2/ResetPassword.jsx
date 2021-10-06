@@ -35,7 +35,7 @@ export default function ResetPassword({
           </Button>,
         ]}
         onClose={() => setResetPasswordModalIsOpen(false)}
-        dialogClassName="modal-lg modal-dialog-centered"
+        dialogClassName="modal-lg modal-dialog-centered justify-content-center"
         title="Reset Password"
         body={(
           <div>

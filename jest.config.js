@@ -8,6 +8,7 @@ module.exports = createConfig('jest', {
     '/node_modules/',
     'src/setupTest.js',
     'src/i18n',
-    'src/users/v2/UserPage.jsx'
+    'src/users/v2/UserPage.jsx',
+    'src/supportHeader/ToggleVersion.jsx',
   ],
 });

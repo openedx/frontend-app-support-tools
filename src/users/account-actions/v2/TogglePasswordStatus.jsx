@@ -35,7 +35,7 @@ export default function TogglePasswordStatus({
       <Modal
         open={disableUserModalIsOpen}
         id="user-account-status-toggle"
-        dialogClassName="modal-lg modal-dialog-centered"
+        dialogClassName="modal-lg modal-dialog-centered justify-content-center"
         buttons={[
           <Button
             variant="danger"

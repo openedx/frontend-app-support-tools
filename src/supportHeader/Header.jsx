@@ -29,6 +29,19 @@ subscribe(APP_CONFIG_INITIALIZED, () => {
 
 export default function Header() {
   const { authenticatedUser, config } = useContext(AppContext);
+  let COURSES_INTERNAL = config.LMS_BASE_URL;
+  let DISCOVERY_INTERNAL = config.DISCOVERY_API_BASE_URL;
+  let CREDENTIALS_INTERNAL = config.CREDENTIALS_BASE_URL;
+
+  if (config.LMS_BASE_URL.indexOf('.stage.') !== -1) {
+    COURSES_INTERNAL = COURSES_INTERNAL.replace('.stage.', '-internal.stage.');
+    DISCOVERY_INTERNAL = DISCOVERY_INTERNAL.replace('.stage.', '-internal.stage.');
+    CREDENTIALS_INTERNAL = CREDENTIALS_INTERNAL.replace('.stage.', '-internal.stage.');
+  } else if (config.LMS_BASE_URL.indexOf('.edx.') !== -1) {
+    COURSES_INTERNAL = COURSES_INTERNAL.replace('.edx.', '-internal.edx.');
+    DISCOVERY_INTERNAL = DISCOVERY_INTERNAL.replace('.edx.', '-internal.edx.');
+    CREDENTIALS_INTERNAL = CREDENTIALS_INTERNAL.replace('.edx.', '-internal.edx.');
+  }
 
   const mainMenu = [
     {
@@ -70,14 +83,14 @@ export default function Header() {
         <>
           <div className="mb-1"><a rel="noopener" href={`${config.PUBLISHER_BASE_URL}`}>Publisher</a></div>
           <div className="mb-1"><a rel="noopener" href={`${config.DISCOVERY_API_BASE_URL}`}>Discovery</a></div>
-          <div className="mb-1"><a rel="noopener" href="https://www.edx.org/course">Course Catalogue</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${config.LMS_BASE_URL}/courses`}>Course Catalogue</a></div>
         </>
       ),
     },
     {
       type: 'item',
       content: 'Proctoring',
-      href: 'https://courses-internal.edx.org/admin/edx_proctoring/proctoredexamsoftwaresecurereview/',
+      href: `${COURSES_INTERNAL}/admin/edx_proctoring/proctoredexamsoftwaresecurereview/`,
     },
     {
       type: 'submenu',
@@ -85,8 +98,8 @@ export default function Header() {
       submenuContent: (
         <>
           <div className="mb-1"><a rel="noopener" href={`${config.CREDENTIALS_BASE_URL}/records/`}>Learner Record</a></div>
-          <div className="mb-1"><a rel="noopener" href={`${config.CREDENTIALS_BASE_URL}/admin/credentials/usercredential/`}>Credentials Search</a></div>
-          <div className="mb-1"><a rel="noopener" href={`${config.DISCOVERY_API_BASE_URL}/admin/course_metadata/program/`}>Programs Discovery</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${CREDENTIALS_INTERNAL}/admin/credentials/usercredential/`}>Credentials Search</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${DISCOVERY_INTERNAL}/admin/course_metadata/program/`}>Programs Discovery</a></div>
         </>
       ),
     },

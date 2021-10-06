@@ -14,9 +14,9 @@ import SupportHomePage from './supportHome/SupportHomePage';
 import Header from './supportHeader';
 import appMessages from './i18n';
 import UserPage from './users/UserPage';
-// import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
-// import UserPageV2 from './users/v2/UserPage';
-// import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
+import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
+import UserPageV2 from './users/v2/UserPage';
+import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 
 import './index.scss';
@@ -38,9 +38,9 @@ subscribe(APP_READY, () => {
         <Switch>
           <Route exact path="/" component={SupportHomePage} />
           <Route path="/users" component={UserPage} />
-          {/* <Route path="/v2" component={SupportToolsTab} /> */}
-          {/* <Route path="/v2/learner_information" component={UserPageV2} /> */}
-          {/* <Route path="/v2/feature_based_enrollments" component={FBEIndexPage} /> */}
+          <Route path="/v2" component={SupportToolsTab} />
+          <Route path="/v2/learner_information" component={UserPageV2} />
+          <Route path="/v2/feature_based_enrollments" component={FBEIndexPage} />
         </Switch>
       </UserMessagesProvider>
     </AppProvider>,

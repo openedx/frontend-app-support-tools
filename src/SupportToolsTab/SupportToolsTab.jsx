@@ -13,12 +13,12 @@ export default function SupportToolsTab({ location }) {
   }
 
   return (
-    <>
-      <section className="mx-5 mt-3">
+    <div className="container-fluid">
+      <section className="mt-3">
         <h2 className="font-weight-bold">Support Tools</h2>
         <p>Suite of tools used by support team to help triage and resolve select learner issues.</p>
       </section>
-      <section className="mx-5">
+      <section>
         <Tabs
           className="support-tools-tab"
           id="support-tools-tab"
@@ -42,7 +42,7 @@ export default function SupportToolsTab({ location }) {
 
         </Tabs>
       </section>
-    </>
+    </div>
   );
 }
 
