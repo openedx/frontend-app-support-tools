@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function Table({
-  columns, data, renderRowSubComponent, styleName,
+  columns, data, renderRowSubComponent, styleName, isResponsive,
 }) {
   const {
     getTableProps,
@@ -24,7 +24,7 @@ export default function Table({
   );
 
   return (
-    <div className="table-responsive">
+    <div className={isResponsive ? 'table-responsive' : ''}>
       <table {...getTableProps()} className={styleName}>
         <thead>
           {headerGroups.map(headerGroup => (
@@ -92,9 +92,11 @@ Table.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   renderRowSubComponent: PropTypes.func,
   styleName: PropTypes.string,
+  isResponsive: PropTypes.bool,
 };
 
 Table.defaultProps = {
   renderRowSubComponent: null,
   styleName: null,
+  isResponsive: true,
 };
