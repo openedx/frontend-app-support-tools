@@ -65,7 +65,7 @@ describe('Expire Entitlement Form', () => {
             dismissible: true,
             text: 'Error expiring entitlement',
             type: 'danger',
-            topic: 'entitlements',
+            topic: 'expireEntitlement',
           },
         ],
       }));

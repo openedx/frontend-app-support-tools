@@ -65,7 +65,7 @@ describe('Reissue Entitlement Form', () => {
             dismissible: true,
             text: 'Error during reissue of entitlement',
             type: 'danger',
-            topic: 'entitlements',
+            topic: 'reissueEntitlement',
           },
         ],
       }));

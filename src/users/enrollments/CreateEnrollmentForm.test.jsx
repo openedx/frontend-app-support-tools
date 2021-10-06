@@ -58,7 +58,7 @@ describe('Enrollment Create form', () => {
             dismissible: true,
             text: 'Error creating enrollment',
             type: 'danger',
-            topic: 'enrollments',
+            topic: 'createEnrollments',
           },
         ],
       }));

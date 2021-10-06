@@ -37,7 +37,7 @@ export default function CreateEnrollmentForm({
           text:
               'New Enrollment successfully created.',
           type: 'success',
-          topic: 'enrollments',
+          topic: 'createEnrollments',
         };
         add(successMessage);
       }
@@ -47,7 +47,7 @@ export default function CreateEnrollmentForm({
   return (
     <section className="card mb-3">
       <form className="card-body">
-        <AlertList topic="enrollments" className="mb-3" />
+        <AlertList topic="createEnrollments" className="mb-3" />
         <h4 className="card-title">Create New Enrollment</h4>
         <hr />
         <div className="form-group">

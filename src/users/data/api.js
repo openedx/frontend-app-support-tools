@@ -2,6 +2,7 @@ import { ensureConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import * as messages from '../../userMessages/messages';
 import * as AppUrls from './urls';
+import { REISSUE } from '../entitlements/EntitlementActions';
 import { isEmail, sortedCompareDates } from '../../utils';
 
 export async function getEntitlements(username, page = 1) {
@@ -358,7 +359,7 @@ export async function patchEntitlement({
           text:
             'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
           type: 'danger',
-          topic: 'entitlements',
+          topic: requestData.support_details[0].action === REISSUE ? 'reissueEntitlement' : 'expireEntitlement',
         },
       ],
     };
@@ -389,7 +390,7 @@ export async function postEntitlement({
           text:
             'There was an error submitting this entitlement. Check the JavaScript console for detailed errors.',
           type: 'danger',
-          topic: 'entitlements',
+          topic: 'createEntitlement',
         },
       ],
     };
@@ -425,7 +426,7 @@ export async function postEnrollment({
           text:
             'There was an error creating the enrollment. Check the JavaScript console for detailed errors.',
           type: 'danger',
-          topic: 'enrollments',
+          topic: 'createEnrollments',
         },
       ],
     };
@@ -466,7 +467,7 @@ export async function patchEnrollment({
           text:
             'There was an error submitting this enrollment. Check the JavaScript console for detailed errors.',
           type: 'danger',
-          topic: 'enrollments',
+          topic: 'changeEnrollments',
         },
       ],
     };

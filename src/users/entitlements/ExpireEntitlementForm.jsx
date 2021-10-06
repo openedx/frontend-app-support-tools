@@ -25,7 +25,7 @@ export default function ExpireEntitlementForm({
 
   const submit = useCallback(() => {
     const now = new Date().toISOString();
-    clear('entitlements');
+    clear('expireEntitlement');
     patchEntitlement({
       uuid: entitlement.uuid,
       requestData: makeRequestData({
@@ -46,7 +46,7 @@ export default function ExpireEntitlementForm({
   return (
     <section className="card mb-3">
       <form className="card-body">
-        <AlertList topic="entitlements" className="mb-3" />
+        <AlertList topic="expireEntitlement" className="mb-3" />
         <h4 className="card-title">Expire Entitlement</h4>
         <h5 className="card-subtitle">All fields are required</h5>
         <div className="form-group">

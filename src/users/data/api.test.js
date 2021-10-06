@@ -466,9 +466,11 @@ describe('API', () => {
     const entitlementUuid = 'uuid';
 
     const requestData = {
-      action: 'REISSUE',
-      comments: 'Reissue Entitlement',
-      enrollmentCourseRun: 'course-v1:testX',
+      support_details: [{
+        action: 'REISSUE',
+        comments: 'Reissue Entitlement',
+        enrollmentCourseRun: 'course-v1:testX',
+      }],
     };
 
     const expectedError = {
@@ -559,7 +561,7 @@ describe('API', () => {
       it('Unsuccessful patch', async () => {
         mockAdapter.onPatch(patchEntitlementsApiUrl, requestData).reply(() => throwError(400, ''));
         const response = await api.patchEntitlement({ uuid: entitlementUuid, requestData });
-        expect(...response.errors).toEqual(expectedError);
+        expect(...response.errors).toEqual({ ...expectedError, topic: 'expireEntitlement' });
       });
 
       it('Successful patch', async () => {
@@ -575,7 +577,7 @@ describe('API', () => {
       it('Unsuccessful post', async () => {
         mockAdapter.onPost(postEntitlementApiUrl, requestData).reply(() => throwError(400, ''));
         const response = await api.postEntitlement({ requestData });
-        expect(...response.errors).toEqual(expectedError);
+        expect(...response.errors).toEqual({ ...expectedError, topic: 'createEntitlement' });
       });
 
       it('Successful post', async () => {
@@ -630,7 +632,7 @@ describe('API', () => {
         };
         mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
         const response = await api.postEnrollment({ ...apiCallData });
-        expect(...response.errors).toEqual(expectedError);
+        expect(...response.errors).toEqual({ ...expectedError, topic: 'createEnrollments' });
       });
 
       it('Successful enrollment create', async () => {
@@ -671,7 +673,7 @@ describe('API', () => {
         };
         mockAdapter.onPatch(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
         const response = await api.patchEnrollment({ ...apiCallData });
-        expect(...response.errors).toEqual(expectedError);
+        expect(...response.errors).toEqual({ ...expectedError, topic: 'changeEnrollments' });
       });
 
       it('Successful enrollment change', async () => {
