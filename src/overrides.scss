@@ -105,7 +105,7 @@ $darkCyan: #00262b;
 }
 
 .course-summary-table {
-  @extend .certificate-info-table
+  @extend .certificate-info-table;
 }
 
 .course-runs-table {
