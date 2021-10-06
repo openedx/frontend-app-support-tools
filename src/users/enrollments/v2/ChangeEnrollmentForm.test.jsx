@@ -1,5 +1,4 @@
 import { mount } from 'enzyme';
-import { waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { waitForComponentToPaint } from '../../../setupTest';
@@ -31,7 +30,7 @@ describe('Enrollment Change form', () => {
     const modeSelectionDropdown = wrapper.find('select#mode');
     const modeChangeReasonDropdown = wrapper.find('select#reason');
     const commentsTextarea = wrapper.find('textarea#comments');
-    expect(modeSelectionDropdown.find('option')).toHaveLength(3);
+    expect(modeSelectionDropdown.find('option')).toHaveLength(2);
     expect(modeChangeReasonDropdown.find('option')).toHaveLength(5);
     expect(commentsTextarea.text()).toEqual('');
 
@@ -48,12 +47,15 @@ describe('Enrollment Change form', () => {
       wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
       wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
+      expect(wrapper.find('div.spinner-border').length).toEqual(0);
       wrapper.find('button.btn-primary').simulate('click');
+      expect(wrapper.find('div.spinner-border').length).toEqual(1);
       expect(apiMock).toHaveBeenCalledTimes(1);
 
-      // The mock call count does not update on time for expect call, therefore, waitFor is used to give enough time
-      // for the call count to update. However, it is possible this might turn out to be flaky.
-      await waitFor(() => expect(changeEnrollmentFormData.changeHandler).toHaveBeenCalledTimes(1));
+      await waitForComponentToPaint(wrapper);
+      expect(changeEnrollmentFormData.changeHandler).toHaveBeenCalledTimes(1);
+      expect(wrapper.find('div.spinner-border').length).toEqual(0);
+
       apiMock.mockReset();
       const submitButton = wrapper.find('button.btn-primary');
       expect(submitButton).toEqual({});

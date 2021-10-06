@@ -1,5 +1,4 @@
 import { mount } from 'enzyme';
-import { waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { waitForComponentToPaint } from '../../../setupTest';
@@ -48,12 +47,14 @@ describe('Expire Entitlement Form', () => {
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'expiring entitlement' } });
       let submitButton = wrapper.find('button.btn-primary');
       expect(submitButton.prop('disabled')).toBeFalsy();
+      expect(wrapper.find('div.spinner-border').length).toEqual(0);
       submitButton.simulate('click');
+      expect(wrapper.find('div.spinner-border').length).toEqual(1);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      // The mock call count does not update on time for expect call, therefore, waitFor is used to give enough time
-      // for the call count to update. However, it is possible this might turn out to be flaky.
-      await waitFor(() => expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1));
+      await waitForComponentToPaint(wrapper);
+      expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
+      expect(wrapper.find('div.spinner-border').length).toEqual(0);
       apiMock.mockReset();
 
       submitButton = wrapper.find('button.btn-primary');

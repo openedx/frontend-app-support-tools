@@ -20,6 +20,7 @@ export default function ChangeEnrollmentForm({
   const [comments, setComments] = useState('');
   const [hideOnSubmit, setHideOnSubmit] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   reasons[0] = { label: 'Reason for Change', value: '', disabled: true };
@@ -28,16 +29,14 @@ export default function ChangeEnrollmentForm({
     const modeList = [];
     modeList.push({ label: 'New Mode', value: '', disabled: true });
     enrollment.courseModes.map(enrollmentMode => (
-      modeList.push(enrollmentMode.slug)
+      !(enrollmentMode.slug === enrollment.mode) && modeList.push(enrollmentMode.slug)
     ));
-    if (!modeList.some(enrollmentMode => enrollmentMode === enrollment.mode)) {
-      modeList.push(enrollment.mode);
-    }
     return modeList;
   };
 
   const submit = useCallback(() => {
     clear('changeEnrollments');
+    setShowLoader(true);
     const sendReason = (reason === 'other') ? comments : reason;
     patchEnrollment({
       user,
@@ -60,6 +59,7 @@ export default function ChangeEnrollmentForm({
         add(successMessage);
         changeHandler();
       }
+      setShowLoader(false);
     });
   });
 
@@ -147,15 +147,19 @@ export default function ChangeEnrollmentForm({
         changeEnrollmentForm
       )}
       buttons={[
-        <Button
-          variant="primary"
-          disabled={!(mode && reason)}
-          className="mr-3"
-          onClick={submit}
-          hidden={hideOnSubmit}
-        >
-          Submit
-        </Button>,
+        showLoader
+          ? (<div className="spinner-border text-primary" role="status" />)
+          : (
+            <Button
+              variant="primary"
+              disabled={!(mode && reason)}
+              className="mr-3"
+              onClick={submit}
+              hidden={hideOnSubmit}
+            >
+              Submit
+            </Button>
+          ),
       ]}
     />
   );
