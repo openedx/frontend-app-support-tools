@@ -87,6 +87,19 @@ describe('Entitlements V2 Listing', () => {
     expect(expandable.html()).toContain('fa-plus');
   });
 
+  it('Expand All and Collapse All', () => {
+    let expandAll = wrapper.find('table thead tr th a.link-primary');
+    expect(expandAll.text()).toEqual('Expand All');
+    expandAll.simulate('click');
+
+    expandAll = wrapper.find('table thead tr th a.link-primary');
+    expect(expandAll.text()).toEqual('Collapse All');
+    expandAll.simulate('click');
+
+    expandAll = wrapper.find('table thead tr th a.link-primary');
+    expect(expandAll.text()).toEqual('Expand All');
+  });
+
   describe('Reissue entitlement button', () => {
     it('Enabled Reissue entitlement button', async () => {
       entitlementsData.results[0] = { ...entitlementsData.results[0], enrollmentCourseRun: null };

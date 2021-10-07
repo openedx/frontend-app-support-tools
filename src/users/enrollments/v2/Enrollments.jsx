@@ -106,13 +106,14 @@ export default function Enrollments({
     }
   });
 
-  const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps }) => (
+  const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
     <a {...getToggleAllRowsExpandedProps()} className="link-primary">
-      Expand All
+      { isAllRowsExpanded ? 'Collapse All' : 'Expand All' }
     </a>
   );
   expandAllRowsHandler.propTypes = {
     getToggleAllRowsExpandedProps: PropTypes.func.isRequired,
+    isAllRowsExpanded: PropTypes.bool.isRequired,
   };
 
   const rowExpandHandler = ({ row }) => (
