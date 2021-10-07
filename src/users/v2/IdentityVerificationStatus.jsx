@@ -119,12 +119,12 @@ export default function IdentityVerificationStatus({
         onClose={() => setIsIdvModalOpen(false)}
         title={detailIdvDataTitle}
         id="idv-extra-data"
-        dialogClassName="modal-lg modal-dialog-centered"
+        dialogClassName="modal-lg modal-dialog-centered justify-content-center"
         body={(
           <TableV2
             data={detailIdvData}
             columns={idvDetailsColumns}
-            styleName="custom-table"
+            styleName="idv-table"
           />
           )}
       />

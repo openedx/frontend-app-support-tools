@@ -11,6 +11,7 @@ import { isEmail, isValidUsername } from '../../utils/index';
 import { getAllUserData } from '../data/api';
 import UserSearch from '../UserSearch';
 import LearnerInformation from './LearnerInformation';
+import { TAB_PATH_MAP } from '../../SupportToolsTab/constants';
 
 // Supports urls such as /users/?username={username} and /users/?email={email}
 export default function UserPage({ location }) {
@@ -44,13 +45,13 @@ export default function UserPage({ location }) {
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach((error) => add(error));
-      history.replace('/v2/learner_information');
+      history.replace(`${TAB_PATH_MAP['learner-information']}`);
       document.title = 'Support Tools | edX';
     } else if (isEmail(searchValue)) {
-      pushHistoryIfChanged(`/v2/learner_information/?email=${searchValue}`);
+      pushHistoryIfChanged(`${TAB_PATH_MAP['learner-information']}/?email=${searchValue}`);
       document.title = `Support Tools | edX | ${searchValue}`;
     } else if (isValidUsername(searchValue)) {
-      pushHistoryIfChanged(`/v2/learner_information/?username=${searchValue}`);
+      pushHistoryIfChanged(`${TAB_PATH_MAP['learner-information']}/?username=${searchValue}`);
       document.title = `Support Tools | edX | ${searchValue}`;
     }
 
@@ -68,7 +69,7 @@ export default function UserPage({ location }) {
         type: 'error',
         topic: 'general',
       });
-      history.replace('/v2/learner_information');
+      history.replace(`${TAB_PATH_MAP['learner-information']}`);
       return false;
     }
     return true;
@@ -89,7 +90,7 @@ export default function UserPage({ location }) {
       // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
-      history.replace('/v2/learner_information');
+      history.replace(`${TAB_PATH_MAP['learner-information']}`);
       setLoading(false);
       setSearching(false);
     }
