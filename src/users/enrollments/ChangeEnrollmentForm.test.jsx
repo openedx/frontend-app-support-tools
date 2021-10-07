@@ -59,7 +59,7 @@ describe('Enrollment Change form', () => {
             dismissible: true,
             text: 'Error changing enrollment',
             type: 'danger',
-            topic: 'enrollments',
+            topic: 'changeEnrollments',
           },
         ],
       }));

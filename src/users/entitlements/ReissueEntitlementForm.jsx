@@ -24,7 +24,7 @@ export default function ReissueEntitlementForm({
   const { add, clear } = useContext(UserMessagesContext);
 
   const submit = useCallback(() => {
-    clear('entitlements');
+    clear('reissueEntitlement');
     patchEntitlement({
       uuid: entitlement.uuid,
       requestData: makeRequestData({
@@ -44,7 +44,7 @@ export default function ReissueEntitlementForm({
   return (
     <section className="card mb-3">
       <form className="card-body">
-        <AlertList topic="entitlements" className="mb-3" />
+        <AlertList topic="reissueEntitlement" className="mb-3" />
         <h4 className="card-title">Reissue Entitlement</h4>
         <h5 className="card-subtitle">All fields are required</h5>
         <div className="form-group">

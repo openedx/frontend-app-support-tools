@@ -52,7 +52,7 @@ export default function ChangeEnrollmentForm({
   return (
     <section className="card mb-3">
       <form className="card-body">
-        <AlertList topic="enrollments" className="mb-3" />
+        <AlertList topic="changeEnrollments" className="mb-3" />
         <h4 className="card-title">Change Enrollment</h4>
         <div className="form-group">
           <h5>Current Enrollment Data</h5>
