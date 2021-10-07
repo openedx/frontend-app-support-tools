@@ -126,6 +126,19 @@ describe('Course Enrollments V2 Listing', () => {
     expect(expandable.at(0).html()).toContain('fa-plus');
   });
 
+  it('Expand All and Collapse All', () => {
+    let expandAll = wrapper.find('table thead tr th a.link-primary');
+    expect(expandAll.text()).toEqual('Expand All');
+    expandAll.simulate('click');
+
+    expandAll = wrapper.find('table thead tr th a.link-primary');
+    expect(expandAll.text()).toEqual('Collapse All');
+    expandAll.simulate('click');
+
+    expandAll = wrapper.find('table thead tr th a.link-primary');
+    expect(expandAll.text()).toEqual('Expand All');
+  });
+
   it('View Certificate action', async () => {
     /**
      * Testing the certificate fetch on first row only. Async painting in the loop was causing
