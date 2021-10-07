@@ -24,7 +24,7 @@ export default function ToggleVersion() {
     <Form.Check
       type="switch"
       id="custom-switch"
-      label={<div style={{ marginTop: '4px', fontSize: '1vmax' }}>New Experiance</div>}
+      label={<div style={{ marginTop: '4px', fontSize: '1vmax' }}>New Experience</div>}
       checked={(window.location.href.indexOf('/v2') !== -1)}
       onChange={handleChange}
       className="btn"
