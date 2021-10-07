@@ -29,6 +29,7 @@ export default function TogglePasswordStatus({
         id="toggle-password"
         variant={`${passwordStatus.status === PASSWORD_STATUS.USABLE ? 'danger' : 'primary'}`}
         onClick={() => setDisableUserModalIsOpen(true)}
+        className="mr-1 mb-2"
       >
         {passwordStatus.status === PASSWORD_STATUS.USABLE ? DISABLE_USER : ENABLE_USER}
       </Button>

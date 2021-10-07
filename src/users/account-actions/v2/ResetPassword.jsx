@@ -18,8 +18,9 @@ export default function ResetPassword({
     <div>
       <Button
         id="reset-password"
-        variant="btn btn-danger ml-1"
+        variant="btn btn-danger"
         onClick={() => setResetPasswordModalIsOpen(true)}
+        className="mr-1 mb-2"
       >Reset Password
       </Button>
 

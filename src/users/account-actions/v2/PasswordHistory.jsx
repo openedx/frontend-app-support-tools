@@ -45,8 +45,9 @@ export default function PasswordHistory({
       {passwordStatus.passwordToggleHistory.length > 0 && (
       <Button
         id="toggle-password-history"
-        variant="outline-primary ml-1"
+        variant="outline-primary"
         onClick={() => openHistoryModal()}
+        className="mr-1 mb-2"
       >
         Show History
       </Button>
