@@ -107,7 +107,8 @@ export default function Entitlements({
                 setUserEntitlement(entitlement);
                 setFormType(REISSUE);
               }}
-              disabled={Boolean(entitlement.enrollmentCourseRun || !entitlement.expiredAt)}
+              // disable if entitlement has no associated course run or the entitlement is expired
+              disabled={Boolean(!entitlement.enrollmentCourseRun || entitlement.expiredAt)}
               className="small"
             >
               Reissue

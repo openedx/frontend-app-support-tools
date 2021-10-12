@@ -100,9 +100,39 @@ describe('Entitlements V2 Listing', () => {
     expect(expandAll.text()).toEqual('Expand All');
   });
 
+  describe('Expire Entitlement button', () => {
+    it('Disabled Expire entitlement button', () => {
+      // We're only checking row 0 of the table since it has the button Expire Button disabled
+      let dataRow = wrapper.find('table tbody tr').at(0);
+      dataRow.find('.dropdown button').simulate('click');
+      dataRow = wrapper.find('table tbody tr').at(0);
+      const expireOption = dataRow.find('.dropdown-menu.show a').at(1);
+      expect(expireOption.text()).toEqual('Expire');
+      expect(expireOption.html()).toEqual(expect.stringContaining('disabled'));
+    });
+
+    it('Enabled Expire entitlement button', () => {
+      // We're only checking row 1 of the table since the expire button is not disabled
+      let dataRow = wrapper.find('table tbody tr').at(1);
+      dataRow.find('.dropdown button').simulate('click');
+      dataRow = wrapper.find('table tbody tr').at(1);
+      const expireOption = dataRow.find('.dropdown-menu.show a').at(1);
+      expect(expireOption.text()).toEqual('Expire');
+      expect(expireOption.html()).not.toEqual(expect.stringContaining('disabled'));
+      expireOption.simulate('click');
+
+      let expireFormModal = wrapper.find('Modal#expire-entitlement');
+      expect(expireFormModal.prop('open')).toEqual(true);
+      expect(expireFormModal.html()).toEqual(expect.stringContaining('Expire Entitlement'));
+      wrapper.find('button.btn-link').simulate('click');
+      expireFormModal = wrapper.find('Modal#expire-entitlement');
+      expect(expireFormModal.prop('open')).toEqual(false);
+    });
+  });
+
   describe('Reissue entitlement button', () => {
     it('Enabled Reissue entitlement button', async () => {
-      entitlementsData.results[0] = { ...entitlementsData.results[0], enrollmentCourseRun: null };
+      entitlementsData.results[0] = { ...entitlementsData.results[0], expiredAt: null };
       jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
       wrapper = mount(<EntitlementsPageWrapper {...props} />);
       await waitForComponentToPaint(wrapper);
@@ -132,36 +162,6 @@ describe('Entitlements V2 Listing', () => {
       const expireOption = dataRow.find('.dropdown-menu.show a').at(0);
       expect(expireOption.text()).toEqual('Reissue');
       expect(expireOption.html()).toEqual(expect.stringContaining('disabled'));
-    });
-  });
-
-  describe('Expire Entitlement button', () => {
-    it('Disabled Expire entitlement button', () => {
-      // We're only checking row 0 of the table since it has the button Expire Button disabled
-      let dataRow = wrapper.find('table tbody tr').at(0);
-      dataRow.find('.dropdown button').simulate('click');
-      dataRow = wrapper.find('table tbody tr').at(0);
-      const expireOption = dataRow.find('.dropdown-menu.show a').at(1);
-      expect(expireOption.text()).toEqual('Expire');
-      expect(expireOption.html()).toEqual(expect.stringContaining('disabled'));
-    });
-
-    it('Enabled Expire entitlement button', () => {
-      // We're only checking row 1 of the table since the expire button is not disabled
-      let dataRow = wrapper.find('table tbody tr').at(1);
-      dataRow.find('.dropdown button').simulate('click');
-      dataRow = wrapper.find('table tbody tr').at(1);
-      const expireOption = dataRow.find('.dropdown-menu.show a').at(1);
-      expect(expireOption.text()).toEqual('Expire');
-      expect(expireOption.html()).not.toEqual(expect.stringContaining('disabled'));
-      expireOption.simulate('click');
-
-      let expireFormModal = wrapper.find('Modal#expire-entitlement');
-      expect(expireFormModal.prop('open')).toEqual(true);
-      expect(expireFormModal.html()).toEqual(expect.stringContaining('Expire Entitlement'));
-      wrapper.find('button.btn-link').simulate('click');
-      expireFormModal = wrapper.find('Modal#expire-entitlement');
-      expect(expireFormModal.prop('open')).toEqual(false);
     });
   });
 
