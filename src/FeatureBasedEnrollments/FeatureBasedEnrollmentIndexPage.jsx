@@ -25,6 +25,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
   const searchRef = useRef();
   const { add, clear } = useContext(UserMessagesContext);
   const [searchValue, setSearchValue] = useState(params.get('course_id') || undefined);
+  const [loading, setLoading] = useState(false);
 
   if (params.has('course_id')) {
     const courseId = params.get('course_id');
@@ -69,6 +70,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
     const inputValue = searchRef.current.value;
     setSearchValue(undefined);
     event.preventDefault();
+    setLoading(!loading);
     handleSearchInput(inputValue);
     return false;
   });
@@ -93,7 +95,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         </form>
       </section>
 
-      {searchValue && <FeatureBasedEnrollment courseId={searchValue} />}
+      {searchValue && <FeatureBasedEnrollment courseId={searchValue} loading={loading} />}
     </main>
   );
 }
