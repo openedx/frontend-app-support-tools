@@ -62,10 +62,11 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     for (let i = 0; i < dataHeader.length; i++) {
       const accesor = dataHeader.at(i).text();
       const text = dataBody.at(i).text();
+      const value = extraData[accesor] ? extraData[accesor].toString() : '';
 
       expect(accesor in extraData).toBeTruthy();
       expect(text).toEqual(
-        extraData[accesor].toString().length > 14 ? 'Copy Show ' : extraData[accesor].toString(),
+        value.length > 14 ? 'Copy Show ' : value,
       );
     }
   });

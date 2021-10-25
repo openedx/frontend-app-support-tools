@@ -23,7 +23,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
     );
 
     Object.keys(data).forEach((key) => {
-      const value = data[key].toString();
+      const value = data[key] ? data[key].toString() : '';
       if (value.length > 14) {
         data[key] = <CopyShowHyperlinks text={value} />;
       }
