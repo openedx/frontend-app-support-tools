@@ -33,7 +33,7 @@ const ssoRecordsData = [
       access_token: 'longlongtokenid-QWERTYUIOPasdfghjklZXCVBNM',
       token_type: 'Bearer',
       expires: 3599,
-      auth_time: 1630334187,
+      auth_time: null,
     }),
   },
 ];
