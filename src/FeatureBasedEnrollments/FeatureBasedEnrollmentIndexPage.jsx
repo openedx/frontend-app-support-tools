@@ -25,6 +25,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
   const searchRef = useRef();
   const { add, clear } = useContext(UserMessagesContext);
   const [searchValue, setSearchValue] = useState(params.get('course_id') || undefined);
+  const [apiFetchSignal, setApiFetchSignal] = useState(false);
 
   if (params.has('course_id')) {
     const courseId = params.get('course_id');
@@ -59,6 +60,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         return;
       }
       setSearchValue(inputValue);
+      setApiFetchSignal(!apiFetchSignal);
       pushHistoryIfChanged(`/v2/feature_based_enrollments/?course_id=${inputValue}`);
     } else if (inputValue === '') {
       history.replace('/v2/feature_based_enrollments');
@@ -93,7 +95,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         </form>
       </section>
 
-      {searchValue && <FeatureBasedEnrollment courseId={searchValue} />}
+      {searchValue && <FeatureBasedEnrollment courseId={searchValue} apiFetchSignal={apiFetchSignal} />}
     </main>
   );
 }

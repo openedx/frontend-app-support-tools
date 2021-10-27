@@ -13,7 +13,7 @@ import getFeatureBasedEnrollmentDetails from './data/api';
 import PageLoading from '../components/common/PageLoading';
 import FeatureBasedEnrollmentCard from './FeatureBasedEnrollmentCard';
 
-export default function FeatureBasedEnrollment({ courseId }) {
+export default function FeatureBasedEnrollment({ courseId, apiFetchSignal }) {
   const [fbeData, setFBEData] = useState(undefined);
   const { add, clear } = useContext(UserMessagesContext);
 
@@ -28,7 +28,7 @@ export default function FeatureBasedEnrollment({ courseId }) {
         setFBEData(camelCaseResponse);
       }
     });
-  }, [courseId]);
+  }, [apiFetchSignal]);
 
   return (
     <section className="mb-3">
@@ -64,4 +64,5 @@ export default function FeatureBasedEnrollment({ courseId }) {
 
 FeatureBasedEnrollment.propTypes = {
   courseId: PropTypes.string.isRequired,
+  apiFetchSignal: PropTypes.bool.isRequired,
 };

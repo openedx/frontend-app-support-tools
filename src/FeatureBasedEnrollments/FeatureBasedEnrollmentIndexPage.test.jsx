@@ -18,13 +18,18 @@ const FeatureBasedEnrollmentIndexPageWrapper = (props) => (
 );
 
 describe('Feature Based Enrollment Index Page', () => {
-  let location; let wrapper;
+  let location; let wrapper; let apiMock;
   const courseId = 'course-v1:testX+test123+2030';
 
   beforeEach(() => {
     location = { pathname: '/v2/feature_based_enrollments', search: '' };
   });
 
+  afterEach(() => {
+    if (apiMock) {
+      apiMock.mockReset();
+    }
+  });
   it('default page render', async () => {
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
 
@@ -36,7 +41,7 @@ describe('Feature Based Enrollment Index Page', () => {
   });
 
   it('default page render with query param course id', async () => {
-    const apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
+    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
     location.search = `?course_id=${courseId}`;
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
     await waitForComponentToPaint(wrapper);
@@ -46,11 +51,10 @@ describe('Feature Based Enrollment Index Page', () => {
 
     expect(courseIdInput.prop('defaultValue')).toEqual(courseId);
     expect(searchButton.text()).toEqual('Search');
-    apiMock.mockReset();
   });
 
   it('valid search value', async () => {
-    const apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
+    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     history.push = jest.fn();
 
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
@@ -63,12 +67,30 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(wrapper.find('Card')).toHaveLength(2);
     expect(history.push).toHaveBeenCalledWith(`/v2/feature_based_enrollments/?course_id=${courseId}`);
 
-    apiMock.mockReset();
+    history.push.mockReset();
+  });
+
+  it('api call made on each click', async () => {
+    apiMock = jest.spyOn(api, 'default').mockImplementation(() => Promise.resolve(fbeEnabledResponse));
+    history.push = jest.fn();
+
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+
+    wrapper.find('input[name="courseId"]').instance().value = courseId;
+    wrapper.find('button.btn-primary').simulate('click');
+
+    await waitForComponentToPaint(wrapper);
+    expect(apiMock).toHaveBeenCalledTimes(1);
+
+    wrapper.find('button.btn-primary').simulate('click');
+    await waitForComponentToPaint(wrapper);
+    expect(apiMock).toHaveBeenCalledTimes(2);
+
     history.push.mockReset();
   });
 
   it('empty search value does not yield anything', async () => {
-    const apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
+    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     history.replace = jest.fn();
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
 
@@ -80,12 +102,11 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(wrapper.find('Card')).toHaveLength(0);
     expect(history.replace).toHaveBeenCalledWith('/v2/feature_based_enrollments');
 
-    apiMock.mockReset();
     history.replace.mockReset();
   });
 
   it('Invalid search value', async () => {
-    const apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
+    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     history.replace = jest.fn();
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
 
@@ -98,7 +119,6 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(wrapper.find('.alert').text()).toEqual('Supplied course ID "invalid-value" is either invalid or incorrect.');
     expect(history.replace).toHaveBeenCalledWith('/v2/feature_based_enrollments');
 
-    apiMock.mockReset();
     history.replace.mockReset();
   });
 });
