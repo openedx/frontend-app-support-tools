@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import * as api from '../data/api';
 import { waitForComponentToPaint } from '../../setupTest';
@@ -14,9 +15,11 @@ import licensesData from '../data/test/licenses';
 import { entitlementsData } from '../data/test/entitlements';
 
 const LearnerInformationWrapper = (props) => (
-  <UserMessagesProvider>
-    <LearnerInformation {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <LearnerInformation {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Learners and Enrollments component', () => {

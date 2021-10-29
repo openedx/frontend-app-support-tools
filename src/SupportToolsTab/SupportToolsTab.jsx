@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab } from '@edx/paragon';
 import { history } from '@edx/frontend-platform';
+import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import { FEATURE_BASED_ENROLLMENT_TAB, LEARNER_INFO_TAB, TAB_PATH_MAP } from './constants';
 import UserPage from '../users/v2/UserPage';
 import FeatureBasedEnrollmentIndexPage from '../FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
@@ -16,7 +17,12 @@ export default function SupportToolsTab({ location }) {
     <div className="container-fluid">
       <section className="mt-3">
         <h2 className="font-weight-bold">Support Tools</h2>
-        <p>Suite of tools used by support team to help triage and resolve select learner issues.</p>
+        <FormattedMessage
+          id="supportTools.mainTab.description"
+          defaultMessage="Suite of tools used by support team to help triage and resolve select learner issues."
+          description="A brief description of what the support tools are."
+          tagName="p"
+        />
       </section>
       <section>
         <Tabs

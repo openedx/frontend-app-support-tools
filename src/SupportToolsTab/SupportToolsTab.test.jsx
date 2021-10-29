@@ -1,17 +1,20 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { history } from '@edx/frontend-platform';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import SupportToolsTab from './SupportToolsTab';
 import { TAB_PATH_MAP } from './constants';
 
 const SupportToolsTabWrapper = (props) => (
-  <MemoryRouter>
-    <UserMessagesProvider>
-      <SupportToolsTab {...props} />
-    </UserMessagesProvider>
-  </MemoryRouter>
+  <IntlProvider locale="en">
+    <MemoryRouter>
+      <UserMessagesProvider>
+        <SupportToolsTab {...props} />
+      </UserMessagesProvider>
+    </MemoryRouter>
+  </IntlProvider>
 );
 
 describe('Support Tools Main tab', () => {
