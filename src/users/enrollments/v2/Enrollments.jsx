@@ -58,16 +58,16 @@ export default function Enrollments({
     }
     return enrollmentData.map(enrollment => ({
       expander: {
-        lastModified: enrollment.manualEnrollment ? formatDate(enrollment.manualEnrollment.timeStamp) : 'N/A',
+        lastModified: enrollment.manualEnrollment ? enrollment.manualEnrollment.timeStamp : 'N/A',
         lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
         reason: enrollment.manualEnrollment && enrollment.manualEnrollment.reason ? enrollment.manualEnrollment.reason : 'N/A',
       },
-      courseId: <a href={`${getConfig().LMS_BASE_URL}/courses/${enrollment.courseId}`} rel="noopener noreferrer" target="_blank" className="word_break">{enrollment.courseId}</a>,
+      courseId: enrollment.courseId,
       courseName: enrollment.courseName,
-      courseStart: formatDate(enrollment.courseStart),
-      courseEnd: formatDate(enrollment.courseEnd),
-      upgradeDeadline: formatDate(enrollment.verifiedUpgradeDeadline),
-      created: formatDate(enrollment.created),
+      courseStart: enrollment.courseStart,
+      courseEnd: enrollment.courseEnd,
+      upgradeDeadline: enrollment.verifiedUpgradeDeadline,
+      created: enrollment.created,
       pacingType: enrollment.pacingType,
       active: enrollment.isActive ? 'True' : 'False',
       mode: enrollment.mode,
@@ -143,23 +143,23 @@ export default function Enrollments({
         id: 'expander',
         Cell: rowExpandHandler, // Use Cell to render an expander for each row.
       },
-      {
-        Header: 'Course Run ID', accessor: 'courseId', sortable: true,
+      { // eslint-disable-next-line react/prop-types
+        Header: 'Course Run ID', accessor: 'courseId', Cell: ({ value }) => <a href={`${getConfig().LMS_BASE_URL}/courses/${value}`} rel="noopener noreferrer" target="_blank" className="word_break">{value}</a>, sortable: true,
       },
       {
         Header: 'Course Title', accessor: 'courseName', sortable: true,
       },
       {
-        Header: 'Course Start', accessor: 'courseStart', sortable: true,
+        Header: 'Course Start', accessor: 'courseStart', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
-        Header: 'Course End', accessor: 'courseEnd', sortable: true,
+        Header: 'Course End', accessor: 'courseEnd', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
-        Header: 'Upgrade Deadline', accessor: 'upgradeDeadline', sortable: true,
+        Header: 'Upgrade Deadline', accessor: 'upgradeDeadline', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
-        Header: 'Enrollment Date', accessor: 'created', sortable: true,
+        Header: 'Enrollment Date', accessor: 'created', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
         Header: 'Pacing Type', accessor: 'pacingType', sortable: true,
@@ -180,7 +180,7 @@ export default function Enrollments({
   const extraColumns = React.useMemo(
     () => [
       {
-        Header: 'Last Modified', accessor: 'lastModified',
+        Header: 'Last Modified', accessor: 'lastModified', Cell: ({ value }) => formatDate(value),
       },
       {
         Header: 'Last Modified By', accessor: 'lastModifiedBy',
