@@ -65,9 +65,13 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
       const value = extraData[accesor] ? extraData[accesor].toString() : '';
 
       expect(accesor in extraData).toBeTruthy();
-      expect(text).toEqual(
-        value.length > 14 ? 'Copy Show ' : value,
-      );
+      if (accesor === 'authTime') {
+        expect(text).toEqual(formatDate(extraData[accesor]));
+      } else {
+        expect(text).toEqual(
+          value.length > 14 ? 'Copy Show ' : value,
+        );
+      }
     }
   });
 });

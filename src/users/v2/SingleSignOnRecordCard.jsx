@@ -24,7 +24,10 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
 
     Object.keys(data).forEach((key) => {
       const value = data[key] ? data[key].toString() : '';
-      if (value.length > 14) {
+
+      if (key === 'authTime') {
+        data[key] = formatDate(data[key]);
+      } else if (value.length > 14) {
         data[key] = <CopyShowHyperlinks text={value} />;
       }
     });
