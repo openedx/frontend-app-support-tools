@@ -4,7 +4,7 @@ import { camelCaseObject } from '@edx/frontend-platform';
 import { waitForComponentToPaint } from '../../setupTest';
 import ssoRecordsData from '../data/test/ssoRecords';
 import SingleSignOnRecordCard from './SingleSignOnRecordCard';
-import { formatDate } from '../../utils';
+import { formatDate, formatUnixTimestamp } from '../../utils';
 
 describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
   // prepare data
@@ -66,7 +66,7 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
 
       expect(accesor in extraData).toBeTruthy();
       if (accesor === 'authTime') {
-        expect(text).toEqual(formatDate(extraData[accesor]));
+        expect(text).toEqual(formatUnixTimestamp(extraData[accesor]));
       } else {
         expect(text).toEqual(
           value.length > 14 ? 'Copy Show ' : value,

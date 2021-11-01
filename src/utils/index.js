@@ -12,6 +12,17 @@ export const formatDate = (date) => {
   return 'N/A';
 };
 
+/** Convert a UNIX timestamp (in seconds) to human readable date string. */
+export const formatUnixTimestamp = (date) => {
+  if (date) {
+    // js works in miliseconds
+    const dateObj = new Date(date * 1000);
+    return formatDate(dateObj);
+  }
+
+  return 'N/A';
+};
+
 export const isEmail = (value) => Boolean(value && value.match(EMAIL_REGEX));
 
 export const isValidUsername = (searchValue) => Boolean(searchValue && searchValue.match(USERNAME_REGEX));
