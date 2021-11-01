@@ -4,7 +4,7 @@ import {
   Card, Row, Col,
 } from '@edx/paragon';
 import TableV2 from '../../components/Table';
-import { formatDate } from '../../utils';
+import { formatDate, formatUnixTimestamp } from '../../utils';
 import CopyShowHyperlinks from './CopyShowHyperLinks';
 
 export default function SingleSignOnRecordCard({ ssoRecord }) {
@@ -26,7 +26,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
       const value = data[key] ? data[key].toString() : '';
 
       if (key === 'authTime') {
-        data[key] = formatDate(data[key]);
+        data[key] = formatUnixTimestamp(data[key]);
       } else if (value.length > 14) {
         data[key] = <CopyShowHyperlinks text={value} />;
       }

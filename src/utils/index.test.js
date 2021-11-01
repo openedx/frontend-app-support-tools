@@ -1,5 +1,5 @@
 import {
-  isEmail, isValidUsername, formatDate, sort, titleCase, sortedCompareDates, isValidCourseID,
+  isEmail, isValidUsername, formatDate, formatUnixTimestamp, sort, titleCase, sortedCompareDates, isValidCourseID,
 } from './index';
 
 describe('Test Utils', () => {
@@ -55,6 +55,22 @@ describe('Test Utils', () => {
     it('returns N/A if data is not provided', () => {
       expect(formatDate('')).toEqual('N/A');
       expect(formatDate()).toEqual('N/A');
+    });
+  });
+
+  describe('Format Unix Timestamp', () => {
+    it('correctly formats unix timestamp', () => {
+      const date1 = formatUnixTimestamp('1635327149');
+      const date2 = formatUnixTimestamp('1');
+      const date3 = formatUnixTimestamp('2635444449');
+
+      expect(date1).toEqual('Oct 27, 2021 9:32 AM');
+      expect(date2).toEqual('Jan 1, 1970 12:00 AM');
+      expect(date3).toEqual('Jul 6, 2053 7:54 PM');
+    });
+    it('returns N/A if data is not provided', () => {
+      expect(formatUnixTimestamp('')).toEqual('N/A');
+      expect(formatUnixTimestamp()).toEqual('N/A');
     });
   });
 
