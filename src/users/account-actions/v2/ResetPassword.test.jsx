@@ -1,9 +1,15 @@
 import { mount } from 'enzyme';
 import React from 'react';
-
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../../data/api';
 import ResetPassword from './ResetPassword';
 import UserSummaryData from '../../data/test/userSummary';
+
+const ResetPasswordWrapper = (props) => (
+  <IntlProvider locale="en">
+    <ResetPassword {...props} />
+  </IntlProvider>
+);
 
 describe('Reset Password Component Tests', () => {
   let wrapper;
@@ -13,7 +19,7 @@ describe('Reset Password Component Tests', () => {
       email: UserSummaryData.userData.email,
       changeHandler: UserSummaryData.changeHandler,
     };
-    wrapper = mount(<ResetPassword {...data} />);
+    wrapper = mount(<ResetPasswordWrapper {...data} />);
   });
 
   afterEach(() => {

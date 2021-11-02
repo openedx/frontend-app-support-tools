@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import { Modal, Button, Alert } from '@edx/paragon';
 import { postResetPassword } from '../../data/api';
 
@@ -41,10 +42,16 @@ export default function ResetPassword({
         body={(
           <div>
             <Alert variant="warning">
-              <p>
-                We will send a message with password recovery instructions to the email address <b>{email}</b>.
-                Do you wish to proceed?
-              </p>
+              <FormattedMessage
+                id="supportTools.accountActions.resetPassword"
+                tagName="p"
+                description="Password reset email instructions prompt"
+                defaultMessage="We will send a message with password recovery instructions to the email address {email}.
+                Do you wish to proceed?"
+                values={{
+                  email: <strong>{email}</strong>,
+                }}
+              />
             </Alert>
           </div>
           )}

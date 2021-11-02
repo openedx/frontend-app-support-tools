@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import * as api from '../data/api';
 import UserSummary from './UserSummary';
@@ -11,9 +12,11 @@ import onboardingStatusData from '../data/test/onboardingStatus';
 import { waitForComponentToPaint } from '../../setupTest';
 
 const UserSummaryWrapper = (props) => (
-  <UserMessagesProvider>
-    <UserSummary {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <UserSummary {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('User Summary Component Tests', () => {
