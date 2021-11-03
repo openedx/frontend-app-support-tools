@@ -7,13 +7,11 @@
     "url": "git+https://github.com/edx/frontend-app-support.git"
   },
   "browserslist": [
-    "last 2 versions",
-    "ie 11"
+    "extends @edx/browserslist-config"
   ],
   "scripts": {
     "build": "fedx-scripts webpack",
     "i18n_extract": "BABEL_ENV=i18n fedx-scripts babel src --quiet > /dev/null",
-    "is-es5": "es-check es5 ./dist/*.js",
     "lint": "fedx-scripts eslint --ext .js --ext .jsx .",
     "start": "fedx-scripts webpack-dev-server --progress",
     "debug-test": "node --inspect-brk node_modules/.bin/jest --coverage --runInBand",
@@ -54,6 +52,7 @@
     "redux": "4.0.5"
   },
   "devDependencies": {
+    "@edx/browserslist-config": "1.0.0",
     "@edx/frontend-build": "6.1.1",
     "@edx/reactifex": "^1.0.3",
     "@testing-library/react": "10.3.0",
@@ -63,7 +62,6 @@
     "codecov": "3.8.1",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.5",
-    "es-check": "5.1.4",
     "glob": "7.1.6",
     "jest": "26.6.3",
     "react-test-renderer": "17.0.1",
