@@ -16,6 +16,7 @@ const FeatureBasedEnrollmentWrapper = (props) => (
 describe('Feature Based Enrollment', () => {
   const props = {
     courseId: 'course-v1:testX+test123+2030',
+    apiFetchSignal: true,
   };
 
   let wrapper;

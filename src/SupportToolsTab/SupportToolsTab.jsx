@@ -34,7 +34,6 @@ export default function SupportToolsTab({ location }) {
             }
           }}
           defaultActiveKey={tabKey}
-          unmountOnExit
         >
           <Tab eventKey={LEARNER_INFO_TAB} title="Learner Information">
             <br />
