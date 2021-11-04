@@ -54,7 +54,7 @@ export default function Entitlements({
       expander: entitlement.supportDetails.map(supportDetail => ({
         action: supportDetail.action,
         comments: supportDetail.comments,
-        actionCreated: formatDate(supportDetail.created),
+        actionCreated: supportDetail.created,
         supportUser: supportDetail.supportUser,
         unenrolledRun: supportDetail.unenrolledRun,
       })),
@@ -82,9 +82,9 @@ export default function Entitlements({
           {entitlement.enrollmentCourseRun}
         </a>
       ) : 'Course Run Not Selected'),
-      expiredAt: formatDate(entitlement.expiredAt),
-      created: formatDate(entitlement.created),
-      modified: formatDate(entitlement.modified),
+      expiredAt: entitlement.expiredAt,
+      created: entitlement.created,
+      modified: entitlement.modified,
       orderNumber: (
         <a
           href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${entitlement.orderNumber}/`}
@@ -184,13 +184,13 @@ export default function Entitlements({
         Header: 'Course Summary', accessor: 'courseSummary',
       },
       {
-        Header: 'Expiration Date', accessor: 'expiredAt', sortable: true,
+        Header: 'Expiration Date', accessor: 'expiredAt', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
-        Header: 'Date Created', accessor: 'created', sortable: true,
+        Header: 'Date Created', accessor: 'created', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
-        Header: 'Date Modified', accessor: 'modified', sortable: true,
+        Header: 'Date Modified', accessor: 'modified', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
         Header: 'Order', accessor: 'orderNumber', sortable: true,
@@ -214,7 +214,7 @@ export default function Entitlements({
         Header: 'Comments', accessor: 'comments', sortable: true,
       },
       {
-        Header: 'Action Creation Timestamp', accessor: 'actionCreated', sortable: true,
+        Header: 'Action Creation Timestamp', accessor: 'actionCreated', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
         Header: 'Support User', accessor: 'supportUser', sortable: true,
