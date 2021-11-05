@@ -132,11 +132,6 @@ describe('Entitlements V2 Listing', () => {
 
   describe('Reissue entitlement button', () => {
     it('Enabled Reissue entitlement button', async () => {
-      entitlementsData.results[0] = { ...entitlementsData.results[0], expiredAt: null };
-      jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
-      wrapper = mount(<EntitlementsPageWrapper {...props} />);
-      await waitForComponentToPaint(wrapper);
-
       // We're only checking row 0 of the table since the Reissue button is not disabled
       let dataRow = wrapper.find('table tbody tr').at(0);
       dataRow.find('.dropdown button').simulate('click');
