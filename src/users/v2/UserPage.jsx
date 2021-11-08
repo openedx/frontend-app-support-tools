@@ -1,7 +1,7 @@
 import { camelCaseObject, history } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import React, {
-  useCallback, useContext, useEffect, useState,
+  useCallback, useContext, useEffect, useState, useLayoutEffect,
 } from 'react';
 import PageLoading from '../../components/common/PageLoading';
 import AlertList from '../../userMessages/AlertList';
@@ -11,7 +11,7 @@ import { isEmail, isValidUsername } from '../../utils/index';
 import { getAllUserData } from '../data/api';
 import UserSearch from '../UserSearch';
 import LearnerInformation from './LearnerInformation';
-import { TAB_PATH_MAP } from '../../SupportToolsTab/constants';
+import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../../SupportToolsTab/constants';
 
 // Supports urls such as /users/?username={username} and /users/?email={email}
 export default function UserPage({ location }) {
@@ -118,6 +118,19 @@ export default function UserPage({ location }) {
       handleFetchSearchResults(params.get('email'));
     }
   }, [params.get('username'), params.get('email')]);
+
+  // To change the url with appropriate query param if query param info is not present in URL
+  useLayoutEffect(() => {
+    if (userIdentifier
+      && location.pathname.indexOf(TAB_PATH_MAP[LEARNER_INFO_TAB]) !== -1
+      && !(params.get('email') || params.get('username'))) {
+      if (isEmail(userIdentifier)) {
+        pushHistoryIfChanged(`${TAB_PATH_MAP[LEARNER_INFO_TAB]}/?email=${userIdentifier}`);
+      } else if (isValidUsername(userIdentifier)) {
+        pushHistoryIfChanged(`${TAB_PATH_MAP[LEARNER_INFO_TAB]}/?username=${userIdentifier}`);
+      }
+    }
+  });
 
   return (
     <main className="mt-3 mb-5">

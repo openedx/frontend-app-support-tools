@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useState,
+  useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Button } from '@edx/paragon';
@@ -13,6 +14,7 @@ import UserMessagesContext from '../userMessages/UserMessagesContext';
 import AlertList from '../userMessages/AlertList';
 import { isValidCourseID } from '../utils';
 import FeatureBasedEnrollment from './FeatureBasedEnrollment';
+import { FEATURE_BASED_ENROLLMENT_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
 
 export default function FeatureBasedEnrollmentIndexPage({ location }) {
   const params = new Map(
@@ -81,6 +83,15 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
       handleSearchInput(params.get('course_id'));
     }
   }, []);
+
+  // To change the url with appropriate query param if query param info is not present in URL
+  useLayoutEffect(() => {
+    if (searchValue
+        && location.pathname.indexOf(TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]) !== -1
+        && !params.get('course_id')) {
+      pushHistoryIfChanged(`${TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]}/?course_id=${searchValue}`);
+    }
+  });
 
   return (
     <main className="mt-3 mb-5">
