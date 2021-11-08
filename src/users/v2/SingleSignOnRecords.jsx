@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Row, Col,
 } from '@edx/paragon';
+import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { getSsoRecords } from '../data/api';
 import PageLoading from '../../components/common/PageLoading';
@@ -29,7 +30,13 @@ export default function SingleSignOnRecords({ username }) {
   return (
     <section className="mb-3">
       <AlertList topic="ssoRecords" className="mb-3" />
-      <h3 id="sso-title-header" className="ml-4">SSO Records</h3>
+      <FormattedMessage
+        id="supportTools.learnerInformation.ssoHeader"
+        defaultMessage="Single Sign-on Records"
+        description="Single Sign-On Listing Title"
+      >
+        {text => <h3 id="sso-title-header" className="ml-4">{text}</h3>}
+      </FormattedMessage>
       {/* eslint-disable-next-line no-nested-ternary */}
       {ssoRecords ? (
         ssoRecords.length ? (

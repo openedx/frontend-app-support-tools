@@ -20,7 +20,7 @@ export default function SupportToolsTab({ location }) {
         <FormattedMessage
           id="supportTools.mainTab.description"
           defaultMessage="Suite of tools used by support team to help triage and resolve select learner issues."
-          description="A brief description of what the support tools are."
+          description="A brief description of the support tools."
           tagName="p"
         />
       </section>

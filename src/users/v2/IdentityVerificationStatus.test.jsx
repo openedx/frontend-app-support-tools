@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { waitForComponentToPaint } from '../../setupTest';
 import IdentityVerificationStatus from './IdentityVerificationStatus';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -8,9 +9,11 @@ import idvStatusData from '../data/test/idvStatus';
 import * as api from '../data/api';
 
 const IdentityVerificationStatusWrapper = (props) => (
-  <UserMessagesProvider>
-    <IdentityVerificationStatus {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <IdentityVerificationStatus {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Identity Verification Status', () => {
