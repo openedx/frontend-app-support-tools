@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { waitForComponentToPaint } from '../../setupTest';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -8,9 +9,11 @@ import ssoRecordsData from '../data/test/ssoRecords';
 import * as api from '../data/api';
 
 const SingleSignOnRecordsWrapper = (props) => (
-  <UserMessagesProvider>
-    <SingleSignOnRecords {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <SingleSignOnRecords {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Single Sign On Records', () => {
@@ -39,7 +42,7 @@ describe('Single Sign On Records', () => {
   it('SSO Data', () => {
     const cardList = wrapper.find('Card');
     expect(cardList).toHaveLength(ssoRecords.length);
-    expect(wrapper.find('h3#sso-title-header').text()).toEqual('SSO Records');
+    expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
   });
 
   it('No SSO Data', async () => {
@@ -47,7 +50,7 @@ describe('Single Sign On Records', () => {
     wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
 
-    expect(wrapper.find('h3#sso-title-header').text()).toEqual('SSO Records');
+    expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
     const cardList = wrapper.find('Card');
     expect(cardList).toHaveLength(0);
 

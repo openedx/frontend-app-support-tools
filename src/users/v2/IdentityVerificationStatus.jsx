@@ -4,6 +4,7 @@ import React, {
 import { camelCaseObject } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import { Modal, Hyperlink } from '@edx/paragon';
+import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import TableV2 from '../../components/Table';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import { getUserVerificationStatus } from '../data/api';
@@ -129,7 +130,13 @@ export default function IdentityVerificationStatus({
           )}
       />
       <div className="flex-column p-4 m-3 card">
-        <h3>ID Verification Status</h3>
+        <FormattedMessage
+          id="supportTools.learnerInformation.idvHeader"
+          defaultMessage="Identity Verification Status"
+          description="Identity Verification Card Title"
+        >
+          {text => <h3>{text}</h3>}
+        </FormattedMessage>
         <AlertList topic="idvStatus" className="mb-3" />
         {/* eslint-disable-next-line no-nested-ternary */}
         {verificationData ? (

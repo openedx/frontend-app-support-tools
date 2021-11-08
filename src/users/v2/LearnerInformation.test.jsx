@@ -99,7 +99,7 @@ describe('Learners and Enrollments component', () => {
 
     const enrollmentsEntitlements = wrapper.find('.tab-content div#learner-information-tabpane-sso');
     expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('active'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('SSO Records'));
+    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Single Sign-on Records'));
     expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Licenses Subscription'));
   });
 });
