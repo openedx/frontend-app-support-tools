@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { formatDate } from '../../utils';
 import { getAccountActivationUrl } from '../data/urls';
-import IdentityVerificationStatus from './IdentityVerificationStatus';
 import OnboardingStatus from './OnboardingStatus';
+import VerifiedName from './VerifiedName';
 import AccountActions from '../account-actions/AccountActions';
 import EnterpriseAssociations from './EnterpriseAssociations';
 
@@ -92,7 +92,7 @@ export default function UserSummary({
             <AccountActions userData={userData} changeHandler={changeHandler} />
           </div>
           <div className="flex-column">
-            <IdentityVerificationStatus username={userData.username} />
+            <VerifiedName username={userData.username} />
             <OnboardingStatus username={userData.username} />
           </div>
         </div>

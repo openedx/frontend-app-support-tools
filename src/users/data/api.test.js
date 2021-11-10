@@ -4,6 +4,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
 import { enrollmentsData } from './test/enrollments';
 import { downloadableCertificate } from './test/certificates';
+import verifiedNameHistoryData from './test/verifiedNameHistory';
 import * as api from './api';
 import * as urls from './urls';
 
@@ -19,6 +20,7 @@ describe('API', () => {
   const entitlementsApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/entitlements/v1/entitlements/?user=${testUsername}`;
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
+  const verifiedNameHistoryUrl = `${getConfig().LMS_BASE_URL}/api/edx_name_affirmation/v1/verified_name/history?username=${testUsername}`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
   const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
   const generateCertificateUrl = urls.generateCertificateUrl();
@@ -255,6 +257,80 @@ describe('API', () => {
       mockAdapter.onGet(verificationStatusApiUrl).reply(200, apiResponseData);
 
       const response = await api.getUserVerificationStatus(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('Verified Name History Fetch', () => {
+    const defaultResponse = {
+      verifiedName: null,
+      status: null,
+      verificationType: null,
+      history: [],
+      error: null,
+    };
+
+    it('returns a server error with default message', async () => {
+      const expectedData = {
+        ...defaultResponse,
+        error: 'Error while fetching data',
+      };
+      mockAdapter.onGet(verifiedNameHistoryUrl).reply(() => throwError(500));
+      const response = await api.getVerifiedNameHistory(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('returns a server error with information', async () => {
+      const expectedData = {
+        ...defaultResponse,
+        error: 'User does not exist',
+      };
+      mockAdapter.onGet(verifiedNameHistoryUrl).reply(() => throwError(500, 'User does not exist'));
+      const response = await api.getVerifiedNameHistory(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('returns an error with an empty data set', async () => {
+      const expectedData = {
+        ...defaultResponse,
+        error: 'No record found',
+      };
+      mockAdapter.onGet(verifiedNameHistoryUrl).reply(200, { results: [] });
+      const response = await api.getVerifiedNameHistory(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('successfully fetches data', async () => {
+      const expectedData = {
+        ...defaultResponse,
+        verifiedName: verifiedNameHistoryData.results[0].verified_name,
+        status: verifiedNameHistoryData.results[0].status,
+        verificationType: 'Proctoring',
+        history: verifiedNameHistoryData.results,
+      };
+      mockAdapter.onGet(verifiedNameHistoryUrl).reply(200, verifiedNameHistoryData);
+
+      const response = await api.getVerifiedNameHistory(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('changes verificationType field based on linked ID', async () => {
+      const apiResponseData = {
+        results: [
+          { ...verifiedNameHistoryData.results[1] },
+          { ...verifiedNameHistoryData.results[0] },
+        ],
+      };
+      const expectedData = {
+        ...defaultResponse,
+        verifiedName: apiResponseData.results[0].verified_name,
+        status: apiResponseData.results[0].status,
+        verificationType: 'IDV',
+        history: apiResponseData.results,
+      };
+      mockAdapter.onGet(verifiedNameHistoryUrl).reply(200, apiResponseData);
+
+      const response = await api.getVerifiedNameHistory(testUsername);
       expect(response).toEqual(expectedData);
     });
   });

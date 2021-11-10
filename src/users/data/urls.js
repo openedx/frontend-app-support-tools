@@ -43,6 +43,10 @@ export const getUserVerificationStatusUrl = username => `${
   LMS_BASE_URL
 }/api/user/v1/accounts/${username}/verification_status/`;
 
+export const getVerifiedNameHistoryUrl = username => `${
+  LMS_BASE_URL
+}/api/edx_name_affirmation/v1/verified_name/history?username=${username}`;
+
 export const getUserPasswordStatusUrl = userIdentifier => `${
   LMS_BASE_URL
 }/support/manage_user/${userIdentifier}`;

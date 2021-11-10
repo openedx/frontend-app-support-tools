@@ -210,6 +210,55 @@ export async function getUserVerificationStatus(username) {
   }
 }
 
+export async function getVerifiedNameHistory(username) {
+  const response = {
+    verifiedName: null,
+    status: null,
+    verificationType: null,
+    history: [],
+    error: null,
+  };
+
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getVerifiedNameHistoryUrl(username),
+    );
+
+    if (!data || !data.results || data.results.length === 0) {
+      return { ...response, error: 'No record found' };
+    }
+    const latestResult = data.results[0];
+    let verificationType = null;
+
+    if (latestResult.verification_attempt_id) {
+      verificationType = 'IDV';
+    } else if (latestResult.proctored_exam_attempt_id) {
+      verificationType = 'Proctoring';
+    }
+
+    return {
+      ...response,
+      verifiedName: latestResult.verified_name,
+      status: latestResult.status,
+      verificationType,
+      history: data.results,
+    };
+  } catch (error) {
+    let errorText = 'Error while fetching data';
+
+    try {
+      if (error.customAttributes?.httpErrorResponseData) {
+        errorText = JSON.parse(error.customAttributes.httpErrorResponseData);
+      }
+    } catch (e) {
+      // In case there is something wrong with the response, use the default
+      // error message
+    }
+
+    return { ...response, error: errorText };
+  }
+}
+
 export async function getUserPasswordStatus(userIdentifier) {
   const { data } = await getAuthenticatedHttpClient().get(
     AppUrls.getUserPasswordStatusUrl(userIdentifier),
