@@ -44,9 +44,9 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     const uid = wrapper.find('h4.card-subtitle').at(0);
     const modified = wrapper.find('h4.card-subtitle').at(1);
 
-    expect(provider.text()).toEqual(ssoRecordProp.provider);
-    expect(uid.text()).toEqual(ssoRecordProp.uid);
-    expect(modified.text()).toEqual(`Last Modified: ${formatDate(ssoRecordProp.modified)}`);
+    expect(provider.text()).toEqual(`${ssoRecordProp.provider} (Provider)`);
+    expect(uid.text()).toEqual(`${ssoRecordProp.uid} (UID)`);
+    expect(modified.text()).toEqual(`${formatDate(ssoRecordProp.modified)} (Last Modified)`);
   });
 
   it('SSO Record Additional Data', () => {
@@ -67,6 +67,9 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
       expect(accesor in extraData).toBeTruthy();
       if (accesor === 'authTime') {
         expect(text).toEqual(formatUnixTimestamp(extraData[accesor]));
+      } else if (accesor === 'expires') {
+        const expires = extraData[accesor] ? `${extraData[accesor].toString()}s` : 'N/A';
+        expect(text).toEqual(expires);
       } else {
         expect(text).toEqual(
           value.length > 14 ? 'Copy Show ' : value,
