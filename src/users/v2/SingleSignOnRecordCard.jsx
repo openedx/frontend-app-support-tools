@@ -27,6 +27,8 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
 
       if (key === 'authTime') {
         data[key] = formatUnixTimestamp(data[key]);
+      } else if (key === 'expires') {
+        data[key] = data[key] ? `${data[key].toString()}s` : 'N/A';
       } else if (value.length > 14) {
         data[key] = <CopyShowHyperlinks text={value} />;
       }
@@ -41,17 +43,17 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
       <Card className="pt-2 px-3 mb-1 w-100">
         <Card.Body className="p-0">
           <Card.Title as="h3" className="btn-header mt-4">
-            {ssoRecord.provider}
+            {ssoRecord.provider} <span className="h5 text-muted">(Provider)</span>
           </Card.Title>
           <Row>
             <Col>
               <Card.Subtitle align="left" as="h4">
-                {ssoRecord.uid}
+                {ssoRecord.uid} <span className="h6 text-muted">(UID)</span>
               </Card.Subtitle>
             </Col>
             <Col>
               <Card.Subtitle align="right" as="h4">
-                Last Modified: {formatDate(ssoRecord.modified)}
+                {formatDate(ssoRecord.modified)} <span className="h5 text-muted">(Last Modified)</span>
               </Card.Subtitle>
             </Col>
           </Row>
