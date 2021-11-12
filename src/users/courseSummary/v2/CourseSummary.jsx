@@ -149,7 +149,11 @@ export default function CourseSummary({
         closeHandler();
         setModalIsOpen(false);
       }}
-      title="Course Summary"
+      title={
+        courseSummaryData && !courseSummaryErrors
+          ? `Course Summary: ${courseSummaryData.title}`
+          : 'Course Summary'
+        }
       id="course-summary"
       dialogClassName="modal-lg"
       body={(

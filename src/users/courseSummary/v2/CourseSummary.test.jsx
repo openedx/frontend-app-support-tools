@@ -38,6 +38,7 @@ describe('Course Summary', () => {
 
     let courseSummaryModal = wrapper.find('Modal#course-summary');
     expect(courseSummaryModal.prop('open')).toEqual(true);
+    expect(courseSummaryModal.find('h2.modal-title').text()).toEqual('Course Summary: Test Course');
 
     const courseRunsTable = wrapper.find('table.course-runs-table');
     expect(courseRunsTable.find('tbody tr').length).toEqual(2);
@@ -77,6 +78,9 @@ describe('Course Summary', () => {
     }));
     wrapper = mount(<CourseSummaryWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
+
+    const courseSummaryModal = wrapper.find('Modal#course-summary');
+    expect(courseSummaryModal.find('h2.modal-title').text()).toEqual('Course Summary');
     const alert = wrapper.find('.alert');
     expect(alert.text()).toEqual('No Course Summary Data found');
   });
