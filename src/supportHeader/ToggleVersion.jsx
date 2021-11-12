@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Form } from '@edx/paragon';
 import { AppContext } from '@edx/frontend-platform/react';
 import { TAB_PATH_MAP } from '../SupportToolsTab/constants';
@@ -20,14 +20,6 @@ export default function ToggleVersion() {
       window.location.href = window.location.href.replace(config.BASE_URL, `${config.BASE_URL}/v2`);
     }
   };
-
-  useEffect(() => {
-    if (sessionStorage.getItem('redirect') === null) {
-      sessionStorage.setItem('redirect', 'false');
-      if (window.location.href.indexOf('/v2') === -1) { handleChange(); }
-    }
-  }, []);
-
   return (
     <Form.Check
       type="switch"
