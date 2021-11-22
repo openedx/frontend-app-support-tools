@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function Table({
-  columns, data, renderRowSubComponent, styleName, isResponsive,
+  columns, data, renderRowSubComponent, styleName, isResponsive, defaultSortColumn,
 }) {
   const {
     getTableProps,
@@ -18,6 +18,9 @@ export default function Table({
     {
       columns,
       data,
+      initialState: {
+        sortBy: defaultSortColumn,
+      },
     },
     useSortBy,
     useExpanded, // Using useExpanded to track the expanded state
@@ -93,10 +96,15 @@ Table.propTypes = {
   renderRowSubComponent: PropTypes.func,
   styleName: PropTypes.string,
   isResponsive: PropTypes.bool,
+  defaultSortColumn: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    desc: PropTypes.bool,
+  })),
 };
 
 Table.defaultProps = {
   renderRowSubComponent: null,
   styleName: null,
   isResponsive: true,
+  defaultSortColumn: [],
 };
