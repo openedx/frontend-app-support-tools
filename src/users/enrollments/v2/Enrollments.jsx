@@ -100,6 +100,11 @@ export default function Enrollments({
     }));
   }, [enrollmentData]);
 
+  const defaultSortColumn = [{
+    id: 'enrollmentDate',
+    desc: true,
+  }];
+
   useLayoutEffect(() => {
     if (formType != null) {
       formRef.current.focus();
@@ -159,7 +164,7 @@ export default function Enrollments({
         Header: 'Upgrade Deadline', accessor: 'upgradeDeadline', Cell: ({ value }) => formatDate(value), sortable: true,
       },
       {
-        Header: 'Enrollment Date', accessor: 'created', Cell: ({ value }) => formatDate(value), sortable: true,
+        Header: 'Enrollment Date', accessor: 'created', Cell: ({ value }) => formatDate(value), sortable: true, id: 'enrollmentDate',
       },
       {
         Header: 'Pacing Type', accessor: 'pacingType', sortable: true,
@@ -228,6 +233,7 @@ export default function Enrollments({
             data={tableData}
             renderRowSubComponent={renderRowSubComponent}
             styleName="custom-table"
+            defaultSortColumn={defaultSortColumn}
           />
         )
         : <PageLoading srMessage="Loading" />}
