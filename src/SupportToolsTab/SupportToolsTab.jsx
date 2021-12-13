@@ -3,14 +3,31 @@ import PropTypes from 'prop-types';
 import { Tabs, Tab } from '@edx/paragon';
 import { history } from '@edx/frontend-platform';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
-import { FEATURE_BASED_ENROLLMENT_TAB, LEARNER_INFO_TAB, TAB_PATH_MAP } from './constants';
+import {
+  FEATURE_BASED_ENROLLMENT_TAB,
+  LEARNER_INFO_TAB,
+  PROGRAM_ENROLLMENT_TAB,
+  TAB_PATH_MAP,
+} from './constants';
 import UserPage from '../users/v2/UserPage';
 import FeatureBasedEnrollmentIndexPage from '../FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
+import ProgramEnrollmentsIndexPage from '../ProgramEnrollments/ProgramEnrollmentsIndexPage';
 
 export default function SupportToolsTab({ location }) {
   let tabKey = LEARNER_INFO_TAB;
-  if (location.pathname.indexOf(TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]) !== -1) {
-    tabKey = FEATURE_BASED_ENROLLMENT_TAB;
+  switch (location.pathname) {
+    case TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]:
+      tabKey = FEATURE_BASED_ENROLLMENT_TAB;
+      break;
+    case TAB_PATH_MAP[LEARNER_INFO_TAB]:
+      tabKey = LEARNER_INFO_TAB;
+      break;
+    case TAB_PATH_MAP[PROGRAM_ENROLLMENT_TAB]:
+      tabKey = PROGRAM_ENROLLMENT_TAB;
+      break;
+    default:
+      tabKey = LEARNER_INFO_TAB;
+      break;
   }
 
   return (
@@ -40,11 +57,17 @@ export default function SupportToolsTab({ location }) {
             <UserPage location={location} />
           </Tab>
 
-          <Tab eventKey={FEATURE_BASED_ENROLLMENT_TAB} title="Feature Based Enrollment">
+          <Tab
+            eventKey={FEATURE_BASED_ENROLLMENT_TAB}
+            title="Feature Based Enrollment"
+          >
             <br />
             <FeatureBasedEnrollmentIndexPage location={location} />
           </Tab>
-
+          <Tab eventKey={PROGRAM_ENROLLMENT_TAB} title="Program Enrollments">
+            <br />
+            <ProgramEnrollmentsIndexPage location={location} />
+          </Tab>
         </Tabs>
       </section>
     </div>

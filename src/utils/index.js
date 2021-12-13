@@ -55,3 +55,27 @@ export function sortedCompareDates(x, y, asc) {
   const b = new Date(y);
   return asc ? a - b : b - a;
 }
+
+export function extractMessageTuple(message) {
+  /*
+      Support Tools API sends an array of success tuples for
+      Link Program Enrollments of format
+      [
+          '('external_user_key', 'lms_username')',
+          '('external_user_key', 'lms_username')',
+      ]
+      that are identified as strings by the JS.
+      This function removes the overhead characters and
+      splits the string into an array of format
+      [
+          [external_user_key,lms_username],
+          [external_user_key,lms_username],
+      ]
+  */
+  return message
+    .replace('(', '')
+    .replace(')', '')
+    .replace(/'/g, '')
+    .replace(/ /g, '')
+    .split(',');
+}

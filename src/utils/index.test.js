@@ -8,6 +8,7 @@ import {
   titleCase,
   sortedCompareDates,
   isValidCourseID,
+  extractMessageTuple,
 } from './index';
 
 describe('Test Utils', () => {
@@ -171,5 +172,13 @@ describe('Test Utils', () => {
         (a, b) => sortedCompareDates(a, b, false),
       )).toEqual(dscSortedDates);
     });
+  });
+
+  describe('Extract Message Tuples', () => {
+    const message = "('external_user_key', 'lms_username')";
+    expect(extractMessageTuple(message)).toEqual([
+      'external_user_key',
+      'lms_username',
+    ]);
   });
 });

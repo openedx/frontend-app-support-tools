@@ -32,9 +32,10 @@ describe('Support Tools Main tab', () => {
     wrapper = mount(<SupportToolsTabWrapper location={location} />);
 
     const tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.length).toEqual(2);
+    expect(tabs.length).toEqual(3);
     expect(tabs.at(0).text()).toEqual('Learner Information');
     expect(tabs.at(1).text()).toEqual('Feature Based Enrollment');
+    expect(tabs.at(2).text()).toEqual('Program Enrollments');
 
     expect(wrapper.find('h2').text()).toEqual('Support Tools');
     expect(wrapper.find('p').text()).toEqual(
@@ -54,6 +55,7 @@ describe('Support Tools Main tab', () => {
     expect(history.replace).toHaveBeenCalledWith(TAB_PATH_MAP['feature-based-enrollment']);
     expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
     expect(fbeTab.html()).toEqual(expect.stringContaining('active'));
     expect(fbeTab.find('label').text()).toEqual('Course ID');
 
@@ -63,13 +65,21 @@ describe('Support Tools Main tab', () => {
     expect(history.replace).toHaveBeenCalledWith(TAB_PATH_MAP['learner-information']);
     expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
     expect(learnerTab.html()).toEqual(expect.stringContaining('active'));
     expect(learnerTab.find('label').text()).toEqual('Username, Email or LMS User ID');
+
+    tabs.at(2).simulate('click');
+    tabs = wrapper.find('nav.nav-tabs a');
+    expect(history.replace).toHaveBeenCalledWith(TAB_PATH_MAP['program-enrollment']);
+    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
 
     history.replace.mockReset();
   });
 
-  it('default tab changes based on pathname', () => {
+  it('default tab changes based on feature-based-enrollment pathname', () => {
     location = { pathname: TAB_PATH_MAP['feature-based-enrollment'], search: '' };
 
     wrapper = mount(<SupportToolsTabWrapper location={location} />);
@@ -77,5 +87,28 @@ describe('Support Tools Main tab', () => {
 
     expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+  });
+
+  it('default tab changes based on learner-information pathname', () => {
+    location = { pathname: TAB_PATH_MAP['learner-information'], search: '' };
+
+    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    const tabs = wrapper.find('nav.nav-tabs a');
+
+    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
+    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+  });
+
+  it('default tab changes based on program-enrollment pathname', () => {
+    location = { pathname: TAB_PATH_MAP['program-enrollment'], search: '' };
+
+    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    const tabs = wrapper.find('nav.nav-tabs a');
+
+    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
   });
 });
