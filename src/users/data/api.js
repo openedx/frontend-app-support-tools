@@ -3,7 +3,9 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import * as messages from '../../userMessages/messages';
 import * as AppUrls from './urls';
 import { REISSUE } from '../entitlements/EntitlementActions';
-import { isEmail, sortedCompareDates } from '../../utils';
+import {
+  isEmail, isValidLMSUserID, isValidUsername, sortedCompareDates,
+} from '../../utils';
 
 export async function getEntitlements(username, page = 1) {
   try {
@@ -104,10 +106,17 @@ export async function getUser(userIdentifier) {
     // never do this in a customer-facing app.
     // eslint-disable-next-line no-console
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
-    const notFoundErrorText = (isEmail(userIdentifier)
-      ? messages.USER_EMAIL_IDENTIFIER_NOT_FOUND_ERROR
-      : messages.USERNAME_IDENTIFIER_NOT_FOUND_ERROR
-    ).replace('{identifier}', userIdentifier);
+
+    let notFoundErrorText = null;
+    if (isEmail(userIdentifier)) {
+      notFoundErrorText = messages.USER_EMAIL_IDENTIFIER_NOT_FOUND_ERROR;
+    } else if (isValidLMSUserID(userIdentifier)) {
+      notFoundErrorText = messages.LMS_USER_ID_IDENTIFIER_NOT_FOUND_ERROR;
+    } else if (isValidUsername(userIdentifier)) {
+      notFoundErrorText = messages.USERNAME_IDENTIFIER_NOT_FOUND_ERROR;
+    }
+
+    notFoundErrorText = notFoundErrorText.replace('{identifier}', userIdentifier);
 
     if (error.customAttributes.httpErrorStatus === 404) {
       error.userError = {

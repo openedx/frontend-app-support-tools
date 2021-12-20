@@ -3,6 +3,7 @@ import moment from 'moment';
 const COURSE_ID_REGEX = '[^/+]+(/|\\+)[^/+]+(/|\\+)[^/?]+';
 const EMAIL_REGEX = '^[a-zA-Z0-9\'!#$&*._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 const USERNAME_REGEX = '^[\\w.@_+-]+$';
+const LMS_USER_ID_REGEX = '^(?!0)[0-9]+$';
 
 export const formatDate = (date) => {
   if (date) {
@@ -26,6 +27,8 @@ export const formatUnixTimestamp = (date) => {
 export const isEmail = (value) => Boolean(value && value.match(EMAIL_REGEX));
 
 export const isValidUsername = (searchValue) => Boolean(searchValue && searchValue.match(USERNAME_REGEX));
+
+export const isValidLMSUserID = (searchValue) => Boolean(searchValue && searchValue.match(LMS_USER_ID_REGEX));
 
 export const isValidCourseID = (value) => Boolean(value && value.match(COURSE_ID_REGEX));
 
