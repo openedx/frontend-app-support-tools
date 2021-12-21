@@ -1,5 +1,13 @@
 import {
-  isEmail, isValidUsername, formatDate, formatUnixTimestamp, sort, titleCase, sortedCompareDates, isValidCourseID,
+  isEmail,
+  isValidUsername,
+  isValidLMSUserID,
+  formatDate,
+  formatUnixTimestamp,
+  sort,
+  titleCase,
+  sortedCompareDates,
+  isValidCourseID,
 } from './index';
 
 describe('Test Utils', () => {
@@ -16,6 +24,9 @@ describe('Test Utils', () => {
     ];
     const validUsername = ['staff', 'admin123'];
     const invalidUsername = ['', ' ', undefined, 'invalid username', '%invalid'];
+
+    const validLMSUserIDs = ['1', '111', '999', '1000000022333'];
+    const invalidLMSUserIDs = ['0', '-1', '12b3', undefined, 'edx@example.com', 'edx'];
 
     const validCourseID = ['course-v1:testX+test101+2020', 'course-v1/testX/test101/2020'];
     const invalidCourseID = ['invalid-course-id', 'course-v1:testX+test101', 'no-id'];
@@ -36,7 +47,13 @@ describe('Test Utils', () => {
         expect(isValidUsername(username)).toBe(false);
       },
     );
+    test.each(validLMSUserIDs)('isValidLMSUserID returns true for %s', (username) => {
+      expect(isValidLMSUserID(username)).toBe(true);
+    });
 
+    test.each(invalidLMSUserIDs)('isValidLMSUserID returns true for %s', (username) => {
+      expect(isValidLMSUserID(username)).toBe(false);
+    });
     test.each(validCourseID)('isValidCourseID returns true for %s', (courseId) => {
       expect(isValidCourseID(courseId)).toBe(true);
     });

@@ -10,6 +10,7 @@ import * as urls from './urls';
 describe('API', () => {
   const testUsername = 'username';
   const testEmail = 'email@example.com';
+  const testLMSUserID = '22';
   const testCourseId = 'course-v1:testX+test123+2030';
   const userAccountApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
   const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
@@ -261,6 +262,7 @@ describe('API', () => {
     const successDictResponse = {
       username: testUsername,
       email: testEmail,
+      lms_user_id: testLMSUserID,
       is_active: true,
     };
     const successListResponse = [
@@ -293,6 +295,12 @@ describe('API', () => {
       expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
     });
 
+    test.each([successDictResponse, successListResponse])('Successful Fetch by LMS User ID', async (successResponse) => {
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?lms_user_id=${testLMSUserID}`).reply(200, successResponse);
+      const response = await api.getUser(testLMSUserID);
+      expect(response).toEqual(Array.isArray(successResponse) ? successResponse[0] : successResponse);
+    });
+
     it('Username retrieval 404 failure', async () => {
       const expectedUserError = {
         code: null,
@@ -304,6 +312,22 @@ describe('API', () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(() => throwError(404, ''));
       try {
         await api.getUser(testUsername);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
+    });
+
+    it('LMS User ID retrieval 404 failure', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: `We couldn't find a user with the LMS User ID "${testLMSUserID}".`,
+        type: 'error',
+        topic: 'general',
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?lms_user_id=${testLMSUserID}`).reply(() => throwError(404, ''));
+      try {
+        await api.getUser(testLMSUserID);
       } catch (error) {
         expect(error.userError).toEqual(expectedUserError);
       }

@@ -1,5 +1,5 @@
 import { getConfig } from '@edx/frontend-platform';
-import { isEmail, isValidUsername } from '../../utils/index';
+import { isEmail, isValidLMSUserID, isValidUsername } from '../../utils/index';
 
 const { LMS_BASE_URL } = getConfig();
 
@@ -15,14 +15,19 @@ export const getUserAccountUrl = userIdentifier => {
   let baseUrl = `${LMS_BASE_URL}/api/user/v1/accounts`;
   const identifierIsEmail = isEmail(userIdentifier);
   const identifierIsUsername = isValidUsername(userIdentifier);
+  const identifierIsLMSUserID = isValidLMSUserID(userIdentifier);
 
-  if (!(identifierIsEmail || identifierIsUsername)) {
+  if (!(identifierIsEmail || identifierIsUsername || identifierIsLMSUserID)) {
     throw new Error('Invalid Argument!');
   }
 
-  baseUrl = identifierIsEmail
-    ? (baseUrl += `?email=${encodeURIComponent(userIdentifier)}`)
-    : (baseUrl += `/${userIdentifier}`);
+  if (identifierIsEmail) {
+    (baseUrl += `?email=${encodeURIComponent(userIdentifier)}`);
+  } else if (identifierIsLMSUserID) {
+    (baseUrl += `?lms_user_id=${userIdentifier}`);
+  } else {
+    (baseUrl += `/${userIdentifier}`);
+  }
   return baseUrl;
 };
 

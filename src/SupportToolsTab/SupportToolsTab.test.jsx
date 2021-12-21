@@ -64,7 +64,7 @@ describe('Support Tools Main tab', () => {
     expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
     expect(learnerTab.html()).toEqual(expect.stringContaining('active'));
-    expect(learnerTab.find('label').text()).toEqual('Username or Email');
+    expect(learnerTab.find('label').text()).toEqual('Username, Email or LMS User ID');
 
     history.replace.mockReset();
   });

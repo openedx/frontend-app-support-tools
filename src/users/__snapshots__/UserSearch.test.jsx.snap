@@ -10,7 +10,7 @@ exports[`User Search Page renders correctly matches snapshot 1`] = `
     <label
       htmlFor="userIdentifier"
     >
-      Username or Email
+      Username, Email or LMS User ID
     </label>
     <input
       className="form-control flex-grow-1 mr-1"

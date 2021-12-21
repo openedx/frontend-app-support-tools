@@ -7,13 +7,13 @@ import PageLoading from '../../components/common/PageLoading';
 import AlertList from '../../userMessages/AlertList';
 import { USER_IDENTIFIER_INVALID_ERROR } from '../../userMessages/messages';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
-import { isEmail, isValidUsername } from '../../utils/index';
+import { isEmail, isValidUsername, isValidLMSUserID } from '../../utils/index';
 import { getAllUserData } from '../data/api';
 import UserSearch from '../UserSearch';
 import LearnerInformation from './LearnerInformation';
 import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../../SupportToolsTab/constants';
 
-// Supports urls such as /users/?username={username} and /users/?email={email}
+// Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage({ location }) {
   // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2=value2}
   const params = new Map(
@@ -29,7 +29,7 @@ export default function UserPage({ location }) {
   }
 
   const [userIdentifier, setUserIdentifier] = useState(
-    params.get('username') || params.get('email') || undefined,
+    params.get('username') || params.get('email') || params.get('lms_user_id') || undefined,
   );
   const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
@@ -42,16 +42,28 @@ export default function UserPage({ location }) {
     }
   }
 
+  function getUpdatedURL(value) {
+    const updatedHistory = `${TAB_PATH_MAP['learner-information']}/?PARAM_NAME=${value}`;
+    let identifierType = '';
+
+    if (isEmail(value)) {
+      identifierType = 'email';
+    } else if (isValidLMSUserID(value)) {
+      identifierType = 'lms_user_id';
+    } else if (isValidUsername(value)) {
+      identifierType = 'username';
+    }
+
+    return updatedHistory.replace('PARAM_NAME', identifierType);
+  }
+
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach((error) => add(error));
       history.replace(`${TAB_PATH_MAP['learner-information']}`);
       document.title = 'Support Tools | edX';
-    } else if (isEmail(searchValue)) {
-      pushHistoryIfChanged(`${TAB_PATH_MAP['learner-information']}/?email=${searchValue}`);
-      document.title = `Support Tools | edX | ${searchValue}`;
-    } else if (isValidUsername(searchValue)) {
-      pushHistoryIfChanged(`${TAB_PATH_MAP['learner-information']}/?username=${searchValue}`);
+    } else {
+      pushHistoryIfChanged(getUpdatedURL(searchValue));
       document.title = `Support Tools | edX | ${searchValue}`;
     }
 
@@ -60,7 +72,7 @@ export default function UserPage({ location }) {
   }
 
   function validateInput(input) {
-    if (!isValidUsername(input) && !isEmail(input)) {
+    if (!isValidUsername(input) && !isEmail(input) && !isValidLMSUserID(input)) {
       clear('general');
       add({
         code: null,
@@ -116,19 +128,17 @@ export default function UserPage({ location }) {
       handleFetchSearchResults(params.get('username'));
     } else if (params.get('email') && params.get('email') !== userIdentifier) {
       handleFetchSearchResults(params.get('email'));
+    } else if (params.get('lms_user_id') && params.get('lms_user_id') !== userIdentifier) {
+      handleFetchSearchResults(params.get('lms_user_id'));
     }
-  }, [params.get('username'), params.get('email')]);
+  }, [params.get('username'), params.get('email'), params.get('lms_user_id')]);
 
   // To change the url with appropriate query param if query param info is not present in URL
   useLayoutEffect(() => {
     if (userIdentifier
       && location.pathname.indexOf(TAB_PATH_MAP[LEARNER_INFO_TAB]) !== -1
-      && !(params.get('email') || params.get('username'))) {
-      if (isEmail(userIdentifier)) {
-        pushHistoryIfChanged(`${TAB_PATH_MAP[LEARNER_INFO_TAB]}/?email=${userIdentifier}`);
-      } else if (isValidUsername(userIdentifier)) {
-        pushHistoryIfChanged(`${TAB_PATH_MAP[LEARNER_INFO_TAB]}/?username=${userIdentifier}`);
-      }
+      && !(params.get('email') || params.get('username') || params.get('lms_user_id'))) {
+      pushHistoryIfChanged(getUpdatedURL(userIdentifier));
     }
   });
 

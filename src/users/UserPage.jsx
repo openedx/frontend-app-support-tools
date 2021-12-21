@@ -8,7 +8,7 @@ import PageLoading from '../components/common/PageLoading';
 import AlertList from '../userMessages/AlertList';
 import { USER_IDENTIFIER_INVALID_ERROR } from '../userMessages/messages';
 import UserMessagesContext from '../userMessages/UserMessagesContext';
-import { isEmail, isValidUsername } from '../utils/index';
+import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
 import { getAllUserData } from './data/api';
 import Enrollments from './enrollments/Enrollments';
 import Licenses from './licenses/Licenses';
@@ -16,7 +16,7 @@ import Entitlements from './entitlements/Entitlements';
 import UserSearch from './UserSearch';
 import UserSummary from './UserSummary';
 
-// Supports urls such as /users/?username={username} and /users/?email={email}
+// Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage({ location }) {
   // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2=value2}
   const params = new Map(
@@ -32,7 +32,7 @@ export default function UserPage({ location }) {
   }
 
   const [userIdentifier, setUserIdentifier] = useState(
-    params.get('username') || params.get('email') || undefined,
+    params.get('username') || params.get('email') || params.get('lms_user_id') || undefined,
   );
   const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
@@ -48,16 +48,28 @@ export default function UserPage({ location }) {
     }
   }
 
+  function getUpdatedURL(value) {
+    const updatedHistory = `/users/?PARAM_NAME=${value}`;
+    let identifierType = '';
+
+    if (isEmail(value)) {
+      identifierType = 'email';
+    } else if (isValidLMSUserID(value)) {
+      identifierType = 'lms_user_id';
+    } else if (isValidUsername(value)) {
+      identifierType = 'username';
+    }
+
+    return updatedHistory.replace('PARAM_NAME', identifierType);
+  }
+
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach((error) => add(error));
       history.replace('/users');
       document.title = 'Support Tools | edX';
-    } else if (isEmail(searchValue)) {
-      pushHistoryIfChanged(`/users/?email=${searchValue}`);
-      document.title = `Support Tools | edX | ${searchValue}`;
-    } else if (isValidUsername(searchValue)) {
-      pushHistoryIfChanged(`/users/?username=${searchValue}`);
+    } else {
+      pushHistoryIfChanged(getUpdatedURL(searchValue));
       document.title = `Support Tools | edX | ${searchValue}`;
     }
 
@@ -140,8 +152,10 @@ export default function UserPage({ location }) {
       handleFetchSearchResults(params.get('username'));
     } else if (params.get('email') && params.get('email') !== userIdentifier) {
       handleFetchSearchResults(params.get('email'));
+    } else if (params.get('lms_user_id') && params.get('lms_user_id') !== userIdentifier) {
+      handleFetchSearchResults(params.get('lms_user_id'));
     }
-  }, [params.get('username'), params.get('email')]);
+  }, [params.get('username'), params.get('email'), params.get('lms_user_id')]);
 
   return (
     <main className="container-fluid mt-3 mb-5">
