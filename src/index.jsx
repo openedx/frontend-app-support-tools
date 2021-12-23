@@ -18,6 +18,7 @@ import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
 import UserPageV2 from './users/v2/UserPage';
 import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
+import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
 
 import './index.scss';
 
@@ -41,6 +42,7 @@ subscribe(APP_READY, () => {
           <Route path="/v2" component={SupportToolsTab} />
           <Route path="/v2/learner_information" component={UserPageV2} />
           <Route path="/v2/feature_based_enrollments" component={FBEIndexPage} />
+          <Route path="/v2/program_enrollments" component={ProgramEnrollmentsIndexPage} />
         </Switch>
       </UserMessagesProvider>
     </AppProvider>,
