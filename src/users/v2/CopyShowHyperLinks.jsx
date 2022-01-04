@@ -6,8 +6,9 @@ export default function CopyShowHyperlinks({ text }) {
   const [copyText, setCopyText] = useState('Copy');
 
   return (
-    <>
+    <div>
       <Hyperlink
+        className="mr-1"
         destination=""
         target="_blank"
         onClick={(e) => {
@@ -17,6 +18,7 @@ export default function CopyShowHyperlinks({ text }) {
           setCopyText('Copy\u2713');
           setInterval(() => setCopyText('Copy'), 3000);
         }}
+        showLaunchIcon={false}
       >
         {copyText}
       </Hyperlink>
@@ -28,10 +30,11 @@ export default function CopyShowHyperlinks({ text }) {
           // eslint-disable-next-line no-alert
           alert(text);
         }}
+        showLaunchIcon={false}
       >
         Show
       </Hyperlink>
-    </>
+    </div>
   );
 }
 

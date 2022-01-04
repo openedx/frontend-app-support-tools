@@ -86,7 +86,7 @@ describe('Identity Verification Status', () => {
     const extraDataButton = idvDataTable.find('a');
     let extraDataModal = wrapper.find('Modal#idv-extra-data');
 
-    expect(extraDataButton.text()).toEqual('Show ');
+    expect(extraDataButton.text()).toEqual('Show');
     expect(extraDataModal.prop('open')).toEqual(false);
 
     extraDataButton.simulate('click');

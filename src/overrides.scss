@@ -31,6 +31,12 @@ $darkCyan: #00262b;
   }
 }
 
+.enterprise-associations {
+  table {
+    @extend .custom-table
+  }
+}
+
 .sso-table {
   width: auto;
   font-size: smaller;

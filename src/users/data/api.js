@@ -140,6 +140,32 @@ export async function getUser(userIdentifier) {
   }
 }
 
+export async function getEnterpriseCustomerUsers(username) {
+  const defaultResponse = {
+    next: null,
+    previous: null,
+    count: 0,
+    num_pages: 0,
+    current_page: 0,
+    start: 0,
+    results: [],
+  };
+
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getEnterpriseCustomerUsersUrl(username),
+    );
+    return data;
+  } catch (error) {
+    // We don't have good error handling in the app for any errors that may have come back
+    // from the API, so we log them to the console and tell the user to go look.  We would
+    // never do this in a customer-facing app.
+    // eslint-disable-next-line no-console
+    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+    return defaultResponse;
+  }
+}
+
 export async function getUserVerificationDetail(username) {
   const defaultResponse = {
     sso_verification: [],
