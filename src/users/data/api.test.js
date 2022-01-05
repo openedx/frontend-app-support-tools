@@ -23,6 +23,7 @@ describe('API', () => {
   const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
   const generateCertificateUrl = urls.generateCertificateUrl();
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
+  const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
 
   let mockAdapter;
 
@@ -483,6 +484,38 @@ describe('API', () => {
 
       const response = await api.getCourseData(courseUUID);
       expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('getEnterpriseCustomerUsers', () => {
+    it('Fetches successfully', async () => {
+      const mockResponse = { next: null, results: [] };
+      mockAdapter.onGet(`${getEnterpriseCustomerUsersUrl}?username=${testUsername}&page=1`).reply(200, mockResponse);
+      const enterpriseCustomerUsers = await api.getEnterpriseCustomerUsers(testUsername);
+      expect(enterpriseCustomerUsers).toEqual(mockResponse.results);
+    });
+
+    it('Fetches all pages ', async () => {
+      const baseUrl = `${getEnterpriseCustomerUsersUrl}?username=${testUsername}`;
+      const page1Url = `${baseUrl}&page=1`;
+      const page2Url = `${baseUrl}&page=2`;
+
+      const expectedData = [{ id: 1 }, { id: 2 }];
+
+      mockAdapter.onGet(page1Url).reply(200, {
+        next: page1Url,
+        current_page: 1,
+        results: [expectedData[0]],
+      });
+      mockAdapter.onGet(page2Url).reply(200, {
+        next: null,
+        current_page: 2,
+        results: [expectedData[1]],
+      });
+      const enterpriseCustomerUsers = await api.getEnterpriseCustomerUsers(testUsername);
+      expect(enterpriseCustomerUsers).toEqual(
+        expectedData,
+      );
     });
   });
 

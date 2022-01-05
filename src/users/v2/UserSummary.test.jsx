@@ -9,6 +9,7 @@ import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import idvStatusData from '../data/test/idvStatus';
 import enrollmentsData from '../data/test/enrollments';
 import onboardingStatusData from '../data/test/onboardingStatus';
+import enterpriseCustomerUsersData from '../data/test/enterpriseCustomerUsers';
 import { waitForComponentToPaint } from '../../setupTest';
 
 const UserSummaryWrapper = (props) => (
@@ -26,6 +27,7 @@ describe('User Summary Component Tests', () => {
     jest.spyOn(api, 'getUserVerificationStatus').mockImplementationOnce(() => Promise.resolve(idvStatusData));
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingStatusData));
+    jest.spyOn(api, 'getEnterpriseCustomerUsers').mockImplementationOnce(() => Promise.resolve(enterpriseCustomerUsersData));
     wrapper = mount(<UserSummaryWrapper {...data} />);
     await waitForComponentToPaint(wrapper);
   };

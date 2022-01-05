@@ -9,6 +9,12 @@ import { checkProps } from '../setupTest';
 import * as messages from '../userMessages/messages';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import UserPage from './UserPage';
+import * as api from './data/api';
+import idvStatusData from './data/test/idvStatus';
+import enrollmentsData from './data/test/enrollments';
+import onboardingStatusData from './data/test/onboardingStatus';
+import ssoRecordsData from './data/test/ssoRecords';
+import enterpriseCustomerUsersData from './data/test/enterpriseCustomerUsers';
 
 jest.mock('@edx/frontend-platform/auth');
 
@@ -33,6 +39,11 @@ describe('User Page', () => {
 
   beforeEach(() => {
     location = { pathname: '/users', search: '' };
+    jest.spyOn(api, 'getUserVerificationStatus').mockImplementationOnce(() => Promise.resolve(idvStatusData));
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
+    jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingStatusData));
+    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
+    jest.spyOn(api, 'getEnterpriseCustomerUsers').mockImplementationOnce(() => Promise.resolve(enterpriseCustomerUsersData));
   });
 
   describe('Checking PropTypes', () => {
@@ -43,6 +54,7 @@ describe('User Page', () => {
       expect(propsError).toBeUndefined();
     });
   });
+
   describe('shows expected error alert', () => {
     const mockAuthResponseError = (code) => {
       Auth.getAuthenticatedHttpClient = jest.fn(() => {
