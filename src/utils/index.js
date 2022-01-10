@@ -13,6 +13,13 @@ export const formatDate = (date) => {
   return 'N/A';
 };
 
+export const formatBoolean = (value) => {
+  if (value === undefined || value === null) {
+    return 'N/A';
+  }
+  return value ? 'True' : 'False';
+};
+
 /** Convert a UNIX timestamp (in seconds) to human readable date string. */
 export const formatUnixTimestamp = (date) => {
   if (date) {

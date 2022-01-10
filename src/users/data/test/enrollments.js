@@ -43,6 +43,18 @@ export const enrollmentsData = [
         slug: 'verified',
       },
     ],
+    enterpriseCourseEnrollments: [
+      {
+        course_id: 'course-v1:testX+test123+2030',
+        enterprise_customer_name: 'Test Enterprise',
+        enterprise_customer_user_id: 1,
+        license: {
+          uuid: 'fake-license-uuid',
+          is_revoked: false,
+        },
+        data_sharing_consent: undefined,
+      },
+    ],
     isActive: true,
     mode: 'audit',
     manualEnrollment: {
@@ -55,6 +67,21 @@ export const enrollmentsData = [
     courseId: 'course-v1:testX+test123+2040',
     courseStart: Date().toLocaleString(),
     courseName: 'Test Course 2',
+    enterpriseCourseEnrollments: [
+      {
+        course_id: 'course-v1:testX+test123+2040',
+        enterprise_customer_name: 'Test Enterprise',
+        enterprise_customer_user_id: 1,
+        license: {
+          uuid: 'fake-license-uuid',
+          is_revoked: false,
+        },
+        data_sharing_consent: {
+          consentProvided: true,
+          consentRequired: false,
+        },
+      },
+    ],
     pacingType: 'Instructor Paced',
     verifiedUpgradeDeadline: Date().toLocaleString(),
     courseEnd: Date().toLocaleString(),
