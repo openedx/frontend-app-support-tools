@@ -5,6 +5,7 @@ import { getAccountActivationUrl } from '../data/urls';
 import IdentityVerificationStatus from './IdentityVerificationStatus';
 import OnboardingStatus from './OnboardingStatus';
 import AccountActions from '../account-actions/AccountActions';
+import EnterpriseAssociations from './EnterpriseAssociations';
 
 export default function UserSummary({
   userData,
@@ -89,6 +90,9 @@ export default function UserSummary({
             <IdentityVerificationStatus username={userData.username} />
             <OnboardingStatus username={userData.username} />
           </div>
+        </div>
+        <div className="col mt-3 mx-3 enterprise-associations">
+          <EnterpriseAssociations username={userData.username} />
         </div>
       </div>
     </section>

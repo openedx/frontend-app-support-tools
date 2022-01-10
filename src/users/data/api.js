@@ -140,6 +140,19 @@ export async function getUser(userIdentifier) {
   }
 }
 
+export async function getEnterpriseCustomerUsers(username, page = 1) {
+  const queryParams = new URLSearchParams({ username, page });
+  const baseUrl = AppUrls.getEnterpriseCustomerUsersUrl(username);
+  const { data } = await getAuthenticatedHttpClient().get(`${baseUrl}?${queryParams.toString()}`);
+
+  if (data.next) {
+    const nextPageEnterpriseCustomerUsers = await getEnterpriseCustomerUsers(username, data.current_page + 1);
+    return data.results.concat(nextPageEnterpriseCustomerUsers);
+  }
+
+  return data.results;
+}
+
 export async function getUserVerificationDetail(username) {
   const defaultResponse = {
     sso_verification: [],

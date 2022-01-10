@@ -31,6 +31,10 @@ export const getUserAccountUrl = userIdentifier => {
   return baseUrl;
 };
 
+export const getEnterpriseCustomerUsersUrl = () => `${
+  LMS_BASE_URL
+}/enterprise/api/v1/enterprise-learner/`;
+
 export const getUserVerificationDetailUrl = username => `${
   LMS_BASE_URL
 }/api/user/v1/accounts/${username}/verifications/`;

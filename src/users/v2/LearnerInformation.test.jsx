@@ -12,6 +12,7 @@ import { enrollmentsData } from '../data/test/enrollments';
 import onboardingStatusData from '../data/test/onboardingStatus';
 import ssoRecordsData from '../data/test/ssoRecords';
 import licensesData from '../data/test/licenses';
+import enterpriseCustomerUsersData from '../data/test/enterpriseCustomerUsers';
 import { entitlementsData } from '../data/test/entitlements';
 
 const LearnerInformationWrapper = (props) => (
@@ -37,6 +38,7 @@ describe('Learners and Enrollments component', () => {
     jest.spyOn(api, 'getLicense').mockImplementationOnce(() => Promise.resolve(licensesData));
     jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
+    jest.spyOn(api, 'getEnterpriseCustomerUsers').mockImplementationOnce(() => Promise.resolve(enterpriseCustomerUsersData));
     const ssoRecords = ssoRecordsData.map((entry) => ({
       ...entry,
       extraData: JSON.parse(entry.extraData),
