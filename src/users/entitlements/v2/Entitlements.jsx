@@ -21,6 +21,7 @@ import AlertList from '../../../userMessages/AlertList';
 
 export default function Entitlements({
   user,
+  searchStr,
 }) {
   const { add, clear } = useContext(UserMessagesContext);
   const [formType, setFormType] = useState(null);
@@ -50,7 +51,10 @@ export default function Entitlements({
     if (entitlementData === null) {
       return [];
     }
-    return entitlementData.results.map(entitlement => ({
+    return entitlementData.results.filter(
+      entitlement => (entitlement.courseUuid.toLowerCase().includes(searchStr)
+          || (entitlement.enrollmentCourseRun && entitlement.enrollmentCourseRun.toLowerCase().includes(searchStr))),
+    ).map(entitlement => ({
       expander: entitlement.supportDetails.map(supportDetail => ({
         action: supportDetail.action,
         comments: supportDetail.comments,
@@ -129,7 +133,7 @@ export default function Entitlements({
 
       ),
     }));
-  }, [entitlementData]);
+  }, [entitlementData, searchStr]);
 
   useLayoutEffect(() => {
     if (formType != null) {
@@ -299,4 +303,9 @@ export default function Entitlements({
 
 Entitlements.propTypes = {
   user: PropTypes.string.isRequired,
+  searchStr: PropTypes.string,
+};
+
+Entitlements.defaultProps = {
+  searchStr: '',
 };

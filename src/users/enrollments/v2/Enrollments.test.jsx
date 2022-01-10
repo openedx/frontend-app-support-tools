@@ -160,4 +160,12 @@ describe('Course Enrollments V2 Listing', () => {
     expect(wrapper.find('Certificates')).toEqual({});
     apiMock.mockReset();
   });
+
+  it('Filter enrollments on the basis of searchStr', async () => {
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
+    wrapper = mount(<EnrollmentPageWrapper searchStr="test123+2040" {...props} />);
+    await waitForComponentToPaint(wrapper);
+    const componentHeader = wrapper.find('h3');
+    expect(componentHeader.text()).toEqual('Enrollments (1)');
+  });
 });
