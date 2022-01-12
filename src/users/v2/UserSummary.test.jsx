@@ -59,6 +59,10 @@ describe('User Summary Component Tests', () => {
           value: 'edx',
         },
         {
+          header: 'Verified Name',
+          value: '',
+        },
+        {
           header: 'Username',
           value: 'edx',
         },
@@ -111,8 +115,8 @@ describe('User Summary Component Tests', () => {
     const getActivationKeyRow = (data) => {
       mountUserSummaryWrapper(data);
       const dataTable = wrapper.find('#account-table table');
-      const rowName = dataTable.find('tbody tr').at(4).find('th').at(0);
-      const rowValue = dataTable.find('tbody tr').at(4).find('td').at(0);
+      const rowName = dataTable.find('tbody tr').at(5).find('th').at(0);
+      const rowValue = dataTable.find('tbody tr').at(5).find('td').at(0);
 
       return {
         rowName,
