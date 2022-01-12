@@ -27,6 +27,11 @@ export default function UserSummary({
                 </tr>
 
                 <tr>
+                  <th>Verified Name</th>
+                  <td>{userData.verifiedName}</td>
+                </tr>
+
+                <tr>
                   <th>Username</th>
                   <td>{userData.username}</td>
                 </tr>
@@ -102,6 +107,7 @@ export default function UserSummary({
 UserSummary.propTypes = {
   userData: PropTypes.shape({
     name: PropTypes.string,
+    verifiedName: PropTypes.string,
     username: PropTypes.string,
     id: PropTypes.number,
     email: PropTypes.string,
