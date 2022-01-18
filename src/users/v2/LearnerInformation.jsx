@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab } from '@edx/paragon';
 import UserSummary from './UserSummary';
-import EnrollmentsV2 from '../enrollments/v2/Enrollments';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import Licenses from '../licenses/v2/Licenses';
-import EntitlementsV2 from '../entitlements/v2/Entitlements';
+import EntitlementsAndEnrollmentsContainer from '../EntitlementsAndEnrollmentsContainer';
 
 export default function LearnerInformation({
   user, changeHandler,
@@ -27,12 +26,7 @@ export default function LearnerInformation({
 
         <Tab eventKey="enrollments-entitlements" title="Enrollments/Entitlements">
           <br />
-          <EntitlementsV2
-            user={user.username}
-          />
-          <EnrollmentsV2
-            user={user.username}
-          />
+          <EntitlementsAndEnrollmentsContainer user={user.username} />
         </Tab>
 
         <Tab eventKey="sso" title="SSO/License Info">

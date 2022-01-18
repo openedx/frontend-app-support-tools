@@ -100,6 +100,14 @@ describe('Entitlements V2 Listing', () => {
     expect(expandAll.text()).toEqual('Expand All');
   });
 
+  it('Filter entitlements on the basis of searchStr', async () => {
+    apiMock = jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
+    wrapper = mount(<EntitlementsPageWrapper searchStr="course-1" {...props} />);
+    await waitForComponentToPaint(wrapper);
+    const componentHeader = wrapper.find('h3');
+    expect(componentHeader.text()).toEqual('Entitlements (1)');
+  });
+
   describe('Expire Entitlement button', () => {
     it('Disabled Expire entitlement button', () => {
       // We're only checking row 0 of the table since it has the button Expire Button disabled

@@ -27,6 +27,7 @@ import AlertList from '../../../userMessages/AlertList';
 
 export default function Enrollments({
   user,
+  searchStr,
 }) {
   const { add, clear } = useContext(UserMessagesContext);
   const [formType, setFormType] = useState(null);
@@ -56,7 +57,10 @@ export default function Enrollments({
     if (enrollmentData === null || enrollmentData.length === 0) {
       return [];
     }
-    return enrollmentData.map(enrollment => ({
+    return enrollmentData.filter(
+      enrollment => (enrollment.courseId.toLowerCase().includes(searchStr)
+              || enrollment.courseName.toLowerCase().includes(searchStr)),
+    ).map(enrollment => ({
       expander: {
         lastModified: enrollment.manualEnrollment ? enrollment.manualEnrollment.timeStamp : 'N/A',
         lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
@@ -98,7 +102,7 @@ export default function Enrollments({
         </Dropdown>
       ),
     }));
-  }, [enrollmentData]);
+  }, [enrollmentData, searchStr]);
 
   const defaultSortColumn = [{
     id: 'enrollmentDate',
@@ -269,4 +273,9 @@ export default function Enrollments({
 
 Enrollments.propTypes = {
   user: PropTypes.string.isRequired,
+  searchStr: PropTypes.string,
+};
+
+Enrollments.defaultProps = {
+  searchStr: '',
 };
