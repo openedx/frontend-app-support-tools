@@ -11,9 +11,9 @@ export default function EntitlementsAndEnrollmentsContainer({
 
   return (
     <div id="entitlementsAndEnrollmentsContainer">
-      <form className="form-inline mb-2 p-2 background-light-gray">
+      <div className="mb-2 p-2 background-light-gray">
         <Input name="courseId" className="mr-1 col-sm-4" type="text" placeholder="Course ID or Name" defaultValue={searchValue} onChange={(e) => { setSearchValue(e.target.value.toLowerCase()); }} />
-      </form>
+      </div>
       <EntitlementsV2
         user={user}
         searchStr={searchValue}
