@@ -11,8 +11,7 @@ describe('Link Program Enrollments API', () => {
     programID: '8bee627e-d85e-4a76-be41-d58921da666e',
     usernamePairText: 'testuser,verified',
   };
-  const lpeDetailsApiUrl = `${
-    getConfig().LMS_BASE_URL
+  const lpeDetailsApiUrl = `${getConfig().LMS_BASE_URL
   }/support/link_program_enrollments_details/`;
 
   const throwError = (errorCode, dataString) => {

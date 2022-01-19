@@ -154,13 +154,6 @@ $darkCyan: #00262b;
   }
 }
 
-.link-program-enrollments {
-  border: none;
-  border-radius: 0;
-  border-right: 1px solid lightgray;
-  padding-left: 0;
-}
-
 .background-light-gray {
   background: lightgrey;
 }
@@ -173,4 +166,8 @@ $darkCyan: #00262b;
   font-size: 15px;
   padding-top: 15px;
   padding-bottom: 15px;
+}
+
+.inspector-name-row{
+  border-bottom: 1px solid black;
 }
