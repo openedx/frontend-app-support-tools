@@ -88,7 +88,7 @@ describe('Course Enrollments V2 Listing', () => {
     expect(wrapper.find('changeEnrollmentForm')).toEqual({});
   });
 
-  it('Enrollment extra data is rendered for individual enrollment', () => {
+  it('Enrollment extra data and enterprise course enrollments are rendered for individual enrollment', () => {
     let expandable = wrapper.find('table tbody tr').at(0).find('td div span').at(0);
     expect(expandable.html()).toContain('fa-plus');
     expandable.simulate('click');
@@ -96,17 +96,61 @@ describe('Course Enrollments V2 Listing', () => {
     expandable = wrapper.find('table tbody tr').at(0).find('td div span').at(0);
     expect(expandable.html()).toContain('fa-minus');
 
-    const extraTable = wrapper.find('table tbody tr').at(1).find('table');
-    const extraTableHeaders = extraTable.find('thead tr th');
-    expect(extraTable.find('thead tr th').length).toEqual(3);
-    expect(extraTableHeaders.at(0).text()).toEqual('Last Modified');
-    expect(extraTableHeaders.at(1).text()).toEqual('Last Modified By');
-    expect(extraTableHeaders.at(2).text()).toEqual('Reason');
+    const extraTables = wrapper.find('table tbody tr').at(1).find('table');
+    expect(extraTables.length).toEqual(2);
+
+    const extraDataTable = extraTables.at(0);
+    const extraTableHeaders = extraDataTable.find('thead tr th');
+    expect(extraTableHeaders.length).toEqual(3);
+    ['Last Modified', 'Last Modified By', 'Reason'].forEach((expectedHeader, index) => expect(
+      extraTableHeaders.at(index).text(),
+    ).toEqual(expectedHeader));
+
+    const enterpriseCourseEnrollmentsTable = extraTables.at(1);
+    const enterpriseCourseEnrollmentsTableHeaders = enterpriseCourseEnrollmentsTable.find('thead tr th');
+    expect(enterpriseCourseEnrollmentsTableHeaders.length).toEqual(5);
+
+    ['Enterprise Name', 'Data Sharing Consent Provided', 'Data Sharing Consent Required', 'License', 'License Revoked'].forEach(
+      (expectedHeader, index) => expect(
+        enterpriseCourseEnrollmentsTableHeaders.at(index).text(),
+      ).toEqual(expectedHeader),
+    );
 
     expandable.simulate('click');
 
     expandable = wrapper.find('table tbody tr').at(0).find('td div span').at(0);
     expect(expandable.html()).toContain('fa-plus');
+  });
+
+  it('Enterprise course enrollments table is not rendered if are no enterprise course enrollments', async () => {
+    const mockEnrollments = [{
+      ...enrollmentsData[0],
+      enterpriseCourseEnrollments: [],
+    },
+    {
+      ...enrollmentsData[0],
+      enterpriseCourseEnrollments: undefined,
+    }];
+
+    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(mockEnrollments));
+
+    wrapper = mount(<EnrollmentPageWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
+
+    mockEnrollments.forEach((_, index) => {
+      const expandable = wrapper.find('table tbody tr').at(index).find('td div span').at(0);
+      expandable.simulate('click');
+
+      const extraTables = wrapper.find('table tbody tr').at(1).find('table');
+      expect(extraTables.length).toEqual(1);
+
+      const extraDataTable = extraTables.at(0);
+      const extraTableHeaders = extraDataTable.find('thead tr th');
+      expect(extraTableHeaders.length).toEqual(3);
+      ['Last Modified', 'Last Modified By', 'Reason'].forEach((expectedHeader, idx) => expect(
+        extraTableHeaders.at(idx).text(),
+      ).toEqual(expectedHeader));
+    });
   });
 
   it('Expand all button shows extra data for all enrollments', () => {

@@ -2,6 +2,7 @@ import {
   isEmail,
   isValidUsername,
   isValidLMSUserID,
+  formatBoolean,
   formatDate,
   formatUnixTimestamp,
   sort,
@@ -61,6 +62,15 @@ describe('Test Utils', () => {
 
     test.each(invalidCourseID)('isValidCourseID returns false for %s', (courseId) => {
       expect(isValidCourseID(courseId)).toBe(false);
+    });
+  });
+
+  describe('Format Boolean', () => {
+    it('correctly formats boolean', () => {
+      expect(formatBoolean(true)).toEqual('True');
+      expect(formatBoolean(false)).toEqual('False');
+      expect(formatBoolean(null)).toEqual('N/A');
+      expect(formatBoolean(undefined)).toEqual('N/A');
     });
   });
 

@@ -21,7 +21,7 @@ import { CREATE, CHANGE } from '../constants';
 import PageLoading from '../../../components/common/PageLoading';
 import UserMessagesContext from '../../../userMessages/UserMessagesContext';
 import TableV2 from '../../../components/Table';
-import { formatDate } from '../../../utils';
+import { formatBoolean, formatDate } from '../../../utils';
 import { getEnrollments } from '../../data/api';
 import AlertList from '../../../userMessages/AlertList';
 
@@ -66,6 +66,13 @@ export default function Enrollments({
         lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
         reason: enrollment.manualEnrollment && enrollment.manualEnrollment.reason ? enrollment.manualEnrollment.reason : 'N/A',
       },
+      enterpriseCourseEnrollments: enrollment.enterpriseCourseEnrollments?.map((ece => ({
+        enterpriseCustomerName: ece.enterpriseCustomerName,
+        consentProvided: formatBoolean(ece.dataSharingConsent?.consentProvided),
+        consentRequired: formatBoolean(ece.dataSharingConsent?.consentRequired),
+        license: ece.license?.uuid ?? 'N/A',
+        isLicenseRevoked: formatBoolean(ece.license?.isRevoked),
+      }))),
       courseId: enrollment.courseId,
       courseName: enrollment.courseName,
       courseStart: enrollment.courseStart,
@@ -73,7 +80,7 @@ export default function Enrollments({
       upgradeDeadline: enrollment.verifiedUpgradeDeadline,
       created: enrollment.created,
       pacingType: enrollment.pacingType,
-      active: enrollment.isActive ? 'True' : 'False',
+      active: formatBoolean(enrollment.isActive),
       mode: enrollment.mode,
       actions: (
         <Dropdown>
@@ -201,17 +208,55 @@ export default function Enrollments({
     [],
   );
 
+  const enterpriseCourseEnrollmentColumns = [
+    {
+      Header: 'Enterprise Name',
+      accessor: 'enterpriseCustomerName',
+    },
+    {
+      Header: 'Data Sharing Consent Provided',
+      accessor: 'consentProvided',
+    },
+    {
+      Header: 'Data Sharing Consent Required',
+      accessor: 'consentRequired',
+    },
+    {
+      Header: 'License',
+      accessor: 'license',
+    },
+    {
+      Header: 'License Revoked',
+      accessor: 'isLicenseRevoked',
+    },
+  ];
+
+  /* eslint-disable react/prop-types */
   const renderRowSubComponent = useCallback(
     ({ row }) => (
-      <TableV2
-        // eslint-disable-next-line react/prop-types
-        data={[row.original.expander]}
-        columns={extraColumns}
-        styleName="custom-expander-table"
-      />
+      <>
+        <TableV2
+          data={[row.original.expander]}
+          columns={extraColumns}
+          styleName="custom-expander-table"
+        />
+        {row.original.enterpriseCourseEnrollments?.length && (
+          <>
+            <hr />
+            <div className="custom-expander-table">
+              <h4 className="my-3">Enterprise Course Enrollments {`(${row.original.enterpriseCourseEnrollments.length})`}</h4>
+              <TableV2
+                data={row.original.enterpriseCourseEnrollments}
+                columns={enterpriseCourseEnrollmentColumns}
+              />
+            </div>
+          </>
+        )}
+      </>
     ),
     [],
   );
+  /* eslint-enable react/prop-types */
 
   return (
     <section className="mb-3">
