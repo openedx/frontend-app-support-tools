@@ -507,10 +507,24 @@ export async function postTogglePasswordStatus(user, comment) {
 }
 
 export async function postResetPassword(email) {
-  const { data } = await getAuthenticatedHttpClient().post(
-    AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`,
-  );
-  return data;
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`,
+    );
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: (error.response && error.response.data),
+          type: 'error',
+          topic: 'resetPassword',
+        },
+      ],
+    };
+  }
 }
 
 export async function getCertificate(username, courseKey) {
