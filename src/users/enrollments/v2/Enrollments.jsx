@@ -240,7 +240,7 @@ export default function Enrollments({
           columns={extraColumns}
           styleName="custom-expander-table"
         />
-        {row.original.enterpriseCourseEnrollments?.length && (
+        {row.original.enterpriseCourseEnrollments?.length > 0 && (
           <>
             <hr />
             <div className="custom-expander-table">
