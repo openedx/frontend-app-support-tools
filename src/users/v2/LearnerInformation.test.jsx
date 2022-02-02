@@ -7,7 +7,7 @@ import { waitForComponentToPaint } from '../../setupTest';
 import UserSummaryData from '../data/test/userSummary';
 import LearnerInformation from './LearnerInformation';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
-import idvStatusData from '../data/test/idvStatus';
+import verifiedNameHistoryData from '../data/test/verifiedNameHistory';
 import { enrollmentsData } from '../data/test/enrollments';
 import onboardingStatusData from '../data/test/onboardingStatus';
 import ssoRecordsData from '../data/test/ssoRecords';
@@ -31,7 +31,7 @@ describe('Learners and Enrollments component', () => {
   };
 
   beforeEach(async () => {
-    jest.spyOn(api, 'getUserVerificationStatus').mockImplementationOnce(() => Promise.resolve(idvStatusData));
+    jest.spyOn(api, 'getVerifiedNameHistory').mockImplementationOnce(() => Promise.resolve(verifiedNameHistoryData));
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingStatusData));
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
