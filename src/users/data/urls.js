@@ -83,6 +83,10 @@ export const getOnboardingStatusUrl = (courseId, username) => `${
   LMS_BASE_URL
 }/api/edx_proctoring/v1/user_onboarding/status?course_id=${encodeURIComponent(courseId)}&username=${encodeURIComponent(username)}`;
 
+export const getV2OnboardingStatusUrl = (username) => `${
+  LMS_BASE_URL
+}/support/onboarding_status/${encodeURIComponent(username)}`;
+
 export const getCertificateUrl = (username, courseKey) => `${
   LMS_BASE_URL
 }/certificates/search?user=${username}&course_id=${courseKey}`;

@@ -3,7 +3,7 @@ import React from 'react';
 import { waitForComponentToPaint } from '../setupTest';
 import OnboardingStatus from './OnboardingStatus';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
-import onboardingStatusData from './data/test/onboardingStatus';
+import { onboardingStatusData } from './data/test/onboardingStatus';
 import enrollmentsData from './data/test/enrollments';
 import { titleCase, formatDate } from '../utils';
 

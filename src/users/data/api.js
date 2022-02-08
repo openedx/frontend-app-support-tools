@@ -354,6 +354,21 @@ export async function getOnboardingStatus(enrollments, username) {
   }
 }
 
+export async function getV2OnboardingStatus(username) {
+  const defaultResponse = {
+    verified_in: null,
+    current_status: null,
+  };
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      AppUrls.getV2OnboardingStatusUrl(username),
+    );
+    return data;
+  } catch (error) {
+    return defaultResponse;
+  }
+}
+
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
