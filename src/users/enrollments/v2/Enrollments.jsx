@@ -281,7 +281,7 @@ export default function Enrollments({
             columns={columns}
             data={tableData}
             renderRowSubComponent={renderRowSubComponent}
-            styleName="custom-table"
+            styleName={tableData.length === 1 ? 'custom-table mb-60' : 'custom-table'}
             defaultSortColumn={defaultSortColumn}
           />
         )
