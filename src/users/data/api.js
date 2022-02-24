@@ -365,7 +365,18 @@ export async function getV2OnboardingStatus(username) {
     );
     return data;
   } catch (error) {
-    return defaultResponse;
+    let errorText = 'Error while fetching data';
+
+    try {
+      if (error.customAttributes?.httpErrorResponseData) {
+        errorText = JSON.parse(error.customAttributes.httpErrorResponseData);
+      }
+    } catch (e) {
+      // In case there is something wrong with the response, use the default
+      // error message
+    }
+
+    return { ...defaultResponse, error: errorText };
   }
 }
 

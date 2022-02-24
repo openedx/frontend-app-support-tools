@@ -40,7 +40,9 @@ export default function OnboardingStatus({
   function formatData(data) {
     return [data].map(result => ({
       courseId: result.courseId || 'No Course',
-      status: result.onboardingStatus ? titleCase(result.onboardingStatus) : 'See Dashboard',
+      // The default value of `See Dashboard` if there is no status returned in API is because
+      // there are certain status in db for which the api gives null they are visible on instructor dashboard.
+      status: result.onboardingStatus ? titleCase(result.onboardingStatus) : 'See Instructor Dashboard',
       expirationDate: formatDate(result.expirationDate),
       instructorDashboardLink: result.instructorDashboardLink ? <a href={`${getConfig().LMS_BASE_URL}${result.instructorDashboardLink}`} rel="noopener noreferrer" target="_blank" className="word_break" label="dashboard link">Link</a>
         : 'N/A',
@@ -52,7 +54,7 @@ export default function OnboardingStatus({
       <h3>Proctoring Information</h3>
       { onboardingData ? (
         <div>
-          <h4>Verified In</h4>
+          <h3>Verified In</h3>
           { onboardingData.verifiedIn ? (
             <TableV2
               id="verified-in-data"
@@ -60,7 +62,7 @@ export default function OnboardingStatus({
               columns={proctoringColumns}
               styleName="idv-table"
             />
-          ) : <div className="no-record-text" id="verified-in-no-data">No Record Found</div>}
+          ) : <div className="no-record-text" id="verified-in-no-data">{ onboardingData.error ? onboardingData.error : 'No Record Found' }</div> }
           <h4>Current Status</h4>
           { onboardingData.currentStatus ? (
             <TableV2
@@ -69,7 +71,7 @@ export default function OnboardingStatus({
               columns={proctoringColumns}
               styleName="idv-table"
             />
-          ) : <div className="no-record-text" id="current-status-no-data">No Record Found</div>}
+          ) : <div className="no-record-text" id="current-status-no-data">{ onboardingData.error ? onboardingData.error : 'No Record Found' }</div>}
         </div>
       ) : <PageLoading srMessage="Loading.." /> }
     </div>

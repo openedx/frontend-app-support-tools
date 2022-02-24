@@ -118,10 +118,23 @@ describe('API', () => {
     });
 
     it('No Active Paid Enrollment ', async () => {
+      mockAdapter.onGet(url).reply(() => throwError(404, 'Missing Records'));
       const defaultResponse = {
         verified_in: null,
         current_status: null,
+        error: 'Missing Records',
       };
+      const response = await api.getV2OnboardingStatus(testUsername);
+      expect(response).toEqual(defaultResponse);
+    });
+
+    it('returns a server error with default message', async () => {
+      const defaultResponse = {
+        verified_in: null,
+        current_status: null,
+        error: 'Error while fetching data',
+      };
+      mockAdapter.onGet(url).reply(() => throwError(500));
       const response = await api.getV2OnboardingStatus(testUsername);
       expect(response).toEqual(defaultResponse);
     });

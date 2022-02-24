@@ -22,7 +22,6 @@ describe('Onboarding Status', () => {
   };
 
   beforeEach(async () => {
-    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getV2OnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingStatusData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
@@ -55,7 +54,6 @@ describe('Onboarding Status', () => {
   it('No Onboarding Status Data', async () => {
     const onboardingData = { verifiedIn: null, currentStatus: null };
 
-    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getV2OnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
@@ -64,6 +62,19 @@ describe('Onboarding Status', () => {
     expect(verifiedInDataTable.text()).toEqual('No Record Found');
     const currentStatusDataTable = wrapper.find('div#current-status-no-data');
     expect(currentStatusDataTable.text()).toEqual('No Record Found');
+  });
+
+  it('No Onboarding Status Data with error message', async () => {
+    const onboardingData = { verifiedIn: null, currentStatus: null, error: 'Server fetched failed' };
+
+    jest.spyOn(api, 'getV2OnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
+    wrapper = mount(<OnboardingStatusWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
+
+    const verifiedInDataTable = wrapper.find('div#verified-in-no-data');
+    expect(verifiedInDataTable.text()).toEqual('Server fetched failed');
+    const currentStatusDataTable = wrapper.find('div#current-status-no-data');
+    expect(currentStatusDataTable.text()).toEqual('Server fetched failed');
   });
 
   it('No Onboarding Status Data with current status data only', async () => {
@@ -100,7 +111,6 @@ describe('Onboarding Status', () => {
     };
     const onboardingData = { ...onboardingStatusData, verifiedIn: nullData };
 
-    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getV2OnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
@@ -109,7 +119,7 @@ describe('Onboarding Status', () => {
     const verifiedInDataBody = verifiedInData.find('tbody tr td');
     expect(verifiedInDataBody).toHaveLength(4);
     expect(verifiedInDataBody.at(0).text()).toEqual('No Course');
-    expect(verifiedInDataBody.at(1).text()).toEqual('See Dashboard');
+    expect(verifiedInDataBody.at(1).text()).toEqual('See Instructor Dashboard');
     expect(verifiedInDataBody.at(2).text()).toEqual('N/A');
     expect(verifiedInDataBody.at(3).text()).toEqual('N/A');
   });
@@ -117,7 +127,6 @@ describe('Onboarding Status', () => {
   it('Onboarding Status Data is loading', async () => {
     const onboardingData = null;
 
-    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getV2OnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
     await waitForComponentToPaint(wrapper);
