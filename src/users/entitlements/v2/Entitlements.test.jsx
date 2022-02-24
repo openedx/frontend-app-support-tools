@@ -29,7 +29,7 @@ describe('Entitlements V2 Listing', () => {
   });
 
   afterEach(() => {
-    apiMock.mockRestore();
+    apiMock.mockReset();
     wrapper.unmount();
   });
 
@@ -109,20 +109,22 @@ describe('Entitlements V2 Listing', () => {
   });
 
   describe('Expire Entitlement button', () => {
-    it('Disabled Expire entitlement button', () => {
+    it('Disabled Expire entitlement button', async () => {
       // We're only checking row 0 of the table since it has the button Expire Button disabled
       let dataRow = wrapper.find('table tbody tr').at(0);
       dataRow.find('.dropdown button').simulate('click');
+      await waitForComponentToPaint(wrapper);
       dataRow = wrapper.find('table tbody tr').at(0);
       const expireOption = dataRow.find('.dropdown-menu.show a').at(1);
       expect(expireOption.text()).toEqual('Expire');
       expect(expireOption.html()).toEqual(expect.stringContaining('disabled'));
     });
 
-    it('Enabled Expire entitlement button', () => {
+    it('Enabled Expire entitlement button', async () => {
       // We're only checking row 1 of the table since the expire button is not disabled
       let dataRow = wrapper.find('table tbody tr').at(1);
       dataRow.find('.dropdown button').simulate('click');
+      await waitForComponentToPaint(wrapper);
       dataRow = wrapper.find('table tbody tr').at(1);
       const expireOption = dataRow.find('.dropdown-menu.show a').at(1);
       expect(expireOption.text()).toEqual('Expire');
@@ -143,6 +145,7 @@ describe('Entitlements V2 Listing', () => {
       // We're only checking row 0 of the table since the Reissue button is not disabled
       let dataRow = wrapper.find('table tbody tr').at(0);
       dataRow.find('.dropdown button').simulate('click');
+      await waitForComponentToPaint(wrapper);
       dataRow = wrapper.find('table tbody tr').at(0);
       const expireOption = dataRow.find('.dropdown-menu.show a').at(0);
       expect(expireOption.text()).toEqual('Reissue');
@@ -157,10 +160,11 @@ describe('Entitlements V2 Listing', () => {
       expect(reissueFormModal.prop('open')).toEqual(false);
     });
 
-    it('Disabled Reissue entitlement button', () => {
+    it('Disabled Reissue entitlement button', async () => {
       // We're only checking row 1 of the table since it has the button Reissue Button disabled
       let dataRow = wrapper.find('table tbody tr').at(1);
       dataRow.find('.dropdown button').simulate('click');
+      await waitForComponentToPaint(wrapper);
       dataRow = wrapper.find('table tbody tr').at(1);
       const expireOption = dataRow.find('.dropdown-menu.show a').at(0);
       expect(expireOption.text()).toEqual('Reissue');
@@ -185,7 +189,6 @@ describe('Entitlements V2 Listing', () => {
       courseSummary.find('button.btn-link').simulate('click');
       courseSummary = wrapper.find('CourseSummary');
       expect(courseSummary).toEqual({});
-      apiMock.mockReset();
     });
 
     it('Unsuccessful course summary fetch', async () => {
@@ -210,7 +213,6 @@ describe('Entitlements V2 Listing', () => {
 
       const alert = wrapper.find('CourseSummary').find('.alert');
       expect(alert.text()).toEqual("We couldn't find summary data for this Course.");
-      apiMock.mockReset();
     });
   });
 });

@@ -5,6 +5,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { enrollmentsData } from './test/enrollments';
 import { downloadableCertificate } from './test/certificates';
 import verifiedNameHistoryData from './test/verifiedNameHistory';
+import { v2OnboardingStatusData } from './test/onboardingStatus';
 import * as api from './api';
 import * as urls from './urls';
 
@@ -103,6 +104,39 @@ describe('API', () => {
     it('Unexpected error fetching enrollments', async () => {
       const response = await api.getOnboardingStatus(enrollmentErrors, testUsername);
       expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'Error while fetching data' });
+    });
+  });
+
+  describe('V2 Onboarding Status Fetch', () => {
+    const expectedSuccessResponse = v2OnboardingStatusData;
+    const url = urls.getV2OnboardingStatusUrl(testUsername);
+    it('Successful Fetch ', async () => {
+      mockAdapter.onGet(url).reply(200, expectedSuccessResponse);
+
+      const response = await api.getV2OnboardingStatus(testUsername);
+      expect(response).toEqual(expectedSuccessResponse);
+    });
+
+    it('No Active Paid Enrollment ', async () => {
+      mockAdapter.onGet(url).reply(() => throwError(404, 'Missing Records'));
+      const defaultResponse = {
+        verified_in: null,
+        current_status: null,
+        error: 'Missing Records',
+      };
+      const response = await api.getV2OnboardingStatus(testUsername);
+      expect(response).toEqual(defaultResponse);
+    });
+
+    it('returns a server error with default message', async () => {
+      const defaultResponse = {
+        verified_in: null,
+        current_status: null,
+        error: 'Error while fetching data',
+      };
+      mockAdapter.onGet(url).reply(() => throwError(500));
+      const response = await api.getV2OnboardingStatus(testUsername);
+      expect(response).toEqual(defaultResponse);
     });
   });
 
