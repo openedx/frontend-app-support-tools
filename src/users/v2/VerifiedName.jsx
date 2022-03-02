@@ -38,7 +38,7 @@ export default function VerifiedName({ username }) {
       profileName: result.profileName,
       status: result.status,
       idvAttemptId: result.verificationAttemptId,
-      proctoringAttemptId: result.proctoringAttemptId,
+      proctoringAttemptId: result.proctoredExamAttemptId,
       createdAt: formatDate(result.created),
     }));
     setVerifiedNameHistoryData(tableData);
