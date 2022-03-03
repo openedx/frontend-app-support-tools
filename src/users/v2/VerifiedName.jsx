@@ -3,17 +3,20 @@ import PropTypes from 'prop-types';
 
 import { camelCaseObject } from '@edx/frontend-platform';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
-import { Modal, Hyperlink } from '@edx/paragon';
+import {
+  Button, Modal, Hyperlink, OverlayTrigger, Popover,
+} from '@edx/paragon';
 
 import PageLoading from '../../components/common/PageLoading';
 import TableV2 from '../../components/Table';
 import { formatDate } from '../../utils';
-import { getVerifiedNameHistory } from '../data/api';
+import { getVerifiedNameHistory, getVerificationAttemptDetailsById } from '../data/api';
 
 export default function VerifiedName({ username }) {
   const [verifiedNameData, setVerifiedNameData] = useState(null);
   const [verifiedNameHistoryData, setVerifiedNameHistoryData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [verificationAttemptDetails, setVerificationAttemptDetails] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -31,17 +34,48 @@ export default function VerifiedName({ username }) {
     };
   }, [username]);
 
-  // Modal to display verified name history
-  const openVerifiedNameModal = (data) => {
-    const tableData = data.map(result => ({
+  const VerifiedNameHistoryTableData = useMemo(() => verifiedNameHistoryData.map(
+    result => ({
       verifiedName: result.verifiedName,
       profileName: result.profileName,
       status: result.status,
-      idvAttemptId: result.verificationAttemptId,
+      idvAttemptId: result.verificationAttemptId ? (
+        <OverlayTrigger
+          placement="right"
+          trigger="hover"
+          overlay={(
+            <Popover id={`${result.verificationAttemptId}-details-tooltip`} aria-hidden="true">
+              <Popover.Title as="h5">{verificationAttemptDetails[result.verificationAttemptId].status}</Popover.Title>
+              <Popover.Content data-testid="verificationAttemptTooltip">
+                {verificationAttemptDetails[result.verificationAttemptId].message}
+              </Popover.Content>
+            </Popover>
+          )}
+        >
+          <Button variant="link" size="inline">
+            {result.verificationAttemptId}
+          </Button>
+        </OverlayTrigger>
+      ) : '',
       proctoringAttemptId: result.proctoredExamAttemptId,
       createdAt: formatDate(result.created),
-    }));
-    setVerifiedNameHistoryData(tableData);
+    }),
+  ), [verifiedNameHistoryData, verificationAttemptDetails]);
+
+  // Modal to display verified name history
+  const openVerifiedNameModal = async (data) => {
+    for (let idx = 0; idx < data.length; idx++) {
+      const historyItem = data[idx];
+      if (historyItem.verificationAttemptId && !(historyItem.verificationAttemptId in verificationAttemptDetails)) {
+        // eslint-disable-next-line no-await-in-loop
+        await getVerificationAttemptDetailsById(historyItem.verificationAttemptId).then((response) => {
+          const camelCaseDetailsData = camelCaseObject(response);
+          verificationAttemptDetails[historyItem.verificationAttemptId] = camelCaseDetailsData;
+          setVerificationAttemptDetails(verificationAttemptDetails);
+        });
+      }
+    }
+    setVerifiedNameHistoryData(data);
     setIsModalOpen(true);
   };
 
@@ -120,7 +154,7 @@ export default function VerifiedName({ username }) {
         dialogClassName="modal-xl modal-dialog-centered justify-content-center"
         body={(
           <TableV2
-            data={verifiedNameHistoryData}
+            data={VerifiedNameHistoryTableData}
             columns={verifiedNameHistoryColumns}
             styleName="idv-table"
           />

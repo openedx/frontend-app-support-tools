@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import VerifiedName from './VerifiedName';
 import verifiedNameHistory from '../data/test/verifiedNameHistory';
@@ -34,16 +35,62 @@ describe('Verified Name', () => {
       history: verifiedNameHistory.results,
     };
 
+    const idVerificationAttemptDetails = {
+      status: 'denied',
+      message: '[{"generalReasons": ["Name mismatch"]}]',
+    };
+
     jest.spyOn(api, 'getVerifiedNameHistory').mockResolvedValueOnce(verifiedNameData);
+    jest.spyOn(api, 'getVerificationAttemptDetailsById').mockResolvedValueOnce(idVerificationAttemptDetails);
     render(<VerifiedNameWrapper {...props} />);
 
     const historyButton = await screen.findByText('Show');
 
-    fireEvent.click(historyButton);
+    await act(async () => {
+      fireEvent.click(historyButton);
+    });
 
     // Profile name and denied verified name are visible in history modal
     const profileName = await screen.findAllByText(/jon doe/i);
     expect(profileName.length).toEqual(2);
     await screen.findByText(/j doe/i);
+  });
+
+  it('displays hover popup to show ID Verification details', async () => {
+    const verifiedNameData = {
+      verifiedName: 'Jonathan Doe',
+      status: 'approved',
+      verificationType: 'Proctoring',
+      history: verifiedNameHistory.results,
+    };
+    const idVerificationAttemptDetails = {
+      status: 'denied',
+      message: '[{"generalReasons": ["Name mismatch"]}]',
+    };
+    jest.spyOn(api, 'getVerifiedNameHistory').mockResolvedValueOnce(verifiedNameData);
+    const getVerificationAPICallSpy = jest.spyOn(
+      api,
+      'getVerificationAttemptDetailsById',
+    ).mockResolvedValueOnce(idVerificationAttemptDetails);
+
+    await act(async () => {
+      render(<VerifiedNameWrapper {...props} />);
+    });
+
+    const historyButton = await screen.findByText('Show');
+    await act(async () => {
+      fireEvent.click(historyButton);
+    });
+
+    expect(getVerificationAPICallSpy).toHaveBeenCalledWith(
+      verifiedNameHistory.results[1].verification_attempt_id,
+    );
+
+    const hoverLink = await screen.getByText(verifiedNameHistory.results[1].verification_attempt_id);
+    await act(async () => {
+      fireEvent.mouseOver(hoverLink);
+    });
+
+    await screen.getByTestId('verificationAttemptTooltip');
   });
 });
