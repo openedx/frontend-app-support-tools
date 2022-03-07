@@ -65,7 +65,7 @@ export default function ProgramInspector({ location }) {
   const fetchInspectorData = (param) => {
     if (param) {
       getProgramEnrollmentsInspector({
-        param,
+        params: param,
       }).then((response) => {
         setError(response.error);
         setActiveOrgKey(response.org_keys);
