@@ -108,7 +108,9 @@ export async function getUser(userIdentifier) {
     console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
 
     let notFoundErrorText = null;
-    if (isEmail(userIdentifier)) {
+    if (JSON.parse(error.customAttributes?.httpErrorResponseData)) {
+      notFoundErrorText = JSON.parse(error.customAttributes.httpErrorResponseData).error_msg;
+    } else if (isEmail(userIdentifier)) {
       notFoundErrorText = messages.USER_EMAIL_IDENTIFIER_NOT_FOUND_ERROR;
     } else if (isValidLMSUserID(userIdentifier)) {
       notFoundErrorText = messages.LMS_USER_ID_IDENTIFIER_NOT_FOUND_ERROR;
