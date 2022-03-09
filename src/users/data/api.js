@@ -527,17 +527,18 @@ export async function postEnrollment({
     );
     return data;
   } catch (error) {
+    let errorMessage;
     if (error.customAttributes.httpErrorStatus === 400) {
+      errorMessage = JSON.parse(error.customAttributes.httpErrorResponseData);
       // eslint-disable-next-line no-console
-      console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
+      console.log(errorMessage);
     }
     return {
       errors: [
         {
           code: null,
           dismissible: true,
-          text:
-            'There was an error creating the enrollment. Check the JavaScript console for detailed errors.',
+          text: errorMessage || 'An unexpected error occurred',
           type: 'danger',
           topic: 'createEnrollments',
         },
