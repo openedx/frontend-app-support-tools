@@ -815,12 +815,25 @@ describe('API', () => {
         const expectedError = {
           code: null,
           dismissible: true,
-          text:
-          'There was an error creating the enrollment. Check the JavaScript console for detailed errors.',
+          text: 'An unexpected error occurred',
           type: 'danger',
           topic: 'enrollments',
         };
         mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(() => throwError(400, ''));
+        const response = await api.postEnrollment({ ...apiCallData });
+        expect(...response.errors).toEqual({ ...expectedError, topic: 'createEnrollments' });
+      });
+
+      it('Unsuccessful enrollment create with error message', async () => {
+        const expectedError = {
+          code: null,
+          dismissible: true,
+          text:
+          'User already enrolled',
+          type: 'danger',
+          topic: 'enrollments',
+        };
+        mockAdapter.onPost(enrollmentsApiUrl, requestData).reply(() => throwError(400, 'User already enrolled'));
         const response = await api.postEnrollment({ ...apiCallData });
         expect(...response.errors).toEqual({ ...expectedError, topic: 'createEnrollments' });
       });
