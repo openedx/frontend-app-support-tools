@@ -21,7 +21,7 @@ export default function ProgramInspector({ location }) {
       .map((queryParams) => queryParams.split('=')),
   );
 
-  const [ssoRecord, setSsoRecord] = useState(undefined);
+  const [ssoRecords, setSsoRecords] = useState([]);
   const [error, setError] = useState(undefined);
   const [learnerProgramEnrollment, setLearnerProgramEnrollment] = useState(undefined);
   const [username, setUsername] = useState(params.get('edx_user'));
@@ -42,7 +42,7 @@ export default function ProgramInspector({ location }) {
       setUsername(undefined);
       setExternalUserKey(undefined);
       setLearnerProgramEnrollment(undefined);
-      setSsoRecord(undefined);
+      setSsoRecords([]);
       history.push('/v2/programs');
     } else {
       const newLink = `/v2/programs?edx_user=${
@@ -90,12 +90,20 @@ export default function ProgramInspector({ location }) {
   }, []);
 
   useEffect(() => {
-    setSsoRecord(null);
-    if (learnerProgramEnrollment && learnerProgramEnrollment.user) {
+    setSsoRecords([]);
+    if (
+      learnerProgramEnrollment
+      && learnerProgramEnrollment.user
+      && learnerProgramEnrollment.user.sso_list
+    ) {
       getSsoRecords(learnerProgramEnrollment.user.username).then((response) => {
         response.map((data) => {
-          if (data.provider === activeOrgKey) {
-            setSsoRecord(data);
+          if (
+            learnerProgramEnrollment.user.sso_list.length
+            && learnerProgramEnrollment.user.sso_list.some(
+              (sso) => sso.uid === data.uid,
+            )) {
+            setSsoRecords((arr) => [...arr, data]);
           }
           return data;
         });
@@ -188,16 +196,16 @@ export default function ProgramInspector({ location }) {
                 </div>
               )}
             </div>
-            {ssoRecord ? (
-              <div className="col-sm-6 ml-1">
-                <h4>SSO Records</h4>
-                <SingleSignOnRecordCard ssoRecord={ssoRecord} />
-              </div>
-            ) : (
-              <div className="col-sm-6 ml-1">
+            <div className="col-sm-6 sso-records ml-1">
+              <h4>SSO Records</h4>
+              {ssoRecords && ssoRecords.length ? (
+                ssoRecords.map((ssoRecord) => (
+                  <SingleSignOnRecordCard ssoRecord={ssoRecord} />
+                ))
+              ) : (
                 <Alert variant="danger">SSO Record Not Found</Alert>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <div className="mt-2">
             {learnerProgramEnrollment

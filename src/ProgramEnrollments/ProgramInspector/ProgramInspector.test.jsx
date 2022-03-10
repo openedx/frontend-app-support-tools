@@ -144,4 +144,53 @@ describe('Program Inspector', () => {
 
     history.push.mockReset();
   });
+
+  it('render nothing when no username or external_user_key', async () => {
+    history.push = jest.fn();
+    apiMock = jest
+      .spyOn(api, 'getProgramEnrollmentsInspector')
+      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+
+    await waitForComponentToPaint(wrapper);
+
+    wrapper.find("input[name='username']").simulate('change',
+      { target: { value: undefined } });
+    wrapper.find("input[name='externalKey']").simulate('change',
+      { target: { value: undefined } });
+    wrapper.find("select[name='orgKey']").simulate('change',
+      { target: { value: data.orgKey } });
+    wrapper.find('button.btn-primary').simulate('click');
+
+    expect(history.push).toHaveBeenCalledWith(
+      '/v2/programs',
+    );
+    await waitForComponentToPaint(wrapper);
+    expect(wrapper.find('.inspector-name-row').exists()).toBeFalsy();
+    history.push.mockReset();
+  });
+
+  it('check if SSO is present', async () => {
+    history.push = jest.fn();
+    apiMock = jest
+      .spyOn(api, 'getProgramEnrollmentsInspector')
+      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+
+    await waitForComponentToPaint(wrapper);
+
+    wrapper.find("input[name='username']").simulate('change',
+      { target: { value: data.username } });
+    wrapper.find("select[name='orgKey']").simulate('change',
+      { target: { value: data.orgKey } });
+    wrapper.find('button.btn-primary').simulate('click');
+
+    await waitForComponentToPaint(wrapper);
+    const ssoRecords = wrapper.find('.sso-records');
+    expect(ssoRecords.find('h4').at(0).text()).toEqual('SSO Records');
+    expect(ssoRecords.find('h3').text()).toEqual(
+      'tpa-saml (Provider)',
+    );
+    history.push.mockReset();
+  });
 });

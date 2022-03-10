@@ -47,6 +47,11 @@ export const programInspectorSuccessResponse = {
     user: {
       email: 'verified@example.com',
       username: 'verified',
+      sso_list: [
+        {
+          uid: 'edx-inc:test@edx.org',
+        },
+      ],
     },
   },
   org_keys: 'testX',
