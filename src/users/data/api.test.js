@@ -8,6 +8,7 @@ import verifiedNameHistoryData from './test/verifiedNameHistory';
 import { v2OnboardingStatusData } from './test/onboardingStatus';
 import * as api from './api';
 import * as urls from './urls';
+import * as messages from '../../userMessages/messages';
 
 describe('API', () => {
   const testUsername = 'username';
@@ -446,6 +447,25 @@ describe('API', () => {
       mockAdapter.onGet(`${userAccountApiBaseUrl}/${testUsername}`).reply(() => throwError(404, ''));
       try {
         await api.getUser(testUsername);
+      } catch (error) {
+        expect(error.userError).toEqual(expectedUserError);
+      }
+    });
+
+    it('Retired Email retrieval 404 failure', async () => {
+      const expectedUserError = {
+        code: null,
+        dismissible: true,
+        text: messages.USER_RETIRED_EMAIL_IDENTIFIER_ERROR,
+        type: 'error',
+        topic: 'general',
+      };
+      // The retired email does not fetch an account hence we're showing the error message that the account is retired
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(
+        () => throwError(404, { error_msg: messages.USER_RETIRED_EMAIL_IDENTIFIER_ERROR }),
+      );
+      try {
+        await api.getUser(testEmail);
       } catch (error) {
         expect(error.userError).toEqual(expectedUserError);
       }
