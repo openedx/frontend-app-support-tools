@@ -55,25 +55,23 @@ export default function LicenseCard({
     tableData && tableData.length ? (
       <Card className="pt-2 px-3 mb-1 w-100">
         <Card.Body className="p-0">
-          <Card.Title as="h3" className="btn-header mt-4">
+          <Card.Header as="h3" className="btn-header mt-4">
             {licenseRecord.subscriptionPlanTitle}
-          </Card.Title>
+          </Card.Header>
           <Row>
             <Col>
-              <Card.Subtitle align="left" as="h4">
+              <Card.Header align="left" as="h4">
                 <Badge variant={statusMapping[licenseRecord.status]} className="badge-status">{licenseRecord.status}</Badge>
-              </Card.Subtitle>
+              </Card.Header>
             </Col>
             <Col>
-              <Card.Subtitle align="right" as="h4">
-                Plan Expiration: {formatDate(licenseRecord.subscriptionPlanExpirationDate)}
-              </Card.Subtitle>
+              <Card.Header align="right" as="h4" subTitle={"Plan Expiration: " + formatDate(licenseRecord.subscriptionPlanExpirationDate)}/>
             </Col>
           </Row>
 
-          <Card.Title as="h5" className="btn-header mt-4">
+          <Card.Header as="h5" className="btn-header mt-4">
             Additional Data
-          </Card.Title>
+          </Card.Header>
           <TableV2
             data={tableData}
             columns={columns}

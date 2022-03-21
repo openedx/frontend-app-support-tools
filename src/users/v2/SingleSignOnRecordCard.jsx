@@ -42,25 +42,23 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
     ssoRecord ? (
       <Card className="pt-2 px-3 mb-1 w-100">
         <Card.Body className="p-0">
-          <Card.Title as="h3" className="btn-header mt-4">
+          <Card.Header as="h3" className="btn-header mt-4">
             {ssoRecord.provider} <span className="h5 text-muted">(Provider)</span>
-          </Card.Title>
+          </Card.Header>
           <Row>
             <Col>
-              <Card.Subtitle align="left" as="h4">
+              <Card.Header align="left" as="h4">
                 {ssoRecord.uid} <span className="h6 text-muted">(UID)</span>
-              </Card.Subtitle>
+              </Card.Header>
             </Col>
             <Col>
-              <Card.Subtitle align="right" as="h4">
-                {formatDate(ssoRecord.modified)} <span className="h5 text-muted">(Last Modified)</span>
-              </Card.Subtitle>
+              <Card.Header align="right" as="h4" subTitle={formatDate(ssoRecord.modified) + "<span className=\"h5 text-muted\"> (Last Modified)</span>" } />
             </Col>
           </Row>
 
-          <Card.Title as="h5" className="btn-header mt-4">
+          <Card.Header as="h5" className="btn-header mt-4">
             Additional Data
-          </Card.Title>
+          </Card.Header>
 
           <TableV2
             styleName="sso-table"
