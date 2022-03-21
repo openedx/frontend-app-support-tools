@@ -65,7 +65,7 @@ export default function LicenseCard({
               </Card.Header>
             </Col>
             <Col>
-              <Card.Header align="right" as="h4" subTitle={"Plan Expiration: " + formatDate(licenseRecord.subscriptionPlanExpirationDate)}/>
+              <Card.Header align="right" as="h4" subTitle={`Plan Expiration: ${formatDate(licenseRecord.subscriptionPlanExpirationDate)}`} />
             </Col>
           </Row>
 

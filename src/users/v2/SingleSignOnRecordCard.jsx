@@ -52,7 +52,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
               </Card.Header>
             </Col>
             <Col>
-              <Card.Header align="right" as="h4" subTitle={formatDate(ssoRecord.modified) + "<span className=\"h5 text-muted\"> (Last Modified)</span>" } />
+              <Card.Header align="right" as="h4" subTitle={`${formatDate(ssoRecord.modified)} <span className="h5 text-muted"> (Last Modified)</span>`} />
             </Col>
           </Row>
 
