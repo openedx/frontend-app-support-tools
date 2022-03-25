@@ -86,3 +86,13 @@ export function extractMessageTuple(message) {
     .replace(/ /g, '')
     .split(',');
 }
+
+export function extractParams(searchParams) {
+  // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2: value2}
+  return new Map(
+    searchParams
+      .slice(1) // removes '?' mark from start
+      .split('&')
+      .map(queryParams => queryParams.split('=')),
+  );
+}

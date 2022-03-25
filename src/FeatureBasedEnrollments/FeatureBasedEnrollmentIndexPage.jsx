@@ -12,17 +12,12 @@ import { Input, Button } from '@edx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
 import AlertList from '../userMessages/AlertList';
-import { isValidCourseID } from '../utils';
+import { extractParams, isValidCourseID } from '../utils';
 import FeatureBasedEnrollment from './FeatureBasedEnrollment';
 import { FEATURE_BASED_ENROLLMENT_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
 
 export default function FeatureBasedEnrollmentIndexPage({ location }) {
-  const params = new Map(
-    location.search
-      .slice(1) // removes '?' mark from start
-      .split('&')
-      .map(queryParams => queryParams.split('=')),
-  );
+  const params = extractParams(location.search);
 
   const searchRef = useRef();
   const { add, clear } = useContext(UserMessagesContext);
