@@ -10,6 +10,7 @@ import {
   sortedCompareDates,
   isValidCourseID,
   extractMessageTuple,
+  extractParams,
 } from './index';
 
 describe('Test Utils', () => {
@@ -190,5 +191,22 @@ describe('Test Utils', () => {
       'external_user_key',
       'lms_username',
     ]);
+  });
+
+  describe('Extract Search Params', () => {
+    it('valid search param', () => {
+      const query = '?param1=test&param2=test2&param3=';
+      const params = extractParams(query);
+      expect(params.size).toEqual(3);
+      expect(params.get('param1')).toEqual('test');
+      expect(params.get('param2')).toEqual('test2');
+      expect(params.get('param3')).toEqual('');
+    });
+    it('no search param', () => {
+      const query = '';
+      const params = extractParams(query);
+      expect(params.size).toEqual(1);
+      expect(params.get('')).toEqual(undefined);
+    });
   });
 });

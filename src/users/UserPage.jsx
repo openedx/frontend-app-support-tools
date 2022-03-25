@@ -8,19 +8,15 @@ import PageLoading from '../components/common/PageLoading';
 import AlertList from '../userMessages/AlertList';
 import { USER_IDENTIFIER_INVALID_ERROR } from '../userMessages/messages';
 import UserMessagesContext from '../userMessages/UserMessagesContext';
-import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
+import {
+  isEmail, isValidUsername, isValidLMSUserID, extractParams,
+} from '../utils/index';
 import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
 
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage({ location }) {
-  // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2=value2}
-  const params = new Map(
-    location.search
-      .slice(1) // removes '?' mark from start
-      .split('&')
-      .map(queryParams => queryParams.split('=')),
-  );
+  const params = extractParams(location.search);
 
   if (params.has('email')) {
     const email = params.get('email');

@@ -12,15 +12,10 @@ import {
   getSAMLProviderList,
 } from './data/api';
 import VerifiedName from '../../users/v2/VerifiedName';
+import { extractParams } from '../../utils';
 
 export default function ProgramInspector({ location }) {
-  const params = new Map(
-    location.search
-      .slice(1) // removes '?' mark from start
-      .split('&')
-      .map((queryParams) => queryParams.split('=')),
-  );
-
+  const params = extractParams(location.search);
   const [ssoRecords, setSsoRecords] = useState([]);
   const [error, setError] = useState(undefined);
   const [learnerProgramEnrollment, setLearnerProgramEnrollment] = useState(undefined);

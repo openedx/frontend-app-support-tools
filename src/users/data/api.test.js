@@ -908,25 +908,11 @@ describe('API', () => {
         const response = await api.patchEnrollment({ ...apiCallData });
         expect(response).toEqual(expectedSuccessResponse);
       });
+    });
+  });
 
-      it('Successful license fetch with data', async () => {
-        const expectedSuccessResponse = [
-          {
-            status: 'unassigned',
-            assigned_date: null,
-            activation_date: null,
-            revoked_date: null,
-            last_remind_date: null,
-            subscription_plan_title: 'test',
-            subscription_plan_expiration_date: '2021-04-01',
-            activation_link: 'http://localhost:8734/test/licenses/None/activate',
-          },
-        ];
-        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(200, expectedSuccessResponse);
-        const response = await api.getLicense(testEmail);
-        expect(response).toEqual({ results: expectedSuccessResponse, status: '' });
-      });
-
+  describe('License Manager', () => {
+    describe('Unsuccessful License Fetch', () => {
       it('Unsuccessful license fetch when no email provided', async () => {
         mockAdapter.onPost(licensesApiUrl, { user_email: null }).reply(() => throwError(400, ''));
         const response = await api.getLicense(null);
@@ -955,6 +941,26 @@ describe('API', () => {
         mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(() => throwError(500, ''));
         const response = await api.getLicense(testEmail);
         expect(response).toEqual({ results: [], status: 'Unable to connect to the service' });
+      });
+    });
+
+    describe('Successful License Fetch', () => {
+      it('Successful license fetch with data', async () => {
+        const expectedSuccessResponse = [
+          {
+            status: 'unassigned',
+            assigned_date: null,
+            activation_date: null,
+            revoked_date: null,
+            last_remind_date: null,
+            subscription_plan_title: 'test',
+            subscription_plan_expiration_date: '2021-04-01',
+            activation_link: 'http://localhost:8734/test/licenses/None/activate',
+          },
+        ];
+        mockAdapter.onPost(licensesApiUrl, { user_email: testEmail }).reply(200, expectedSuccessResponse);
+        const response = await api.getLicense(testEmail);
+        expect(response).toEqual({ results: expectedSuccessResponse, status: '' });
       });
     });
   });
