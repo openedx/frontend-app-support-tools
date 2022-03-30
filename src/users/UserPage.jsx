@@ -10,9 +10,6 @@ import { USER_IDENTIFIER_INVALID_ERROR } from '../userMessages/messages';
 import UserMessagesContext from '../userMessages/UserMessagesContext';
 import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
 import { getAllUserData } from './data/api';
-import Enrollments from './enrollments/Enrollments';
-import Licenses from './licenses/Licenses';
-import Entitlements from './entitlements/Entitlements';
 import UserSearch from './UserSearch';
 import UserSummary from './UserSummary';
 
@@ -37,9 +34,6 @@ export default function UserPage({ location }) {
   const [searching, setSearching] = useState(false);
   const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
-  const [showEnrollments, setShowEnrollments] = useState(true);
-  const [showEntitlements, setShowEntitlements] = useState(false);
-  const [showLicenses, setShowLicenses] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
   function pushHistoryIfChanged(nextUrl) {
@@ -116,28 +110,11 @@ export default function UserPage({ location }) {
 
   const handleSearchInputChange = useCallback((searchValue) => {
     setSearching(true);
-    setShowEntitlements(false);
-    setShowEnrollments(true);
-    setShowLicenses(false);
     handleFetchSearchResults(searchValue);
   });
 
   const handleUserSummaryChange = useCallback(() => {
     setSearching(true);
-    handleFetchSearchResults(userIdentifier);
-  });
-
-  const handleEntitlementsChange = useCallback(() => {
-    setShowEntitlements(true);
-    setShowLicenses(true);
-    setShowEnrollments(false);
-    handleFetchSearchResults(userIdentifier);
-  });
-
-  const handleEnrollmentsChange = useCallback(() => {
-    setShowEntitlements(false);
-    setShowLicenses(false);
-    setShowEnrollments(true);
     handleFetchSearchResults(userIdentifier);
   });
 
@@ -177,21 +154,6 @@ export default function UserPage({ location }) {
             userData={data.user}
             changeHandler={handleUserSummaryChange}
           />
-          <Licenses
-            userEmail={data.user.email}
-            expanded={showLicenses}
-          />
-          <Entitlements
-            user={data.user.username}
-            changeHandler={handleEntitlementsChange}
-            expanded={showEntitlements}
-          />
-          <Enrollments
-            user={data.user.username}
-            changeHandler={handleEnrollmentsChange}
-            expanded={showEnrollments}
-          />
-
         </>
       )}
       {!loading && !userIdentifier && (
