@@ -1,4 +1,4 @@
-import { camelCaseObject, history } from '@edx/frontend-platform';
+import { history } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext, useEffect, useState,
@@ -11,7 +11,6 @@ import UserMessagesContext from '../userMessages/UserMessagesContext';
 import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
 import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
-import UserSummary from './UserSummary';
 
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage({ location }) {
@@ -32,7 +31,6 @@ export default function UserPage({ location }) {
     params.get('username') || params.get('email') || params.get('lms_user_id') || undefined,
   );
   const [searching, setSearching] = useState(false);
-  const [data, setData] = useState({ enrollments: null, entitlements: null });
   const [loading, setLoading] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
@@ -96,7 +94,6 @@ export default function UserPage({ location }) {
       setUserIdentifier(searchValue);
       setLoading(true);
       getAllUserData(searchValue).then((result) => {
-        setData(camelCaseObject(result));
         processSearchResult(searchValue, result);
       });
       // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
@@ -111,11 +108,6 @@ export default function UserPage({ location }) {
   const handleSearchInputChange = useCallback((searchValue) => {
     setSearching(true);
     handleFetchSearchResults(searchValue);
-  });
-
-  const handleUserSummaryChange = useCallback(() => {
-    setSearching(true);
-    handleFetchSearchResults(userIdentifier);
   });
 
   useEffect(() => {
@@ -148,14 +140,6 @@ export default function UserPage({ location }) {
         searchHandler={handleSearchInputChange}
       />
       {loading && <PageLoading srMessage="Loading" />}
-      {!loading && data.user && data.user.username && (
-        <>
-          <UserSummary
-            userData={data.user}
-            changeHandler={handleUserSummaryChange}
-          />
-        </>
-      )}
       {!loading && !userIdentifier && (
         <section>
           <p>Please search for a username or email.</p>
