@@ -1,12 +1,3 @@
-const onboardingStatusData = {
-  onboardingStatus: 'verified',
-  expirationDate: null,
-  onboardingLink: '/course/course-uuid/some-route',
-  onboardingPastDue: false,
-  onboardingReleaseDate: new Date().toISOString(),
-  reviewRequirementsUrl: null,
-};
-
 const v2OnboardingStatusData = {
   verifiedIn: {
     onboardingStatus: 'verified',
@@ -32,4 +23,4 @@ const v2OnboardingStatusData = {
   },
 };
 
-export { onboardingStatusData, v2OnboardingStatusData };
+export default v2OnboardingStatusData;

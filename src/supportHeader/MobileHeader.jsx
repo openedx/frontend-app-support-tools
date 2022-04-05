@@ -8,7 +8,6 @@ import { LinkedLogo, Logo } from './Logo';
 
 // Assets
 import { MenuIcon } from './Icons';
-import ToggleVersion from './ToggleVersion';
 
 export default class MobileHeader extends React.Component {
   renderMainMenu() {
@@ -55,7 +54,6 @@ export default class MobileHeader extends React.Component {
 
     return (
       <>
-        <ToggleVersion />
         <Dropdown>
           <Dropdown.Toggle showLabel={false} size="md" as={AvatarButton} src={avatar}>
             {username}

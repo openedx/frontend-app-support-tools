@@ -9,7 +9,7 @@ import {
   PROGRAM_ENROLLMENT_TAB,
   TAB_PATH_MAP,
 } from './constants';
-import UserPage from '../users/v2/UserPage';
+import UserPage from '../users/UserPage';
 import FeatureBasedEnrollmentIndexPage from '../FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import ProgramEnrollmentsIndexPage from '../ProgramEnrollments/ProgramEnrollmentsIndexPage';
 

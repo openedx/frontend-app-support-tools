@@ -5,7 +5,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { enrollmentsData } from './test/enrollments';
 import { downloadableCertificate } from './test/certificates';
 import verifiedNameHistoryData from './test/verifiedNameHistory';
-import { v2OnboardingStatusData } from './test/onboardingStatus';
+import v2OnboardingStatusData from './test/onboardingStatus';
 import * as api from './api';
 import * as urls from './urls';
 import * as messages from '../../userMessages/messages';
