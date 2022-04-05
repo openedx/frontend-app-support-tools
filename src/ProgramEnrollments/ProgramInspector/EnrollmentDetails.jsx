@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Hyperlink } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import TableV2 from '../../components/Table';
+import Table from '../../components/Table';
 import {
   CourseColumns,
   EnrollmentColumns,
@@ -16,7 +16,7 @@ export default function EnrollmentDetails({ enrollments }) {
         <h3>
           Program: {enrollment.program_name} ({enrollment.program_uuid})
         </h3>
-        <TableV2
+        <Table
           columns={EnrollmentColumns}
           data={[
             {
@@ -30,7 +30,7 @@ export default function EnrollmentDetails({ enrollments }) {
         />
         <div>
           <h5>Program Course Enrollments</h5>
-          <TableV2
+          <Table
             columns={CourseColumns}
             data={enrollment.program_course_enrollments.map(
               (programCourseEnrollment) => ({

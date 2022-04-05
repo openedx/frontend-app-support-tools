@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TableV2 from '../components/Table';
+import Table from '../components/Table';
 import { extractMessageTuple } from '../utils/index';
 
 export default function LinkProgramEnrollmentsTable({
@@ -12,7 +12,7 @@ export default function LinkProgramEnrollmentsTable({
       {successMessage && successMessage.length > 0 && (
         <div className="my-2 success-message">
           <h4>Successes</h4>
-          <TableV2
+          <Table
             columns={[
               {
                 Header: 'External User Key',
@@ -42,7 +42,7 @@ export default function LinkProgramEnrollmentsTable({
       {errorMessage && errorMessage.length > 0 && (
         <div className="my-2 error-message">
           <h4>Errors</h4>
-          <TableV2
+          <Table
             columns={[
               {
                 Header: 'Error Messages',

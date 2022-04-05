@@ -21,7 +21,7 @@ describe('Support Tools Main tab', () => {
   let wrapper; let location;
 
   beforeEach(() => {
-    location = { pathname: '/v2', search: '' };
+    location = { pathname: '/', search: '' };
   });
 
   afterEach(() => {

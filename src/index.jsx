@@ -10,11 +10,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
 
-import SupportHomePage from './supportHome/SupportHomePage';
 import Header from './supportHeader';
 import appMessages from './i18n';
 import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
-import UserPageV2 from './users/UserPage';
+import UserPage from './users/UserPage';
 import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
@@ -36,11 +35,10 @@ subscribe(APP_READY, () => {
       <UserMessagesProvider>
         <Header />
         <Switch>
-          <Route exact path="/" component={SupportHomePage} />
-          <Route path="/v2" component={SupportToolsTab} />
-          <Route path="/v2/learner_information" component={UserPageV2} />
-          <Route path="/v2/feature_based_enrollments" component={FBEIndexPage} />
-          <Route path="/v2/program_enrollments" component={ProgramEnrollmentsIndexPage} />
+          <Route path="/" component={SupportToolsTab} />
+          <Route path="/learner_information" component={UserPage} />
+          <Route path="/feature_based_enrollments" component={FBEIndexPage} />
+          <Route path="/program_enrollments" component={ProgramEnrollmentsIndexPage} />
         </Switch>
       </UserMessagesProvider>
     </AppProvider>,

@@ -6,12 +6,12 @@ import {
 import { history } from '@edx/frontend-platform';
 import { getSsoRecords } from '../../users/data/api';
 import EnrollmentDetails from './EnrollmentDetails';
-import SingleSignOnRecordCard from '../../users/v2/SingleSignOnRecordCard';
+import SingleSignOnRecordCard from '../../users/SingleSignOnRecordCard';
 import {
   getProgramEnrollmentsInspector,
   getSAMLProviderList,
 } from './data/api';
-import VerifiedName from '../../users/v2/VerifiedName';
+import VerifiedName from '../../users/VerifiedName';
 import { extractParams } from '../../utils';
 
 export default function ProgramInspector({ location }) {
@@ -38,9 +38,9 @@ export default function ProgramInspector({ location }) {
       setExternalUserKey(undefined);
       setLearnerProgramEnrollment(undefined);
       setSsoRecords([]);
-      history.push('/v2/programs');
+      history.push('/programs');
     } else {
-      const newLink = `/v2/programs?edx_user=${
+      const newLink = `/programs?edx_user=${
         username || ''
       }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
       if (newLink === location.pathname + location.search) {

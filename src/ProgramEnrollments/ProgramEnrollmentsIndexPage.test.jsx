@@ -21,7 +21,7 @@ describe('Program Enrollments Index Page', () => {
   let samlMock;
 
   beforeEach(() => {
-    location = { pathname: '/v2/programs', search: '' };
+    location = { pathname: '/programs', search: '' };
     samlMock = jest
       .spyOn(samlApi, 'getSAMLProviderList')
       .mockImplementationOnce(() => Promise.resolve(samlProvidersResponseValues));

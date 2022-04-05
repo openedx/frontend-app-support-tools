@@ -10,7 +10,7 @@ import UserMessagesContext from '../userMessages/UserMessagesContext';
 import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
 import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
-import LearnerInformation from './v2/LearnerInformation';
+import LearnerInformation from './LearnerInformation';
 import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
 
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}

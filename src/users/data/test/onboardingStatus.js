@@ -1,4 +1,4 @@
-const v2OnboardingStatusData = {
+const OnboardingStatusData = {
   verifiedIn: {
     onboardingStatus: 'verified',
     onboardingLink: '/courses/course-v1:test-course/jump_to/block-v1:test-course+type@sequential+block@12345678',
@@ -23,4 +23,4 @@ const v2OnboardingStatusData = {
   },
 };
 
-export default v2OnboardingStatusData;
+export default OnboardingStatusData;

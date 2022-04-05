@@ -39,7 +39,7 @@ describe('Program Inspector', () => {
 
   beforeEach(() => {
     location = {
-      pathname: '/v2/programs',
+      pathname: '/programs',
       search: '?edx_user=&org_key=&external_user_key=',
     };
     ssoMock = jest
@@ -92,7 +92,7 @@ describe('Program Inspector', () => {
     wrapper.find('button.btn-primary').simulate('click');
 
     expect(history.push).toHaveBeenCalledWith(
-      `/v2/programs?edx_user=${data.username}&org_key=${data.orgKey}&external_user_key=`,
+      `/programs?edx_user=${data.username}&org_key=${data.orgKey}&external_user_key=`,
     );
     await waitForComponentToPaint(wrapper);
     expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
@@ -126,7 +126,7 @@ describe('Program Inspector', () => {
     wrapper.find('button.btn-primary').simulate('click');
 
     expect(history.push).toHaveBeenCalledWith(
-      `/v2/programs?edx_user=&org_key=${data.orgKey}&external_user_key=${data.externalKey}`,
+      `/programs?edx_user=&org_key=${data.orgKey}&external_user_key=${data.externalKey}`,
     );
     await waitForComponentToPaint(wrapper);
     expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
@@ -163,7 +163,7 @@ describe('Program Inspector', () => {
     wrapper.find('button.btn-primary').simulate('click');
 
     expect(history.push).toHaveBeenCalledWith(
-      '/v2/programs',
+      '/programs',
     );
     await waitForComponentToPaint(wrapper);
     expect(wrapper.find('.inspector-name-row').exists()).toBeFalsy();
