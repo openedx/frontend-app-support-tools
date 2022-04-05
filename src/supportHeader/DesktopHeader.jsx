@@ -8,7 +8,6 @@ import { LinkedLogo, Logo } from './Logo';
 
 // Assets
 import { CaretIcon } from './Icons';
-import ToggleVersion from './ToggleVersion';
 
 export default class DesktopHeader extends React.Component {
   renderMainMenu() {
@@ -53,7 +52,6 @@ export default class DesktopHeader extends React.Component {
 
     return (
       <>
-        <ToggleVersion />
         <Dropdown>
           <Dropdown.Toggle as={AvatarButton} src={avatar}>
             {username}
