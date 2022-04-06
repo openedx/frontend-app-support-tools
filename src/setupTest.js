@@ -45,3 +45,8 @@ export const waitForComponentToPaint = async (wrapper) => {
     wrapper.update();
   });
 };
+
+process.on('unhandledRejection', (reason, p) => {
+    // eslint-disable-next-line no-console
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason.stack);
+  });
