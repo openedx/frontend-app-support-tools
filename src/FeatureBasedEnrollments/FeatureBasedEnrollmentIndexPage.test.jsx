@@ -22,7 +22,7 @@ describe('Feature Based Enrollment Index Page', () => {
   const courseId = 'course-v1:testX+test123+2030';
 
   beforeEach(() => {
-    location = { pathname: '/v2/feature_based_enrollments', search: '' };
+    location = { pathname: '/feature_based_enrollments', search: '' };
   });
 
   afterEach(() => {
@@ -65,7 +65,7 @@ describe('Feature Based Enrollment Index Page', () => {
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
     expect(wrapper.find('Card')).toHaveLength(2);
-    expect(history.push).toHaveBeenCalledWith(`/v2/feature_based_enrollments/?course_id=${courseId}`);
+    expect(history.push).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
 
     history.push.mockReset();
   });
@@ -100,7 +100,7 @@ describe('Feature Based Enrollment Index Page', () => {
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
-    expect(history.replace).toHaveBeenCalledWith('/v2/feature_based_enrollments');
+    expect(history.replace).toHaveBeenCalledWith('/feature_based_enrollments');
 
     history.replace.mockReset();
   });
@@ -117,7 +117,7 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
     expect(wrapper.find('.alert').text()).toEqual('Supplied course ID "invalid-value" is either invalid or incorrect.');
-    expect(history.replace).toHaveBeenCalledWith('/v2/feature_based_enrollments');
+    expect(history.replace).toHaveBeenCalledWith('/feature_based_enrollments');
 
     history.replace.mockReset();
   });

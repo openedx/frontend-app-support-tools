@@ -44,7 +44,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         type: 'error',
         topic: 'featureBasedEnrollmentGeneral',
       });
-      history.replace('/v2/feature_based_enrollments');
+      history.replace('/feature_based_enrollments');
       return false;
     }
     return true;
@@ -58,9 +58,9 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
       }
       setSearchValue(inputValue);
       setApiFetchSignal(!apiFetchSignal);
-      pushHistoryIfChanged(`/v2/feature_based_enrollments/?course_id=${inputValue}`);
+      pushHistoryIfChanged(`/feature_based_enrollments/?course_id=${inputValue}`);
     } else if (inputValue === '') {
-      history.replace('/v2/feature_based_enrollments');
+      history.replace('/feature_based_enrollments');
     }
   });
 

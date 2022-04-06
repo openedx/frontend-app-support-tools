@@ -4,7 +4,7 @@ import * as messages from '../../userMessages/messages';
 import * as AppUrls from './urls';
 import { REISSUE } from '../entitlements/EntitlementActions';
 import {
-  isEmail, isValidLMSUserID, isValidUsername, sortedCompareDates,
+  isEmail, isValidLMSUserID, isValidUsername,
 } from '../../utils';
 
 export async function getEntitlements(username, page = 1) {
@@ -322,64 +322,14 @@ export async function getLicense(userEmail) {
   }
 }
 
-export async function getOnboardingStatus(enrollments, username) {
-  const defaultResponse = {
-    onboardingStatus: null,
-    expirationDate: null,
-    onboardingLink: null,
-    onboardingPastDue: null,
-    onboardingReleaseDate: null,
-    reviewRequirementsUrl: null,
-  };
-
-  if (enrollments.errors) {
-    return {
-      ...defaultResponse,
-      onboardingStatus: 'Error while fetching data',
-    };
-  }
-
-  // get most recent paid active enrollment
-  const paidEnrollments = enrollments.filter((enrollment) => enrollment.is_active && (enrollment.mode === 'verified' || enrollment.mode === 'professional'));
-
-  // sort courses on enrollments created with most recent enrollment on top
-  paidEnrollments.sort((x, y) => sortedCompareDates(x.created, y.created, false));
-
-  if (paidEnrollments.length === 0) {
-    return {
-      ...defaultResponse,
-      onboardingStatus: 'No Paid Enrollment',
-    };
-  }
-
-  const courseId = paidEnrollments[0].course_id;
-  try {
-    const { data } = await getAuthenticatedHttpClient().get(
-      AppUrls.getOnboardingStatusUrl(courseId, username),
-    );
-    return data;
-  } catch (error) {
-    if ('customAttributes' in error && error.customAttributes.httpErrorStatus === 404) {
-      return {
-        ...defaultResponse,
-        onboardingStatus: 'No Record Found',
-      };
-    }
-    return {
-      ...defaultResponse,
-      onboardingStatus: 'Error while fetching data',
-    };
-  }
-}
-
-export async function getV2OnboardingStatus(username) {
+export async function getOnboardingStatus(username) {
   const defaultResponse = {
     verified_in: null,
     current_status: null,
   };
   try {
     const { data } = await getAuthenticatedHttpClient().get(
-      AppUrls.getV2OnboardingStatusUrl(username),
+      AppUrls.getOnboardingStatusUrl(username),
     );
     return data;
   } catch (error) {

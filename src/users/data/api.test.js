@@ -5,7 +5,7 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { enrollmentsData } from './test/enrollments';
 import { downloadableCertificate } from './test/certificates';
 import verifiedNameHistoryData from './test/verifiedNameHistory';
-import v2OnboardingStatusData from './test/onboardingStatus';
+import OnboardingStatusData from './test/onboardingStatus';
 import * as api from './api';
 import * as urls from './urls';
 import * as messages from '../../userMessages/messages';
@@ -63,60 +63,12 @@ describe('API', () => {
   };
 
   describe('Onboarding Status Fetch', () => {
-    const expectedSuccessResponse = {
-      onboardingStatus: 'verified',
-      expirationDate: null,
-      onboardingLink: null,
-      onboardingPastDue: null,
-      onboardingReleaseDate: null,
-      reviewRequirementsUrl: null,
-    };
-
-    it('No Active Paid Enrollment ', async () => {
-      const response = await api.getOnboardingStatus([], testUsername);
-      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'No Paid Enrollment' });
-    });
-
-    // prepare enrollments data
-    const data = enrollmentsData;
-    data[1].mode = 'verified';
-    data[1].course_id = data[1].courseId;
-    data[1].is_active = true;
-    const url = urls.getOnboardingStatusUrl(data[1].course_id, testUsername);
+    const expectedSuccessResponse = OnboardingStatusData;
+    const url = urls.getOnboardingStatusUrl(testUsername);
     it('Successful Fetch ', async () => {
       mockAdapter.onGet(url).reply(200, expectedSuccessResponse);
 
-      const response = await api.getOnboardingStatus(data, testUsername);
-      expect(response).toEqual(expectedSuccessResponse);
-    });
-
-    it('No Record for Onboaring Status Fetch ', async () => {
-      mockAdapter.onGet(url).reply(() => throwError(404, ''));
-
-      const response = await api.getOnboardingStatus(data, testUsername);
-      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'No Record Found' });
-    });
-
-    it('Unexpected error', async () => {
-      mockAdapter.onGet(url).reply(() => throwError(500, ''));
-
-      const response = await api.getOnboardingStatus(data, testUsername);
-      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'Error while fetching data' });
-    });
-
-    it('Unexpected error fetching enrollments', async () => {
-      const response = await api.getOnboardingStatus(enrollmentErrors, testUsername);
-      expect(response).toEqual({ ...expectedSuccessResponse, onboardingStatus: 'Error while fetching data' });
-    });
-  });
-
-  describe('V2 Onboarding Status Fetch', () => {
-    const expectedSuccessResponse = v2OnboardingStatusData;
-    const url = urls.getV2OnboardingStatusUrl(testUsername);
-    it('Successful Fetch ', async () => {
-      mockAdapter.onGet(url).reply(200, expectedSuccessResponse);
-
-      const response = await api.getV2OnboardingStatus(testUsername);
+      const response = await api.getOnboardingStatus(testUsername);
       expect(response).toEqual(expectedSuccessResponse);
     });
 
@@ -127,7 +79,7 @@ describe('API', () => {
         current_status: null,
         error: 'Missing Records',
       };
-      const response = await api.getV2OnboardingStatus(testUsername);
+      const response = await api.getOnboardingStatus(testUsername);
       expect(response).toEqual(defaultResponse);
     });
 
@@ -138,7 +90,7 @@ describe('API', () => {
         error: 'Error while fetching data',
       };
       mockAdapter.onGet(url).reply(() => throwError(500));
-      const response = await api.getV2OnboardingStatus(testUsername);
+      const response = await api.getOnboardingStatus(testUsername);
       expect(response).toEqual(defaultResponse);
     });
   });

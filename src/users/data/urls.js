@@ -83,11 +83,7 @@ export const getAccountActivationUrl = (activationKey) => `${
   LMS_BASE_URL
 }/activate/${activationKey}`;
 
-export const getOnboardingStatusUrl = (courseId, username) => `${
-  LMS_BASE_URL
-}/api/edx_proctoring/v1/user_onboarding/status?course_id=${encodeURIComponent(courseId)}&username=${encodeURIComponent(username)}`;
-
-export const getV2OnboardingStatusUrl = (username) => `${
+export const getOnboardingStatusUrl = (username) => `${
   LMS_BASE_URL
 }/support/onboarding_status/${encodeURIComponent(username)}`;
 
