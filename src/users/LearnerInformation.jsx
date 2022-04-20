@@ -5,6 +5,7 @@ import UserSummary from './UserSummary';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import Licenses from './licenses/Licenses';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
+import LearnerCredentials from './LearnerCredentials';
 
 export default function LearnerInformation({
   user, changeHandler,
@@ -38,6 +39,11 @@ export default function LearnerInformation({
           <Licenses
             userEmail={user.email}
           />
+        </Tab>
+
+        <Tab eventKey="credentials" title="Learner Credentials">
+          <br />
+          <LearnerCredentials username={user.username} />
         </Tab>
 
       </Tabs>
