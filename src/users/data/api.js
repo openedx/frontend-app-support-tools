@@ -641,3 +641,29 @@ export async function regenerateCertificate(username, courseKey) {
     };
   }
 }
+
+export async function getUserProgramCredentials(username, page = 1) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(
+      `${AppUrls.getUserCredentialsUrl()}?username=${username}&type=program&page=${page}`,
+    );
+    if (data.next !== null) {
+      const nextPageData = await getUserProgramCredentials(username, page + 1);
+      data.results = data.results.concat(nextPageData.results);
+      return data;
+    }
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: error.text ? error.text : 'There was an error retrieving credentials for the user',
+          type: 'danger',
+          topic: 'credentials',
+        },
+      ],
+    };
+  }
+}

@@ -1,7 +1,7 @@
 import { getConfig } from '@edx/frontend-platform';
 import { isEmail, isValidLMSUserID, isValidUsername } from '../../utils/index';
 
-const { LMS_BASE_URL } = getConfig();
+const { LMS_BASE_URL, CREDENTIALS_BASE_URL } = getConfig();
 
 export const getEnrollmentsUrl = username => `${
   LMS_BASE_URL
@@ -98,3 +98,5 @@ export const generateCertificateUrl = () => `${
 export const regenerateCertificateUrl = () => `${
   LMS_BASE_URL
 }/certificates/regenerate`;
+
+export const getUserCredentialsUrl = () => `${CREDENTIALS_BASE_URL}/api/v2/credentials`;

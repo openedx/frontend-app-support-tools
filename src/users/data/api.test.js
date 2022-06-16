@@ -6,6 +6,7 @@ import { enrollmentsData } from './test/enrollments';
 import { downloadableCertificate } from './test/certificates';
 import verifiedNameHistoryData from './test/verifiedNameHistory';
 import OnboardingStatusData from './test/onboardingStatus';
+import { credentials } from './test/credentials';
 import * as api from './api';
 import * as urls from './urls';
 import * as messages from '../../userMessages/messages';
@@ -27,6 +28,7 @@ describe('API', () => {
   const verificationAttemptDetailsByIdUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/verifications/${testAttemptId}/`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
   const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
+  const credentialUrl = `${getConfig().CREDENTIALS_BASE_URL}/api/v2/credentials`;
   const generateCertificateUrl = urls.generateCertificateUrl();
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
   const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
@@ -982,6 +984,76 @@ describe('API', () => {
       mockAdapter.onPost(regenerateCertificateUrl).reply(() => throwError(400, ''));
       const response = await api.regenerateCertificate(testUsername, testCourseId);
       expect(...response.errors).toEqual(expectedError);
+    });
+  });
+
+  describe('Learner Credentials', () => {
+    const successResponse = credentials;
+    const expectedError = {
+      code: null,
+      dismissible: true,
+      text: 'There was an error retrieving credentials for the user',
+      type: 'danger',
+      topic: 'credentials',
+    };
+
+    it('Successful Credentials fetch', async () => {
+      mockAdapter.onGet(`${credentialUrl}?username=${testUsername}&type=program&page=1`).reply(200, successResponse);
+      const response = await api.getUserProgramCredentials(testUsername);
+      expect(response.count).toEqual(successResponse.count);
+      const { results } = response;
+      expect(results[0]).toEqual(successResponse.results[0]);
+    });
+    it('Unsuccessful Credentials fetch', async () => {
+      mockAdapter.onGet(credentialUrl).reply(() => throwError(400, ''));
+      const response = await api.getUserProgramCredentials(testUsername);
+      expect(...response.errors).toEqual(expectedError);
+    });
+    it('Single page result', async () => {
+      const expectedData = {
+        count: 1,
+        previous: null,
+        next: null,
+        results: [
+          ...successResponse.results,
+        ],
+      };
+      mockAdapter.onGet(`${credentialUrl}?username=${testUsername}&type=program&page=1`).reply(200, successResponse);
+      const response = await api.getUserProgramCredentials(testUsername);
+      expect(response).toEqual(expectedData);
+    });
+
+    it('Multi page result', async () => {
+      const firstPageResult = {
+        count: 2,
+        previous: null,
+        next: 2,
+        results: [
+          ...successResponse.results,
+        ],
+      };
+      const secondPageResult = {
+        count: 2,
+        previous: 1,
+        next: null,
+        results: [
+          ...successResponse.results,
+        ],
+      };
+
+      const expectedData = {
+        count: 2,
+        previous: null,
+        next: 2,
+        results: [
+          ...successResponse.results,
+          ...successResponse.results,
+        ],
+      };
+      mockAdapter.onGet(`${credentialUrl}?username=${testUsername}&type=program&page=1`).reply(200, firstPageResult);
+      mockAdapter.onGet(`${credentialUrl}?username=${testUsername}&type=program&page=2`).reply(200, secondPageResult);
+      const response = await api.getUserProgramCredentials(testUsername);
+      expect(response).toEqual(expectedData);
     });
   });
 });
