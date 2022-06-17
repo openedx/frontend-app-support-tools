@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button, Table } from '@edx/paragon';
+import { Modal, Button, DataTable } from '@edx/paragon';
 import { formatDate } from '../../utils';
 
 export default function PasswordHistory({
@@ -22,20 +22,20 @@ export default function PasswordHistory({
 
   const userPasswordHistoryColumns = [
     {
-      label: 'Date',
-      key: 'created',
+      Header: 'Date',
+      accessor: 'created',
     },
     {
-      label: 'Comment',
-      key: 'comment',
+      Header: 'Comment',
+      accessor: 'comment',
     },
     {
-      label: 'Action',
-      key: 'disabled',
+      Header: 'Action',
+      accessor: 'disabled',
     },
     {
-      label: 'By',
-      key: 'createdBy',
+      Header: 'By',
+      accessor: 'createdBy',
     },
   ];
 
@@ -60,7 +60,7 @@ export default function PasswordHistory({
         id="password-history"
         dialogClassName="modal-xl"
         body={(
-          <Table
+          <DataTable
             data={passwordHistoryData}
             columns={userPasswordHistoryColumns}
           />
