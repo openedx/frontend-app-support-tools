@@ -75,7 +75,7 @@ describe('User Summary Component Tests', () => {
           value: 'edx@example.com',
         },
         {
-          header: 'Active',
+          header: 'Confirmed',
           value: 'yes',
         },
         {
@@ -126,7 +126,7 @@ describe('User Summary Component Tests', () => {
 
     it('Active User Data', () => {
       const { rowName, rowValue } = getActivationKeyRow(UserSummaryData);
-      expect(rowName.text()).not.toEqual('Activation Key/Link');
+      expect(rowName.text()).not.toEqual('Confirmation Link');
       expect(rowValue.text()).not.toEqual(UserSummaryData.userData.activationKey);
     });
 
@@ -134,7 +134,7 @@ describe('User Summary Component Tests', () => {
       const InActiveUserData = { ...UserSummaryData.userData, isActive: false };
       const InActiveUserSummaryData = { ...UserSummaryData, userData: InActiveUserData };
       const { rowName, rowValue } = getActivationKeyRow(InActiveUserSummaryData);
-      expect(rowName.text()).toEqual('Activation Key/Link');
+      expect(rowName.text()).toEqual('Confirmation Link');
       expect(rowValue.text()).toEqual(UserSummaryData.userData.activationKey);
     });
 
@@ -142,7 +142,7 @@ describe('User Summary Component Tests', () => {
       const InActiveUserData = { ...UserSummaryData.userData, activationKey: null };
       const InActiveUserSummaryData = { ...UserSummaryData, userData: InActiveUserData };
       const { rowName, rowValue } = getActivationKeyRow(InActiveUserSummaryData);
-      expect(rowName.text()).not.toEqual('Activation Key/Link');
+      expect(rowName.text()).not.toEqual('Confirmation Link');
       expect(rowValue.text()).not.toEqual(UserSummaryData.userData.activationKey);
     });
 
@@ -150,7 +150,7 @@ describe('User Summary Component Tests', () => {
       const InActiveUserData = { ...UserSummaryData.userData, activationKey: null, isActive: false };
       const InActiveUserSummaryData = { ...UserSummaryData, userData: InActiveUserData };
       const { rowName, rowValue } = getActivationKeyRow(InActiveUserSummaryData);
-      expect(rowName.text()).toEqual('Activation Key/Link');
+      expect(rowName.text()).toEqual('Confirmation Link');
       expect(rowValue.text()).toEqual('N/A');
     });
   });
