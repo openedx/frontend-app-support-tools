@@ -47,7 +47,7 @@ export default function UserSummary({
                 </tr>
 
                 <tr>
-                  <th>{!userData.isActive ? 'Confirmation Key/Link' : 'Confirmed'}</th>
+                  <th>{!userData.isActive ? 'Confirmation Link' : 'Confirmed'}</th>
                   <td>
                     {
                     // eslint-disable-next-line no-nested-ternary
