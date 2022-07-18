@@ -24,6 +24,8 @@ subscribe(APP_CONFIG_INITIALIZED, () => {
   mergeConfig({
     MINIMAL_HEADER: !!process.env.MINIMAL_HEADER,
     PUBLISHER_BASE_URL: process.env.PUBLISHER_BASE_URL,
+    SUPPORT_CONFLUENCE: process.env.SUPPORT_CONFLUENCE,
+    SUPPORT_CUSTOMER_REQUEST: process.env.SUPPORT_CUSTOMER_REQUEST,
   }, 'Header additional config');
 });
 
@@ -32,6 +34,7 @@ export default function Header() {
   let COURSES_INTERNAL = config.LMS_BASE_URL;
   let DISCOVERY_INTERNAL = config.DISCOVERY_API_BASE_URL;
   let CREDENTIALS_INTERNAL = config.CREDENTIALS_BASE_URL;
+  const { SUPPORT_CONFLUENCE, SUPPORT_CUSTOMER_REQUEST } = config;
 
   if (config.LMS_BASE_URL.indexOf('.stage.') !== -1) {
     COURSES_INTERNAL = COURSES_INTERNAL.replace('.stage.', '-internal.stage.');
@@ -45,14 +48,9 @@ export default function Header() {
 
   const mainMenu = [
     {
-      type: 'submenu',
-      content: 'Updates',
-      submenuContent: (
-        <>
-          <div className="mb-1"><a rel="noopener" href="https://docs.google.com/document/edit?hgd=1&id=17_FWEtnUXyeEMrj8Lu3kmXqopwHGUjKW2t61cek2ax0">Current Issues</a></div>
-          <div className="mb-1"><a rel="noopener" href="https://sites.google.com/a/edx.org/edx-support/-recent-updates">Support Site Recent Updates</a></div>
-        </>
-      ),
+      type: 'item',
+      content: 'Confluence',
+      href: SUPPORT_CONFLUENCE,
     },
     {
       type: 'submenu',
@@ -60,7 +58,7 @@ export default function Header() {
       submenuContent: (
         <>
           <div className="mb-1"><a rel="noopener" href="https://edx.lightning.force.com/lightning/o/Case/list?filterName=00B0L000005D8BgUAK">Salesforce</a></div>
-          <div className="mb-1"><a rel="noopener" href="https://openedx.atlassian.net/servicedesk/customer/user/requests?page=1&status=open">CR Requests</a></div>
+          <div className="mb-1"><a rel="noopener" href={SUPPORT_CUSTOMER_REQUEST}>CR Requests</a></div>
         </>
       ),
     },

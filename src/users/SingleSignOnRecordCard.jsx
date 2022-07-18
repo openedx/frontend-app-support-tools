@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Card, Row, Col,
+  Card, Row, Col, Modal, Button,
 } from '@edx/paragon';
 import Table from '../components/Table';
 import { formatDate, formatUnixTimestamp } from '../utils';
@@ -10,17 +10,16 @@ import CopyShowHyperlinks from './CopyShowHyperLinks';
 export default function SingleSignOnRecordCard({ ssoRecord }) {
   let data;
   let columns;
+  const [showHistory, setShowHistory] = useState(false);
 
   if (ssoRecord != null) {
     data = { ...ssoRecord.extraData };
-    columns = React.useMemo(
-      () => Object.keys(data)
-        .sort((a, b) => a > b)
-        .map((key) => ({
-          Header: key,
-          accessor: key,
-        })),
-    );
+    columns = React.useMemo(() => Object.keys(data)
+      .sort((a, b) => a > b)
+      .map((key) => ({
+        Header: key,
+        accessor: key,
+      })));
 
     Object.keys(data).forEach((key) => {
       const value = data[key] ? data[key].toString() : '';
@@ -33,13 +32,51 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
         data[key] = <CopyShowHyperlinks text={value} />;
       }
     });
-    data = React.useMemo(
-      () => data,
-    );
+    data = React.useMemo(() => data);
   }
 
-  return (
-    ssoRecord ? (
+  const historyHeaders = ['created', 'extraData', 'historyDate', 'modified', 'provider', 'uid'];
+
+  const historyColumns = React.useMemo(
+    () => historyHeaders.map((key) => ({
+      Header: key,
+      accessor: key,
+    })),
+    [],
+  );
+
+  const ssoHistoryTableData = useMemo(() => {
+    if (ssoRecord == null || ssoRecord.history == null) {
+      return [];
+    }
+    return ssoRecord.history.map((history) => ({
+      created: formatDate(history.created),
+      extraData: history.extraData,
+      historyDate: formatDate(history.historyDate),
+      modified: formatDate(history.modified),
+      provider: history.provider,
+      uid: history.uid,
+    }));
+  }, [ssoRecord]);
+
+  return ssoRecord ? (
+    <span>
+      <Modal
+        dialogClassName="modal-xl modal-dialog-centered"
+        open={showHistory}
+        title="SSO History"
+        body={(
+          <div>
+            <Table
+              styleName="sso-table"
+              id="sso-history-data-new"
+              data={ssoHistoryTableData}
+              columns={historyColumns}
+            />
+          </div>
+        )}
+        onClose={() => setShowHistory(false)}
+      />
       <Card className="pt-2 px-3 mb-1 w-100">
         <Card.Body className="p-0">
           <Card.Title as="h3" className="btn-header mt-4">
@@ -53,15 +90,26 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
             </Col>
             <Col>
               <Card.Subtitle align="right" as="h4">
-                {formatDate(ssoRecord.modified)} <span className="h5 text-muted">(Last Modified)</span>
+                {formatDate(ssoRecord.modified)}{' '}
+                <span className="h5 text-muted">(Last Modified)</span>
               </Card.Subtitle>
             </Col>
+          </Row>
+          <Row>
+            <div className="history">
+              <Button
+                className="history-button"
+                onClick={() => setShowHistory(true)}
+                variant="link"
+              >
+                History
+              </Button>
+            </div>
           </Row>
 
           <Card.Title as="h5" className="btn-header mt-4">
             Additional Data
           </Card.Title>
-
           <Table
             styleName="sso-table"
             id="sso-data-new"
@@ -70,9 +118,10 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
           />
         </Card.Body>
       </Card>
-    ) : (
-      <></>
-    )
+
+    </span>
+  ) : (
+    <></>
   );
 }
 
@@ -82,5 +131,13 @@ SingleSignOnRecordCard.propTypes = {
     uid: PropTypes.string,
     modified: PropTypes.string,
     extraData: PropTypes.object,
+    history: PropTypes.arrayOf(PropTypes.shape({
+      created: PropTypes.string,
+      extraData: PropTypes.object,
+      historyDate: PropTypes.string,
+      modified: PropTypes.string,
+      provider: PropTypes.string,
+      uid: PropTypes.string,
+    })),
   }).isRequired,
 };
