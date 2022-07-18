@@ -57,6 +57,7 @@ export const enrollmentsData = [
     ],
     isActive: true,
     mode: 'audit',
+    orderNumber: 'EDX-001',
     manualEnrollment: {
       reason: 'Test Enrollment',
       enrolledBy: 'edX',

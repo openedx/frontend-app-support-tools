@@ -6,7 +6,9 @@
     "type": "git",
     "url": "git+https://github.com/edx/frontend-app-support.git"
   },
-  "browserslist": ["extends @edx/browserslist-config"],
+  "browserslist": [
+    "extends @edx/browserslist-config"
+  ],
   "scripts": {
     "build": "fedx-scripts webpack",
     "i18n_extract": "BABEL_ENV=i18n fedx-scripts babel src --quiet > /dev/null",
@@ -38,7 +40,7 @@
     "classnames": "2.2.6",
     "moment": "2.29.1",
     "newrelic": "5.13.1",
-    "prop-types": "15.7.2",
+    "prop-types": "15.6.0",
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-redux": "7.2.2",
@@ -56,13 +58,13 @@
     "@testing-library/react": "10.3.0",
     "@types/react-table": "^7.7.2",
     "axios-mock-adapter": "^1.19.0",
-    "check-prop-types": "1.1.2",
+    "check-prop-types": "^1.1.2",
     "codecov": "3.8.1",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.5",
     "glob": "7.1.6",
     "jest": "26.6.3",
-    "react-test-renderer": "17.0.1",
+    "react-test-renderer": "16.14.0",
     "reactifex": "1.1.1",
     "request": "^2.88.2"
   }
