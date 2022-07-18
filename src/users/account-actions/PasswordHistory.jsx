@@ -63,6 +63,7 @@ export default function PasswordHistory({
           <DataTable
             data={passwordHistoryData}
             columns={userPasswordHistoryColumns}
+            itemCount={passwordHistoryData.length}
           />
           )}
       />
