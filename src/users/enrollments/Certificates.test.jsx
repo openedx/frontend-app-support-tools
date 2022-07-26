@@ -1,9 +1,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { getConfig } from '@edx/frontend-platform';
 
 import { waitForComponentToPaint } from '../../setupTest';
 import Certificates from './Certificates';
-import { downloadableCertificate, regeneratableCertificate } from '../data/test/certificates';
+import { downloadableCertificate, pdfCertificate, regeneratableCertificate } from '../data/test/certificates';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
@@ -98,6 +99,26 @@ describe('Certificate component', () => {
     const actionButton = action.find('button#regenerate-certificate');
     expect(action.find('th').text()).toEqual('Actions');
     expect(actionButton.text()).toEqual('Regenerate');
+  });
+
+  it('Pdf Certificate', async () => {
+    apiMock = jest.spyOn(api, 'getCertificate').mockImplementationOnce(() => Promise.resolve(pdfCertificate));
+    wrapper = mount(<CertificateWrapper {...props} />);
+    await waitForComponentToPaint(wrapper);
+
+    const dataRows = wrapper.find('table.certificate-info-table tbody tr');
+    expect(dataRows.length).toEqual(7);
+
+    expect(dataRows.at(0).html()).toEqual(expect.stringContaining(pdfCertificate.courseKey));
+
+    const downloadUrl = dataRows.at(5);
+    expect(downloadUrl.find('th').text()).toEqual('Download URL');
+    expect(downloadUrl.find('td').text()).toEqual('Download');
+
+    // Pdf certificate's download link does not have LMS base url
+    const downloadLink = downloadUrl.find('td').find('a').prop('href');
+    expect(downloadLink).not.toEqual(expect.stringContaining(`${getConfig().LMS_BASE_URL}`));
+    expect(downloadLink).toEqual('https://www.example.com');
   });
 
   it('Missing Certificate Data', async () => {
