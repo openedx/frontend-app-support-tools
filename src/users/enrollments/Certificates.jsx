@@ -95,6 +95,17 @@ export default function Certificates({
     });
   }
 
+  /**
+   * For a pdf certificate, the download url is already a valid and complete Url.
+   * LMS base is only attached for non-pdf certificates.
+   */
+  function certificateDownloadUrl(certificateInfo) {
+    if (certificateInfo.isPdfCertificate) {
+      return certificateInfo.downloadUrl;
+    }
+    return `${getConfig().LMS_BASE_URL}${certificateInfo.downloadUrl}`;
+  }
+
   const certificateInfo = (
     <section ref={certificateRef}>
       {!certificate && !displayCertErrors && <PageLoading srMessage="Loading" /> }
@@ -134,7 +145,7 @@ export default function Certificates({
 
             <tr>
               <th>Download URL</th>
-              <td>{certificate.downloadUrl ? <a href={`${getConfig().LMS_BASE_URL}${certificate.downloadUrl}`}>Download</a> : 'Not Available'}</td>
+              <td>{certificate.downloadUrl ? <a href={certificateDownloadUrl(certificate)}>Download</a> : 'Not Available'}</td>
             </tr>
 
             <tr>
