@@ -57,6 +57,9 @@ describe('Program Inspector', () => {
     if (apiMock) {
       apiMock.mockReset();
     }
+    if (wrapper) {
+      wrapper.unmount();
+    }
     samlMock.mockReset();
     ssoMock.mockReset();
     verifiedNameMock.mockReset();

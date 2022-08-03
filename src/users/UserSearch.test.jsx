@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { checkProps } from '../setupTest';
 import UserSearch from './UserSearch';
 
 describe('User Search Page', () => {
@@ -11,27 +10,6 @@ describe('User Search Page', () => {
   beforeEach(() => {
     props = { userIdentifier: '', searchHandler: jest.fn() };
     wrapper = mount(<UserSearch {...props} />);
-  });
-
-  describe('Checking PropTypes', () => {
-    it('does not throw a warning', () => {
-      const propsError = checkProps(UserSearch, props);
-
-      expect(propsError).toBeUndefined();
-    });
-    it('does not throw error with undefined userIdentifier', () => {
-      delete props.userIdentifier;
-      const propsError = checkProps(UserSearch, props);
-
-      expect(propsError).toBeUndefined();
-    });
-    it('throw error with undefined search handler', () => {
-      const propsError = checkProps(UserSearch, {});
-
-      expect(propsError).not.toBeUndefined();
-      expect(propsError).toContain('Failed props type');
-      expect(propsError).toContain('searchHandler');
-    });
   });
 
   describe('renders correctly', () => {

@@ -1,7 +1,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { checkProps } from '../../setupTest';
 import PageLoading from './PageLoading';
 
 describe('<PageLoading />', () => {
@@ -18,12 +17,6 @@ describe('<PageLoading />', () => {
 
     expect(srElement).toHaveLength(1);
     expect(srElement.text()).toEqual(message);
-  });
-  it('does not throw a warning with correct props', () => {
-    const expectedProps = { srMessage: 'Loading...' };
-    const propsError = checkProps(PageLoading, expectedProps);
-
-    expect(propsError).toBeUndefined();
   });
   it('snapshot matches correctly', () => {
     const tree = renderer.create(<PageLoading srMessage="Loading" />).toJSON();
