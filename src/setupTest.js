@@ -1,7 +1,6 @@
 import 'babel-polyfill';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import checkPropTypes from 'check-prop-types';
 import { act } from 'react-dom/test-utils';
 import { initialize, mergeConfig } from '@edx/frontend-platform';
 import { MockAuthService } from '@edx/frontend-platform/auth';
@@ -29,16 +28,7 @@ initialize({
   authService: MockAuthService,
 });
 
-export function checkProps(component, expectedProps) {
-  return checkPropTypes(
-    // eslint-disable-next-line react/forbid-foreign-prop-types
-    component.propTypes,
-    expectedProps,
-    'props',
-    component.name,
-  );
-}
-
+// eslint-disable-next-line import/prefer-default-export
 export const waitForComponentToPaint = async (wrapper) => {
   await act(async () => {
     await new Promise((resolve) => setTimeout(resolve));
