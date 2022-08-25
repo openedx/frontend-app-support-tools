@@ -520,7 +520,35 @@ describe('API', () => {
       const response = await api.getAllUserData(testUsername);
       expect(response).toEqual({
         errors: [],
+        retirementStatus: null,
         user: { ...successDictResponse, passwordStatus: {} },
+      });
+    });
+
+    it('Retired User Data Retrieval', async () => {
+      const UserApiResponse = {
+        can_cancel_retirement: true,
+        retirement_id: 1,
+        error_msg: 'This email is associated to a retired account.',
+      };
+      const expectedError = [{
+        code: null,
+        dismissible: true,
+        text: 'This email is associated to a retired account.',
+        topic: 'general',
+        type: 'error',
+      }];
+      const retirementStatus = {
+        canCancelRetirement: true,
+        retirementId: 1,
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(() => throwError(404, UserApiResponse));
+
+      const response = await api.getAllUserData(testEmail);
+      expect(response).toEqual({
+        errors: expectedError,
+        retirementStatus,
+        user: null,
       });
     });
   });
@@ -542,10 +570,36 @@ describe('API', () => {
     const resetPasswordApiUrl = `${getConfig().LMS_BASE_URL}/account/password`;
 
     it('Reset Password Response', async () => {
-      const expectedResponse = { };
+      const expectedResponse = {};
       mockAdapter.onPost(resetPasswordApiUrl, `email_from_support_tools=${testEmail}`).reply(200, expectedResponse);
       const response = await api.postResetPassword(testEmail);
       expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  describe('Cancel Retirement', () => {
+    const CancelRetirementUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/cancel_retirement/`;
+
+    it('Successful Cancel Retirement Response', async () => {
+      const expectedResponse = {};
+      mockAdapter.onPost(CancelRetirementUrl, 'retirement_id=3').reply(200, expectedResponse);
+      const response = await api.postCancelRetirement(3);
+      expect(response).toEqual(expectedResponse);
+    });
+
+    it('Unsuccessful Cancel Retirement Response', async () => {
+      const error = new Error();
+      error.message = 'Retirement does not exist!';
+      const expectedResponse = {
+        code: null,
+        dismissible: true,
+        text: 'Retirement does not exist!',
+        type: 'error',
+        topic: 'cancelRetirement',
+      };
+      mockAdapter.onPost(CancelRetirementUrl, 'retirement_id=3').reply(() => { throw error; });
+      const response = await api.postCancelRetirement(3);
+      expect(...response.errors).toEqual(expectedResponse);
     });
   });
 
@@ -803,7 +857,7 @@ describe('API', () => {
           code: null,
           dismissible: true,
           text:
-          'User already enrolled',
+            'User already enrolled',
           type: 'danger',
           topic: 'enrollments',
         };

@@ -351,11 +351,20 @@ export async function getOnboardingStatus(username) {
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
+  let retirementStatus = null;
+  let errorResponse = null;
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
     if (error.userError) {
       errors.push(error.userError);
+      errorResponse = JSON.parse(error.customAttributes.httpErrorResponseData);
+      if (errorResponse?.can_cancel_retirement) {
+        retirementStatus = {
+          canCancelRetirement: errorResponse.can_cancel_retirement,
+          retirementId: errorResponse.retirement_id,
+        };
+      }
     } else {
       throw error;
     }
@@ -367,6 +376,7 @@ export async function getAllUserData(userIdentifier) {
   return {
     errors,
     user,
+    retirementStatus,
   };
 }
 
@@ -565,6 +575,27 @@ export async function postResetPassword(email) {
           text: (error.response && error.response.data),
           type: 'error',
           topic: 'resetPassword',
+        },
+      ],
+    };
+  }
+}
+
+export async function postCancelRetirement(retirementId) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(
+      AppUrls.CancelRetirementUrl(), `retirement_id=${retirementId}`,
+    );
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: error.message,
+          type: 'error',
+          topic: 'cancelRetirement',
         },
       ],
     };
