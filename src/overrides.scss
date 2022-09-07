@@ -12,7 +12,7 @@ $darkCyan: #00262b;
 
 .container-fluid {
   // Reverting the container width to 1440px to keep the support tools styling consistent
-  // See https://github.com/edx/paragon/pull/533 for paragon breaking change
+  // See https://github.com/openedx/paragon/pull/533 for paragon breaking change
   max-width: 1440px;
 }
 
