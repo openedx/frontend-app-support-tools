@@ -12,6 +12,7 @@ import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
 import LearnerInformation from './LearnerInformation';
 import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
+import CancelRetirement from './account-actions/CancelRetirement';
 
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage({ location }) {
@@ -60,6 +61,9 @@ export default function UserPage({ location }) {
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach((error) => add(error));
+      if (result.retirementStatus?.canCancelRetirement) {
+        setData(result.retirementStatus);
+      }
       history.replace(`${TAB_PATH_MAP['learner-information']}`);
       document.title = 'Support Tools | edX';
     } else {
@@ -156,6 +160,12 @@ export default function UserPage({ location }) {
       {!loading && data.user && data.user.username && (
         <LearnerInformation
           user={data.user}
+          changeHandler={handleUserSummaryChange}
+        />
+      )}
+      {!loading && data.canCancelRetirement && (
+        <CancelRetirement
+          retirementId={data.retirementId}
           changeHandler={handleUserSummaryChange}
         />
       )}

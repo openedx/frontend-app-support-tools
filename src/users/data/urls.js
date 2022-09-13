@@ -79,6 +79,10 @@ export const getResetPasswordUrl = () => `${
   LMS_BASE_URL
 }/account/password`;
 
+export const CancelRetirementUrl = () => `${
+  LMS_BASE_URL
+}/api/user/v1/accounts/cancel_retirement/`;
+
 export const getAccountActivationUrl = (activationKey) => `${
   LMS_BASE_URL
 }/activate/${activationKey}`;
