@@ -7,6 +7,7 @@ import { downloadableCertificate } from './test/certificates';
 import verifiedNameHistoryData from './test/verifiedNameHistory';
 import OnboardingStatusData from './test/onboardingStatus';
 import { credentials } from './test/credentials';
+import records from './test/records';
 import * as api from './api';
 import * as urls from './urls';
 import * as messages from '../../userMessages/messages';
@@ -32,6 +33,7 @@ describe('API', () => {
   const generateCertificateUrl = urls.generateCertificateUrl();
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
   const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
+  const programRecordsUrl = urls.getLearnerRecordsUrl();
 
   let mockAdapter;
 
@@ -1108,6 +1110,59 @@ describe('API', () => {
       mockAdapter.onGet(`${credentialUrl}?username=${testUsername}&type=program&page=2`).reply(200, secondPageResult);
       const response = await api.getUserProgramCredentials(testUsername);
       expect(response).toEqual(expectedData);
+    });
+  });
+
+  describe('Learner Records', () => {
+    const expectedPrograms = {
+      enrolled_programs: [
+        {
+          name: 'Tightrope walking',
+          uuid: '82d38639ccc340db8be5f0f259500dde',
+          partner: 'edX',
+          completed: false,
+          empty: false,
+        },
+      ],
+    };
+    const expectedRecord = records[0];
+    const expectedError = {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving records for the user',
+          type: 'danger',
+          topic: 'credentials',
+        },
+      ],
+    };
+
+    it('Successful Learner Records fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(200, expectedPrograms);
+      mockAdapter.onGet(`${programRecordsUrl}/${expectedRecord.uuid}/?username=${testUsername}`).reply(200, expectedRecord);
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response.length).toEqual(1);
+      expect(response).toEqual(records);
+    });
+
+    it('Empty Learner Records fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(200, { enrolled_programs: [] });
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response).toEqual([]);
+    });
+
+    it('Unsuccessful Learner Records fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(400, '');
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response).toEqual(expectedError);
+    });
+
+    it('Unsuccessful Learner Record Details fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(200, expectedPrograms);
+      mockAdapter.onGet(`${programRecordsUrl}/${expectedRecord.uuid}/?username=${testUsername}`).reply(400, expectedRecord);
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response).toEqual(expectedError);
     });
   });
 });

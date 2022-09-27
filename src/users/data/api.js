@@ -698,3 +698,31 @@ export async function getUserProgramCredentials(username, page = 1) {
     };
   }
 }
+
+export async function getLearnerRecords(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(`${AppUrls.getLearnerRecordsUrl()}/?username=${username}`);
+    const programDetails = [];
+
+    if (data.enrolled_programs.length > 0) {
+      await Promise.all(data.enrolled_programs.map(program => (
+        getAuthenticatedHttpClient().get(`${AppUrls.getLearnerRecordsUrl()}/${program.uuid}/?username=${username}`)
+          .then(response => programDetails.push(response.data))
+      )));
+    }
+
+    return programDetails;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving records for the user',
+          type: 'danger',
+          topic: 'credentials',
+        },
+      ],
+    };
+  }
+}

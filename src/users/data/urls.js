@@ -104,3 +104,5 @@ export const regenerateCertificateUrl = () => `${
 }/certificates/regenerate`;
 
 export const getUserCredentialsUrl = () => `${CREDENTIALS_BASE_URL}/api/v2/credentials`;
+
+export const getLearnerRecordsUrl = () => `${CREDENTIALS_BASE_URL}/records/api/v1/program_records`;
