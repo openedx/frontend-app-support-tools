@@ -54,12 +54,13 @@ describe('Learners and Enrollments component', () => {
 
   it('renders correctly', () => {
     const tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.length).toEqual(4);
+    expect(tabs.length).toEqual(5);
 
     expect(tabs.at(0).text()).toEqual('Account Information');
     expect(tabs.at(1).text()).toEqual('Enrollments/Entitlements');
     expect(tabs.at(2).text()).toEqual('SSO/License Info');
     expect(tabs.at(3).text()).toEqual('Learner Credentials');
+    expect(tabs.at(4).text()).toEqual('Learner Records');
   });
 
   it('Account Information Tab', () => {
@@ -71,6 +72,7 @@ describe('Learners and Enrollments component', () => {
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
 
     const accountInfo = wrapper.find('.tab-content div#learner-information-tabpane-account');
     expect(accountInfo.html()).toEqual(expect.stringContaining('active'));
@@ -86,6 +88,7 @@ describe('Learners and Enrollments component', () => {
     expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
 
     const enrollmentsEntitlements = wrapper.find('.tab-content div#learner-information-tabpane-enrollments-entitlements');
     expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('active'));
@@ -102,6 +105,7 @@ describe('Learners and Enrollments component', () => {
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
     expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
 
     const ssoRecords = wrapper.find('.tab-content div#learner-information-tabpane-sso');
     expect(ssoRecords.html()).toEqual(expect.stringContaining('active'));
@@ -122,6 +126,7 @@ describe('Learners and Enrollments component', () => {
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(3).html()).toEqual(expect.stringContaining('active'));
+    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
 
     const credentials = wrapper.find(
       '.tab-content div#learner-information-tabpane-credentials',
@@ -129,6 +134,26 @@ describe('Learners and Enrollments component', () => {
     expect(credentials.html()).toEqual(expect.stringContaining('active'));
     expect(credentials.html()).toEqual(
       expect.stringContaining('Learner Credentials'),
+    );
+  });
+
+  it('Learner Records Tab', () => {
+    let tabs = wrapper.find('nav.nav-tabs a');
+
+    tabs.at(4).simulate('click');
+    tabs = wrapper.find('nav.nav-tabs a');
+    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(4).html()).toEqual(expect.stringContaining('active'));
+
+    const records = wrapper.find(
+      '.tab-content div#learner-information-tabpane-records',
+    );
+    expect(records.html()).toEqual(expect.stringContaining('active'));
+    expect(records.html()).toEqual(
+      expect.stringContaining('Learner Records'),
     );
   });
 });

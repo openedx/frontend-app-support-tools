@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Tabs, Tab } from '@edx/paragon';
+import { getConfig } from '@edx/frontend-platform';
 import UserSummary from './UserSummary';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import Licenses from './licenses/Licenses';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
 import LearnerCredentials from './LearnerCredentials';
+import LearnerRecords from './LearnerRecords';
 
 export default function LearnerInformation({
   user, changeHandler,
 }) {
+  const { USE_LEARNER_RECORD_TAB } = getConfig();
   return (
     <>
       <br />
@@ -45,7 +48,12 @@ export default function LearnerInformation({
           <br />
           <LearnerCredentials username={user.username} />
         </Tab>
-
+        {USE_LEARNER_RECORD_TAB && (
+          <Tab eventKey="records" title="Learner Records">
+            <br />
+            <LearnerRecords username={user.username} />
+          </Tab>
+        )}
       </Tabs>
     </>
   );
