@@ -1,16 +1,10 @@
 import 'babel-polyfill';
 
 import {
-  APP_INIT_ERROR,
-  APP_READY,
-  subscribe,
-  initialize,
-  mergeConfig,
-  getConfig,
+  APP_INIT_ERROR, APP_READY, subscribe, initialize, mergeConfig,
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
-import { Helmet } from 'react-helmet';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
@@ -22,6 +16,7 @@ import UserPage from './users/UserPage';
 import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
+import Head from './head/Head';
 
 import './index.scss';
 
@@ -38,10 +33,8 @@ subscribe(APP_READY, () => {
   ReactDOM.render(
     <AppProvider>
       <UserMessagesProvider>
+        <Head />
         <Header />
-        <Helmet>
-          <link rel="shortcut icon" href={getConfig().FAVICON_URL} type="image/x-icon" />
-        </Helmet>
         <Switch>
           <Route path="/" component={SupportToolsTab} />
           <Route path="/learner_information" component={UserPage} />
