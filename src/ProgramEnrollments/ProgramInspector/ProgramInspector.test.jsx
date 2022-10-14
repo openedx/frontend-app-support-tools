@@ -2,6 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { history } from '@edx/frontend-platform';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { waitForComponentToPaint } from '../../setupTest';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from './data/api';
@@ -17,9 +18,11 @@ import verifiedNameHistory from '../../users/data/test/verifiedNameHistory';
 
 const ProgramEnrollmentsWrapper = (props) => (
   <MemoryRouter>
-    <UserMessagesProvider>
-      <ProgramInspector {...props} />
-    </UserMessagesProvider>
+    <IntlProvider>
+      <UserMessagesProvider>
+        <ProgramInspector {...props} />
+      </UserMessagesProvider>
+    </IntlProvider>
   </MemoryRouter>
 );
 
