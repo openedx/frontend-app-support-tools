@@ -57,6 +57,10 @@ const messages = defineMessages({
     id: 'record.table.header.status',
     defaultMessage: 'Status',
   },
+  noPublicLink: {
+    id: 'no.public.record.link',
+    defaultMessage: 'There is no public instance for this record. Learners must create a public link on their own.',
+  },
   noRecordsFound: {
     id: 'no.records.found',
     defaultMessage: 'No results found for username',
