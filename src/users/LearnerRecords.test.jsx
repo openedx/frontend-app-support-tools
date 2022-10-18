@@ -108,6 +108,20 @@ describe('Learner Records Tests', () => {
     expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
   });
 
+  it('renders an alert when there is no public instance of a record', async () => {
+    const privateRecords = [...records];
+    privateRecords[0].record.shared_program_record_uuid = '';
+    apiMock = jest
+      .spyOn(api, 'getLearnerRecords')
+      .mockImplementationOnce(() => Promise.resolve(privateRecords));
+
+    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
+
+    await waitForComponentToPaint(wrapper);
+
+    expect(wrapper.find('div.no-public-link').text()).toEqual('There is no public instance for this record. Learners must create a public link on their own.');
+  });
+
   it('renders a table for a program record', async () => {
     apiMock = jest
       .spyOn(api, 'getLearnerRecords')
