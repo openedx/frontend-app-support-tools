@@ -63,13 +63,17 @@ function LearnerRecords({ username, intl }) {
                   <p>{renderStatus(record.program)}</p>
                   <p>{renderDate(record.program.last_updated)}</p>
                 </div>
-                {record.shared_program_record_uuid && (
+                {record.shared_program_record_uuid ? (
                   <Button
                     variant="primary"
                     onClick={() => handleCopyButton(record.shared_program_record_uuid.replaceAll('-', ''))}
                   >
                     {intl.formatMessage(messages.copyPublicRecordLinkButton)}
                   </Button>
+                ) : (
+                  <Alert variant="warning" className="no-public-link">
+                    {intl.formatMessage(messages.noPublicLink)}
+                  </Alert>
                 )}
               </div>
               <Table
