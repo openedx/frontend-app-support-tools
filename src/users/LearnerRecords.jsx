@@ -11,7 +11,7 @@ import messages from './messages';
 function LearnerRecords({ username, intl }) {
   const [records, setRecords] = useState(null);
   const [error, setError] = useState(null);
-  const { RECORDS_BASE_URL } = getConfig();
+  const { CREDENTIALS_BASE_URL } = getConfig();
 
   useEffect(() => {
     if (username) {
@@ -26,7 +26,7 @@ function LearnerRecords({ username, intl }) {
   }, [username]);
 
   const handleCopyButton = (uuid) => {
-    navigator.clipboard.writeText(`${RECORDS_BASE_URL}/shared/${uuid}`);
+    navigator.clipboard.writeText(`${CREDENTIALS_BASE_URL}/records/programs/shared/${uuid}`);
   };
 
   const renderStatus = (program) => {

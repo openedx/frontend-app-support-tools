@@ -9,7 +9,6 @@ Enzyme.configure({ adapter: new Adapter() });
 
 mergeConfig({
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
-  RECORDS_BASE_URL: process.env.RECORDS_BASE_URL,
   USE_LEARNER_RECORD_TAB: process.env.USE_LEARNER_RECORD_TAB,
 });
 
