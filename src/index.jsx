@@ -22,7 +22,6 @@ import './index.scss';
 
 mergeConfig({
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
-  USE_LEARNER_RECORD_TAB: process.env.USE_LEARNER_RECORD_TAB,
 });
 
 subscribe(APP_READY, () => {
