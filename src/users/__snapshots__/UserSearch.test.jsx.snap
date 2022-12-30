@@ -24,7 +24,11 @@ exports[`User Search Page renders correctly matches snapshot 1`] = `
       onClick={[Function]}
       type="submit"
     >
-      Search
+      <span
+        className="btn-icons-container"
+      >
+        Search
+      </span>
     </button>
   </form>
 </section>
