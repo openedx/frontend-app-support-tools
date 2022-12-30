@@ -17,9 +17,9 @@ describe('Copy Show Hyperlinks', () => {
     const copy = wrapper.find('a').at(0);
     const show = wrapper.find('a').at(1);
 
-    expect(copy.text()).toEqual('Copy ');
-    expect(show.text()).toEqual('Show ');
-    expect(wrapper.text()).toEqual('Copy Show ');
+    expect(copy.text()).toEqual('Copy');
+    expect(show.text()).toEqual('Show');
+    expect(wrapper.text()).toEqual('CopyShow');
   });
   it('Click Copy', () => {
     Object.assign(navigator, {
@@ -32,7 +32,7 @@ describe('Copy Show Hyperlinks', () => {
     copyLink.simulate('click');
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(text);
-    expect(copyLink.text()).toEqual('Copy\u2713 ');
+    expect(copyLink.text()).toEqual('Copy\u2713');
     setInterval(() => expect(copyLink.text()).toEqual('Copy '), 3000);
   });
   it('Click Show', () => {
