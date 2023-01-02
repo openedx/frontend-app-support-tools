@@ -17,9 +17,9 @@ describe('Copy Show Hyperlinks', () => {
     const copy = wrapper.find('a').at(0);
     const show = wrapper.find('a').at(1);
 
-    expect(copy.text()).toEqual('Copy');
+    expect(copy.text()).toEqual('Copy ');
     expect(show.text()).toEqual('Show');
-    expect(wrapper.text()).toEqual('CopyShow');
+    expect(wrapper.text()).toEqual('Copy Show');
   });
   it('Click Copy', () => {
     Object.assign(navigator, {
