@@ -108,7 +108,7 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
         expect(text).toEqual(expires);
       } else {
         expect(text).toEqual(
-          value.length > 14 ? 'Copy Show ' : value,
+          value.length > 14 ? 'CopyShow' : value,
         );
       }
     }
