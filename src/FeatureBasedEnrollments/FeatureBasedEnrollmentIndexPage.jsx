@@ -96,7 +96,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
       <section className="mb-3">
         <form className="form-inline">
           <label htmlFor="courseId">Course ID</label>
-          <Input ref={searchRef} className="mr-1 col-sm-4" name="courseId" type="text" defaultValue={searchValue} />
+          <Input ref={searchRef} className="mr-1 ml-1 col-sm-4" name="courseId" type="text" defaultValue={searchValue} />
           <Button type="submit" onClick={submit} className="ml-1 col-sm-1" variant="primary">Search</Button>
         </form>
       </section>

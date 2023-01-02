@@ -67,6 +67,7 @@ export default function Entitlements({
         <Hyperlink
           destination=""
           target="_blank"
+          showLaunchIcon={false}
           onClick={(event) => {
             event.preventDefault();
             setFormType(null);
