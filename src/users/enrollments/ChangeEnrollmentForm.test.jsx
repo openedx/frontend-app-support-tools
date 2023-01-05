@@ -25,8 +25,8 @@ describe('Enrollment Change form', () => {
   });
 
   it('Default form rendering', () => {
-    let changeFormModal = wrapper.find('Modal#change-enrollment');
-    expect(changeFormModal.prop('open')).toEqual(true);
+    let changeFormModal = wrapper.find('ModalDialog#change-enrollment');
+    expect(changeFormModal.prop('isOpen')).toEqual(true);
     const modeSelectionDropdown = wrapper.find('select#mode');
     const modeChangeReasonDropdown = wrapper.find('select#reason');
     const commentsTextarea = wrapper.find('textarea#comments');
@@ -35,8 +35,8 @@ describe('Enrollment Change form', () => {
     expect(commentsTextarea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
-    changeFormModal = wrapper.find('Modal#change-enrollment');
-    expect(changeFormModal.prop('open')).toEqual(false);
+    changeFormModal = wrapper.find('ModalDialog#change-enrollment');
+    expect(changeFormModal.prop('isOpen')).toEqual(false);
   });
 
   describe('Form submission', () => {

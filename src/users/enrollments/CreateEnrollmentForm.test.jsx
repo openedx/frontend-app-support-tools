@@ -25,8 +25,8 @@ describe('Enrollment Create form', () => {
   });
 
   it('Default form rendering', () => {
-    let createFormModal = wrapper.find('Modal#create-enrollment');
-    expect(createFormModal.prop('open')).toEqual(true);
+    let createFormModal = wrapper.find('ModalDialog#create-enrollment');
+    expect(createFormModal.prop('isOpen')).toEqual(true);
     const modeSelectionDropdown = wrapper.find('select#mode');
     const modeChangeReasonDropdown = wrapper.find('select#reason');
     const commentsTextarea = wrapper.find('textarea#comments');
@@ -35,8 +35,8 @@ describe('Enrollment Create form', () => {
     expect(commentsTextarea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('Modal#create-enrollment');
-    expect(createFormModal.prop('open')).toEqual(false);
+    createFormModal = wrapper.find('ModalDialog#create-enrollment');
+    expect(createFormModal.prop('isOpen')).toEqual(false);
   });
 
   describe('Form submission', () => {

@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, InputSelect, Modal,
+  ActionRow,
+  Button, Input, InputSelect, ModalDialog,
 } from '@edx/paragon';
 import AlertList from '../../userMessages/AlertList';
 import { patchEnrollment } from '../data/api';
@@ -133,35 +134,48 @@ export default function ChangeEnrollmentForm({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         setModalIsOpen(false);
         closeHandler(false);
         clear('changeEnrollments');
       }}
-      title="Change Enrollment"
+      hasCloseButton
       id="change-enrollment"
-      dialogClassName="modal-lg"
-      body={(
-        changeEnrollmentForm
-      )}
-      buttons={[
-        showLoader
-          ? (<div className="spinner-border text-primary" role="status" />)
-          : (
-            <Button
-              variant="primary"
-              disabled={!(mode && reason)}
-              className="mr-3"
-              onClick={submit}
-              hidden={hideOnSubmit}
-            >
-              Submit
-            </Button>
-          ),
-      ]}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-2">
+        <ModalDialog.Title className="modal-title">
+          Change Enrollment
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        {changeEnrollmentForm}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+          {showLoader
+            ? (<div className="spinner-border text-primary" role="status" />)
+            : (
+              <Button
+                variant="primary"
+                disabled={!(mode && reason)}
+                className="mr-3"
+                onClick={submit}
+                hidden={hideOnSubmit}
+              >
+                Submit
+              </Button>
+            )},
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 
