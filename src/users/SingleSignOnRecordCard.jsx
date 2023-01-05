@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Card, Row, Col, Modal, Button,
+  Card, Row, Col, Button, ModalDialog, ActionRow,
 } from '@edx/paragon';
 import Table from '../components/Table';
 import { formatDate, formatUnixTimestamp } from '../utils';
@@ -61,22 +61,35 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
 
   return ssoRecord ? (
     <span>
-      <Modal
-        dialogClassName="modal-xl modal-dialog-centered"
-        open={showHistory}
-        title="SSO History"
-        body={(
-          <div>
-            <Table
-              styleName="sso-table"
-              id="sso-history-data-new"
-              data={ssoHistoryTableData}
-              columns={historyColumns}
-            />
-          </div>
-        )}
+      <ModalDialog
+        isOpen={showHistory}
         onClose={() => setShowHistory(false)}
-      />
+        hasCloseButton
+        dialogClassName="modal-xl modal-dialog-centered"
+      >
+        <ModalDialog.Header className="mb-3">
+          <ModalDialog.Title className="modal-title">
+            SSO History
+          </ModalDialog.Title>
+        </ModalDialog.Header>
+        <ModalDialog.Body>
+          <Table
+            styleName="sso-table"
+            id="sso-history-data-new"
+            data={ssoHistoryTableData}
+            columns={historyColumns}
+          />
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <ActionRow>
+            <ModalDialog.CloseButton
+              variant="link"
+            >
+              Close
+            </ModalDialog.CloseButton>
+          </ActionRow>
+        </ModalDialog.Footer>
+      </ModalDialog>
       <Card className="pt-2 px-3 mb-1 w-100">
         <Card.Body className="p-0">
           <Card.Title as="h3" className="btn-header mt-4">
