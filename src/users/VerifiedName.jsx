@@ -171,7 +171,7 @@ export default function VerifiedName({ username }) {
             <ModalDialog.CloseButton
               variant="link"
             >
-              Cancel
+              Close
             </ModalDialog.CloseButton>
           </ActionRow>
         </ModalDialog.Footer>
