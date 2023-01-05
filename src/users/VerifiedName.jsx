@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import {
-  Button, Modal, Hyperlink, OverlayTrigger, Popover,
+  Button, Hyperlink, OverlayTrigger, Popover, ModalDialog, ActionRow,
 } from '@edx/paragon';
 
 import PageLoading from '../components/common/PageLoading';
@@ -143,24 +143,39 @@ export default function VerifiedName({ username }) {
       </Hyperlink>
     ) : 'N/A',
   }], [verifiedNameData]);
-
   return (
     <div>
-      <Modal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Verified Name History"
+      <ModalDialog
+        isOpen={isModalOpen}
+        size="lg"
+        onClose={() => { setIsModalOpen(false); }}
+        hasCloseButton
         id="verified-name-history"
-        dialogClassName="modal-xl modal-dialog-centered justify-content-center"
-        body={(
+        data-testid="history-modal"
+
+      >
+        <ModalDialog.Header className="mb-3">
+          <ModalDialog.Title className="modal-title">
+            Verified Name History
+          </ModalDialog.Title>
+        </ModalDialog.Header>
+        <ModalDialog.Body>
           <Table
             data={VerifiedNameHistoryTableData}
             columns={verifiedNameHistoryColumns}
             styleName="idv-table"
           />
-        )}
-        data-testid="history-modal"
-      />
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <ActionRow>
+            <ModalDialog.CloseButton
+              variant="link"
+            >
+              Cancel
+            </ModalDialog.CloseButton>
+          </ActionRow>
+        </ModalDialog.Footer>
+      </ModalDialog>
       <div className="flex-column p-4 m-3 card">
         <FormattedMessage
           id="supportTools.learnerInformation.verifiedNameHeader"
