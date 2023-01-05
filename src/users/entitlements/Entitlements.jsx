@@ -140,7 +140,7 @@ export default function Entitlements({
     if (formType != null) {
       formRef.current.focus();
     }
-  });
+  }, []);
 
   const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
     <a {...getToggleAllRowsExpandedProps()} className="link-primary">

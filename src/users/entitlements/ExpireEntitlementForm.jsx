@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, Modal,
+  ActionRow,
+  Button, Input, ModalDialog,
 } from '@edx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -90,35 +91,48 @@ export default function ExpireEntitlementForm({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         closeHandler(false);
         setModalIsOpen(false);
         clear('expireEntitlement');
       }}
-      title="Expire Entitlement"
+      hasCloseButton
       id="expire-entitlement"
-      dialogClassName="modal-lg"
-      body={(
-        expireEntitlementForm
-      )}
-      buttons={[
-        showLoader
-          ? (<div className="spinner-border text-primary" role="status" />)
-          : (
-            <Button
-              variant="primary"
-              className="mr-3"
-              disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
-              hidden={hideSubmit}
-              onClick={submit}
-            >
-              Submit
-            </Button>
-          ),
-      ]}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-3">
+        <ModalDialog.Title className="modal-title">
+          Expire Entitlement
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        {expireEntitlementForm}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+          { showLoader
+            ? (<div className="spinner-border text-primary" role="status" />)
+            : (
+              <Button
+                variant="primary"
+                className="mr-3"
+                disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
+                hidden={hideSubmit}
+                onClick={submit}
+              >
+                Submit
+              </Button>
+            )}
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 

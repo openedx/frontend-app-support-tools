@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, Modal,
+  ActionRow,
+  Button, Input, ModalDialog,
 } from '@edx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -95,34 +96,47 @@ export default function CreateEntitlementForm({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         closeHandler(false);
         setModalIsOpen(false);
         clear('createEntitlement');
       }}
-      title="Create New Entitlement"
+      hasCloseButton
       id="create-entitlement"
-      dialogClassName="modal-lg"
-      body={(
-        createEntitlementForm
-      )}
-      buttons={[
-        showLoader
-          ? (<div className="spinner-border text-primary" role="status" />)
-          : (
-            <Button
-              variant="primary"
-              disabled={!(courseUuid && mode && comments)}
-              className="mr-3"
-              onClick={submit}
-            >
-              Submit
-            </Button>
-          ),
-      ]}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-3">
+        <ModalDialog.Title className="modal-title">
+          Create New Entitlement
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        { createEntitlementForm}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+          { showLoader
+            ? (<div className="spinner-border text-primary" role="status" />)
+            : (
+              <Button
+                variant="primary"
+                disabled={!(courseUuid && mode && comments)}
+                className="mr-3"
+                onClick={submit}
+              >
+                Submit
+              </Button>
+            )}
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 

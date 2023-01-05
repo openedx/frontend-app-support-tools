@@ -25,14 +25,14 @@ describe('Expire Entitlement Form', () => {
   });
 
   it('Default form render', () => {
-    let expireFormModal = wrapper.find('Modal#expire-entitlement');
-    expect(expireFormModal.prop('open')).toEqual(true);
+    let expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
+    expect(expireFormModal.prop('isOpen')).toEqual(true);
     const commentsTextArea = wrapper.find('textarea#comments');
     expect(commentsTextArea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
-    expireFormModal = wrapper.find('Modal#expire-entitlement');
-    expect(expireFormModal.prop('open')).toEqual(false);
+    expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
+    expect(expireFormModal.prop('isOpen')).toEqual(false);
   });
 
   describe('Form Submission', () => {
