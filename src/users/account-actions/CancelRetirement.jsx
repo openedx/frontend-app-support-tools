@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
-import { Modal, Button, Alert } from '@edx/paragon';
+import {
+  Button, Alert, ModalDialog, ActionRow,
+} from '@edx/paragon';
 import { postCancelRetirement } from '../data/api';
 
 export default function CancelRetirement({
@@ -50,25 +52,42 @@ export default function CancelRetirement({
         className="mr-1 mb-2"
       >Cancel Retirement
       </Button>
-
-      <Modal
-        open={cancelRetirementModalIsOpen}
-        id="user-account-cancel-retirement"
-        buttons={[errorMessage ? (<></>)
-          : (
-            <Button
-              variant="danger"
-              onClick={cancelRetirement}
-            >
-              Confirm
-            </Button>
-          ),
-        ]}
+      <ModalDialog
+        isOpen={cancelRetirementModalIsOpen}
         onClose={closeCancelRetirementModal}
-        dialogClassName="modal-lg modal-dialog-centered justify-content-center"
-        title="Cancel Retirement"
-        body={modalBody}
-      />
+        hasCloseButton
+        id="user-account-cancel-retirement"
+        size="lg"
+      >
+        <ModalDialog.Header className="mb-3">
+          <ModalDialog.Title className="modal-title">
+            Cancel Retirement
+          </ModalDialog.Title>
+        </ModalDialog.Header>
+        <ModalDialog.Body className="mb-3">
+          {modalBody}
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <ActionRow>
+            <ModalDialog.CloseButton
+              variant="link"
+            >
+              Close
+            </ModalDialog.CloseButton>
+            {
+              errorMessage ? (<></>)
+                : (
+                  <Button
+                    variant="danger"
+                    onClick={cancelRetirement}
+                  >
+                    Confirm
+                  </Button>
+                )
+}
+          </ActionRow>
+        </ModalDialog.Footer>
+      </ModalDialog>
     </div>
   );
 }
