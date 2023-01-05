@@ -31,17 +31,17 @@ describe('Toggle Password Status Component Tests', () => {
     it('Disable User Modal', async () => {
       const mockApiCall = jest.spyOn(api, 'postTogglePasswordStatus').mockImplementationOnce(() => Promise.resolve());
       const passwordActionButton = wrapper.find('#toggle-password').hostNodes();
-      let disableDialogModal = wrapper.find('Modal#user-account-status-toggle');
+      let disableDialogModal = wrapper.find('ModalDialog#user-account-status-toggle');
 
-      expect(disableDialogModal.prop('open')).toEqual(false);
+      expect(disableDialogModal.prop('isOpen')).toEqual(false);
       expect(passwordActionButton.text()).toEqual('Disable User');
       expect(passwordActionButton.disabled).toBeFalsy();
 
       passwordActionButton.simulate('click');
-      disableDialogModal = wrapper.find('Modal#user-account-status-toggle');
+      disableDialogModal = wrapper.find('ModalDialog#user-account-status-toggle');
 
-      expect(disableDialogModal.prop('open')).toEqual(true);
-      expect(disableDialogModal.prop('title')).toEqual('Disable user confirmation');
+      expect(disableDialogModal.prop('isOpen')).toEqual(true);
+      expect(disableDialogModal.find('h2.pgn__modal-title').text()).toEqual('Disable user confirmation');
       expect(disableDialogModal.find('.alert-warning').text()).toEqual(
         'Please provide the reason for disabling the user edx.',
       );
@@ -50,8 +50,8 @@ describe('Toggle Password Status Component Tests', () => {
 
       await waitFor(() => expect(UserSummaryData.changeHandler).toHaveBeenCalledTimes(1));
       disableDialogModal.find('button.btn-link').simulate('click');
-      disableDialogModal = wrapper.find('Modal#user-account-status-toggle');
-      expect(disableDialogModal.prop('open')).toEqual(false);
+      disableDialogModal = wrapper.find('ModalDialog#user-account-status-toggle');
+      expect(disableDialogModal.prop('isOpen')).toEqual(false);
       mockApiCall.mockRestore();
     });
   });
@@ -76,17 +76,17 @@ describe('Toggle Password Status Component Tests', () => {
     it('Enable User Modal', async () => {
       const mockApiCall = jest.spyOn(api, 'postTogglePasswordStatus').mockImplementationOnce(() => Promise.resolve());
       const passwordActionButton = wrapper.find('#toggle-password').hostNodes();
-      let enableUserModal = wrapper.find('Modal#user-account-status-toggle');
+      let enableUserModal = wrapper.find('ModalDialog#user-account-status-toggle');
 
-      expect(enableUserModal.prop('open')).toEqual(false);
+      expect(enableUserModal.prop('isOpen')).toEqual(false);
       expect(passwordActionButton.text()).toEqual('Enable User');
       expect(passwordActionButton.disabled).toBeFalsy();
 
       passwordActionButton.simulate('click');
-      enableUserModal = wrapper.find('Modal#user-account-status-toggle');
+      enableUserModal = wrapper.find('ModalDialog#user-account-status-toggle');
 
-      expect(enableUserModal.prop('open')).toEqual(true);
-      expect(enableUserModal.prop('title')).toEqual('Enable user confirmation');
+      expect(enableUserModal.prop('isOpen')).toEqual(true);
+      expect(enableUserModal.find('h2.pgn__modal-title').text()).toEqual('Enable user confirmation');
       expect(enableUserModal.find('.alert-warning').text()).toEqual(
         'Please provide the reason for enabling the user edx.',
       );

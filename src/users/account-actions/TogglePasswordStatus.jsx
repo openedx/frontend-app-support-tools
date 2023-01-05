@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Modal, Button, Input, Alert,
+  Button, Input, Alert, ModalDialog, ActionRow,
 } from '@edx/paragon';
 import { postTogglePasswordStatus } from '../data/api';
 
@@ -33,21 +33,18 @@ export default function TogglePasswordStatus({
       >
         {passwordStatus.status === PASSWORD_STATUS.USABLE ? DISABLE_USER : ENABLE_USER}
       </Button>
-      <Modal
-        open={disableUserModalIsOpen}
-        id="user-account-status-toggle"
-        dialogClassName="modal-lg modal-dialog-centered justify-content-center"
-        buttons={[
-          <Button
-            variant="danger"
-            onClick={togglePasswordStatus}
-          >
-            Confirm
-          </Button>,
-        ]}
+      <ModalDialog
+        isOpen={disableUserModalIsOpen}
         onClose={() => setDisableUserModalIsOpen(false)}
-        title={`${passwordStatus.status === PASSWORD_STATUS.USABLE ? DISABLE_USER_CONFIRMATION : ENABLE_USER_CONFIRMATION}`}
-        body={(
+        hasCloseButton
+        id="user-account-status-toggle"
+      >
+        <ModalDialog.Header className="mb-3 mt-1 ">
+          <ModalDialog.Title className="modal-title">
+            {`${passwordStatus.status === PASSWORD_STATUS.USABLE ? DISABLE_USER_CONFIRMATION : ENABLE_USER_CONFIRMATION}`}
+          </ModalDialog.Title>
+        </ModalDialog.Header>
+        <ModalDialog.Body className="mb-3">
           <div>
             <Alert variant="warning">
               <p>
@@ -62,8 +59,23 @@ export default function TogglePasswordStatus({
               onChange={(event) => setComment(event.target.value)}
             />
           </div>
-          )}
-      />
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <ActionRow>
+            <ModalDialog.CloseButton
+              variant="link"
+            >
+              Close
+            </ModalDialog.CloseButton>
+            <Button
+              variant="danger"
+              onClick={togglePasswordStatus}
+            >
+              Confirm
+            </Button>
+          </ActionRow>
+        </ModalDialog.Footer>
+      </ModalDialog>
     </div>
   );
 }
