@@ -94,6 +94,9 @@ $darkCyan: #00262b;
     border-bottom: none;
   }
 }
+.card-title {
+  color: #00262B !important
+}
 
 .certificate-info-table {
   @extend .sso-table;
