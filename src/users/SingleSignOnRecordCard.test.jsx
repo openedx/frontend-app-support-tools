@@ -40,9 +40,9 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
   });
 
   it('SSO Record', () => {
-    const provider = wrapper.find('h3.card-title');
-    const uid = wrapper.find('h4.card-subtitle').at(0);
-    const modified = wrapper.find('h4.card-subtitle').at(1);
+    const provider = wrapper.find('.h3.card-title');
+    const uid = wrapper.find('h4.text-left');
+    const modified = wrapper.find('h4.text-right');
     const history = wrapper.find('.history button.history-button');
 
     expect(provider.text()).toEqual(`${ssoRecordProp.provider} (Provider)`);
