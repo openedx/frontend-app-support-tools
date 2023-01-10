@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
-import { Modal } from '@edx/paragon';
+import { ModalDialog, ActionRow } from '@edx/paragon';
 import PageLoading from '../../components/common/PageLoading';
 import { formatDate } from '../../utils';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -49,7 +49,7 @@ export default function CourseSummary({
     if (courseSummaryRef !== null) {
       courseSummaryRef.current.focus();
     }
-  });
+  }, []);
 
   const courseRunsColumn = useMemo(
     () => [
@@ -143,23 +143,39 @@ export default function CourseSummary({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         closeHandler();
         setModalIsOpen(false);
       }}
-      title={
-        courseSummaryData && !courseSummaryErrors
-          ? `Course Summary: ${courseSummaryData.title}`
-          : 'Course Summary'
-        }
+      hasCloseButton
       id="course-summary"
-      dialogClassName="modal-lg"
-      body={(
-        courseSummaryInfo
-      )}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-3">
+        <ModalDialog.Title className="mb-3">
+          {
+            courseSummaryData && !courseSummaryErrors
+              ? `Course Summary: ${courseSummaryData.title}`
+              : 'Course Summary'
+          }
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body ref={courseSummaryRef}>
+        {courseSummaryInfo}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            id="closeBtnTest"
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 

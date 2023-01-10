@@ -22,7 +22,7 @@ describe('Certificate component', () => {
   const props = {
     username: testUser,
     courseId: testCourseId,
-    closeHandler: jest.fn(() => {}),
+    closeHandler: jest.fn(() => { }),
   };
 
   afterEach(() => {
@@ -37,12 +37,11 @@ describe('Certificate component', () => {
     const dataRows = wrapper.find('table.certificate-info-table tbody tr');
     expect(dataRows.length).toEqual(7);
 
-    let certificateModal = wrapper.find('Modal#certificate');
-    expect(certificateModal.prop('open')).toEqual(true);
-
+    let certificateModal = wrapper.find('ModalDialog#certificate');
+    expect(certificateModal.prop('isOpen')).toEqual(true);
     wrapper.find('button.btn-link').simulate('click');
-    certificateModal = wrapper.find('Modal#certificate');
-    expect(certificateModal.prop('open')).toEqual(false);
+    certificateModal = wrapper.find('ModalDialog#certificate');
+    expect(certificateModal.prop('isOpen')).toEqual(false);
   });
 
   it('Downloadable Certificate', async () => {

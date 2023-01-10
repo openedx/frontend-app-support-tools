@@ -56,11 +56,10 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     expect(historyRow.text()).toEqual('History');
 
     historyRow.simulate('click');
-
-    let modal = wrapper.find('.modal-content');
+    let modal = wrapper.find('.pgn__modal-content-container');
     expect(modal.exists()).toBeTruthy();
-    expect(modal.find('.modal-title').text()).toEqual('SSO History');
-    expect(modal.find('.modal-footer button').text()).toEqual('Close');
+    expect(modal.find('.pgn__modal-title').text()).toEqual('SSO History');
+    expect(modal.find('.pgn__modal-footer button').text()).toEqual('Close');
 
     const dataHeader = modal.find('thead tr th');
     const { history } = ssoRecordProp;
@@ -81,9 +80,9 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
         }
       });
     });
-    modal.find('.modal-footer button').simulate('click');
-    modal = wrapper.find('.modal-content');
-    expect(modal.prop('open')).not.toBeTruthy();
+    modal.find('.pgn__modal-footer button').simulate('click');
+    modal = wrapper.find('.pgn__modal-content-container');
+    expect(modal.exists()).not.toBeTruthy();
   });
 
   it('SSO Record Additional Data', () => {

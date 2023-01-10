@@ -25,8 +25,8 @@ describe('Create Entitlement Form', () => {
   });
 
   it('Default form render', () => {
-    let createFormModal = wrapper.find('Modal#create-entitlement');
-    expect(createFormModal.prop('open')).toEqual(true);
+    let createFormModal = wrapper.find('ModalDialog#create-entitlement');
+    expect(createFormModal.prop('isOpen')).toEqual(true);
     const courseUuidInput = wrapper.find('input#courseUuid');
     const modeSelectDropdown = wrapper.find('select#mode');
     const commentsTextArea = wrapper.find('textarea#comments');
@@ -35,8 +35,8 @@ describe('Create Entitlement Form', () => {
     expect(commentsTextArea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('Modal#create-entitlement');
-    expect(createFormModal.prop('open')).toEqual(false);
+    createFormModal = wrapper.find('ModalDialog#create-entitlement');
+    expect(createFormModal.prop('isOpen')).toEqual(false);
   });
 
   describe('Form Submission', () => {

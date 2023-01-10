@@ -20,20 +20,20 @@ describe('Password History Component Tests', () => {
 
   it('Password History Modal', () => {
     const passwordHistoryButton = wrapper.find('button#toggle-password-history');
-    let historyModal = wrapper.find('Modal#password-history');
+    let historyModal = wrapper.find('ModalDialog#password-history');
 
-    expect(historyModal.prop('open')).toEqual(false);
+    expect(historyModal.prop('isOpen')).toEqual(false);
     expect(passwordHistoryButton.text()).toEqual('Show History');
     expect(passwordHistoryButton.disabled).toBeFalsy();
 
     passwordHistoryButton.simulate('click');
-    historyModal = wrapper.find('Modal#password-history');
+    historyModal = wrapper.find('ModalDialog#password-history');
 
-    expect(historyModal.prop('open')).toEqual(true);
+    expect(historyModal.prop('isOpen')).toEqual(true);
     expect(historyModal.find('table tbody tr')).toHaveLength(2);
 
     historyModal.find('button.btn-link').simulate('click');
-    historyModal = wrapper.find('Modal#password-history');
-    expect(historyModal.prop('open')).toEqual(false);
+    historyModal = wrapper.find('ModalDialog#password-history');
+    expect(historyModal.prop('isOpen')).toEqual(false);
   });
 });

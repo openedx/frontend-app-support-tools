@@ -7,7 +7,9 @@ import React, {
 } from 'react';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
-import { Alert, Button, Modal } from '@edx/paragon';
+import {
+  ActionRow, Alert, Button, ModalDialog,
+} from '@edx/paragon';
 import PageLoading from '../../components/common/PageLoading';
 import { formatDate } from '../../utils';
 import { getCertificate, generateCertificate, regenerateCertificate } from '../data/api';
@@ -51,7 +53,7 @@ export default function Certificates({
     if (certificateRef != null) {
       certificateRef.current.focus();
     }
-  });
+  }, []);
 
   function usePrevious(value) {
     const ref = useRef();
@@ -186,19 +188,34 @@ export default function Certificates({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         closeHandler();
         setModalIsOpen(false);
       }}
-      title="Certificate"
+      hasCloseButton
       id="certificate"
-      dialogClassName="modal-lg"
-      body={(
-        certificateInfo
-    )}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-3">
+        <ModalDialog.Title className="modal-title">
+          Certificate
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        { certificateInfo}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 

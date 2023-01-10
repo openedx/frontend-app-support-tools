@@ -39,12 +39,12 @@ describe('Entitlements Listing', () => {
     expect(entitlementButton.prop('disabled')).toBeFalsy();
     entitlementButton.simulate('click');
 
-    let createFormModal = wrapper.find('Modal#create-entitlement');
-    expect(createFormModal.prop('open')).toEqual(true);
+    let createFormModal = wrapper.find('ModalDialog#create-entitlement');
+    expect(createFormModal.prop('isOpen')).toEqual(true);
     expect(createFormModal.html()).toEqual(expect.stringContaining('Create New Entitlement'));
     wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('Modal#create-entitlement');
-    expect(createFormModal.prop('open')).toEqual(false);
+    createFormModal = wrapper.find('ModalDialog#create-entitlement');
+    expect(createFormModal.prop('isOpen')).toEqual(false);
   });
 
   it('entitlements data', () => {
@@ -131,12 +131,12 @@ describe('Entitlements Listing', () => {
       expect(expireOption.html()).not.toEqual(expect.stringContaining('disabled'));
       expireOption.simulate('click');
 
-      let expireFormModal = wrapper.find('Modal#expire-entitlement');
-      expect(expireFormModal.prop('open')).toEqual(true);
+      let expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
+      expect(expireFormModal.prop('isOpen')).toEqual(true);
       expect(expireFormModal.html()).toEqual(expect.stringContaining('Expire Entitlement'));
       wrapper.find('button.btn-link').simulate('click');
-      expireFormModal = wrapper.find('Modal#expire-entitlement');
-      expect(expireFormModal.prop('open')).toEqual(false);
+      expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
+      expect(expireFormModal.prop('isOpen')).toEqual(false);
     });
   });
 
@@ -152,12 +152,12 @@ describe('Entitlements Listing', () => {
       expect(expireOption.html()).not.toEqual(expect.stringContaining('disabled'));
       expireOption.simulate('click');
 
-      let reissueFormModal = wrapper.find('Modal#reissue-entitlement');
-      expect(reissueFormModal.prop('open')).toEqual(true);
+      let reissueFormModal = wrapper.find('ModalDialog#reissue-entitlement');
+      expect(reissueFormModal.prop('isOpen')).toEqual(true);
       expect(reissueFormModal.html()).toEqual(expect.stringContaining('Reissue Entitlement'));
       wrapper.find('button.btn-link').simulate('click');
-      reissueFormModal = wrapper.find('Modal#reissue-entitlement');
-      expect(reissueFormModal.prop('open')).toEqual(false);
+      reissueFormModal = wrapper.find('ModalDialog#reissue-entitlement');
+      expect(reissueFormModal.prop('isOpen')).toEqual(false);
     });
 
     it('Disabled Reissue entitlement button', async () => {

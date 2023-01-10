@@ -25,14 +25,14 @@ describe('Reissue Entitlement Form', () => {
   });
 
   it('Default form render', () => {
-    let reissueFormModal = wrapper.find('Modal#reissue-entitlement');
-    expect(reissueFormModal.prop('open')).toEqual(true);
+    let reissueFormModal = wrapper.find('ModalDialog#reissue-entitlement');
+    expect(reissueFormModal.prop('isOpen')).toEqual(true);
     const commentsTextArea = wrapper.find('textarea#comments');
     expect(commentsTextArea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
-    reissueFormModal = wrapper.find('Modal#reissue-entitlement');
-    expect(reissueFormModal.prop('open')).toEqual(false);
+    reissueFormModal = wrapper.find('ModalDialog#reissue-entitlement');
+    expect(reissueFormModal.prop('isOpen')).toEqual(false);
   });
 
   describe('Form Submission', () => {

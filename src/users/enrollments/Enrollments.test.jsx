@@ -65,9 +65,9 @@ describe('Course Enrollments Listing', () => {
   it('Enrollment create form is rendered', () => {
     const createEnrollmentButton = wrapper.find('button#create-enrollment-button');
     createEnrollmentButton.simulate('click');
-    const createFormModal = wrapper.find('Modal#create-enrollment');
+    const createFormModal = wrapper.find('ModalDialog#create-enrollment');
     expect(createFormModal.html()).toEqual(expect.stringContaining('Create New Enrollment'));
-    expect(createFormModal.prop('open')).toEqual(true);
+    expect(createFormModal.prop('isOpen')).toEqual(true);
 
     createFormModal.find('button.btn-link').simulate('click');
     expect(wrapper.find('CreateEnrollmentForm')).toEqual({});
@@ -80,9 +80,9 @@ describe('Course Enrollments Listing', () => {
     dataRow = wrapper.find('table tbody tr').at(0);
     dataRow.find('.dropdown-menu.show a').at(0).simulate('click');
 
-    const changeFormModal = wrapper.find('Modal#change-enrollment');
+    const changeFormModal = wrapper.find('ModalDialog#change-enrollment');
     expect(changeFormModal.html()).toEqual(expect.stringContaining(courseId));
-    expect(changeFormModal.prop('open')).toEqual(true);
+    expect(changeFormModal.prop('isOpen')).toEqual(true);
 
     changeFormModal.find('button.btn-link').simulate('click');
     expect(wrapper.find('changeEnrollmentForm')).toEqual({});
