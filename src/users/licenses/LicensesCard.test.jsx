@@ -37,9 +37,9 @@ describe.each(licenseData.results)('License Record Card', (licenseRecord) => {
   });
 
   it('License Record', () => {
-    const title = wrapper.find('h3.card-title');
-    const status = wrapper.find('h4.card-subtitle').at(0);
-    const expire = wrapper.find('h4.card-subtitle').at(1);
+    const title = wrapper.find('.h3.card-title');
+    const status = wrapper.find('h4.text-left');
+    const expire = wrapper.find('h4.text-right');
 
     expect(title.text()).toEqual(licenseRecordProp.subscriptionPlanTitle);
     expect(status.text()).toEqual(licenseRecordProp.status);

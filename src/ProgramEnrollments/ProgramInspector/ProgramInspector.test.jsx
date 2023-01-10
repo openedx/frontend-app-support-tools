@@ -194,7 +194,7 @@ describe('Program Inspector', () => {
     await waitForComponentToPaint(wrapper);
     const ssoRecords = wrapper.find('.sso-records');
     expect(ssoRecords.find('h4').at(0).text()).toEqual('SSO Records');
-    expect(ssoRecords.find('h3').text()).toEqual(
+    expect(ssoRecords.find('.h3').text()).toEqual(
       'tpa-saml (Provider)',
     );
     history.push.mockReset();
