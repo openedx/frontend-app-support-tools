@@ -20,7 +20,7 @@ describe('Feature Based Enrollment Card Component', () => {
 
     it('Gating config enabled', () => {
       wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigEnabled} />);
-      const header = wrapper.find('h3.card-title');
+      const header = wrapper.find('.card-title');
       const dataTable = wrapper.find('table.fbe-table tr');
       const dateRow = dataTable.at(0);
       const reasonRow = dataTable.at(1);
@@ -35,7 +35,7 @@ describe('Feature Based Enrollment Card Component', () => {
 
     it('Gating config disabled', () => {
       wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigDisabled} />);
-      const header = wrapper.find('h3.card-title');
+      const header = wrapper.find('.card-title');
       const dataTable = wrapper.find('table.fbe-table tr');
       const dateRow = dataTable.at(0);
       const reasonRow = dataTable.at(1);
@@ -54,7 +54,7 @@ describe('Feature Based Enrollment Card Component', () => {
 
     it('Duration config enabled', () => {
       wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigEnabled} />);
-      const header = wrapper.find('h3.card-title');
+      const header = wrapper.find('.card-title');
       const dataTable = wrapper.find('table.fbe-table tr');
       const dateRow = dataTable.at(0);
       const reasonRow = dataTable.at(1);
@@ -69,7 +69,7 @@ describe('Feature Based Enrollment Card Component', () => {
 
     it('Duration config disabled', () => {
       wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigDisabled} />);
-      const header = wrapper.find('h3.card-title');
+      const header = wrapper.find('.card-title');
       const dataTable = wrapper.find('table.fbe-table tr');
       const dateRow = dataTable.at(0);
       const reasonRow = dataTable.at(1);

@@ -7,12 +7,18 @@ import { formatDate } from '../utils';
 
 export default function FeatureBasedEnrollmentCard({ title, fbeData }) {
   return (
-    <Card className="px-3 mb-1">
-      <Card.Body className="p-0">
-        <Card.Title as="h3" className="btn-header mt-4">
-          {title} { fbeData.enabled ? <Badge variant="success">Enabled</Badge> : <Badge variant="danger">Disabled</Badge> }
-        </Card.Title>
-
+    <Card>
+      <Card.Header
+        title={(
+          <span
+            className="card-title"
+          >
+            {title} { fbeData.enabled ? <Badge variant="success">Enabled</Badge> : <Badge variant="danger">Disabled</Badge> }
+          </span>
+        )}
+        as="h3"
+      />
+      <Card.Section>
         <table className="fbe-table">
           <tbody>
 
@@ -29,7 +35,8 @@ export default function FeatureBasedEnrollmentCard({ title, fbeData }) {
           </tbody>
 
         </table>
-      </Card.Body>
+      </Card.Section>
+      <Card.Footer />
     </Card>
   );
 }

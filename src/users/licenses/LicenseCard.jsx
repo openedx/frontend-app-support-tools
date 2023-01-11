@@ -54,33 +54,40 @@ export default function LicenseCard({
   return (
     tableData && tableData.length ? (
       <Card className="pt-2 px-3 mb-1 w-100">
-        <Card.Body className="p-0">
-          <Card.Title as="h3" className="btn-header mt-4">
-            {licenseRecord.subscriptionPlanTitle}
-          </Card.Title>
+        <Card.Header
+          title={(
+            <span className="h3 card-title">
+              {licenseRecord.subscriptionPlanTitle}
+            </span>
+          )}
+        />
+        <Card.Section>
           <Row>
-            <Col>
-              <Card.Subtitle align="left" as="h4">
-                <Badge variant={statusMapping[licenseRecord.status]} className="badge-status">{licenseRecord.status}</Badge>
-              </Card.Subtitle>
+            <Col className="text-left" as="h4">
+              <Badge variant={statusMapping[licenseRecord.status]} className="badge-status">{licenseRecord.status}</Badge>
+
             </Col>
-            <Col>
-              <Card.Subtitle align="right" as="h4">
-                Plan Expiration: {formatDate(licenseRecord.subscriptionPlanExpirationDate)}
-              </Card.Subtitle>
+            <Col className="text-right" as="h4">
+              Plan Expiration: {formatDate(licenseRecord.subscriptionPlanExpirationDate)}
             </Col>
           </Row>
-
-          <Card.Title as="h5" className="btn-header mt-4">
+        </Card.Section>
+        <Card.Header title={(
+          <p
+            className="h5 card-title"
+          >
             Additional Data
-          </Card.Title>
+          </p>
+        )}
+        />
+        <Card.Section>
           <Table
             data={tableData}
             columns={columns}
             styleName="sso-table"
             id="license-data-new"
           />
-        </Card.Body>
+        </Card.Section>
       </Card>
     ) : (
       <></>

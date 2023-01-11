@@ -91,21 +91,21 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
         </ModalDialog.Footer>
       </ModalDialog>
       <Card className="pt-2 px-3 mb-1 w-100">
-        <Card.Body className="p-0">
-          <Card.Title as="h3" className="btn-header mt-4">
-            {ssoRecord.provider} <span className="h5 text-muted">(Provider)</span>
-          </Card.Title>
+        <Card.Header
+          title={(
+            <span className="h3 card-title">
+              {ssoRecord.provider} <span span className="h5 text-muted">(Provider)</span>
+            </span>
+          )}
+        />
+        <Card.Section>
           <Row>
-            <Col>
-              <Card.Subtitle align="left" as="h4">
-                {ssoRecord.uid} <span className="h6 text-muted">(UID)</span>
-              </Card.Subtitle>
+            <Col className="text-left" as="h4">
+              {ssoRecord.uid} <span className="h6 text-muted">(UID)</span>
             </Col>
-            <Col>
-              <Card.Subtitle align="right" as="h4">
-                {formatDate(ssoRecord.modified)}{' '}
-                <span className="h5 text-muted">(Last Modified)</span>
-              </Card.Subtitle>
+            <Col className="text-right" as="h4">
+              {formatDate(ssoRecord.modified)}{' '}
+              <span className="h5 text-muted">(Last Modified)</span>
             </Col>
           </Row>
           <Row>
@@ -120,16 +120,23 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
             </div>
           </Row>
 
-          <Card.Title as="h5" className="btn-header mt-4">
+        </Card.Section>
+        <Card.Header title={(
+          <p
+            className="h5 card-title"
+          >
             Additional Data
-          </Card.Title>
+          </p>
+       )}
+        />
+        <Card.Section>
           <Table
             styleName="sso-table"
             id="sso-data-new"
             data={[data]}
             columns={columns}
           />
-        </Card.Body>
+        </Card.Section>
       </Card>
 
     </span>
