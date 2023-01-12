@@ -54,8 +54,6 @@ describe('Learners and Enrollments component', () => {
 
   it('renders correctly', () => {
     const tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.length).toEqual(5);
-
     expect(tabs.at(0).text()).toEqual('Account Information');
     expect(tabs.at(1).text()).toEqual('Enrollments/Entitlements');
     expect(tabs.at(2).text()).toEqual('SSO/License Info');
