@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { getConfig } from '@edx/frontend-platform';
 import { Alert, Button } from '@edx/paragon';
 import PropTypes from 'prop-types';

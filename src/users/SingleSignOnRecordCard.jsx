@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -141,7 +143,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
 
     </span>
   ) : (
-    <></>
+    <></> // eslint-disable-line react/jsx-no-useless-fragment
   );
 }
 
@@ -150,10 +152,10 @@ SingleSignOnRecordCard.propTypes = {
     provider: PropTypes.string,
     uid: PropTypes.string,
     modified: PropTypes.string,
-    extraData: PropTypes.object,
+    extraData: PropTypes.shape({}),
     history: PropTypes.arrayOf(PropTypes.shape({
       created: PropTypes.string,
-      extraData: PropTypes.object,
+      extraData: PropTypes.shape({}),
       historyDate: PropTypes.string,
       modified: PropTypes.string,
       provider: PropTypes.string,

@@ -16,20 +16,18 @@ export default function ProgramEnrollmentsIndexPage({ location }) {
   }, [location.search]);
 
   return (
-    <>
-      <Tabs id="programs" defaultActiveKey={eventKey} className="programs">
-        <Tab eventKey="program_inspector" title="Program Inspector">
-          <br />
-          <ProgramInspector location={location} />
-        </Tab>
-        <Tab eventKey="program_enrollment" title="Link Program Enrollments">
-          <br />
-          <div className="col-sm-12 px-0">
-            <LinkProgramEnrollments />
-          </div>
-        </Tab>
-      </Tabs>
-    </>
+    <Tabs id="programs" defaultActiveKey={eventKey} className="programs">
+      <Tab eventKey="program_inspector" title="Program Inspector">
+        <br />
+        <ProgramInspector location={location} />
+      </Tab>
+      <Tab eventKey="program_enrollment" title="Link Program Enrollments">
+        <br />
+        <div className="col-sm-12 px-0">
+          <LinkProgramEnrollments />
+        </div>
+      </Tab>
+    </Tabs>
   );
 }
 

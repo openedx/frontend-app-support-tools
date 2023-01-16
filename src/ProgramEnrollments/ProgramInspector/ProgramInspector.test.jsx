@@ -91,10 +91,14 @@ describe('Program Inspector', () => {
 
     await waitForComponentToPaint(wrapper);
 
-    wrapper.find("input[name='username']").simulate('change',
-      { target: { value: data.username } });
-    wrapper.find("select[name='orgKey']").simulate('change',
-      { target: { value: data.orgKey } });
+    wrapper.find("input[name='username']").simulate(
+      'change',
+      { target: { value: data.username } },
+    );
+    wrapper.find("select[name='orgKey']").simulate(
+      'change',
+      { target: { value: data.orgKey } },
+    );
     wrapper.find('button.btn-primary').simulate('click');
 
     expect(history.push).toHaveBeenCalledWith(
@@ -123,12 +127,22 @@ describe('Program Inspector', () => {
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
 
-    await waitForComponentToPaint(wrapper);
+    await waitForComponentToPaint(
+      wrapper,
+    );
 
-    wrapper.find("input[name='externalKey']").simulate('change',
-      { target: { value: data.externalKey } });
-    wrapper.find("select[name='orgKey']").simulate('change',
-      { target: { value: data.orgKey } });
+    wrapper.find(
+      "input[name='externalKey']",
+    ).simulate(
+      'change',
+      { target: { value: data.externalKey } },
+    );
+    wrapper.find(
+      "select[name='orgKey']",
+    ).simulate(
+      'change',
+      { target: { value: data.orgKey } },
+    );
     wrapper.find('button.btn-primary').simulate('click');
 
     expect(history.push).toHaveBeenCalledWith(
@@ -158,14 +172,28 @@ describe('Program Inspector', () => {
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
 
-    await waitForComponentToPaint(wrapper);
+    await waitForComponentToPaint(
+      wrapper,
+    );
 
-    wrapper.find("input[name='username']").simulate('change',
-      { target: { value: undefined } });
-    wrapper.find("input[name='externalKey']").simulate('change',
-      { target: { value: undefined } });
-    wrapper.find("select[name='orgKey']").simulate('change',
-      { target: { value: data.orgKey } });
+    wrapper.find(
+      "input[name='username']",
+    ).simulate(
+      'change',
+      { target: { value: undefined } },
+    );
+    wrapper.find(
+      "input[name='externalKey']",
+    ).simulate(
+      'change',
+      { target: { value: undefined } },
+    );
+    wrapper.find(
+      "select[name='orgKey']",
+    ).simulate(
+      'change',
+      { target: { value: data.orgKey } },
+    );
     wrapper.find('button.btn-primary').simulate('click');
 
     expect(history.push).toHaveBeenCalledWith(
@@ -183,12 +211,22 @@ describe('Program Inspector', () => {
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
 
-    await waitForComponentToPaint(wrapper);
+    await waitForComponentToPaint(
+      wrapper,
+    );
 
-    wrapper.find("input[name='username']").simulate('change',
-      { target: { value: data.username } });
-    wrapper.find("select[name='orgKey']").simulate('change',
-      { target: { value: data.orgKey } });
+    wrapper.find(
+      "input[name='username']",
+    ).simulate(
+      'change',
+      { target: { value: data.username } },
+    );
+    wrapper.find(
+      "select[name='orgKey']",
+    ).simulate(
+      'change',
+      { target: { value: data.orgKey } },
+    );
     wrapper.find('button.btn-primary').simulate('click');
 
     await waitForComponentToPaint(wrapper);

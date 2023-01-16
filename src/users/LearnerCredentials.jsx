@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import PropTypes from 'prop-types';
 import {
   Hyperlink, TransitionReplace, Button, Alert,
@@ -11,6 +12,7 @@ export default function LearnerCredentials({ username }) {
   const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  // eslint-disable-next-line react/no-unstable-nested-components
   const Attributes = ({ attributes }) => (
     <>
       <TransitionReplace>

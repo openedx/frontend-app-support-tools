@@ -63,7 +63,7 @@ export default function Certificates({
     return ref.current;
   }
 
-  function postGenerateCertificate() {
+  const postGenerateCertificate = () => {
     setButtonDisabled(true);
     setStatus('Generating New Certificate');
     generateCertificate(username, certificate.courseKey).then((result) => {
@@ -78,9 +78,9 @@ export default function Certificates({
       setButtonDisabled(false);
       setStatus(undefined);
     });
-  }
+  };
 
-  function postRegenerateCertificate() {
+  const postRegenerateCertificate = () => {
     setButtonDisabled(true);
     setStatus('Regenerating Certificate');
     regenerateCertificate(username, certificate.courseKey).then((result) => {
@@ -95,7 +95,7 @@ export default function Certificates({
       setButtonDisabled(false);
       setStatus(undefined);
     });
-  }
+  };
 
   /**
    * For a pdf certificate, the download url is already a valid and complete Url.

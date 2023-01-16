@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 

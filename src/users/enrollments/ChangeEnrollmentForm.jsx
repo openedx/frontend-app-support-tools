@@ -184,7 +184,7 @@ ChangeEnrollmentForm.propTypes = {
     courseId: PropTypes.string.isRequired,
     mode: PropTypes.string.isRequired,
     isActive: PropTypes.bool.isRequired,
-    courseModes: PropTypes.array,
+    courseModes: PropTypes.shape([]),
   }),
   user: PropTypes.string.isRequired,
   closeHandler: PropTypes.func.isRequired,

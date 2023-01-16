@@ -414,9 +414,7 @@ export async function patchEntitlement({
   uuid, requestData,
 }) {
   try {
-    const { data } = await getAuthenticatedHttpClient().patch(
-      AppUrls.getEntitlementUrl(uuid), requestData,
-    );
+    const { data } = await getAuthenticatedHttpClient().patch(AppUrls.getEntitlementUrl(uuid), requestData);
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
@@ -445,9 +443,7 @@ export async function postEntitlement({
   requestData,
 }) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(
-      AppUrls.getEntitlementUrl(), requestData,
-    );
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.getEntitlementUrl(), requestData);
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
@@ -562,9 +558,7 @@ export async function postTogglePasswordStatus(user, comment) {
 
 export async function postResetPassword(email) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(
-      AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`,
-    );
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`);
     return data;
   } catch (error) {
     return {
@@ -583,9 +577,7 @@ export async function postResetPassword(email) {
 
 export async function postCancelRetirement(retirementId) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(
-      AppUrls.CancelRetirementUrl(), `retirement_id=${retirementId}`,
-    );
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.CancelRetirementUrl(), `retirement_id=${retirementId}`);
     return data;
   } catch (error) {
     return {
