@@ -61,7 +61,7 @@ export default function EnrollmentDetails({ enrollments }) {
       </div>
     ))
   ) : (
-    <></>
+    null
   );
 }
 

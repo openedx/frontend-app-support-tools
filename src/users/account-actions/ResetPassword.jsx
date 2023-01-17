@@ -77,7 +77,7 @@ export default function ResetPassword({
             >
               Close
             </ModalDialog.CloseButton>
-            {errorMessage ? (<></>)
+            {errorMessage ? null
               : (
                 <Button
                   variant="danger"

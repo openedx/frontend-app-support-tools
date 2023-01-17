@@ -90,7 +90,7 @@ export default function LicenseCard({
         </Card.Section>
       </Card>
     ) : (
-      <></>
+      null
     )
   );
 }

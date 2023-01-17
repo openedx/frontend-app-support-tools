@@ -75,7 +75,7 @@ export default function CancelRetirement({
               Close
             </ModalDialog.CloseButton>
             {
-              errorMessage ? (<></>)
+              errorMessage ? null
                 : (
                   <Button
                     variant="danger"

@@ -193,7 +193,7 @@ export default function VerifiedName({ username }) {
               columns={verifiedNameColumns}
               styleName="idv-table"
             />
-          ) : <></>
+          ) : null
         ) : <PageLoading srMessage="Loading" />}
       </div>
     </div>

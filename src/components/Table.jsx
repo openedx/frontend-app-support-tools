@@ -92,7 +92,7 @@ Table.propTypes = {
     accessor: PropTypes.string.isRequired,
     sortable: PropTypes.bool,
   })).isRequired,
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   renderRowSubComponent: PropTypes.func,
   styleName: PropTypes.string,
   isResponsive: PropTypes.bool,
