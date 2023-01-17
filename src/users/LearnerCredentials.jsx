@@ -11,6 +11,13 @@ export default function LearnerCredentials({ username }) {
   const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const noCredentials = (
+    error ? (
+      <Alert variant="danger">{error.text}</Alert>
+    ) : (
+      <p className="ml-4">No Credentials were Found.</p>
+    )
+  );
   // eslint-disable-next-line react/no-unstable-nested-components
   const Attributes = ({ attributes }) => (
     <TransitionReplace>
@@ -71,59 +78,48 @@ export default function LearnerCredentials({ username }) {
   }, [username]);
 
   return (
-    <>
-      <section className="mb-3">
-        <h3>Learner Credentials</h3>
-        {credentials ? (
-          <Table
-            columns={[
-              {
-                Header: 'Credential Type',
-                accessor: 'credentialType',
-              },
-              {
-                Header: 'Program ID',
-                accessor: 'programID',
-              },
-              {
-                Header: 'Status',
-                accessor: 'status',
-              },
-              {
-                Header: 'Certificate Link',
-                accessor: 'certificateUrl',
-              },
-              {
-                Header: 'Attributes',
-                accessor: 'attributes',
-              },
-            ]}
-            data={credentials.map((credential) => ({
-              credentialType: credential.credential.type,
-              programID: credential.credential.program_uuid,
-              status: credential.status,
-              certificateUrl: (
-                <Hyperlink destination={credential.certificate_url}>
-                  {credential.uuid}
-                </Hyperlink>
-              ),
-              attributes: <Attributes attributes={credential.attributes} />,
-            }))}
-            styleName="custom-table"
-          />
-        ) : (
-          <>
-            {error ? (
-              <>
-                <Alert variant="danger">{error.text}</Alert>
-              </>
-            ) : (
-              <p className="ml-4">No Credentials were Found.</p>
-            )}
-          </>
-        )}
-      </section>
-    </>
+
+    <section className="mb-3">
+      <h3>Learner Credentials</h3>
+      {credentials ? (
+        <Table
+          columns={[
+            {
+              Header: 'Credential Type',
+              accessor: 'credentialType',
+            },
+            {
+              Header: 'Program ID',
+              accessor: 'programID',
+            },
+            {
+              Header: 'Status',
+              accessor: 'status',
+            },
+            {
+              Header: 'Certificate Link',
+              accessor: 'certificateUrl',
+            },
+            {
+              Header: 'Attributes',
+              accessor: 'attributes',
+            },
+          ]}
+          data={credentials.map((credential) => ({
+            credentialType: credential.credential.type,
+            programID: credential.credential.program_uuid,
+            status: credential.status,
+            certificateUrl: (
+              <Hyperlink destination={credential.certificate_url}>
+                {credential.uuid}
+              </Hyperlink>
+            ),
+            attributes: <Attributes attributes={credential.attributes} />,
+          }))}
+          styleName="custom-table"
+        />
+      ) : noCredentials}
+    </section>
   );
 }
 
