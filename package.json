@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.0",
-    "@edx/frontend-build": "6.1.1",
+    "@edx/frontend-build": "9.1.2",
     "@edx/reactifex": "^1.0.3",
     "@testing-library/react": "10.3.0",
     "@types/react-table": "^7.7.2",
