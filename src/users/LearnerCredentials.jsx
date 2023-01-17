@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import PropTypes from 'prop-types';
 import {
   Hyperlink, TransitionReplace, Button, Alert,
@@ -14,42 +13,40 @@ export default function LearnerCredentials({ username }) {
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Attributes = ({ attributes }) => (
-    <>
-      <TransitionReplace>
-        {isOpen ? (
-          <>
-            <Button
-              variant="link"
-              size="inline"
-              onClick={() => setIsOpen(false)}
-            >
-              Hide
-            </Button>
-            <Table
-              columns={[
-                {
-                  Header: 'Name',
-                  accessor: 'name',
-                },
-                {
-                  Header: 'Value',
-                  accessor: 'value',
-                },
-              ]}
-              data={attributes.map((attribute) => ({
-                name: attribute.name,
-                value: attribute.value,
-              }))}
-              styleName="custom-table"
-            />
-          </>
-        ) : (
-          <Button variant="link" size="inline" onClick={() => setIsOpen(true)}>
-            Show
+    <TransitionReplace>
+      {isOpen ? (
+        <>
+          <Button
+            variant="link"
+            size="inline"
+            onClick={() => setIsOpen(false)}
+          >
+            Hide
           </Button>
-        )}
-      </TransitionReplace>
-    </>
+          <Table
+            columns={[
+              {
+                Header: 'Name',
+                accessor: 'name',
+              },
+              {
+                Header: 'Value',
+                accessor: 'value',
+              },
+            ]}
+            data={attributes.map((attribute) => ({
+              name: attribute.name,
+              value: attribute.value,
+            }))}
+            styleName="custom-table"
+          />
+        </>
+      ) : (
+        <Button variant="link" size="inline" onClick={() => setIsOpen(true)}>
+          Show
+        </Button>
+      )}
+    </TransitionReplace>
   );
 
   Attributes.propTypes = {

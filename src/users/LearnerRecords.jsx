@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import { getConfig } from '@edx/frontend-platform';
 import { Alert, Button } from '@edx/paragon';
 import PropTypes from 'prop-types';
@@ -49,7 +48,13 @@ function LearnerRecords({ username, intl }) {
   const renderDate = (date) => (
     `${intl.formatMessage(messages.recordTableLastUpdated)}: ${new Date(date).toLocaleDateString()}`
   );
-
+  const noRecords = (
+    error ? (
+      <Alert variant="danger">{error.text}</Alert>
+    ) : (
+      <p>{`${intl.formatMessage(messages.noRecordsFound)}: ${username}`}</p>
+    )
+  );
   return (
     <section>
       <h3>{intl.formatMessage(messages.learnerRecordsTabHeader)}</h3>
@@ -135,15 +140,7 @@ function LearnerRecords({ username, intl }) {
               />
             </section>
           ))
-        ) : (
-          <>
-            {error ? (
-              <Alert variant="danger">{error.text}</Alert>
-            ) : (
-              <p>{`${intl.formatMessage(messages.noRecordsFound)}: ${username}`}</p>
-            )}
-          </>
-        )
+        ) : noRecords
       }
     </section>
   );

@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-
 import React, {
   useMemo,
 } from 'react';
@@ -92,7 +90,7 @@ export default function LicenseCard({
         </Card.Section>
       </Card>
     ) : (
-      <></>
+      null
     )
   );
 }

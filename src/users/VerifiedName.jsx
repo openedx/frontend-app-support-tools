@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -194,7 +193,7 @@ export default function VerifiedName({ username }) {
               columns={verifiedNameColumns}
               styleName="idv-table"
             />
-          ) : <></>
+          ) : null
         ) : <PageLoading srMessage="Loading" />}
       </div>
     </div>

@@ -143,7 +143,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
 
     </span>
   ) : (
-    <></> // eslint-disable-line react/jsx-no-useless-fragment
+    null
   );
 }
 

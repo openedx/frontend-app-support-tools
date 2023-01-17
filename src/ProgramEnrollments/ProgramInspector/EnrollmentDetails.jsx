@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Hyperlink } from '@edx/paragon';
@@ -62,7 +61,7 @@ export default function EnrollmentDetails({ enrollments }) {
       </div>
     ))
   ) : (
-    <></>
+    null
   );
 }
 

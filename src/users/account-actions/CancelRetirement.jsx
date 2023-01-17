@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
@@ -76,7 +75,7 @@ export default function CancelRetirement({
               Close
             </ModalDialog.CloseButton>
             {
-              errorMessage ? (<></>)
+              errorMessage ? null
                 : (
                   <Button
                     variant="danger"
