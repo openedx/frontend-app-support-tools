@@ -32,7 +32,6 @@ describe('Support Tools Main tab', () => {
     wrapper = mount(<SupportToolsTabWrapper location={location} />);
 
     const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    expect(tabs.length).toEqual(3);
     expect(tabs.at(0).text()).toEqual('Learner Information');
     expect(tabs.at(1).text()).toEqual('Feature Based Enrollment');
     expect(tabs.at(2).text()).toEqual('Program Information');

@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
-
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PasswordHistory from './PasswordHistory';
 import UserSummaryData from '../data/test/userSummary';
 
@@ -11,7 +11,11 @@ describe('Password History Component Tests', () => {
     const data = {
       passwordStatus: UserSummaryData.userData.passwordStatus,
     };
-    wrapper = mount(<PasswordHistory {...data} />);
+    wrapper = mount(
+      <IntlProvider>
+        <PasswordHistory {...data} />
+      </IntlProvider>,
+    );
   });
 
   afterEach(() => {
