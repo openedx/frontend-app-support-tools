@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, InputSelect, ModalDialog,
+  Button, Form, Input, InputSelect, ModalDialog,
 } from '@edx/paragon';
 
 import AlertList from '../../userMessages/AlertList';
@@ -52,45 +52,67 @@ export default function CreateEnrollmentForm({
   });
 
   const createEnrollmentForm = (
+
     <form>
       <AlertList topic="createEnrollments" className="mb-3" />
-      <div className="form-group">
-        <Input
-          type="text"
+      <Form.Group>
+        <Form.Control
           id="courseID"
-          name="courseID"
           placeholder="Course Run ID"
+          name="courseID"
           onChange={(event) => setCourseID(event.target.value)}
           ref={forwardedRef}
         />
-        <InputSelect
-          className="mb-n3 small"
-          type="select"
-          options={modes}
+      </Form.Group>
+      <Form.Group>
+        <Form.Control
+          as="select"
           id="mode"
           name="mode"
-          value=""
-          onChange={(event) => setMode(event)}
-        />
-        <InputSelect
-          className="mb-4 small"
-          type="select"
-          options={reasons}
+          onChange={(event) => setMode(event.target.value)}
+        >
+          <option value="" disabled>Mode</option>
+          {modes.map(item => (
+            <option
+              value={item.value}
+              disabled={item.disabled}
+            >
+              {item.label}
+            </option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+      <Form.Group>
+        <Form.Control
+          as="select"
           id="reason"
           name="reason"
-          value=""
-          onChange={(event) => setReason(event)}
-        />
-        <Input
+          onChange={(event) => setReason(event.target.value)}
+        >
+          <option value="" disabled>Reason</option>
+          {reasons.map(item => (
+            <option
+              value={item.value}
+              disabled={item.disabled}
+            >
+              {item.label}
+            </option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+      <Form.Group>
+        <Form.Control
           placeholder="Explanation"
-          type="textarea"
+          as="textarea"
+          autoResize
           id="comments"
           name="comments"
           defaultValue=""
           onChange={(event) => setComments(event.target.value)}
         />
-      </div>
+      </Form.Group>
     </form>
+
   );
 
   return (
