@@ -71,11 +71,9 @@ export default function CreateEnrollmentForm({
           name="mode"
           onChange={(event) => setMode(event.target.value)}
         >
-          <option value="" disabled>Mode</option>
           {modes.map(item => (
             <option
               value={item.value}
-              disabled={item.disabled}
             >
               {item.label}
             </option>
@@ -89,11 +87,9 @@ export default function CreateEnrollmentForm({
           name="reason"
           onChange={(event) => setReason(event.target.value)}
         >
-          <option value="" disabled>Reason</option>
           {reasons.map(item => (
             <option
               value={item.value}
-              disabled={item.disabled}
             >
               {item.label}
             </option>
