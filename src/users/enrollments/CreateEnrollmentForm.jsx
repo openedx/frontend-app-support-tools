@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Form, Input, InputSelect, ModalDialog,
+  Button, Form, ModalDialog,
 } from '@edx/paragon';
 
 import AlertList from '../../userMessages/AlertList';
