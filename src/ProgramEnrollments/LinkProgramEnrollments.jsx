@@ -1,4 +1,4 @@
-import { Input, Button } from '@edx/paragon';
+import { Input, Button, Form } from '@edx/paragon';
 import React, { useState, useCallback } from 'react';
 import getLinkProgramEnrollmentDetails from './data/api';
 import LinkProgramEnrollmentsTable from './LinkProgramEnrollmentsTable';
@@ -48,13 +48,14 @@ export default function LinkProgramEnrollments() {
         <form>
           <div className="my-2">
             <label htmlFor="programUUID">Program UUID</label>
-            <Input
-              className="mr-1 col-sm-12"
-              name="programUUID"
-              type="text"
-              defaultValue={programID}
-              onChange={onProgramChange}
-            />
+            <Form.Group>
+              <Form.Control
+                name="programUUID"
+                defaultValue={programID}
+                type="text"
+                onChange={onProgramChange}
+              />
+            </Form.Group>
           </div>
           <div className="my-4">
             <label
@@ -63,15 +64,17 @@ export default function LinkProgramEnrollments() {
             >
               List of External key and username pairings (one per line)
             </label>
-            <Input
-              className="mr-1 col-sm-12"
-              name="usernamePairText"
-              type="textarea"
-              rows="10"
-              onChange={onUserTextChange}
-              defaultValue={usernamePairText}
-              placeholder="external_user_key,lms_username"
-            />
+            <Form.Group>
+              <Form.Control
+                name="usernamePairText"
+                as="textarea"
+                autoResize
+                rows="10"
+                onChange={onUserTextChange}
+                defaultValue={usernamePairText}
+                placeholder="external_user_key,lms_username"
+              />
+            </Form.Group>
           </div>
           <Button
             type="submit"
@@ -83,13 +86,13 @@ export default function LinkProgramEnrollments() {
         </form>
       </section>
       {((errorMessage && errorMessage.length > 0)
-      || (successMessage && successMessage.length > 0)) && (
-        <LinkProgramEnrollmentsTable
-          successMessage={successMessage}
-          errorMessage={errorMessage}
-          usernamePairText={usernamePairText}
-        />
-      )}
+        || (successMessage && successMessage.length > 0)) && (
+          <LinkProgramEnrollmentsTable
+            successMessage={successMessage}
+            errorMessage={errorMessage}
+            usernamePairText={usernamePairText}
+          />
+        )}
     </>
   );
 }
