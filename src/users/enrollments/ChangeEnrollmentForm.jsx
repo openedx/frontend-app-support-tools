@@ -128,6 +128,7 @@ export default function ChangeEnrollmentForm({
             {reasons.map(item => (
               <option
                 value={item.value}
+                key={item.value}
                 disabled={item.disabled}
               >
                 {item.label}

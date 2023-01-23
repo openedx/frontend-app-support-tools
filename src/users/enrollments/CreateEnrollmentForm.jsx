@@ -75,6 +75,7 @@ export default function CreateEnrollmentForm({
             <option
               value={item.value}
               disabled={item.disabled}
+              key={item.value}
               selected={item.selected}
             >
               {item.label}
@@ -94,6 +95,7 @@ export default function CreateEnrollmentForm({
               value={item.value}
               disabled={item.disabled}
               selected={item.selected}
+              key={item.value}
             >
               {item.label}
             </option>
