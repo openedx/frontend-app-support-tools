@@ -35,7 +35,11 @@ export default function ChangeEnrollmentForm({
       </option>,
     );
     enrollment.courseModes.map(enrollmentMode => (
-      !(enrollmentMode.slug === enrollment.mode) && modeList.push(<option>{enrollmentMode.slug}</option>)
+      !(enrollmentMode.slug === enrollment.mode) && modeList.push(
+        <option key={enrollmentMode.slug}>
+          {enrollmentMode.slug}
+        </option>,
+      )
     ));
     return modeList;
   };
