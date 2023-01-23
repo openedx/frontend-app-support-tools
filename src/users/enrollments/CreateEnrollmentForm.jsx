@@ -74,6 +74,8 @@ export default function CreateEnrollmentForm({
           {modes.map(item => (
             <option
               value={item.value}
+              disabled={item.disabled}
+              selected={item.selected}
             >
               {item.label}
             </option>
@@ -90,6 +92,8 @@ export default function CreateEnrollmentForm({
           {reasons.map(item => (
             <option
               value={item.value}
+              disabled={item.disabled}
+              selected={item.selected}
             >
               {item.label}
             </option>

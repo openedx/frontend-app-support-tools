@@ -30,12 +30,12 @@ export default function ChangeEnrollmentForm({
     const modeList = [];
 
     modeList.push(
-      <option value="">
+      <option value="" disabled="true" selected="true">
         New Mode
       </option>,
     );
     enrollment.courseModes.map(enrollmentMode => (
-      !(enrollmentMode.slug === enrollment.mode) && modeList.push(<option>{ enrollmentMode.slug}</option>)
+      !(enrollmentMode.slug === enrollment.mode) && modeList.push(<option>{enrollmentMode.slug}</option>)
     ));
     return modeList;
   };
