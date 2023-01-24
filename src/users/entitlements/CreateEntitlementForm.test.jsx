@@ -27,9 +27,9 @@ describe('Create Entitlement Form', () => {
   it('Default form render', () => {
     let createFormModal = wrapper.find('ModalDialog#create-entitlement');
     expect(createFormModal.prop('isOpen')).toEqual(true);
-    const courseUuidInput = wrapper.find('input#courseUuid');
-    const modeSelectDropdown = wrapper.find('select#mode');
-    const commentsTextArea = wrapper.find('textarea#comments');
+    const courseUuidInput = wrapper.find('#courseUuid');
+    const modeSelectDropdown = wrapper.find('#mode');
+    const commentsTextArea = wrapper.find('#comments');
     expect(courseUuidInput.prop('value')).toEqual(entitlementFormData.entitlement.courseUuid);
     expect(modeSelectDropdown.find('option')).toHaveLength(4);
     expect(commentsTextArea.text()).toEqual('');
@@ -48,9 +48,9 @@ describe('Create Entitlement Form', () => {
       const apiMock = jest.spyOn(api, 'postEntitlement').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('input#courseUuid').simulate('change', { target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'professional' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
+      wrapper.find('input.form-control').simulate('change', { target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' } });
+      wrapper.find('select.form-control').at(0).simulate('change', { target: { value: 'professional' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'creating new entitlement' } });
       const submitButton = wrapper.find('button.btn-primary');
       expect(submitButton.prop('disabled')).toBeFalsy();
       expect(wrapper.find('div.spinner-border').length).toEqual(0);
@@ -78,7 +78,7 @@ describe('Create Entitlement Form', () => {
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'creating new entitlement' } });
       wrapper.find('button.btn-primary').simulate('click');
       await waitForComponentToPaint(wrapper);
 
