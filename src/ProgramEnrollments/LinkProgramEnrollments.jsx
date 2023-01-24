@@ -47,8 +47,9 @@ export default function LinkProgramEnrollments() {
       <section className="my-3">
         <form>
           <div className="my-2">
-            <label htmlFor="programUUID">Program UUID</label>
             <Form.Group>
+              <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
+
               <Form.Control
                 name="programUUID"
                 defaultValue={programID}
@@ -58,13 +59,14 @@ export default function LinkProgramEnrollments() {
             </Form.Group>
           </div>
           <div className="my-4">
-            <label
-              className="d-flex align-items-start"
-              htmlFor="usernamePairText"
-            >
-              List of External key and username pairings (one per line)
-            </label>
+
             <Form.Group>
+              <Form.Label
+                className="d-flex align-items-start"
+                htmlFor="usernamePairText"
+              >
+                List of External key and username pairings (one per line)
+              </Form.Label>
               <Form.Control
                 name="usernamePairText"
                 as="textarea"
