@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, Alert, ModalDialog, ActionRow,
+  Button, Input, Alert, ModalDialog, ActionRow, Form
 } from '@edx/paragon';
 import { postTogglePasswordStatus } from '../data/api';
 
@@ -44,20 +44,23 @@ export default function TogglePasswordStatus({
             {`${passwordStatus.status === PASSWORD_STATUS.USABLE ? DISABLE_USER_CONFIRMATION : ENABLE_USER_CONFIRMATION}`}
           </ModalDialog.Title>
         </ModalDialog.Header>
-        <ModalDialog.Body className="mb-3">
+        <ModalDialog.Body className="mb-2">
           <div>
             <Alert variant="warning">
               <p>
                 Please provide the reason for {`${passwordStatus.status === PASSWORD_STATUS.USABLE ? 'disabling' : 'enabling'}`} the user <b>{username}</b>.
               </p>
             </Alert>
-            <label htmlFor="comment">Reason: </label>
-            <Input
-              name="comment"
-              type="text"
-              value={comment}
-              onChange={(event) => setComment(event.target.value)}
-            />
+
+            <Form.Group>
+              <Form.Label htmlFor="comment">Reason:</Form.Label>
+
+              <Form.Control
+                name="comment"
+                value={comment}
+                onChange={(event) => setComment(event.target.value)}
+              />
+            </Form.Group>
           </div>
         </ModalDialog.Body>
         <ModalDialog.Footer>
