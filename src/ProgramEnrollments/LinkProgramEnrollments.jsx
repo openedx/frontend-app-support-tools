@@ -94,7 +94,7 @@ export default function LinkProgramEnrollments() {
             errorMessage={errorMessage}
             usernamePairText={usernamePairText}
           />
-        )}
+      )}
     </>
   );
 }

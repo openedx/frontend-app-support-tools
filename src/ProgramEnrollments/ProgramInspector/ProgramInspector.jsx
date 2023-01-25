@@ -41,7 +41,7 @@ export default function ProgramInspector({ location }) {
       history.push('/programs');
     } else {
       const newLink = `/programs?edx_user=${username || ''
-        }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
+      }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
       if (newLink === location.pathname + location.search) {
         setClickEventCall(!clickEventCall);
       } else {
@@ -212,7 +212,7 @@ export default function ProgramInspector({ location }) {
                 <EnrollmentDetails
                   enrollments={learnerProgramEnrollment.enrollments}
                 />
-              )}
+            )}
           </div>
         </>
       )}
