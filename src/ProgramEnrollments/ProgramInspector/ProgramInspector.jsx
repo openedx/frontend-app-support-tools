@@ -27,7 +27,7 @@ export default function ProgramInspector({ location }) {
 
   const getOrgKeyList = () => (orgKeyList
     ? orgKeyList.map((data) => ((
-      <option value={data}>
+      <option key={data} value={data}>
         {data}
       </option>
     )))
