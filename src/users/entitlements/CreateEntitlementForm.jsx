@@ -58,7 +58,7 @@ export default function CreateEntitlementForm({
   });
 
   const createEntitlementForm = (
-    <form>
+    <Form>
       <AlertList topic="createEntitlement" className="mb-3" />
       <Form.Group>
         <Form.Control
@@ -98,7 +98,7 @@ export default function CreateEntitlementForm({
           onChange={(event) => setComments(event.target.value)}
         />
       </Form.Group>
-    </form>
+    </Form>
   );
 
   return (

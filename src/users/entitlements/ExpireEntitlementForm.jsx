@@ -56,7 +56,7 @@ export default function ExpireEntitlementForm({
   });
 
   const expireEntitlementForm = (
-    <form>
+    <Form>
       <AlertList topic="expireEntitlement" className="mb-3" />
       <div className="row small">
         <div className="col-sm-6">
@@ -90,7 +90,7 @@ export default function ExpireEntitlementForm({
           ref={forwardedRef}
         />
       </Form.Group>
-    </form>
+    </Form>
   );
 
   return (

@@ -112,7 +112,7 @@ export default function ProgramInspector({ location }) {
       )}
       <h3>Program Enrollments Inspector</h3>
       <section className="my-3">
-        <form>
+        <Form>
           <div className="d-flex">
             <div className="col-sm-4 pl-0">
               <Form.Group>
@@ -160,7 +160,7 @@ export default function ProgramInspector({ location }) {
           <Button type="submit" className="mt-4" onClick={submit}>
             Search Program Records
           </Button>
-        </form>
+        </Form>
       </section>
 
       {learnerProgramEnrollment && learnerProgramEnrollment.user && (

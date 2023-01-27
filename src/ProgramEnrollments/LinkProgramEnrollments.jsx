@@ -45,7 +45,7 @@ export default function LinkProgramEnrollments() {
     <>
       <h3>Link Program Enrollments</h3>
       <section className="my-3">
-        <form>
+        <Form>
           <div className="my-2">
             <Form.Group>
               <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
@@ -85,7 +85,7 @@ export default function LinkProgramEnrollments() {
           >
             Submit
           </Button>
-        </form>
+        </Form>
       </section>
       {((errorMessage && errorMessage.length > 0)
         || (successMessage && successMessage.length > 0)) && (

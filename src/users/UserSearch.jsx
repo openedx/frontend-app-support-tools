@@ -16,7 +16,7 @@ export default function UserSearch({ userIdentifier, searchHandler }) {
 
   return (
     <section className="mb-3">
-      <form className="m-0 row">
+      <Form className="m-0 row">
         <Form.Label className="mt-2" htmlFor="userIdentifier">Username, Email or LMS User ID</Form.Label>
         <Form.Control
           as="input"
@@ -27,7 +27,7 @@ export default function UserSearch({ userIdentifier, searchHandler }) {
         />
 
         <Button type="submit" onClick={submit} variant="primary">Search</Button>
-      </form>
+      </Form>
 
     </section>
   );

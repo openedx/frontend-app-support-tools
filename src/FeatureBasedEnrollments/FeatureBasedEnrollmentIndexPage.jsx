@@ -94,17 +94,17 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
       <AlertList topic="featureBasedEnrollmentGeneral" className="mb-3" />
 
       <section className="mb-3">
-        <form className="m-0 row">
+        <Form className="m-0 row">
           <Form.Label className="mt-2" htmlFor="courseId">Course ID</Form.Label>
           <Form.Control
             ref={searchRef}
             leadingElement
-            className="p-0 ml-1 mr-2 col-sm-4"
+            className="ml-1 mr-2 col-sm-4"
             name="courseId"
             defaultValue={searchValue}
           />
           <Button type="submit" onClick={submit} className="col-sm-1" variant="primary">Search</Button>
-        </form>
+        </Form>
       </section>
 
       {searchValue && <FeatureBasedEnrollment courseId={searchValue} apiFetchSignal={apiFetchSignal} />}
