@@ -100,7 +100,6 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
               <Form.Label className="mt-2" htmlFor="courseId">Course ID</Form.Label>
               <Form.Control
                 ref={searchRef}
-                leadingElement
                 className="ml-1 mr-2 col-sm-4"
                 name="courseId"
                 defaultValue={searchValue}
