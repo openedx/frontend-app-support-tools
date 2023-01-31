@@ -25,6 +25,15 @@ export default function CreateEntitlementForm({
   const [showLoader, setShowLoader] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
 
+  const modeOptions = [
+    {
+      label: 'Mode', value: '', disabled: true, selected: 'true',
+    },
+    { label: 'Verified', value: 'verified' },
+    { label: 'Professional', value: 'professional' },
+    { label: 'No ID Professional', value: 'no-id-professional' },
+  ];
+
   const submit = useCallback(() => {
     clear('createEntitlement');
     setShowLoader(true);
@@ -81,10 +90,16 @@ export default function CreateEntitlementForm({
           defaultValue=""
           onChange={(event) => setMode(event.target.value)}
         >
-          <option value="" disabled selected>Mode</option>
-          <option value="verified">Verified</option>
-          <option value="professional">Professional</option>
-          <option value="no-id-professional">No ID Professional</option>
+          {modeOptions.map(item => (
+            <option
+              value={item.value}
+              disabled={item.disabled}
+              selected={item.selected}
+              key={item.value}
+            >
+              {item.label}
+            </option>
+          ))}
         </Form.Control>
       </Form.Group>
       <Form.Group>
