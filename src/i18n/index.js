@@ -18,7 +18,7 @@ import dedeMessages from './messages/de_DE.json';
 import frcaMessages from './messages/fr_CA.json';
 import hiMessages from './messages/hi.json';
 import ititMessages from './messages/it_IT.json';
-import ptptMessages from './messages/pt_PT.json.json';
+import ptptMessages from './messages/pt_PT.json';
 
 const appMessages = {
   ar: arMessages,
