@@ -1,1 +1,24 @@
-{}
+{
+  "pageTitle": "Herramientas de soporte | {siteName}",
+  "supportTools.mainTab.description": "Conjunto de herramientas utilizadas por el equipo de asistencia para ayudar a clasificar y resolver determinados problemas de los alumnos.",
+  "supportTools.accountActions.cancelRetirement": "Esto cancelará el retiro del usuario solicitado. ¿Desea continuar?",
+  "supportTools.accountActions.resetPassword": "Enviaremos un mensaje con instrucciones para recuperar la contraseña a la dirección de correo electrónico {email}. ¿Desea continuar?",
+  "learner.record.tab.header": "Registros de alumnos",
+  "earned.status": "Realizado",
+  "not.earned.status": "no ganado",
+  "partially.completed.status": "Parcialmente Completado",
+  "record.table.last.updated": "Última actualización",
+  "copy.public.record.link": "Copiar enlace de registro público",
+  "record.table.header.course.name": "Nombre del curso",
+  "record.table.header.school": "Institución Educativa",
+  "record.table.header.course.id": "ID del curso",
+  "record.table.header.highest.grade": "Calificación más alta obtenida",
+  "record.table.header.letter.grade": "Calificación con Letra",
+  "record.table.header.verified.attempts": "Intentos Verificados",
+  "record.table.header.date.earned": " Fecha Realizada",
+  "record.table.header.status": "Estado",
+  "no.public.record.link": "No hay ninguna instancia pública para este registro. Los alumnos deben crear un enlace público por su cuenta.",
+  "no.records.found": "No se encontraron resultados para el nombre de usuario",
+  "supportTools.learnerInformation.ssoHeader": "Registros de inicio de sesión única",
+  "supportTools.learnerInformation.verifiedNameHeader": "Estado de nombre verificado"
+}
