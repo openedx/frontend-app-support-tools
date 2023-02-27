@@ -1,0 +1,71 @@
+2. Learner Credit Configuration: Provisioning
+--------------------------------
+
+Status
+------
+
+Accepted
+
+Context
+-------
+
+We would like to be able to configure enterprise customer's settings outside of the Django application. 
+Initial creation learner credit configuration called 'Provisioning' will be used to create, edit, and delete policies.
+Policies are a new system for allocation of funds for an enterprise customer's subsidy. 
+
+A single subsidy can contain multiple policies, where the learner credit funds can be divided amongst policies. A single policy 
+will contain the total amount allocated by the learner credit subsidy. 
+
+Decision
+--------
+
+* 'Configuration' dropdown in the navigation bar with the following options
+    * Provisioning
+* 'Dashboard' style page to contain list of customers that can be selected for editing and deleting policies
+* 'Provisioning' style page to contain a form with the following fields to create a new policy and new subsidy
+    * Enterprise Customer UUID
+    * Financial Linkage Identifier
+    * Start Date
+        * Date from selectable calendar
+    * End Date
+        * Date from selectable calendar
+    * Number of Policies
+        * Defined as one policy or 2 policies
+* When creating a new policy the following fields will be displayed for a **single policy**
+    * Display name
+    * Catalog Type
+        * OC + Exec Ed
+        * OC Only
+        * Exec Ed Only
+        * Custom
+            * Ideally, a text box for the JSON for the `enterpriseCatalogQuery` field will be available for the user to create a new catalog query
+    * Total Funds **(per policy spend cap)**
+        * For a single policy, represents the total amount for the learner credit subsidy 
+    * Learner Restrictions **(per learner spend cap)**
+* When creation a new set of policies, the following fields will be displayed for **each policy**
+    * Display name
+    * Catalog
+        * Will be displayed as auto selected with no additional options
+        * Will be either OC only or Exec Ed only
+    * Total Funds **(per policy spend cap)**
+        * The total funds represent the funding for the specific policy being created
+        * Total fund for the learner credit subsidy will be a summation of each created policy
+            * LC Subsidy Funding = Funding from Policy X + Funding from Policy Y
+    * Learner Restrictions **(per learner spend cap)**
+        
+
+Consequences
+------------
+
+* Allows ECS to quickly create a new set of policies for a specific enterprise customer in a single navigatable tool
+* Reduces context switching between pages
+* Imports relevent information for the customer for creating, editing and deleting policies
+* Restricts customization of catalogs to specific catalog queries for multiple policies
+* Risk of errors from creating a custom catalog for a single policy
+* Standardize creation of subsidies and policies for learner credit
+
+References
+----------
+* Project Confluence: https://2u-internal.atlassian.net/wiki/spaces/SOL/pages/333873204/Enterprise+Provisioning+UI
+* API Discovery: https://2u-internal.atlassian.net/wiki/spaces/SOL/pages/edit-v2/350683161?
+* Figma: https://www.figma.com/file/TP5hGfoYmohr21MwgUgCZN/Order-Fulfillment?node-id=2%3A165&t=xjKsVEjgF6Udhmi5-4
