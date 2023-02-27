@@ -37,7 +37,6 @@ subscribe(APP_READY, () => {
     <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING} component={ProvisioningPage} />,
     <Route path={CONFIGURATION.HOME} component={ConfigurationPage} />,
   ];
-  console.log(process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION);
   ReactDOM.render(
     <AppProvider>
       <UserMessagesProvider>
@@ -45,8 +44,6 @@ subscribe(APP_READY, () => {
         <Header />
         <Switch>
           {/* Start: Configuration Dropdown Routes */}
-          {/* <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING} component={ProvisioningPage} />
-          <Route path={CONFIGURATION.HOME} component={ConfigurationPage} /> */}
           {process.env.FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes.map((route) => route)}
           {/* End: Configuration Dropdown Routes */}
           <Route path={SUPPORT_TOOLS_TABS.HOME} component={SupportToolsTab} />

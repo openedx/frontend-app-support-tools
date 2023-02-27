@@ -108,7 +108,7 @@ export default function Header() {
   ];
 
   /* Start Configuration Management */
-  // Add configuration dropdown if CONFIGURATION_MANAGEMENT is set
+  // Add configuration dropdown if FEATURE_CONFIGURATION_MANAGEMENT is set
   const configurationDropdown = {
     type: 'submenu',
     content: 'Configuration',
