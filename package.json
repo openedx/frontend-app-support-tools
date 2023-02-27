@@ -16,6 +16,7 @@
     "start": "fedx-scripts webpack-dev-server --progress",
     "debug-test": "node --inspect-brk node_modules/.bin/jest --coverage --runInBand",
     "test": "TZ=UTC fedx-scripts jest --coverage --runInBand",
+    "test:watch": "npm run test -- --watch",
     "snapshot": "fedx-scripts jest --updateSnapshot"
   },
   "author": "edX",

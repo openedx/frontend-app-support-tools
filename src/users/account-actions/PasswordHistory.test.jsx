@@ -12,7 +12,7 @@ describe('Password History Component Tests', () => {
       passwordStatus: UserSummaryData.userData.passwordStatus,
     };
     wrapper = mount(
-      <IntlProvider>
+      <IntlProvider locale="en">
         <PasswordHistory {...data} />
       </IntlProvider>,
     );

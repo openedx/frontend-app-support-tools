@@ -9,7 +9,7 @@ import records from './data/test/records';
 import LearnerRecords from './LearnerRecords';
 
 const LearnerRecordsWrapper = (props) => (
-  <IntlProvider>
+  <IntlProvider locale="en">
     <MemoryRouter>
       <UserMessagesProvider>
         <LearnerRecords {...props} />

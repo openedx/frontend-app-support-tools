@@ -45,12 +45,16 @@ export default function Header() {
     DISCOVERY_INTERNAL = DISCOVERY_INTERNAL.replace('.edx.', '-internal.edx.');
     CREDENTIALS_INTERNAL = CREDENTIALS_INTERNAL.replace('.edx.', '-internal.edx.');
   }
-
   const mainMenu = [
     {
       type: 'item',
       content: 'Confluence',
       href: SUPPORT_CONFLUENCE,
+    },
+    {
+      type: 'item',
+      content: 'Support Tools',
+      href: `${config.BASE_URL}`,
     },
     {
       type: 'submenu',
@@ -102,6 +106,21 @@ export default function Header() {
       ),
     },
   ];
+
+  /* Start Configuration Management */
+  // Add configuration dropdown if CONFIGURATION_MANAGEMENT is set
+  const configurationDropdown = {
+    type: 'submenu',
+    content: 'Configuration',
+    submenuContent:
+      process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
+        ? (<div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}/configuration/provisioning`}>Enterprise Provisioning</a></div>)
+        : null,
+  };
+  if (process.env.FEATURE_CONFIGURATION_MANAGEMENT) {
+    mainMenu.push(configurationDropdown);
+  }
+  /* End Configuration Management */
 
   const dashboardMenuItem = {
     type: 'item',
