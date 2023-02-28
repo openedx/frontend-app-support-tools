@@ -11,7 +11,13 @@ const ROUTES = {
   CONFIGURATION: {
     HOME: '/configuration',
     SUB_DIRECTORY: {
-      PROVISIONING: '/configuration/provisioning',
+      PROVISIONING: {
+        HOME: '/configuration/provisioning',
+        SUB_DIRECTORY: {
+          NEW: '/configuration/provisioning/new',
+          EDIT: '/configuration/provisioning/edit',
+        },
+      },
     },
   },
 };

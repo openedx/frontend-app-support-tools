@@ -16,7 +16,7 @@ const ConfigurationPage = () => {
       <h1>{CONFIGURATION_PAGE_TEXT.HEADER}</h1>
       <Stack>
         {Object.keys(SUB_DIRECTORY).map((route) => (
-          <Hyperlink destination={SUB_DIRECTORY[route]} key={uuidv4()}>
+          <Hyperlink destination={SUB_DIRECTORY[route].HOME} key={uuidv4()}>
             {titleCase(route)}
           </Hyperlink>
         ))}
