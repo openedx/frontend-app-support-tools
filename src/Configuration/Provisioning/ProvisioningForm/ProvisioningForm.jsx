@@ -1,20 +1,25 @@
-import {
-  Container,
-} from '@edx/paragon';
 import React from 'react';
+import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
-import ProvisioningFormFundType from './ProvisioningFormFundType';
 import ProvisioningFormTerm from './ProvisioningFormTerm';
+import ProvisioningFormFundContainer from './ProvisioningFormFundContainer';
+import ProvisioningFormCatalogContainer from './ProvisioningFormCatalogContainer';
+import ProvisioningFormSubsidy from './ProvisioningFormSubsidy';
 
-const ProvisioningForm = () => (
-  <Container className="m-0 p-0" size="md" fluid>
-    <div className="mt-5">
-      <h2>Plan Details</h2>
+const ProvisioningForm = () => {
+  const { FORM } = PROVISIONING_PAGE_TEXT;
+  return (
+    <div className="m-0 p-0">
+      <div className="mt-5">
+        <h2>{FORM.SUB_TITLE}</h2>
+      </div>
+      <ProvisioningFormCustomer />
+      <ProvisioningFormTerm />
+      <ProvisioningFormSubsidy />
+      <ProvisioningFormFundContainer />
+      <ProvisioningFormCatalogContainer />
     </div>
-    <ProvisioningFormCustomer />
-    <ProvisioningFormTerm />
-    <ProvisioningFormFundType />
-  </Container>
-);
+  );
+};
 
 export default ProvisioningForm;
