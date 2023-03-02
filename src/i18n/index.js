@@ -38,7 +38,7 @@ const appMessages = {
   'fr-ca': frcaMessages,
   hi: hiMessages,
   'it-it': ititMessages,
-  'pt-pt': ptptMessages
+  'pt-pt': ptptMessages,
 };
 
 export default [
