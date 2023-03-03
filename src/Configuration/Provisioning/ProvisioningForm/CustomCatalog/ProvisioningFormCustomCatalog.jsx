@@ -6,12 +6,12 @@ import ProvisioningFormCustomCatalogTextArea from './ProvisioningFormCustomCatal
 const ProvisioningFormCustomCatalog = () => {
   console.log('hi custum');
   return (
-    <>
+    <div className="mt-4.5">
       <ProvisioningFormCustomCatalogHeader />
       <ProvisioningFormCustomCatalogDropdown />
       <ProvisioningFormCustomCatalogTitle />
       <ProvisioningFormCustomCatalogTextArea />
-    </>
+    </div>
   );
 };
 

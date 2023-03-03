@@ -1,12 +1,14 @@
+import { useContextSelector } from 'use-context-selector';
+import { ProvisioningContext } from '../ProvisioningContext';
 import ProvisioningFormCustomCatalog from './CustomCatalog';
 import ProvisioningFormCatalog from './ProvisioningFormCatalog';
 
 const ProvisioningFormCatalogContainer = () => {
-  console.log('ccCont');
+  const { customCatalog } = useContextSelector(ProvisioningContext, v => v[0]);
   return (
     <>
       <ProvisioningFormCatalog />
-      <ProvisioningFormCustomCatalog />
+      {customCatalog && <ProvisioningFormCustomCatalog />}
     </>
   );
 };

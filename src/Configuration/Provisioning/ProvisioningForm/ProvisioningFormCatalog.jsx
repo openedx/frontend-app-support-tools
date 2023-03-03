@@ -3,20 +3,26 @@ import {
   Form,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
+import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
+import { ProvisioningContext } from '../ProvisioningContext';
 
 const ProvisioningFormCatalog = () => {
-  const { setMultipleFunds } = useProvisioningContext();
+  const { setCustomCatalog } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const [value, setValue] = useState(null);
+  const { multipleFunds } = useContextSelector(ProvisioningContext, v => v[0]);
+  if (!multipleFunds) {
+    return null;
+  }
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
-    if (newTabValue === CATALOG.OPTIONS.multiple) {
-      setMultipleFunds(true);
-    } else if (newTabValue === CATALOG.OPTIONS.single) {
-      setMultipleFunds(false);
+    if (newTabValue === CATALOG.OPTIONS.custom) {
+      setCustomCatalog(true);
+    } else if (newTabValue !== CATALOG.OPTIONS.custom) {
+      setCustomCatalog(false);
     }
     setValue(newTabValue);
   };

@@ -53,6 +53,22 @@ const PROVISIONING_PAGE_TEXT = {
         custom: 'Custom',
       },
     },
+    CUSTOM_CATALOG: {
+      TITLE: 'Define custom catalog',
+      SUB_TITLE: 'Ensure the intended custom catalogquery has been created in Django before proceeding.',
+      BUTTON: {
+        create: 'Create catalog query',
+      },
+      OPTIONS: {
+        enterpriseCatalogQuery: {
+          title: 'Enterprise Catalog Query',
+          placeholder: 'Select enterprise catalog query',
+        },
+        catalogTitle: 'Catalog title',
+        contentFilter: 'Content filter',
+        courseModes: 'Enabled course modes',
+      },
+    },
   },
 };
 

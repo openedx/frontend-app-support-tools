@@ -10,7 +10,6 @@ const ProvisioningFormFundType = () => {
   const { setMultipleFunds } = useProvisioningContext();
   const { ACCOUNT_CREATION } = PROVISIONING_PAGE_TEXT.FORM;
   const [value, setValue] = useState(null);
-
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
     if (newTabValue === ACCOUNT_CREATION.OPTIONS.multiple) {

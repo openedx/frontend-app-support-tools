@@ -7,8 +7,8 @@ export const ProvisioningContext = createContext(null);
 const ProvisioningContextProvider = ({ children }) => {
   const contextValue = useState({
     multipleFunds: undefined,
-    perLearnerCap: {},
     customCatalog: false,
+    formData: {},
   });
 
   return (
