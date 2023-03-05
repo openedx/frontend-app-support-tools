@@ -10,6 +10,10 @@ const PROVISIONING_PAGE_TEXT = {
   FORM: {
     TITLE: (pathName) => `${titleCase(pathName.split('/').reverse()[0])} Learner Credit Plan`,
     SUB_TITLE: 'Plan Details',
+    BUTTON: {
+      submit: 'Create Learner Credit Plan',
+      cancel: 'Cancel',
+    },
     CUSTOMER: {
       TITLE: 'Customer',
       OPTIONS: {
@@ -19,6 +23,10 @@ const PROVISIONING_PAGE_TEXT = {
     },
     TERM: {
       TITLE: 'Term',
+      OPTIONS: {
+        startDate: 'Start Date',
+        endDate: 'End Date',
+      },
     },
     SUBSIDY_TYPE: {
       TITLE: 'Subsidy Type',
@@ -36,11 +44,22 @@ const PROVISIONING_PAGE_TEXT = {
         single: 'No, create one Learner Credit account',
       },
     },
+    ACCOUNT_TYPE: {
+      OPTIONS: {
+        openCourses: 'Open Courses account',
+        executiveEducation: 'Executive Education account',
+        default: 'Account',
+      },
+    },
     ACCOUNT_DETAIL: {
       TITLE: 'Account details',
       OPTIONS: {
         displayName: 'Display Name',
-        totalFundValue: 'Total Fund Value',
+        totalAccountValue: {
+          title: 'Total account value',
+          subtitle: 'The contracted USD value available through the account.',
+          dynamicSubtitle: (accountType) => `The contracted USD value available through the account redeemable for ${accountType} enrollment.`,
+        },
       },
     },
     CATALOG: {
@@ -55,7 +74,7 @@ const PROVISIONING_PAGE_TEXT = {
     },
     CUSTOM_CATALOG: {
       TITLE: 'Define custom catalog',
-      SUB_TITLE: 'Ensure the intended custom catalogquery has been created in Django before proceeding.',
+      SUB_TITLE: 'Ensure the intended custom catalog query has been created in Django before proceeding.',
       BUTTON: {
         create: 'Create catalog query',
       },
@@ -67,6 +86,23 @@ const PROVISIONING_PAGE_TEXT = {
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
         courseModes: 'Enabled course modes',
+      },
+    },
+    LEARNER_CAP: {
+      TITLE: 'Restrictions',
+      SUB_TITLE: 'Create learner spend restrictions?',
+      OPTIONS: {
+        yes: 'Yes',
+        no: 'No, first come first serve',
+      },
+    },
+    LEARNER_CAP_DETAIL: {
+      TITLE: 'Define Restrictions',
+      OPTIONS: {
+        perLearnerSpendCap: {
+          title: 'Per learner spend cap',
+          subtitle: 'The maximum USD value a single learner may redeem from the account.',
+        },
       },
     },
   },

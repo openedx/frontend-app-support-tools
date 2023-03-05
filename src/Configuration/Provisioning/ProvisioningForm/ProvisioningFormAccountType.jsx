@@ -3,14 +3,18 @@ import {
   Form,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
+import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
+import { ProvisioningContext } from '../ProvisioningContext';
 
 const ProvisioningFormFundType = () => {
   const { setMultipleFunds } = useProvisioningContext();
   const { ACCOUNT_CREATION } = PROVISIONING_PAGE_TEXT.FORM;
+  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
   const [value, setValue] = useState(null);
-  const handleChange = async (e) => {
+
+  const handleChange = (e) => {
     const newTabValue = e.target.value;
     if (newTabValue === ACCOUNT_CREATION.OPTIONS.multiple) {
       setMultipleFunds(true);
@@ -27,9 +31,9 @@ const ProvisioningFormFundType = () => {
       </div>
       <p className="mt-4">{ACCOUNT_CREATION.SUB_TITLE}</p>
       <Form.RadioSet
-        name="display-content"
+        name="display-account-type"
         onChange={handleChange}
-        value={value}
+        value={value || formData.multipleFunds}
       >
         {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (

@@ -2,12 +2,6 @@ import React from 'react';
 
 import DashboardHeader from './DashboardHeader';
 
-const Dashboard = () => {
-  console.log('hi dashboard');
-  // Create a new item header, search box and datatable
-  return (
-    <DashboardHeader />
-  );
-};
-
+// TODO: Create a new item header, search box and datatable
+const Dashboard = () => (<DashboardHeader />);
 export default Dashboard;

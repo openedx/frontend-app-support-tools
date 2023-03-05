@@ -8,7 +8,9 @@ const ProvisioningContextProvider = ({ children }) => {
   const contextValue = useState({
     multipleFunds: undefined,
     customCatalog: false,
-    formData: {},
+    formData: {
+      policies: [],
+    },
   });
 
   return (

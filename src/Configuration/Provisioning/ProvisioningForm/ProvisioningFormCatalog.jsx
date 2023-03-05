@@ -11,9 +11,10 @@ import { ProvisioningContext } from '../ProvisioningContext';
 const ProvisioningFormCatalog = () => {
   const { setCustomCatalog } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const [value, setValue] = useState(null);
   const { multipleFunds } = useContextSelector(ProvisioningContext, v => v[0]);
-  if (!multipleFunds) {
+  const [value, setValue] = useState(null);
+
+  if (multipleFunds === undefined || multipleFunds) {
     return null;
   }
 

@@ -8,6 +8,10 @@ export default function useProvisioningContext() {
     setState((s) => ({
       ...s,
       multipleFunds: fundingBoolean,
+      formData: {
+        ...s.formData,
+        multipleFunds: fundingBoolean,
+      },
     }));
   }, [setState]);
 
@@ -58,6 +62,46 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const setSubsidyRevReq = useCallback((subsidyRevReq) => {
+    setState((s) => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        subsidyRevReq,
+      },
+    }));
+  }, [setState]);
+
+  const perLearnerCap = useCallback((perLearnerCapBoolean) => {
+    setState((s) => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        perLearnerCap: perLearnerCapBoolean,
+      },
+    }));
+  }, [setState]);
+
+  const setPerLearnerCap = useCallback((perLearnerCapAmount) => {
+    setState((s) => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        perLearnerCapAmount,
+      },
+    }));
+  }, [setState]);
+
+  const resetFormData = useCallback(() => {
+    setState(() => ({
+      multipleFunds: undefined,
+      customCatalog: false,
+      formData: {
+        policies: [],
+      },
+    }));
+  }, [setState]);
+
   return {
     setMultipleFunds,
     setCustomCatalog,
@@ -65,5 +109,9 @@ export default function useProvisioningContext() {
     setFinancialIdentifier,
     setStartDate,
     setEndDate,
+    setSubsidyRevReq,
+    perLearnerCap,
+    setPerLearnerCap,
+    resetFormData,
   };
 }

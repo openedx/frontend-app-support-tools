@@ -4,12 +4,19 @@ import {
 import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
+import { ProvisioningContext } from '../ProvisioningContext';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
-  const { formData } = useContextSelector;
+  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
   const { setStartDate, setEndDate } = useProvisioningContext();
-  console.log(formData);
+
+  const handleDateChange = (e) => {
+    if (e.target.dataset.testid.includes('start')) {
+      return setStartDate(e.target.value);
+    }
+    return setEndDate(e.target.value);
+  };
   return (
     <article className="mt-4.5">
       <div className="mb-1">
@@ -18,15 +25,21 @@ const ProvisioningFormTerm = () => {
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           type="date"
-          floatingLabel="Start Date"
-          onSelect={(e) => setStartDate(e.target.value)}
+          floatingLabel={TERM.OPTIONS.startDate}
+          defaultValue={formData.startDate || TERM.OPTIONS.startDate}
+          onChange={handleDateChange}
+          value={formData?.startDate}
+          data-testid="start-date"
         />
       </Form.Group>
       <Form.Group className="mt-4.5">
         <Form.Control
           type="date"
-          floatingLabel="End Date"
-          onSelect={(e) => setEndDate(e.target.value)}
+          floatingLabel={TERM.OPTIONS.endDate}
+          defaultValue={formData.endDate || TERM.OPTIONS.endDate}
+          value={formData?.endDate}
+          onChange={handleDateChange}
+          data-testid="end-date"
         />
       </Form.Group>
     </article>

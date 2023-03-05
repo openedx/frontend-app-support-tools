@@ -25,7 +25,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
     <Form.Autosuggest
       className="mt-4.5"
       floatingLabel={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}
-      helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.placeholder}
+      helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle}
       value={selected.title}
       onSelected={
                 (value) => setSelected(prevState => ({ selected: { ...prevState.selected, title: value } }))

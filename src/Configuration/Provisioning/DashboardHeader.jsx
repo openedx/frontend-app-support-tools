@@ -10,9 +10,8 @@ import ROUTES from '../../data/constants/routes';
 const DashboardHeader = () => {
   const history = useHistory();
   const { DASHBOARD } = PROVISIONING_PAGE_TEXT;
-  const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING: { SUB_DIRECTORY: { NEW } } } } } = ROUTES;
+  const { NEW } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY;
 
-  // console.log(PROVISIONING);
   return (
     <ActionRow>
       <h1>{DASHBOARD.HEADER}</h1>
