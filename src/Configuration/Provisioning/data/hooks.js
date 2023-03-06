@@ -22,6 +22,29 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const instatiateMultipleFormData = useCallback((catalogQueryTitle) => {
+    setState((s) => {
+      const { formData } = s;
+      return {
+        ...s,
+        formData: {
+          ...formData,
+          policies: catalogQueryTitle,
+        },
+      };
+    });
+  }, [setState]);
+
+  const resetPolicies = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        policies: [],
+      },
+    }));
+  }, [setState]);
+
   const setCustomerUUID = useCallback((customerUUID) => {
     setState((s) => ({
       ...s,
@@ -105,6 +128,8 @@ export default function useProvisioningContext() {
   return {
     setMultipleFunds,
     setCustomCatalog,
+    instatiateMultipleFormData,
+    resetPolicies,
     setCustomerUUID,
     setFinancialIdentifier,
     setStartDate,

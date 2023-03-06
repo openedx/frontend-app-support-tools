@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { titleCase } from '../../../utils';
 
 const PROVISIONING_PAGE_TEXT = {
@@ -81,7 +82,7 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
-          placeholder: 'Select enterprise catalog query',
+          subtitle: 'Select enterprise catalog query',
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
@@ -106,6 +107,27 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
   },
+};
+
+export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
+
+export const INITIAL_CATALOG_QUERIES = {
+  multipleQueries: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.openCourses,
+    },
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.executiveEducation,
+    },
+  ],
+  defaultQuery: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.default,
+    },
+  ],
 };
 
 export default PROVISIONING_PAGE_TEXT;

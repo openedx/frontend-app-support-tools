@@ -8,7 +8,7 @@ import {
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import { Warning } from '@edx/paragon/icons';
-import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import PROVISIONING_PAGE_TEXT, { CATALOG_QUERY_PATH } from '../../data/constants';
 
 const ProvisioningFormCustomCatalogHeader = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
@@ -20,7 +20,7 @@ const ProvisioningFormCustomCatalogHeader = () => {
         <ActionRow.Spacer />
         <Hyperlink
           target="_blank"
-          destination={`${LMS_BASE_URL}/admin/enterprise/enterprisecustomercatalog`}
+          destination={`${LMS_BASE_URL}${CATALOG_QUERY_PATH}`}
         >
           {CUSTOM_CATALOG.BUTTON.create}
         </Hyperlink>
