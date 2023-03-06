@@ -15,7 +15,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
     ].map(
       (item, index) => (
         <Form.AutosuggestOption key={uuidv4()}>
-          {`${options[index]} - ${uuidv4()}`}
+          {options[index]} - {uuidv4()}
         </Form.AutosuggestOption>
       ),
     );

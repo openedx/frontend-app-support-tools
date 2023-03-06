@@ -95,6 +95,42 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const setAccountName = useCallback((accountName, index) => {
+    setState((s) => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...accountName,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
+  }, [setState]);
+
+  const setAccountValue = useCallback((accountValue, index) => {
+    setState((s) => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...accountValue,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
+  }, [setState]);
+
   const perLearnerCap = useCallback((perLearnerCapBoolean) => {
     setState((s) => ({
       ...s,
@@ -135,6 +171,8 @@ export default function useProvisioningContext() {
     setStartDate,
     setEndDate,
     setSubsidyRevReq,
+    setAccountName,
+    setAccountValue,
     perLearnerCap,
     setPerLearnerCap,
     resetFormData,
