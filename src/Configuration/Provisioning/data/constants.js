@@ -3,7 +3,7 @@ import { titleCase } from '../../../utils';
 
 const PROVISIONING_PAGE_TEXT = {
   DASHBOARD: {
-    HEADER: 'Learner Credit Plans',
+    TITLE: 'Learner Credit Plans',
     BUTTON: {
       new: 'New',
     },

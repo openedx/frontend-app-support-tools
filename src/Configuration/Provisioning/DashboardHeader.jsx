@@ -12,15 +12,19 @@ const DashboardHeader = () => {
   const { DASHBOARD } = PROVISIONING_PAGE_TEXT;
   const { NEW } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY;
 
+  const handleNew = () => {
+    history.push(NEW);
+  };
+
   return (
     <ActionRow>
-      <h1>{DASHBOARD.HEADER}</h1>
+      <h1>{DASHBOARD.TITLE}</h1>
       <ActionRow.Spacer />
       <Button
         variant="primary"
-        value={DASHBOARD.CREATE_NEW}
+        value={DASHBOARD.new}
         iconBefore={Add}
-        onClick={() => history.push(NEW)}
+        onClick={handleNew}
       >
         {DASHBOARD.BUTTON.new}
       </Button>

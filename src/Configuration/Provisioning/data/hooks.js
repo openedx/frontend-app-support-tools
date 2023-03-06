@@ -5,7 +5,7 @@ import { ProvisioningContext } from '../ProvisioningContext';
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
   const setMultipleFunds = useCallback((fundingBoolean) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       multipleFunds: fundingBoolean,
       formData: {
@@ -16,14 +16,14 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setCustomCatalog = useCallback((customCatalogBoolean) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       customCatalog: customCatalogBoolean,
     }));
   }, [setState]);
 
   const instatiateMultipleFormData = useCallback((catalogQueryTitle) => {
-    setState((s) => {
+    setState(s => {
       const { formData } = s;
       return {
         ...s,
@@ -36,7 +36,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const resetPolicies = useCallback(() => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       formData: {
         ...s.formData,
@@ -46,7 +46,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setCustomerUUID = useCallback((customerUUID) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       formData: {
         ...s.formData,
@@ -56,7 +56,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setFinancialIdentifier = useCallback((financialIdentifier) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       formData: {
         ...s.formData,
@@ -66,7 +66,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setStartDate = useCallback((startDate) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       formData: {
         ...s.formData,
@@ -76,7 +76,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setEndDate = useCallback((endDate) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       formData: {
         ...s.formData,
@@ -86,7 +86,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setSubsidyRevReq = useCallback((subsidyRevReq) => {
-    setState((s) => ({
+    setState(s => ({
       ...s,
       formData: {
         ...s.formData,
@@ -96,7 +96,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setAccountName = useCallback((accountName, index) => {
-    setState((s) => {
+    setState(s => {
       const { policies } = s.formData;
       policies[index] = {
         ...policies[index],
@@ -114,7 +114,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setAccountValue = useCallback((accountValue, index) => {
-    setState((s) => {
+    setState(s => {
       const { policies } = s.formData;
       policies[index] = {
         ...policies[index],
@@ -132,7 +132,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const perLearnerCap = useCallback((perLearnerCapValue, index) => {
-    setState((s) => {
+    setState(s => {
       const { policies } = s.formData;
       policies[index] = {
         ...policies[index],
@@ -150,7 +150,7 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setPerLearnerCap = useCallback((perLearnerCapAmount, index) => {
-    setState((s) => {
+    setState(s => {
       const { policies } = s.formData;
       policies[index] = {
         ...policies[index],

@@ -8,9 +8,10 @@ import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { ProvisioningContext } from '../ProvisioningContext';
 
-const ProvisioningFormFundType = () => {
+const ProvisioningFormAccountType = () => {
   const { setMultipleFunds } = useProvisioningContext();
   const { ACCOUNT_CREATION } = PROVISIONING_PAGE_TEXT.FORM;
+  // const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
   const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
   const [value, setValue] = useState(null);
 
@@ -33,7 +34,7 @@ const ProvisioningFormFundType = () => {
       <Form.RadioSet
         name="display-account-type"
         onChange={handleChange}
-        value={value || formData.multipleFunds}
+        value={value || formData?.multipleFunds}
       >
         {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
@@ -51,4 +52,4 @@ const ProvisioningFormFundType = () => {
   );
 };
 
-export default ProvisioningFormFundType;
+export default ProvisioningFormAccountType;

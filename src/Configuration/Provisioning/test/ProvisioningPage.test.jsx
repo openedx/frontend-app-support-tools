@@ -1,19 +1,40 @@
+/* eslint-disable react/prop-types */
+import { fireEvent, screen } from '@testing-library/react';
+import { Router } from 'react-router-dom';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen } from '@testing-library/react';
+import ROUTES from '../../../data/constants/routes';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningPage from '../ProvisioningPage';
+import { ProvisioningContext, initialStateValue } from '../../testData';
 
-const ProvisioningPageWrapper = () => (
-  <ProvisioningPage />
+const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING } } } = ROUTES;
+const useHistoryPush = jest.fn();
+const historyMock = { push: useHistoryPush, location: {}, listen: jest.fn() };
+
+const ProvisioningPageWrapper = ({
+  value = initialStateValue,
+}) => (
+  <Router history={historyMock}>
+    <ProvisioningContext value={value}>
+      <ProvisioningPage />
+    </ProvisioningContext>
+  </Router>
 );
 
 describe('ProvisioningPage', () => {
-  it('renders', () => {
-    renderWithRouter(<ProvisioningPageWrapper />);
-    expect(screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.HEADER)).toBeTruthy();
+  beforeEach(() => {
+    jest.resetAllMocks();
   });
-  it('renders zero state dashboard', () => {
+
+  it('renders the header and new button', () => {
+    renderWithRouter(<ProvisioningPageWrapper value={initialStateValue} />);
+    expect(screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.TITLE)).toBeTruthy();
+    expect(screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.BUTTON.new)).toBeTruthy();
+  });
+  it('redirects to /new when the user clicks the new button', () => {
     renderWithRouter(<ProvisioningPageWrapper />);
-    expect(screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.ZERO_STATE.HEADER)).toBeTruthy();
+    const newButton = screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.BUTTON.new);
+    fireEvent.click(newButton);
+    expect(useHistoryPush).toHaveBeenCalledWith(`${PROVISIONING.SUB_DIRECTORY.NEW}`);
   });
 });
