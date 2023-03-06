@@ -4,11 +4,12 @@ import {
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext } from '../../ProvisioningContext';
 import useProvisioningContext from '../../data/hooks';
 
-const ProvisioningFormPerLearnerCap = () => {
+const ProvisioningFormPerLearnerCap = ({ index }) => {
   const { perLearnerCap } = useProvisioningContext();
   const { LEARNER_CAP } = PROVISIONING_PAGE_TEXT.FORM;
   const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
@@ -17,9 +18,13 @@ const ProvisioningFormPerLearnerCap = () => {
   const handleChange = (e) => {
     const newTabValue = e.target.value;
     if (newTabValue === LEARNER_CAP.OPTIONS.yes) {
-      perLearnerCap(true);
+      perLearnerCap({
+        perLearnerCap: true,
+      }, index);
     } else if (newTabValue === LEARNER_CAP.OPTIONS.no) {
-      perLearnerCap(false);
+      perLearnerCap({
+        perLearnerCap: false,
+      }, index);
     }
     setValue(newTabValue);
   };
@@ -31,9 +36,9 @@ const ProvisioningFormPerLearnerCap = () => {
       </div>
       <p className="mt-4">{LEARNER_CAP.SUB_TITLE}</p>
       <Form.RadioSet
-        name="display-learner-cap"
+        name={`display-per-learner-cap-${index}`}
         onChange={handleChange}
-        value={value || formData.perLearnerCap}
+        value={value || formData.policies[index]?.perLearnerCap}
       >
         {
           Object.keys(LEARNER_CAP.OPTIONS).map((key) => (
@@ -49,6 +54,10 @@ const ProvisioningFormPerLearnerCap = () => {
       </Form.RadioSet>
     </article>
   );
+};
+
+ProvisioningFormPerLearnerCap.propTypes = {
+  index: PropTypes.number.isRequired,
 };
 
 export default ProvisioningFormPerLearnerCap;

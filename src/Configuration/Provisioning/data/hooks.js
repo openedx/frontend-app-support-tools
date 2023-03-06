@@ -131,24 +131,40 @@ export default function useProvisioningContext() {
     });
   }, [setState]);
 
-  const perLearnerCap = useCallback((perLearnerCapBoolean) => {
-    setState((s) => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        perLearnerCap: perLearnerCapBoolean,
-      },
-    }));
+  const perLearnerCap = useCallback((perLearnerCapValue, index) => {
+    setState((s) => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...perLearnerCapValue,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
   }, [setState]);
 
-  const setPerLearnerCap = useCallback((perLearnerCapAmount) => {
-    setState((s) => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        perLearnerCapAmount,
-      },
-    }));
+  const setPerLearnerCap = useCallback((perLearnerCapAmount, index) => {
+    setState((s) => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...perLearnerCapAmount,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
   }, [setState]);
 
   const resetFormData = useCallback(() => {
