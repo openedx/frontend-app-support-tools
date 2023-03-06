@@ -9,7 +9,11 @@ import useProvisioningContext from '../../data/hooks';
 const ProvisioningFormAccountDetails = ({ index }) => {
   const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
   const { setAccountName, setAccountValue } = useProvisioningContext();
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const { multipleFunds, formData } = useContextSelector(ProvisioningContext, v => v[0]);
+
+  const formFeedbackText = multipleFunds
+    ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(formData.policies[index]?.catalogQueryTitle.split(' account')[0])
+    : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;
 
   const handleChange = (e) => {
     const newEvent = e.target;
@@ -42,7 +46,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           data-testid="account-value"
         />
         <Form.Control.Feedback>
-          {ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle}
+          {formFeedbackText}
         </Form.Control.Feedback>
       </Form.Group>
     </article>
