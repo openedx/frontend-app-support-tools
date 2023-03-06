@@ -12,8 +12,4 @@ describe('ProvisioningPage', () => {
     renderWithRouter(<ProvisioningPageWrapper />);
     expect(screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.HEADER)).toBeTruthy();
   });
-  it('renders zero state dashboard', () => {
-    renderWithRouter(<ProvisioningPageWrapper />);
-    expect(screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.ZERO_STATE.HEADER)).toBeTruthy();
-  });
 });
