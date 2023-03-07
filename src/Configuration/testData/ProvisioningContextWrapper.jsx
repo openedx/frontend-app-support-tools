@@ -1,6 +1,7 @@
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PropTypes from 'prop-types';
-import ProvisioningContextProvider from '../Provisioning/ProvisioningContext';
+import { useState } from 'react';
+import { ProvisioningContext as NestedProvisioningContext } from '../Provisioning/ProvisioningContext';
 
 export const initialStateValue = {
   multipleFunds: undefined,
@@ -13,13 +14,16 @@ export const initialStateValue = {
 export const ProvisioningContext = ({
   children,
   value,
-}) => (
-  <IntlProvider locale="en">
-    <ProvisioningContextProvider value={value}>
-      {children}
-    </ProvisioningContextProvider>
-  </IntlProvider>
-);
+}) => {
+  const contextValue = useState(value);
+  return (
+    <IntlProvider locale="en">
+      <NestedProvisioningContext.Provider value={contextValue}>
+        {children}
+      </NestedProvisioningContext.Provider>
+    </IntlProvider>
+  );
+};
 
 ProvisioningContext.propTypes = {
   children: PropTypes.node.isRequired,

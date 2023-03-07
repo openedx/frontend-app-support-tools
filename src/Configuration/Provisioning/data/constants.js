@@ -106,6 +106,9 @@ const PROVISIONING_PAGE_TEXT = {
         },
       },
     },
+    ALERTS: {
+      unselectedAccountType: "Please select an 'Account Creation' option to create new policies.",
+    },
   },
 };
 
