@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Form } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import PROVISIONING_PAGE_TEXT, { autoSuggestSampleOptions } from '../../data/constants';
 
 const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: '' });
@@ -9,13 +9,10 @@ const ProvisioningFormCustomCatalogDropdown = () => {
   // TODO: Modify this once the Autosuggest component is ready to be implemented
   const generateAutosuggestOptions = useCallback(() => {
     // options reflects API response from enterpriseCatalogQuery GET endpoint
-    const options = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'];
-    const generatedOptions = [
-      ...new Array(options.length),
-    ].map(
-      (item, index) => (
+    const generatedOptions = autoSuggestSampleOptions.map(
+      (item) => (
         <Form.AutosuggestOption key={uuidv4()}>
-          {options[index]} - {uuidv4()}
+          {`${item} - ${uuidv4()}`}
         </Form.AutosuggestOption>
       ),
     );
@@ -30,6 +27,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
       onSelected={
                 (value) => setSelected(prevState => ({ selected: { ...prevState.selected, title: value } }))
             }
+      data-testid="autosuggest"
     >
       {generateAutosuggestOptions()}
     </Form.Autosuggest>
