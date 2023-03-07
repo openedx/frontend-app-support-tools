@@ -42,6 +42,7 @@ const ProvisioningFormAccountType = () => {
               value={ACCOUNT_CREATION.OPTIONS[key]}
               type="radio"
               key={uuidv4()}
+              data-testid={ACCOUNT_CREATION.OPTIONS[key]}
             >
               {ACCOUNT_CREATION.OPTIONS[key]}
             </Form.Radio>

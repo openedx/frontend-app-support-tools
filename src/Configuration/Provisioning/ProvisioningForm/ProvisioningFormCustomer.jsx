@@ -18,8 +18,9 @@ const ProvisioningFormCustomer = () => {
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           floatingLabel={CUSTOMER.OPTIONS.enterpriseUUID}
-          defaultValue={formData.customerUUID || undefined}
+          defaultValue={formData.enterpriseUUID || undefined}
           onChange={e => setCustomerUUID(e.target.value)}
+          data-testid="customer-uuid"
         />
       </Form.Group>
       <Form.Group className="mt-4.5">
@@ -27,6 +28,7 @@ const ProvisioningFormCustomer = () => {
           floatingLabel={CUSTOMER.OPTIONS.financialIdentifier}
           defaultValue={formData.financialIdentifier || undefined}
           onChange={e => setFinancialIdentifier(e.target.value)}
+          data-testid="customer-financial-identifier"
         />
       </Form.Group>
     </article>

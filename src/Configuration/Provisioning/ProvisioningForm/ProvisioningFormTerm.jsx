@@ -25,8 +25,8 @@ const ProvisioningFormTerm = () => {
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           type="date"
-          floatingLabel={TERM.OPTIONS.startDate}
-          defaultValue={formData.startDate || TERM.OPTIONS.startDate}
+          floatingLabel={TERM.OPTIONS.startDate || undefined}
+          defaultValue={formData.startDate}
           onChange={handleDateChange}
           value={formData?.startDate}
           data-testid="start-date"
@@ -36,7 +36,7 @@ const ProvisioningFormTerm = () => {
         <Form.Control
           type="date"
           floatingLabel={TERM.OPTIONS.endDate}
-          defaultValue={formData.endDate || TERM.OPTIONS.endDate}
+          defaultValue={formData.endDate || undefined}
           value={formData?.endDate}
           onChange={handleDateChange}
           data-testid="end-date"

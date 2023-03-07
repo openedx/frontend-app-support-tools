@@ -37,6 +37,7 @@ const ProvisioningFormSubsidy = () => {
               value={SUBSIDY_TYPE.OPTIONS[key]}
               type="radio"
               key={uuidv4()}
+              data-testid={SUBSIDY_TYPE.OPTIONS[key]}
             >
               {SUBSIDY_TYPE.OPTIONS[key]}
             </Form.Radio>
