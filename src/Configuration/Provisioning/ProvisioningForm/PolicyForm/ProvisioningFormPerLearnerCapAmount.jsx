@@ -25,6 +25,7 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
         <Form.Control
           floatingLabel={LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.title}
           onChange={handleChange}
+          data-testid="per-learner-spend-cap-amount"
         />
         <Form.Control.Feedback>
           {LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.subtitle}

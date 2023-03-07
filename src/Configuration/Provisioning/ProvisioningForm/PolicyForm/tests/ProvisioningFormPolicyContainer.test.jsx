@@ -22,6 +22,7 @@ const ProvisioningFormPolicyContainerWrapper = ({
   </ProvisioningContext>
 );
 
+// TODO: Integration Tests
 describe('ProvisioningFormPolicyContainer', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -42,6 +43,26 @@ describe('ProvisioningFormPolicyContainer', () => {
       />,
     );
     expect(screen.getByText(ACCOUNT_DETAIL.TITLE)).toBeTruthy();
+    expect(screen.getByText(INITIAL_CATALOG_QUERIES.defaultQuery[0].catalogQueryTitle)).toBeTruthy();
+  });
+  it('renders multiple policy state', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      multipleFunds: true,
+      formData: {
+        ...initialStateValue.formData,
+        policies: INITIAL_CATALOG_QUERIES.multipleQueries,
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormPolicyContainerWrapper
+        value={updatedInitialState}
+        sampleCatalogQuery={INITIAL_CATALOG_QUERIES.multipleQueries}
+      />,
+    );
+    expect(screen.getAllByText(ACCOUNT_DETAIL.TITLE).length).toEqual(INITIAL_CATALOG_QUERIES.multipleQueries.length);
+    expect(screen.getByText(INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle)).toBeTruthy();
+    expect(screen.getByText(INITIAL_CATALOG_QUERIES.multipleQueries[1].catalogQueryTitle)).toBeTruthy();
   });
   it('should render alert if multipleFunds is undefined', () => {
     renderWithRouter(<ProvisioningFormPolicyContainerWrapper />);

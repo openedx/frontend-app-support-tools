@@ -12,7 +12,7 @@ import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
-  const { setCustomCatalog } = useProvisioningContext();
+  const { setCustomCatalog, setCatalogCategory } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const { multipleFunds, formData } = useContextSelector(ProvisioningContext, v => v[0]);
   const [value, setValue] = useState(null);
@@ -28,6 +28,7 @@ const ProvisioningFormCatalog = ({ index }) => {
     } else if (newTabValue !== CATALOG.OPTIONS.custom) {
       setCustomCatalog(false);
     }
+    setCatalogCategory({ catalogCategory: newTabValue });
     setValue(newTabValue);
   };
 
@@ -47,9 +48,9 @@ const ProvisioningFormCatalog = ({ index }) => {
       )}
       {multipleFunds === false && (
       <Form.RadioSet
-        name="display-content"
+        name="display-catalog-content"
         onChange={handleChange}
-        value={value}
+        value={value || formData.policies[index].catalogCategory}
       >
         {
           Object.keys(CATALOG.OPTIONS).map((key) => (
@@ -57,6 +58,7 @@ const ProvisioningFormCatalog = ({ index }) => {
               value={CATALOG.OPTIONS[key]}
               type="radio"
               key={uuidv4()}
+              data-testid={CATALOG.OPTIONS[key]}
             >
               {CATALOG.OPTIONS[key]}
             </Form.Radio>

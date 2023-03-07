@@ -131,6 +131,24 @@ export default function useProvisioningContext() {
     });
   }, [setState]);
 
+  const setCatalogCategory = useCallback((catalogCategory, index) => {
+    setState(s => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...catalogCategory,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
+  }, [setState]);
+
   const perLearnerCap = useCallback((perLearnerCapValue, index) => {
     setState(s => {
       const { policies } = s.formData;
@@ -189,6 +207,7 @@ export default function useProvisioningContext() {
     setSubsidyRevReq,
     setAccountName,
     setAccountValue,
+    setCatalogCategory,
     perLearnerCap,
     setPerLearnerCap,
     resetFormData,

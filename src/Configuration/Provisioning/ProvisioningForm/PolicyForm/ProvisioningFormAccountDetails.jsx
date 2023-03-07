@@ -41,7 +41,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
       <Form.Group className="mt-4.5">
         <Form.Control
           floatingLabel={ACCOUNT_DETAIL.OPTIONS.totalAccountValue.title}
-          value={formData.policies[index]?.totalAccountValue || null}
+          value={formData.policies[index]?.accountValue || null}
           onChange={handleChange}
           data-testid="account-value"
         />

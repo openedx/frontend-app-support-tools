@@ -28,7 +28,6 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
     }
     setValue(newTabValue);
   };
-
   return (
     <article className="mt-4.5">
       <div>
@@ -46,6 +45,7 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
               value={LEARNER_CAP.OPTIONS[key]}
               type="radio"
               key={uuidv4()}
+              data-testid={LEARNER_CAP.OPTIONS[key]}
             >
               {LEARNER_CAP.OPTIONS[key]}
             </Form.Radio>
