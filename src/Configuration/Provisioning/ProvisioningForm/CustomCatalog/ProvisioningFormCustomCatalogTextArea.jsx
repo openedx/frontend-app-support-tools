@@ -3,10 +3,13 @@ import {
   Form,
 } from '@edx/paragon';
 import { useState } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import { ProvisioningContext } from '../../ProvisioningContext';
 
 const ProvisioningFormCustomCatalogTextArea = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
+  const { catalogQueries: { data: { contentFilter } } } = useContextSelector(ProvisioningContext, v => v[0]);
   // TODO: Replace this with a real API response
   const sampleContentFilterResponse = {
     content_type: 'course',
@@ -30,7 +33,8 @@ const ProvisioningFormCustomCatalogTextArea = () => {
     'audit',
     'honor',
   ];
-  const [contentFilter] = useState(JSON.stringify(sampleContentFilterResponse, null, 4));
+
+  const [catalogQueryContentFilter] = useState(JSON.stringify(sampleContentFilterResponse, null, 4));
   const [courseModes] = useState(JSON.stringify(sampleCourseModesResponse, null, 4));
   return (
     <Stack className="mt-4.5">
@@ -39,7 +43,7 @@ const ProvisioningFormCustomCatalogTextArea = () => {
         as="textarea"
         style={{ height: '200px' }}
         floatingLabel={CUSTOM_CATALOG.OPTIONS.contentFilter}
-        value={contentFilter}
+        value={catalogQueryContentFilter}
         disabled
       />
       <Form.Control

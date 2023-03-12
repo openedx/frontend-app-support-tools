@@ -1,5 +1,6 @@
 import { useContextSelector } from 'use-context-selector';
 import {
+  Container,
   Form,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
@@ -34,12 +35,13 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
         <h3>{LEARNER_CAP.TITLE}</h3>
       </div>
       <p className="mt-4">{LEARNER_CAP.SUB_TITLE}</p>
-      <Form.RadioSet
-        name={`display-per-learner-cap-${index}`}
-        onChange={handleChange}
-        value={value || formData.policies[index]?.perLearnerCap}
-      >
-        {
+      <Container>
+        <Form.RadioSet
+          name={`display-per-learner-cap-${index}`}
+          onChange={handleChange}
+          value={value || formData.policies[index]?.perLearnerCap}
+        >
+          {
           Object.keys(LEARNER_CAP.OPTIONS).map((key) => (
             <Form.Radio
               value={LEARNER_CAP.OPTIONS[key]}
@@ -51,7 +53,8 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
             </Form.Radio>
           ))
         }
-      </Form.RadioSet>
+        </Form.RadioSet>
+      </Container>
     </article>
   );
 };

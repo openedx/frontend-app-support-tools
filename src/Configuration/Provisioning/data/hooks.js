@@ -1,6 +1,38 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useContextSelector } from 'use-context-selector';
+import { logError } from '@edx/frontend-platform/logging';
+import { camelCaseObject } from '@edx/frontend-platform';
+import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
+
+export function useLmsCatalogQueries() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+  const [catalogQueries, setCatalogQuery] = useState([]);
+
+  const callApi = async () => {
+    try {
+      const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+      setCatalogQuery(data.results);
+    } catch (error) {
+      logError(error);
+      setFetchError(error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    callApi();
+  }, [callApi]);
+
+  return {
+    isLoading,
+    fetchError,
+    catalogQueries,
+  };
+}
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
@@ -15,6 +47,18 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const hydrateCatalogQueryData = useCallback(async () => {
+    const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+    setState(s => ({
+      ...s,
+      catalogQueries: {
+        ...s.catalogQueries,
+        data: camelCaseObject(data.results),
+        isLoading: false,
+      },
+    }));
+  });
+
   const setCustomCatalog = useCallback((customCatalogBoolean) => {
     setState(s => ({
       ...s,
@@ -22,14 +66,32 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
-  const instatiateMultipleFormData = useCallback((catalogQueryTitle) => {
+  const setCatalogQuerySelection = useCallback((catalogSelection, index) => {
+    setState(s => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...catalogSelection,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
+  }, [setState]);
+
+  const instatiateMultipleFormData = useCallback((catalogObjectArray) => {
     setState(s => {
       const { formData } = s;
       return {
         ...s,
         formData: {
           ...formData,
-          policies: catalogQueryTitle,
+          policies: catalogObjectArray,
         },
       };
     });
@@ -131,7 +193,7 @@ export default function useProvisioningContext() {
     });
   }, [setState]);
 
-  const setCatalogCategory = useCallback((catalogCategory, index) => {
+  const setCatalogQueryCategory = useCallback((catalogCategory, index) => {
     setState(s => {
       const { policies } = s.formData;
       policies[index] = {
@@ -195,9 +257,18 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const setAlertMessage = useCallback((alertMessage) => {
+    setState(s => ({
+      ...s,
+      alertMessage,
+    }));
+  }, [setState]);
+
   return {
     setMultipleFunds,
+    hydrateCatalogQueryData,
     setCustomCatalog,
+    setCatalogQuerySelection,
     instatiateMultipleFormData,
     resetPolicies,
     setCustomerUUID,
@@ -207,9 +278,10 @@ export default function useProvisioningContext() {
     setSubsidyRevReq,
     setAccountName,
     setAccountValue,
-    setCatalogCategory,
+    setCatalogQueryCategory,
     perLearnerCap,
     setPerLearnerCap,
     resetFormData,
+    setAlertMessage,
   };
 }

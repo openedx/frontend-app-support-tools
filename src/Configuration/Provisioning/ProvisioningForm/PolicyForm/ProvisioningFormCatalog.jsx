@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Form,
   Hyperlink,
+  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { useContextSelector } from 'use-context-selector';
@@ -12,7 +13,7 @@ import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
-  const { setCustomCatalog, setCatalogCategory } = useProvisioningContext();
+  const { setCustomCatalog, setCatalogQueryCategory } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const { multipleFunds, formData } = useContextSelector(ProvisioningContext, v => v[0]);
   const [value, setValue] = useState(null);
@@ -21,14 +22,25 @@ const ProvisioningFormCatalog = ({ index }) => {
     return null;
   }
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const newTabValue = e.target.value;
     if (newTabValue === CATALOG.OPTIONS.custom) {
       setCustomCatalog(true);
+      setCatalogQueryCategory({
+        catalogQueryMetadata: {
+          catalogQueryTitle: '',
+          catalogQuery: '',
+        },
+      }, index);
     } else if (newTabValue !== CATALOG.OPTIONS.custom) {
       setCustomCatalog(false);
+      setCatalogQueryCategory({
+        catalogQueryMetadata: {
+          catalogQueryTitle: newTabValue,
+          catalogQuery: 'To Be Populate with Predetermined Catalog Query',
+        },
+      }, index);
     }
-    setCatalogCategory({ catalogCategory: newTabValue });
     setValue(newTabValue);
   };
 
@@ -47,12 +59,13 @@ const ProvisioningFormCatalog = ({ index }) => {
       </Hyperlink>
       )}
       {multipleFunds === false && (
-      <Form.RadioSet
-        name="display-catalog-content"
-        onChange={handleChange}
-        value={value || formData.policies[index].catalogCategory}
-      >
-        {
+      <Container>
+        <Form.RadioSet
+          name="display-catalog-content"
+          onChange={handleChange}
+          value={value || formData.policies[index].catalogCategory}
+        >
+          {
           Object.keys(CATALOG.OPTIONS).map((key) => (
             <Form.Radio
               value={CATALOG.OPTIONS[key]}
@@ -64,7 +77,8 @@ const ProvisioningFormCatalog = ({ index }) => {
             </Form.Radio>
           ))
         }
-      </Form.RadioSet>
+        </Form.RadioSet>
+      </Container>
       )}
     </article>
   );

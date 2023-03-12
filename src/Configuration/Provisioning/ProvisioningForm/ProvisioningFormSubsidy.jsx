@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Form,
+  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { useContextSelector } from 'use-context-selector';
@@ -26,12 +27,13 @@ const ProvisioningFormSubsidy = () => {
         <h3>{SUBSIDY_TYPE.TITLE}</h3>
       </div>
       <p className="mt-4">{SUBSIDY_TYPE.SUB_TITLE}</p>
-      <Form.RadioSet
-        name="display-subsidy"
-        onChange={handleChange}
-        value={value || formData.subsidyRevReq}
-      >
-        {
+      <Container>
+        <Form.RadioSet
+          name="display-subsidy"
+          onChange={handleChange}
+          value={value || formData.subsidyRevReq}
+        >
+          {
           Object.keys(SUBSIDY_TYPE.OPTIONS).map((key) => (
             <Form.Radio
               value={SUBSIDY_TYPE.OPTIONS[key]}
@@ -43,7 +45,8 @@ const ProvisioningFormSubsidy = () => {
             </Form.Radio>
           ))
         }
-      </Form.RadioSet>
+        </Form.RadioSet>
+      </Container>
     </article>
   );
 };

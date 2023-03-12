@@ -108,7 +108,20 @@ const PROVISIONING_PAGE_TEXT = {
     },
     ALERTS: {
       unselectedAccountType: "Please select an 'Account Creation' option to create new policies.",
+      API_ERROR_MESSAGES: {
+        ENTERPRISE_CATALOG_QUERY: {
+          400: 'The enterprise catalog query could not be created.',
+          404: 'Enterprise Catalog Query failed to respond.',
+        },
+      },
     },
+  },
+};
+
+export const API_ERROR_MESSAGES = {
+  ENTERPRISE_CATALOG_QUERY: {
+    400: 'The enterprise catalog query could not be created.',
+    404: 'enterprise_catalog_query failed to respond.',
   },
 };
 
