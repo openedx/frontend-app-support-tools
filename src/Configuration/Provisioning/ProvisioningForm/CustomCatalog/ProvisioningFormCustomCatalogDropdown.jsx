@@ -5,6 +5,7 @@ import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext } from '../../ProvisioningContext';
 import useProvisioningContext from '../../data/hooks';
+import sortedCatalogQueries from '../../data/utils';
 
 const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: '' });
@@ -18,7 +19,8 @@ const ProvisioningFormCustomCatalogDropdown = () => {
       </Form.AutosuggestOption>
     );
     if (catalogQueries.data.length > 0) {
-      const apiCatalogQueries = catalogQueries.data.map(
+      const sortedData = sortedCatalogQueries(catalogQueries.data);
+      const apiCatalogQueries = sortedData.map(
         ({ title, uuid }) => (
           <Form.AutosuggestOption key={uuid}>
             {`${title} - ${uuid}`}

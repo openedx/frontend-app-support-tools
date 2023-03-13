@@ -2,40 +2,33 @@ import {
   Stack,
   Form,
 } from '@edx/paragon';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext } from '../../ProvisioningContext';
 
 const ProvisioningFormCustomCatalogTextArea = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { catalogQueries: { data: { contentFilter } } } = useContextSelector(ProvisioningContext, v => v[0]);
+  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
   // TODO: Replace this with a real API response
-  const sampleContentFilterResponse = {
-    content_type: 'course',
-    partner: 'edx',
-    level_type: [
-      'Introductory',
-      'Intermediate',
-      'Advanced',
-    ],
-    availability: [
-      'Current',
-      'Starting Soon',
-      'Upcoming',
-    ],
-    status: 'published',
-  };
-  const sampleCourseModesResponse = [
-    'verified',
-    'professional',
-    'no-id-professional',
-    'audit',
-    'honor',
-  ];
+  // const sampleCourseModesResponse = [
+  //   'verified',
+  //   'professional',
+  //   'no-id-professional',
+  //   'audit',
+  //   'honor',
+  // ];
+  // const [courseModes] = useState(JSON.stringify(sampleCourseModesResponse, null, 4));
 
-  const [catalogQueryContentFilter] = useState(JSON.stringify(sampleContentFilterResponse, null, 4));
-  const [courseModes] = useState(JSON.stringify(sampleCourseModesResponse, null, 4));
+  const [catalogQueryContentFilter, setCatalogQueryContentFilter] = useState(
+    JSON.stringify(formData.policies[0].catalogQueryMetadata.catalogQuery.contentFilter, null, 4),
+  );
+
+  useEffect(() => {
+    setCatalogQueryContentFilter(
+      JSON.stringify(formData.policies[0].catalogQueryMetadata.catalogQuery.contentFilter, null, 4),
+    );
+  }, [formData.policies[0].catalogQueryMetadata.catalogQuery.contentFilter]);
   return (
     <Stack className="mt-4.5">
       <Form.Control
@@ -46,14 +39,16 @@ const ProvisioningFormCustomCatalogTextArea = () => {
         value={catalogQueryContentFilter}
         disabled
       />
-      <Form.Control
+      {/* Will need to be abstracted to a separate component when
+       enterpriseCustomerCatalog Uuid is added to the API response */}
+      {/* <Form.Control
         className="mt-4.5"
         as="textarea"
         style={{ height: '200px' }}
         floatingLabel={CUSTOM_CATALOG.OPTIONS.courseModes}
         value={courseModes}
         disabled
-      />
+      /> */}
     </Stack>
   );
 };
