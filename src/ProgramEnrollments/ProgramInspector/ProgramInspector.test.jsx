@@ -18,7 +18,7 @@ import verifiedNameHistory from '../../users/data/test/verifiedNameHistory';
 
 const ProgramEnrollmentsWrapper = (props) => (
   <MemoryRouter>
-    <IntlProvider>
+    <IntlProvider locale="en">
       <UserMessagesProvider>
         <ProgramInspector {...props} />
       </UserMessagesProvider>

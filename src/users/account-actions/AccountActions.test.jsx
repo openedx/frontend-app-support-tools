@@ -8,7 +8,7 @@ describe('Account Actions Component Tests', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(<IntlProvider><AccountActions {...UserSummaryData} /> </IntlProvider>);
+    wrapper = mount(<IntlProvider locale="en"><AccountActions {...UserSummaryData} /> </IntlProvider>);
   });
 
   afterEach(() => {

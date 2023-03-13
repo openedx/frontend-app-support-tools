@@ -16,6 +16,7 @@
     "start": "fedx-scripts webpack-dev-server --progress",
     "debug-test": "node --inspect-brk node_modules/.bin/jest --coverage --runInBand",
     "test": "TZ=UTC fedx-scripts jest --coverage --runInBand",
+    "test:watch": "npm run test -- --watch",
     "snapshot": "fedx-scripts jest --updateSnapshot"
   },
   "author": "edX",
@@ -29,6 +30,7 @@
   },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
+    "@edx/frontend-enterprise-utils": "2.2.1",
     "@edx/frontend-platform": "^2.5.0",
     "@edx/paragon": "^20.26.0",
     "@fortawesome/fontawesome-svg-core": "1.2.32",
@@ -50,7 +52,8 @@
     "react-router-dom": "5.2.0",
     "react-table": "^7.6.3",
     "react-transition-group": "4.4.1",
-    "redux": "4.0.5"
+    "redux": "4.0.5",
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.0",

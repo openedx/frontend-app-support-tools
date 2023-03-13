@@ -11,6 +11,7 @@ import {
 
 import DesktopHeader from './DesktopHeader';
 import MobileHeader from './MobileHeader';
+import ROUTES from '../data/constants/routes';
 
 ensureConfig([
   'LMS_BASE_URL',
@@ -35,6 +36,7 @@ export default function Header() {
   let DISCOVERY_INTERNAL = config.DISCOVERY_API_BASE_URL;
   let CREDENTIALS_INTERNAL = config.CREDENTIALS_BASE_URL;
   const { SUPPORT_CONFLUENCE, SUPPORT_CUSTOMER_REQUEST } = config;
+  const { CONFIGURATION } = ROUTES;
 
   if (config.LMS_BASE_URL.indexOf('.stage.') !== -1) {
     COURSES_INTERNAL = COURSES_INTERNAL.replace('.stage.', '-internal.stage.');
@@ -45,12 +47,16 @@ export default function Header() {
     DISCOVERY_INTERNAL = DISCOVERY_INTERNAL.replace('.edx.', '-internal.edx.');
     CREDENTIALS_INTERNAL = CREDENTIALS_INTERNAL.replace('.edx.', '-internal.edx.');
   }
-
   const mainMenu = [
     {
       type: 'item',
       content: 'Confluence',
       href: SUPPORT_CONFLUENCE,
+    },
+    {
+      type: 'item',
+      content: 'Support Tools',
+      href: `${config.BASE_URL}`,
     },
     {
       type: 'submenu',
@@ -102,6 +108,20 @@ export default function Header() {
       ),
     },
   ];
+  /* Start Configuration Management */
+  // Add configuration dropdown if FEATURE_CONFIGURATION_MANAGEMENT is set
+  const configurationDropdown = {
+    type: 'submenu',
+    content: 'Enterprise Setup',
+    submenuContent:
+      getConfig().FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
+        ? (<div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING}`}>Learner Credit Plans</a></div>)
+        : null,
+  };
+  if (getConfig().FEATURE_CONFIGURATION_MANAGEMENT) {
+    mainMenu.push(configurationDropdown);
+  }
+  /* End Configuration Management */
 
   const dashboardMenuItem = {
     type: 'item',
