@@ -25,7 +25,7 @@ export default function ProgramInspector({ location }) {
   const [externalUserKey, setExternalUserKey] = useState(params.get('external_user_key'));
   const [clickEventCall, setClickEventCall] = useState(false);
 
-  const getOrgKeyList = () => (orgKeyList
+  const getOrgKeyList = () => (orgKeyList && orgKeyList.length
     ? orgKeyList.map((data) => ({
       value: data,
       label: data,
@@ -74,7 +74,7 @@ export default function ProgramInspector({ location }) {
   }, [location.search, clickEventCall]);
 
   useEffect(() => {
-    if (!orgKeyList) {
+    if (!orgKeyList || orgKeyList.length === 0) {
       getSAMLProviderList().then((response) => {
         setOrgKeyList(response);
         if (response && response.length) {
@@ -135,7 +135,7 @@ export default function ProgramInspector({ location }) {
                 name="orgKey"
                 type="select"
                 defaultValue={activeOrgKey}
-                options={getOrgKeyList()}
+                options={getOrgKeyList()?.length ? getOrgKeyList() : []}
                 onChange={(e) => setActiveOrgKey(e.target.value)}
               />
             </div>
