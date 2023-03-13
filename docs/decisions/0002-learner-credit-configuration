@@ -38,7 +38,14 @@ Decision
         * OC Only
         * Exec Ed Only
         * Custom
-            * Ideally, a text box for the JSON for the `enterpriseCatalogQuery` field will be available for the user to create a new catalog query
+            * For the custom query case, this involves writing a content_filter json blob directly on an EnterpriseCustomerCatalog record
+                * To do so, the user would then have to redirect to the LMS Django screen to modify an existing EnterpriseCustomerCatalog and either:
+                    * Bring in the UUID for the EnterpriseCustomerCatalog representing their custom catalog
+                    * Select from a dropdown to select the existing customer catalog as their custom catalog 
+                * The enterpriseCustomerCatalog will represent the custom catalog selection for the single policy created
+            * If the user chooses not to select the existing customer catalog, they will select from a dropdown to select an existing enterpriseCustomerQuery
+                * They will also have the option redirect to the LMS Django screen to create a new catalog query and select it from the support tools
+                    *  The support tools will also create a new catalog from the catalog query and assign the newly created catalog to the single policy created
     * Total Funds **(per policy spend cap)**
         * For a single policy, represents the total amount for the learner credit subsidy 
     * Learner Restrictions **(per learner spend cap)**
@@ -68,4 +75,4 @@ References
 ----------
 * Project Confluence: https://2u-internal.atlassian.net/wiki/spaces/SOL/pages/333873204/Enterprise+Provisioning+UI
 * API Discovery: https://2u-internal.atlassian.net/wiki/spaces/SOL/pages/edit-v2/350683161?
-* Figma: https://www.figma.com/file/TP5hGfoYmohr21MwgUgCZN/Order-Fulfillment?node-id=2%3A165&t=xjKsVEjgF6Udhmi5-4
+* Figma: https://www.figma.com/file/TP5hGfoYmohr21MwgUgCZN/Order-Fulfillment?node-id=0%3A1&t=aCrb0mInojfXGbRt-0
