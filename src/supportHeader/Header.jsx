@@ -108,18 +108,17 @@ export default function Header() {
       ),
     },
   ];
-
   /* Start Configuration Management */
   // Add configuration dropdown if FEATURE_CONFIGURATION_MANAGEMENT is set
   const configurationDropdown = {
     type: 'submenu',
     content: 'Enterprise Setup',
     submenuContent:
-      process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
+      getConfig().FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
         ? (<div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING}`}>Learner Credit Plans</a></div>)
         : null,
   };
-  if (process.env.FEATURE_CONFIGURATION_MANAGEMENT) {
+  if (getConfig().FEATURE_CONFIGURATION_MANAGEMENT) {
     mainMenu.push(configurationDropdown);
   }
   /* End Configuration Management */
