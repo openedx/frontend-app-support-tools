@@ -49,7 +49,7 @@ Decision
     * Total Funds **(per policy spend cap)**
         * For a single policy, represents the total amount for the learner credit subsidy 
     * Learner Restrictions **(per learner spend cap)**
-* When creation a new set of policies, the following fields will be displayed for **each policy**
+* When creating a new set of policies, the following fields will be displayed for **each policy**
     * Display name
     * Catalog
         * Will be displayed as auto selected with no additional options
@@ -68,11 +68,11 @@ Consequences
 * Reduces context switching between pages
 * Imports relevent information for the customer for creating, editing and deleting policies
 * Restricts customization of catalogs to specific catalog queries for multiple policies
-* Risk of errors from creating a custom catalog for a single policy
+* Reduce risk of errors from creating a custom catalog for a single policy
 * Standardize creation of subsidies and policies for learner credit
 
 References
 ----------
 * Project Confluence: https://2u-internal.atlassian.net/wiki/spaces/SOL/pages/333873204/Enterprise+Provisioning+UI
 * API Discovery: https://2u-internal.atlassian.net/wiki/spaces/SOL/pages/edit-v2/350683161?
-* Figma: https://www.figma.com/file/TP5hGfoYmohr21MwgUgCZN/Order-Fulfillment?node-id=0%3A1&t=aCrb0mInojfXGbRt-0
+* Figma: https://www.figma.com/file/TP5hGfoYmohr21MwgUgCZN/Order-Fulfillment?node-id=2%3A165&t=xjKsVEjgF6Udhmi5-4
