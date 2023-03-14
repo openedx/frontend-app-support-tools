@@ -23,9 +23,9 @@ import './index.scss';
 import ProvisioningPage from './Configuration/Provisioning/ProvisioningPage';
 import ROUTES from './data/constants/routes';
 import ConfigurationPage from './Configuration/ConfigurationPage';
+import ProvisioningFormContainer from './Configuration/Provisioning/ProvisioningForm';
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
-
 mergeConfig({
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
   FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
@@ -38,7 +38,9 @@ subscribe(APP_READY, () => {
     return;
   }
   const configurationRoutes = [
-    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING} component={ProvisioningPage} />,
+    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT} component={ProvisioningFormContainer} />,
+    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.NEW} component={ProvisioningFormContainer} />,
+    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME} component={ProvisioningPage} />,
     <Route path={CONFIGURATION.HOME} component={ConfigurationPage} />,
   ];
   ReactDOM.render(
