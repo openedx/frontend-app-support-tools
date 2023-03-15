@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
 import { history } from '@edx/frontend-platform';
 import { waitForComponentToPaint } from '../setupTest';
@@ -9,21 +10,25 @@ import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
 
 import * as api from './data/api';
 
-const FeatureBasedEnrollmentIndexPageWrapper = (props) => (
-  <MemoryRouter>
+const FeatureBasedEnrollmentIndexPageWrapper = ({ searchQuery }) => (
+  <MemoryRouter initialEntries={[`/feature_based_enrollments${searchQuery}`]}>
     <UserMessagesProvider>
-      <FeatureBasedEnrollmentIndexPage {...props} />
+      <FeatureBasedEnrollmentIndexPage />
     </UserMessagesProvider>
   </MemoryRouter>
 );
 
-describe('Feature Based Enrollment Index Page', () => {
-  let location; let wrapper; let apiMock;
-  const courseId = 'course-v1:testX+test123+2030';
+FeatureBasedEnrollmentIndexPageWrapper.propTypes = {
+  searchQuery: PropTypes.string,
+};
 
-  beforeEach(() => {
-    location = { pathname: '/feature_based_enrollments', search: '' };
-  });
+FeatureBasedEnrollmentIndexPageWrapper.defaultProps = {
+  searchQuery: '',
+};
+
+describe('Feature Based Enrollment Index Page', () => {
+  let wrapper; let apiMock;
+  const courseId = 'course-v1:testX+test123+2030';
 
   afterEach(() => {
     if (apiMock) {
@@ -31,7 +36,7 @@ describe('Feature Based Enrollment Index Page', () => {
     }
   });
   it('default page render', async () => {
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     const courseIdInput = wrapper.find('input[name="courseId"]');
     const searchButton = wrapper.find('button.btn-primary');
@@ -42,8 +47,7 @@ describe('Feature Based Enrollment Index Page', () => {
 
   it('default page render with query param course id', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
-    location.search = `?course_id=${courseId}`;
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper searchQuery={`?course_id=${courseId}`} />);
     await waitForComponentToPaint(wrapper);
 
     const courseIdInput = wrapper.find('input[name="courseId"]');
@@ -57,7 +61,7 @@ describe('Feature Based Enrollment Index Page', () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     history.push = jest.fn();
 
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     wrapper.find('input[name="courseId"]').instance().value = courseId;
     wrapper.find('button.btn-primary').simulate('click');
@@ -74,7 +78,7 @@ describe('Feature Based Enrollment Index Page', () => {
     apiMock = jest.spyOn(api, 'default').mockImplementation(() => Promise.resolve(fbeEnabledResponse));
     history.push = jest.fn();
 
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     wrapper.find('input[name="courseId"]').instance().value = courseId;
     wrapper.find('button.btn-primary').simulate('click');
@@ -92,7 +96,7 @@ describe('Feature Based Enrollment Index Page', () => {
   it('empty search value does not yield anything', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     history.replace = jest.fn();
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     wrapper.find('input[name="courseId"]').instance().value = '';
     wrapper.find('button.btn-primary').simulate('click');
@@ -108,7 +112,7 @@ describe('Feature Based Enrollment Index Page', () => {
   it('Invalid search value', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     history.replace = jest.fn();
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper location={location} />);
+    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     wrapper.find('input[name="courseId"]').instance().value = 'invalid-value';
     wrapper.find('button.btn-primary').simulate('click');

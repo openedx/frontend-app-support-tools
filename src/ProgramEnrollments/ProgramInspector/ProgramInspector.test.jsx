@@ -16,11 +16,11 @@ import * as ssoApi from '../../users/data/api';
 import samlProvidersResponseValues from './data/test/samlProviders';
 import verifiedNameHistory from '../../users/data/test/verifiedNameHistory';
 
-const ProgramEnrollmentsWrapper = (props) => (
-  <MemoryRouter>
+const ProgramEnrollmentsWrapper = () => (
+  <MemoryRouter initialEntries={['/programs?edx_user=&org_key=&external_user_key=']}>
     <IntlProvider locale="en">
       <UserMessagesProvider>
-        <ProgramInspector {...props} />
+        <ProgramInspector />
       </UserMessagesProvider>
     </IntlProvider>
   </MemoryRouter>
@@ -28,7 +28,6 @@ const ProgramEnrollmentsWrapper = (props) => (
 
 describe('Program Inspector', () => {
   let wrapper;
-  let location;
   let apiMock;
   let samlMock;
   let ssoMock;
@@ -41,10 +40,6 @@ describe('Program Inspector', () => {
   };
 
   beforeEach(() => {
-    location = {
-      pathname: '/programs',
-      search: '?edx_user=&org_key=&external_user_key=',
-    };
     ssoMock = jest
       .spyOn(ssoApi, 'getSsoRecords')
       .mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
@@ -69,7 +64,7 @@ describe('Program Inspector', () => {
   });
 
   it('default render', async () => {
-    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+    wrapper = mount(<ProgramEnrollmentsWrapper />);
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorErrorResponse));
@@ -87,7 +82,7 @@ describe('Program Inspector', () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+    wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     await waitForComponentToPaint(wrapper);
 
@@ -125,7 +120,7 @@ describe('Program Inspector', () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+    wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     await waitForComponentToPaint(
       wrapper,
@@ -170,7 +165,7 @@ describe('Program Inspector', () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+    wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     await waitForComponentToPaint(
       wrapper,
@@ -209,7 +204,7 @@ describe('Program Inspector', () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper location={location} />);
+    wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     await waitForComponentToPaint(
       wrapper,

@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { history } from '@edx/frontend-platform';
@@ -7,29 +8,33 @@ import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import SupportToolsTab from './SupportToolsTab';
 import { TAB_PATH_MAP } from './constants';
 
-const SupportToolsTabWrapper = (props) => (
+const SupportToolsTabWrapper = ({ pathName }) => (
   <IntlProvider locale="en">
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[`${pathName}`]}>
       <UserMessagesProvider>
-        <SupportToolsTab {...props} />
+        <SupportToolsTab />
       </UserMessagesProvider>
     </MemoryRouter>
   </IntlProvider>
 );
 
-describe('Support Tools Main tab', () => {
-  let wrapper; let location;
+SupportToolsTabWrapper.propTypes = {
+  pathName: PropTypes.string,
+};
 
-  beforeEach(() => {
-    location = { pathname: '/', search: '' };
-  });
+SupportToolsTabWrapper.defaultProps = {
+  pathName: '/',
+};
+
+describe('Support Tools Main tab', () => {
+  let wrapper;
 
   afterEach(() => {
     wrapper.unmount();
   });
 
   it('default page render', () => {
-    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    wrapper = mount(<SupportToolsTabWrapper />);
 
     const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
     expect(tabs.at(0).text()).toEqual('Learner Information');
@@ -44,7 +49,7 @@ describe('Support Tools Main tab', () => {
 
   it('Path changes on Tab switch', () => {
     history.replace = jest.fn();
-    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    wrapper = mount(<SupportToolsTabWrapper />);
 
     let tabs = wrapper.find('nav.nav-tabs a');
 
@@ -79,9 +84,7 @@ describe('Support Tools Main tab', () => {
   });
 
   it('default tab changes based on feature-based-enrollment pathname', () => {
-    location = { pathname: TAB_PATH_MAP['feature-based-enrollment'], search: '' };
-
-    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['feature-based-enrollment']}`} />);
     const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
 
     expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
@@ -90,9 +93,7 @@ describe('Support Tools Main tab', () => {
   });
 
   it('default tab changes based on learner-information pathname', () => {
-    location = { pathname: TAB_PATH_MAP['learner-information'], search: '' };
-
-    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['learner-information']}`} />);
     const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
 
     expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
@@ -101,9 +102,7 @@ describe('Support Tools Main tab', () => {
   });
 
   it('default tab changes based on programs pathname', () => {
-    location = { pathname: TAB_PATH_MAP.programs, search: '' };
-
-    wrapper = mount(<SupportToolsTabWrapper location={location} />);
+    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP.programs}`} />);
     const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
 
     expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
