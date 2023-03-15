@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
 import {
   Alert, Col, Row, Button, Input,
 } from '@edx/paragon';
@@ -14,7 +14,8 @@ import {
 import VerifiedName from '../../users/VerifiedName';
 import { extractParams } from '../../utils';
 
-export default function ProgramInspector({ location }) {
+export default function ProgramInspector() {
+  const location = useLocation();
   const params = extractParams(location.search);
   const [ssoRecords, setSsoRecords] = useState([]);
   const [error, setError] = useState(undefined);
@@ -215,10 +216,3 @@ export default function ProgramInspector({ location }) {
     </>
   );
 }
-
-ProgramInspector.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

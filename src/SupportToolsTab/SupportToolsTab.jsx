@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
 import { Tabs, Tab } from '@edx/paragon';
 import { history } from '@edx/frontend-platform';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
@@ -13,7 +13,8 @@ import UserPage from '../users/UserPage';
 import FeatureBasedEnrollmentIndexPage from '../FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import ProgramEnrollmentsIndexPage from '../ProgramEnrollments/ProgramEnrollmentsIndexPage';
 
-export default function SupportToolsTab({ location }) {
+export default function SupportToolsTab() {
+  const location = useLocation();
   let tabKey = LEARNER_INFO_TAB;
   switch (location.pathname) {
     case TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]:
@@ -73,10 +74,3 @@ export default function SupportToolsTab({ location }) {
     </div>
   );
 }
-
-SupportToolsTab.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

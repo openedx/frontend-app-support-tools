@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
 import { Tabs, Tab } from '@edx/paragon';
 import LinkProgramEnrollments from './LinkProgramEnrollments';
 import ProgramInspector from './ProgramInspector/ProgramInspector';
 
-export default function ProgramEnrollmentsIndexPage({ location }) {
+export default function ProgramEnrollmentsIndexPage() {
+  const location = useLocation();
   const [eventKey, setEventKey] = useState('program_inspector');
 
   useEffect(() => {
@@ -30,10 +31,3 @@ export default function ProgramEnrollmentsIndexPage({ location }) {
     </Tabs>
   );
 }
-
-ProgramEnrollmentsIndexPage.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

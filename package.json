@@ -31,7 +31,7 @@
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
     "@edx/frontend-enterprise-utils": "2.2.1",
-    "@edx/frontend-platform": "^2.5.0",
+    "@edx/frontend-platform": "^3.6.0",
     "@edx/paragon": "^20.26.0",
     "@fortawesome/fontawesome-svg-core": "1.2.32",
     "@fortawesome/free-brands-svg-icons": "5.15.1",
@@ -49,7 +49,7 @@
     "react-redux": "7.2.2",
     "react-responsive": "8.1.0",
     "react-router": "5.2.0",
-    "react-router-dom": "5.2.0",
+    "react-router-dom": "^6.0.0",
     "react-table": "^7.6.3",
     "react-transition-group": "4.4.1",
     "redux": "4.0.5",

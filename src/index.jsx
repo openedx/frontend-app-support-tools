@@ -7,7 +7,7 @@ import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
 import Header from './supportHeader';
@@ -38,23 +38,26 @@ subscribe(APP_READY, () => {
     return;
   }
   const configurationRoutes = [
-    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING} component={ProvisioningPage} />,
-    <Route path={CONFIGURATION.HOME} component={ConfigurationPage} />,
+    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING} element={<ProvisioningPage />} />,
+    <Route path={CONFIGURATION.HOME} element={<ConfigurationPage />} />,
   ];
   ReactDOM.render(
     <AppProvider>
       <UserMessagesProvider>
         <Head />
         <Header />
-        <Switch>
+        <Routes>
           {/* Start: Configuration Dropdown Routes */}
           {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes.map((route) => route)}
           {/* End: Configuration Dropdown Routes */}
-          <Route path={SUPPORT_TOOLS_TABS.HOME} component={SupportToolsTab} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} component={UserPage} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} component={FBEIndexPage} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS} component={ProgramEnrollmentsIndexPage} />
-        </Switch>
+          <Route path={SUPPORT_TOOLS_TABS.HOME} element={<SupportToolsTab />} />
+          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
+          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} element={<FBEIndexPage />} />
+          <Route
+            path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS}
+            element={<ProgramEnrollmentsIndexPage />}
+          />
+        </Routes>
       </UserMessagesProvider>
     </AppProvider>,
     document.getElementById('root'),
