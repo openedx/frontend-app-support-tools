@@ -1,11 +1,19 @@
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import PROVISIONING_PAGE_TEXT from '../Provisioning/data/constants';
 import { ProvisioningContext as NestedProvisioningContext } from '../Provisioning/ProvisioningContext';
+
+const { ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
 
 export const initialStateValue = {
   multipleFunds: undefined,
   customCatalog: false,
+  alertMessage: ALERTS.unselectedAccountType,
+  catalogQueries: {
+    data: [],
+    isLoading: true,
+  },
   formData: {
     policies: [],
   },

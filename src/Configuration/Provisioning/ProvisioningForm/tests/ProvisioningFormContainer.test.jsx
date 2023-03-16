@@ -5,7 +5,6 @@ import ROUTES from '../../../../data/constants/routes';
 import { ProvisioningContext, initialStateValue } from '../../../testData';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormContainer from '../ProvisioningFormContainer';
-import '@testing-library/jest-dom/extend-expect';
 
 const { FORM } = PROVISIONING_PAGE_TEXT;
 const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING } } } = ROUTES;
@@ -24,6 +23,6 @@ describe('ProvisioningFormContainer', () => {
       <ProvisioningFormContainerWrapper value={initialStateValue} />,
       { route: `${PROVISIONING.SUB_DIRECTORY.NEW}` },
     );
-    expect(screen.getByText(FORM.TITLE(PROVISIONING.SUB_DIRECTORY.NEW))).toBeInTheDocument();
+    expect(screen.getByText(FORM.TITLE(PROVISIONING.SUB_DIRECTORY.NEW))).toBeTruthy();
   });
 });

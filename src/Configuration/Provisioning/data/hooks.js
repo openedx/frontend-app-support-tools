@@ -9,7 +9,7 @@ export function useLmsCatalogQueries() {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [catalogQueries, setCatalogQuery] = useState([]);
-
+  // useCallback is used to memoize the function so that it is not re-created on every render
   const callApi = async () => {
     try {
       const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
@@ -64,6 +64,42 @@ export default function useProvisioningContext() {
       ...s,
       customCatalog: customCatalogBoolean,
     }));
+  }, [setState]);
+
+  const setCustomerCatalog = useCallback((customerCatalogBoolean, index) => {
+    setState(s => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...customerCatalogBoolean,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
+  }, [setState]);
+
+  const setCustomerCatalogUUID = useCallback((customerCatalogUUID, index) => {
+    setState(s => {
+      const { policies } = s.formData;
+      policies[index] = {
+        ...policies[index],
+        ...customerCatalogUUID,
+      };
+      const newPolicies = policies.map((policy) => policy);
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          policies: newPolicies,
+        },
+      };
+    });
   }, [setState]);
 
   const setCatalogQuerySelection = useCallback((catalogSelection, index) => {
@@ -268,6 +304,8 @@ export default function useProvisioningContext() {
     setMultipleFunds,
     hydrateCatalogQueryData,
     setCustomCatalog,
+    setCustomerCatalog,
+    setCustomerCatalogUUID,
     setCatalogQuerySelection,
     instatiateMultipleFormData,
     resetPolicies,

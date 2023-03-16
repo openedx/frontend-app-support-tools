@@ -39,6 +39,7 @@ const ProvisioningFormAccountType = () => {
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
+    // test this TODO
     if (catalogQueries.data.length === 0) {
       try {
         handleSpinnerLoadingState(newTabValue);

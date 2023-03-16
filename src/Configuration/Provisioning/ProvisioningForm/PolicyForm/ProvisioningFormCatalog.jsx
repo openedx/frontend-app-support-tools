@@ -28,7 +28,6 @@ const ProvisioningFormCatalog = ({ index }) => {
       setCustomCatalog(true);
       setCatalogQueryCategory({
         catalogQueryMetadata: {
-          catalogQueryTitle: '',
           catalogQuery: '',
         },
       }, index);
@@ -36,8 +35,7 @@ const ProvisioningFormCatalog = ({ index }) => {
       setCustomCatalog(false);
       setCatalogQueryCategory({
         catalogQueryMetadata: {
-          catalogQueryTitle: newTabValue,
-          catalogQuery: 'To Be Populate with Predetermined Catalog Query',
+          catalogQuery: 'To Be Populated with a Predetermined Catalog Query that currently does not exist',
         },
       }, index);
     }

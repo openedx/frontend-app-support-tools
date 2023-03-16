@@ -32,13 +32,15 @@ const ProvisioningFormCustomCatalogDropdown = () => {
     return defaultDropdown;
   });
 
-  const handleOnSelected = async (value) => {
+  const handleOnSelected = (value) => {
     // TODO: In the future the index will have to be brought in for custom catalogs per group
-    setCatalogQueryCategory({
-      catalogQueryMetadata: {
-        catalogQuery: catalogQueries.data.filter(({ uuid }) => uuid === value.split(' - ')[1].trim())[0],
-      },
-    }, 0);
+    if (value) {
+      setCatalogQueryCategory({
+        catalogQueryMetadata: {
+          catalogQuery: catalogQueries.data.filter(({ uuid }) => uuid === value.split(' - ')[1].trim())[0],
+        },
+      }, 0);
+    }
     setSelected(prevState => ({ selected: { ...prevState.selected, title: value } }));
   };
 
@@ -50,7 +52,6 @@ const ProvisioningFormCustomCatalogDropdown = () => {
           floatingLabel={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}
           helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle}
           value={selected.title}
-          onClick={hydrateCatalogQueryData}
           onSelected={handleOnSelected}
           data-testid="autosuggest"
         >

@@ -25,4 +25,8 @@ describe('ProvisioningForm', () => {
     />);
     expect(screen.getByText(FORM.SUB_TITLE)).toBeTruthy();
   });
+  it('should render alert if multipleFunds is undefined', () => {
+    renderWithRouter(<ProvisioningFormWrapper />);
+    expect(screen.getByText(FORM.ALERTS.unselectedAccountType)).toBeTruthy();
+  });
 });

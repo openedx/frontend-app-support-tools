@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { ProvisioningContext } from '../../ProvisioningContext';
 import ProvisioningFormCustomCatalog from '../CustomCatalog';
 import ProvisioningFormCatalog from './ProvisioningFormCatalog';
+import ProvisioningFormSourceCustomCatalogContainer from './ProvisioningFormSourceCustomCatalogContainer';
 
 const ProvisioningFormCatalogContainer = ({ index }) => {
   const { customCatalog } = useContextSelector(ProvisioningContext, v => v[0]);
   return (
     <>
       <ProvisioningFormCatalog index={index} />
-      {customCatalog && <ProvisioningFormCustomCatalog />}
+      {customCatalog && <ProvisioningFormSourceCustomCatalogContainer index={index} />}
+      {customCatalog && <ProvisioningFormCustomCatalog index={index} />}
     </>
   );
 };

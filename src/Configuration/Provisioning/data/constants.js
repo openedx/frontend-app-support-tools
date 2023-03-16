@@ -74,12 +74,26 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
     CUSTOM_CATALOG: {
-      TITLE: 'Define custom catalog',
-      SUB_TITLE: 'Ensure the intended custom catalog query has been created in Django before proceeding.',
+      HEADER: {
+        SOURCE: {
+          TITLE: 'Custom catalog source',
+          SUB_TITLE: 'Ensure the intended enterprise customer catalog has been created in Django before proceeding.',
+        },
+        DEFINE: {
+          TITLE: 'Define custom catalog',
+          SUB_TITLE: 'Ensure the intended custom catalog query has been created in Django before proceeding.',
+        },
+      },
       BUTTON: {
-        create: 'Create catalog query',
+        viewCustomerCatalog: 'View Enterprise Customer Catalog list',
+        createQuery: 'Create catalog query',
       },
       OPTIONS: {
+        enterpriseCustomerCatalogUUID: 'Enterprise customer catalog UUID',
+        enterpriseCustomerCatalog: {
+          yes: 'Yes, input an existing Enterprise Customer Catalog UUID',
+          no: 'No, create a new Enterprise Customer Catalog record in this form',
+        },
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
           subtitle: 'Select enterprise catalog query',
@@ -118,14 +132,14 @@ const PROVISIONING_PAGE_TEXT = {
   },
 };
 
-export const API_ERROR_MESSAGES = {
-  ENTERPRISE_CATALOG_QUERY: {
-    400: 'The enterprise catalog query could not be created.',
-    404: 'enterprise_catalog_query failed to respond.',
-  },
-};
-
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
+
+export const CUSTOMER_CATALOG_PATH = (enterpriseCustomerUUID) => {
+  if (enterpriseCustomerUUID) {
+    return `/admin/enterprise/enterprisecustomercatalog/?q=${enterpriseCustomerUUID.slice(0, 7)}`;
+  }
+  return '/admin/enterprise/enterprisecustomercatalog/';
+};
 
 export const INITIAL_CATALOG_QUERIES = {
   multipleQueries: [
