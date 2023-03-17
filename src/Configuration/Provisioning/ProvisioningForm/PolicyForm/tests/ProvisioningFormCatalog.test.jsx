@@ -20,6 +20,11 @@ describe('ProvisioningFormCatalog', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
+  it('renders null state', () => {
+    renderWithRouter(<ProvisioningFormCatalogWrapper />);
+    expect(screen.queryByText(CATALOG.TITLE)).toBeNull();
+    expect(screen.queryByText(CATALOG.SUB_TITLE)).toBeNull();
+  });
   it('renders single policy state', () => {
     const updatedInitialState = {
       ...initialStateValue,
@@ -87,9 +92,5 @@ describe('ProvisioningFormCatalog', () => {
     const customOption = screen.getByTestId(CATALOG.OPTIONS.custom);
     fireEvent.click(customOption);
     expect(customOption.checked).toBeTruthy();
-  });
-  it('renders null', () => {
-    renderWithRouter(<ProvisioningFormCatalogWrapper />);
-    expect(screen.queryByText(CATALOG.TITLE)).toBeNull();
   });
 });

@@ -1,11 +1,10 @@
-import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
-import { ProvisioningContext } from '../../ProvisioningContext';
 import ProvisioningFormPerLearnerCap from './ProvisioningFormPerLearnerCap';
 import ProvisioningFormPerLearnerCapAmount from './ProvisioningFormPerLearnerCapAmount';
+import selectProvisioningContext from '../../data/utils';
 
 const ProvisioningFormPerLearnerCapContainer = ({ index }) => {
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData] = selectProvisioningContext('formData');
   return (
     <>
       <ProvisioningFormPerLearnerCap index={index} />

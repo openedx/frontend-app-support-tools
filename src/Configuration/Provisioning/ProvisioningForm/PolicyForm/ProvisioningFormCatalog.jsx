@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import {
   Form,
-  Hyperlink,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { ProvisioningContext } from '../../ProvisioningContext';
+import selectProvisioningContext from '../../data/utils';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
   const { setCustomCatalog, setCatalogCategory } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { multipleFunds, formData } = useContextSelector(ProvisioningContext, v => v[0]);
-  const [value, setValue] = useState(null);
+  const [multipleFunds, formData] = selectProvisioningContext('multipleFunds', 'formData');
 
+  const [value, setValue] = useState(null);
   if (multipleFunds === undefined) {
     return null;
   }
@@ -39,12 +37,9 @@ const ProvisioningFormCatalog = ({ index }) => {
       </div>
       <p className="mt-4">{CATALOG.SUB_TITLE}</p>
       {multipleFunds && (
-      <Hyperlink
-        target="_blank"
-        destination="https://www.google.com"
-      >
-        {formData.policies[index]?.catalogQueryTitle.split(' account')[0]}
-      </Hyperlink>
+      <p>
+        {formData?.policies[index]?.catalogQueryTitle.split(' account')[0]}
+      </p>
       )}
       {multipleFunds === false && (
       <Form.RadioSet

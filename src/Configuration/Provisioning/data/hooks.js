@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { ProvisioningContext } from '../ProvisioningContext';
+import { updatePolicies } from './utils';
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
@@ -8,10 +9,6 @@ export default function useProvisioningContext() {
     setState(s => ({
       ...s,
       multipleFunds: fundingBoolean,
-      formData: {
-        ...s.formData,
-        multipleFunds: fundingBoolean,
-      },
     }));
   }, [setState]);
 
@@ -22,7 +19,7 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
-  const instatiateMultipleFormData = useCallback((catalogQueryTitle) => {
+  const instantiateMultipleFormData = useCallback((catalogQueryTitle) => {
     setState(s => {
       const { formData } = s;
       return {
@@ -96,93 +93,53 @@ export default function useProvisioningContext() {
   }, [setState]);
 
   const setAccountName = useCallback((accountName, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...accountName,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
+    setState(s => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        policies: updatePolicies(s.formData, accountName, index),
+      },
+    }));
   }, [setState]);
 
   const setAccountValue = useCallback((accountValue, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...accountValue,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
+    setState(s => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        policies: updatePolicies(s.formData, accountValue, index),
+      },
+    }));
   }, [setState]);
 
   const setCatalogCategory = useCallback((catalogCategory, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...catalogCategory,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
+    setState(s => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        policies: updatePolicies(s.formData, catalogCategory, index),
+      },
+    }));
   }, [setState]);
 
   const perLearnerCap = useCallback((perLearnerCapValue, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...perLearnerCapValue,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
+    setState(s => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        policies: updatePolicies(s.formData, perLearnerCapValue, index),
+      },
+    }));
   }, [setState]);
 
   const setPerLearnerCap = useCallback((perLearnerCapAmount, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...perLearnerCapAmount,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
+    setState(s => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        policies: updatePolicies(s.formData, perLearnerCapAmount, index),
+      },
+    }));
   }, [setState]);
 
   const resetFormData = useCallback(() => {
@@ -198,7 +155,7 @@ export default function useProvisioningContext() {
   return {
     setMultipleFunds,
     setCustomCatalog,
-    instatiateMultipleFormData,
+    instantiateMultipleFormData,
     resetPolicies,
     setCustomerUUID,
     setFinancialIdentifier,
