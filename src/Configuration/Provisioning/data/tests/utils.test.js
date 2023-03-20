@@ -1,7 +1,7 @@
 import selectProvisioningContext from '../utils';
 
 describe('selectProvisioningContext', () => {
-  it('throws and error when no arguments are passed', () => {
+  it('throws an error when no arguments are passed', () => {
     expect(() => selectProvisioningContext()).toThrow();
   });
 });

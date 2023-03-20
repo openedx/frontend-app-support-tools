@@ -21,11 +21,7 @@ const ProvisioningFormCatalog = ({ index }) => {
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
-    if (newTabValue === CATALOG.OPTIONS.custom) {
-      setCustomCatalog(true);
-    } else if (newTabValue !== CATALOG.OPTIONS.custom) {
-      setCustomCatalog(false);
-    }
+    setCustomCatalog(newTabValue === CATALOG.OPTIONS.custom);
     setCatalogCategory({ catalogCategory: newTabValue });
     setValue(newTabValue);
   };
