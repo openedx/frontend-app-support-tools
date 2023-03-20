@@ -4,7 +4,7 @@ import {
 import Dashboard from './Dashboard';
 
 const ProvisioningPage = () => (
-  <Container className="mt-3">
+  <Container className="mt-5">
     <Dashboard />
   </Container>
 );

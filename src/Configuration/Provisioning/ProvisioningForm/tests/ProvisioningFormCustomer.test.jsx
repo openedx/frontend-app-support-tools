@@ -1,0 +1,47 @@
+/* eslint-disable react/prop-types */
+import { renderWithRouter } from '@edx/frontend-enterprise-utils';
+import { fireEvent, screen } from '@testing-library/react';
+import { ProvisioningContext, initialStateValue } from '../../../testData';
+import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import ProvisioningFormCustomer from '../ProvisioningFormCustomer';
+
+const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
+
+const ProvisioningFormCustomerWrapper = ({
+  value = initialStateValue,
+}) => (
+  <ProvisioningContext value={value}>
+    <ProvisioningFormCustomer />
+  </ProvisioningContext>
+);
+
+describe('ProvisioningFormCustomer', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  it('renders', () => {
+    renderWithRouter(<ProvisioningFormCustomerWrapper />);
+
+    expect(screen.getByText(CUSTOMER.TITLE)).toBeTruthy();
+  });
+  it('renders customer uuid', () => {
+    renderWithRouter(<ProvisioningFormCustomerWrapper />);
+
+    const input = screen.getByTestId('customer-uuid');
+    fireEvent.change(input, { target: { value: 'test-title' } });
+    const inputValue = input.getAttribute('value');
+
+    expect(screen.getByText(CUSTOMER.OPTIONS.enterpriseUUID)).toBeTruthy();
+    expect(inputValue).toEqual('test-title');
+  });
+  it('renders customer financial linkage', () => {
+    renderWithRouter(<ProvisioningFormCustomerWrapper />);
+
+    const input = screen.getByTestId('customer-financial-identifier');
+    fireEvent.change(input, { target: { value: 'test-financial-linkage' } });
+    const inputValue = input.getAttribute('value');
+
+    expect(screen.getByText(CUSTOMER.OPTIONS.enterpriseUUID)).toBeTruthy();
+    expect(inputValue).toEqual('test-financial-linkage');
+  });
+});
