@@ -1,15 +1,14 @@
-import { useContextSelector } from 'use-context-selector';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ProvisioningFormDefineCustomCatalogHeader from './ProvisioningFormDefineCustomCatalogHeader';
 import ProvisioningFormCustomCatalogDropdown from './ProvisioningFormCustomCatalogDropdown';
 import ProvisioningFormCustomCatalogTitle from './ProvisioningFormCustomCatalogTitle';
 import ProvisioningFormCustomCatalogTextArea from './ProvisioningFormCustomCatalogTextArea';
-import { ProvisioningContext } from '../../ProvisioningContext';
 import ProvisioningFormEnterpriseCustomerCatalog from './ProvisioningFormEnterpriseCustomerCatalog';
+import { selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormCustomCatalog = ({ index }) => {
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData] = selectProvisioningContext('formData');
   const [policyData, setPolicyData] = useState(formData.policies[0].catalogQueryMetadata);
   const [customerCatalogBoolean, setCustomerCatalogBoolean] = useState(formData.policies[0].customerCatalog);
 

@@ -8,14 +8,13 @@ import {
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import { Warning } from '@edx/paragon/icons';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT, { CUSTOMER_CATALOG_PATH } from '../../data/constants';
-import { ProvisioningContext } from '../../ProvisioningContext';
+import { selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormSourceCustomCatalogHeader = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const { LMS_BASE_URL } = getConfig();
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData] = selectProvisioningContext('formData');
 
   return (
     <>

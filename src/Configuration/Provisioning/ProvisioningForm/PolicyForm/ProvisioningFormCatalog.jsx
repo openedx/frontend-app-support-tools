@@ -5,17 +5,16 @@ import {
   Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { ProvisioningContext } from '../../ProvisioningContext';
+import { selectProvisioningContext } from '../../data/utils';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
   const { setCustomCatalog, setCatalogQueryCategory } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { multipleFunds, formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [multipleFunds, formData] = selectProvisioningContext('multipleFunds', 'formData');
   const [value, setValue] = useState(null);
 
   if (multipleFunds === undefined) {

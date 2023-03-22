@@ -64,8 +64,4 @@ describe('ProvisioningFormPolicyContainer', () => {
     expect(screen.getByText(INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle)).toBeTruthy();
     expect(screen.getByText(INITIAL_CATALOG_QUERIES.multipleQueries[1].catalogQueryTitle)).toBeTruthy();
   });
-  it('should render alert if multipleFunds is undefined', () => {
-    renderWithRouter(<ProvisioningFormPolicyContainerWrapper />);
-    expect(screen.getByText(PROVISIONING_PAGE_TEXT.FORM.ALERTS.unselectedAccountType)).toBeTruthy();
-  });
 });

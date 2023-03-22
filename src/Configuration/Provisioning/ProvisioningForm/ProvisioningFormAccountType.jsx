@@ -6,10 +6,9 @@ import {
   Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
-import { ProvisioningContext } from '../ProvisioningContext';
+import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormAccountType = () => {
   const {
@@ -19,7 +18,7 @@ const ProvisioningFormAccountType = () => {
     setAlertMessage,
   } = useProvisioningContext();
   const { ACCOUNT_CREATION, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
-  const { formData, catalogQueries } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData, catalogQueries] = selectProvisioningContext('formData', 'catalogQueries');
   const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
   const [value, setValue] = useState(null);
 

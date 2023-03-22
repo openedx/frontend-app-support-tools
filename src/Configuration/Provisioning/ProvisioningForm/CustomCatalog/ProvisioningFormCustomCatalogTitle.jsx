@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from '@edx/paragon';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { ProvisioningContext } from '../../ProvisioningContext';
+import { selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormCustomCatalogTitle = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData] = selectProvisioningContext('formData');
   const [catalogQueryTitle, setCatalogQueryTitle] = useState(
     formData.policies[0].catalogQueryMetadata.catalogQuery.title,
   );

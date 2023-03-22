@@ -1,15 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { Form, Button } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { ProvisioningContext } from '../../ProvisioningContext';
 import useProvisioningContext from '../../data/hooks';
-import { sortedCatalogQueries } from '../../data/utils';
+import { selectProvisioningContext, sortedCatalogQueries } from '../../data/utils';
 
 const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: '' });
-  const { catalogQueries } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [catalogQueries] = selectProvisioningContext('catalogQueries');
   const { hydrateCatalogQueryData, setCatalogQueryCategory } = useProvisioningContext();
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const generateAutosuggestOptions = useCallback(() => {
