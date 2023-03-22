@@ -1,16 +1,14 @@
 import React from 'react';
 import { Form } from '@edx/paragon';
 import PropTypes from 'prop-types';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { ProvisioningContext } from '../../ProvisioningContext';
 import useProvisioningContext from '../../data/hooks';
+import {selectProvisioningContext} from '../../data/utils';
 
 const ProvisioningFormAccountDetails = ({ index }) => {
   const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
   const { setAccountName, setAccountValue } = useProvisioningContext();
-  const { multipleFunds, formData } = useContextSelector(ProvisioningContext, v => v[0]);
-
+  const [multipleFunds, formData] = selectProvisioningContext('multipleFunds', 'formData');
   const formFeedbackText = multipleFunds
     ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(formData.policies[index]?.catalogQueryTitle.split(' account')[0])
     : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;

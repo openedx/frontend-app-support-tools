@@ -1,14 +1,13 @@
 import {
   Form,
 } from '@edx/paragon';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
-import { ProvisioningContext } from '../ProvisioningContext';
+import {selectProvisioningContext} from '../data/utils';
 
 const ProvisioningFormCustomer = () => {
   const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData] = selectProvisioningContext('formData');
   const { setCustomerUUID, setFinancialIdentifier } = useProvisioningContext();
   return (
     <article className="mt-4.5">

@@ -36,6 +36,35 @@ export function useLmsCatalogQueries() {
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
+
+  const updateRootDataState = useCallback((newDataAttribute) => {
+    setState((s) => ({
+      ...s,
+      ...newDataAttribute,
+    }));
+  }, [setState]);
+
+  const updateFormDataState = useCallback((newDataAttribute, copyPolicies = false, index = 0) => {
+    setState((s) => {
+      const output = copyPolicies
+        ? {
+          ...s,
+          formData: {
+            ...s.formData,
+            policies: updatePolicies(s.formData, newDataAttribute, index),
+          },
+        }
+        : {
+          ...s,
+          formData: {
+            ...s.formData,
+            ...newDataAttribute,
+          },
+        };
+      return output;
+    }, [setState]);
+  }, [setState]);
+  
   const setMultipleFunds = useCallback((fundingBoolean) => {
     setState(s => ({
       ...s,
