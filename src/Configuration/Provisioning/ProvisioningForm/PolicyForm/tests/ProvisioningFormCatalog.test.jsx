@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import ProvisioningFormCatalog from '../ProvisioningFormCatalog';
 import { ProvisioningContext, initialStateValue } from '../../../../testData';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
@@ -19,6 +19,11 @@ const ProvisioningFormCatalogWrapper = ({
 describe('ProvisioningFormCatalog', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+  });
+  it('renders null state', () => {
+    renderWithRouter(<ProvisioningFormCatalogWrapper />);
+    expect(screen.queryByText(CATALOG.TITLE)).toBeNull();
+    expect(screen.queryByText(CATALOG.SUB_TITLE)).toBeNull();
   });
   it('renders single policy state', () => {
     const updatedInitialState = {
@@ -86,10 +91,6 @@ describe('ProvisioningFormCatalog', () => {
 
     const customOption = screen.getByTestId(CATALOG.OPTIONS.custom);
     fireEvent.click(customOption);
-    expect(customOption.checked).toBeTruthy();
-  });
-  it('renders null', () => {
-    renderWithRouter(<ProvisioningFormCatalogWrapper />);
-    expect(screen.queryByText(CATALOG.TITLE)).toBeNull();
+    waitFor(() => expect(customOption.checked).toBeTruthy());
   });
 });

@@ -5,7 +5,7 @@ import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext } from '../../ProvisioningContext';
 import useProvisioningContext from '../../data/hooks';
-import sortedCatalogQueries from '../../data/utils';
+import {sortedCatalogQueries} from '../../data/utils';
 
 const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: '' });

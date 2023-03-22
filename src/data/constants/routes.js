@@ -9,13 +9,13 @@ const ROUTES = {
     },
   },
   CONFIGURATION: {
-    HOME: '/configuration',
+    HOME: '/enterprise-configuration',
     SUB_DIRECTORY: {
       PROVISIONING: {
-        HOME: '/configuration/provisioning',
+        HOME: '/enterprise-configuration/learner-credit',
         SUB_DIRECTORY: {
-          NEW: '/configuration/provisioning/new',
-          EDIT: '/configuration/provisioning/edit',
+          NEW: '/enterprise-configuration/learner-credit/new',
+          EDIT: '/enterprise-configuration/learner-credit/edit',
         },
       },
     },

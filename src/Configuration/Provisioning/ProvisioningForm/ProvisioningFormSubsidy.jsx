@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import {
   Form,
-  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
-import { ProvisioningContext } from '../ProvisioningContext';
 import useProvisioningContext from '../data/hooks';
+import {selectProvisioningContext} from '../data/utils';
 
 const ProvisioningFormSubsidy = () => {
   const { setSubsidyRevReq } = useProvisioningContext();
   const { SUBSIDY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
-  const { formData } = useContextSelector(ProvisioningContext, v => v[0]);
+  const [formData] = selectProvisioningContext('formData');
   const [value, setValue] = useState(null);
 
   const handleChange = async (e) => {

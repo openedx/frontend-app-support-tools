@@ -1,7 +1,7 @@
 import 'babel-polyfill';
 
 import {
-  APP_INIT_ERROR, APP_READY, subscribe, initialize, mergeConfig,
+  APP_INIT_ERROR, APP_READY, subscribe, initialize, mergeConfig, getConfig,
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
@@ -9,6 +9,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
 
+import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
 import Header from './supportHeader';
 import appMessages from './i18n';
 import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
@@ -27,6 +28,8 @@ import ProvisioningFormContainer from './Configuration/Provisioning/Provisioning
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 mergeConfig({
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
+  FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
+  FEATURE_CONFIGURATION_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION') || null,
 });
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();
@@ -47,7 +50,11 @@ subscribe(APP_READY, () => {
         <Header />
         <Switch>
           {/* Start: Configuration Dropdown Routes */}
+<<<<<<< HEAD
           {process.env.FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes.map((route) => route)}
+=======
+          {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes.map((route) => route)}
+>>>>>>> 1bff9badd8b2ecc63239f8a84a3b132576d2f668
           {/* End: Configuration Dropdown Routes */}
           <Route path={SUPPORT_TOOLS_TABS.HOME} component={SupportToolsTab} />
           <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} component={UserPage} />
