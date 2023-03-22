@@ -17,11 +17,11 @@ const ProvisioningForm = () => {
   // TODO: Extract catalog queries from API to iterate and render policies instead of this for V1
   const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
   const sampleCatalogQuery = multipleFunds ? multipleQueries : defaultQuery;
-  const { instatiateMultipleFormData, resetPolicies } = useProvisioningContext();
+  const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
 
   useEffect(() => {
     resetPolicies();
-    instatiateMultipleFormData(sampleCatalogQuery);
+    instantiateMultipleFormData(sampleCatalogQuery);
   }, [multipleFunds]);
 
   const renderAlert = () => {

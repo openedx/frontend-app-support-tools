@@ -4,6 +4,7 @@ import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
+import { updatePolicies } from './utils';
 
 export function useLmsCatalogQueries() {
   const [isLoading, setIsLoading] = useState(true);
@@ -64,17 +65,46 @@ export default function useProvisioningContext() {
       return output;
     }, [setState]);
   }, [setState]);
-  
-  const setMultipleFunds = useCallback((fundingBoolean) => {
-    setState(s => ({
-      ...s,
-      multipleFunds: fundingBoolean,
-      formData: {
-        ...s.formData,
-        multipleFunds: fundingBoolean,
-      },
-    }));
-  }, [setState]);
+
+  const setMultipleFunds = (fundingBoolean) => updateRootDataState({ multipleFunds: fundingBoolean });
+
+  const setAlertMessage = (alertMessage) => updateRootDataState({ alertMessage });
+
+  const setCustomCatalog = (customCatalogBoolean) => updateRootDataState({ customCatalog: customCatalogBoolean });
+
+  const instantiateMultipleFormData = (catalogQueryTitle) => updateFormDataState({ policies: catalogQueryTitle });
+
+  const resetPolicies = () => updateFormDataState({ policies: [] });
+
+  const setCustomerUUID = (customerUUID) => updateFormDataState({ enterpriseUUID: customerUUID });
+
+  const setFinancialIdentifier = (financialIdentifier) => updateFormDataState({ financialIdentifier });
+
+  const setStartDate = (startDate) => updateFormDataState({ startDate });
+
+  const setEndDate = (endDate) => updateFormDataState({ endDate });
+
+  const setSubsidyRevReq = (subsidyRevReq) => updateFormDataState({ subsidyRevReq });
+
+  const setAccountName = (accountName, index) => updateFormDataState(accountName, true, index);
+
+  const setAccountValue = (accountValue, index) => updateFormDataState(accountValue, true, index);
+
+  const setCustomerCatalog = (customerCatalogBoolean, index) => updateFormDataState(
+    customerCatalogBoolean,
+    true,
+    index,
+  );
+
+  const setCustomerCatalogUUID = (customerCatalogUUID, index) => updateFormDataState(customerCatalogUUID, true, index);
+
+  const setCatalogQueryCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
+
+  const setCatalogQuerySelection = (catalogSelection, index) => updateFormDataState(catalogSelection, true, index);
+
+  const perLearnerCap = (perLearnerCapValue, index) => updateFormDataState(perLearnerCapValue, true, index);
+
+  const setPerLearnerCap = (perLearnerCapAmount, index) => updateFormDataState(perLearnerCapAmount, true, index);
 
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
@@ -88,230 +118,6 @@ export default function useProvisioningContext() {
     }));
   });
 
-  const setCustomCatalog = useCallback((customCatalogBoolean) => {
-    setState(s => ({
-      ...s,
-      customCatalog: customCatalogBoolean,
-    }));
-  }, [setState]);
-
-  const setCustomerCatalog = useCallback((customerCatalogBoolean, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...customerCatalogBoolean,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const setCustomerCatalogUUID = useCallback((customerCatalogUUID, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...customerCatalogUUID,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const setCatalogQuerySelection = useCallback((catalogSelection, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...catalogSelection,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const instatiateMultipleFormData = useCallback((catalogObjectArray) => {
-    setState(s => {
-      const { formData } = s;
-      return {
-        ...s,
-        formData: {
-          ...formData,
-          policies: catalogObjectArray,
-        },
-      };
-    });
-  }, [setState]);
-
-  const resetPolicies = useCallback(() => {
-    setState(s => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        policies: [],
-      },
-    }));
-  }, [setState]);
-
-  const setCustomerUUID = useCallback((customerUUID) => {
-    setState(s => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        enterpriseUUID: customerUUID,
-      },
-    }));
-  }, [setState]);
-
-  const setFinancialIdentifier = useCallback((financialIdentifier) => {
-    setState(s => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        financialIdentifier,
-      },
-    }));
-  }, [setState]);
-
-  const setStartDate = useCallback((startDate) => {
-    setState(s => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        startDate,
-      },
-    }));
-  }, [setState]);
-
-  const setEndDate = useCallback((endDate) => {
-    setState(s => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        endDate,
-      },
-    }));
-  }, [setState]);
-
-  const setSubsidyRevReq = useCallback((subsidyRevReq) => {
-    setState(s => ({
-      ...s,
-      formData: {
-        ...s.formData,
-        subsidyRevReq,
-      },
-    }));
-  }, [setState]);
-
-  const setAccountName = useCallback((accountName, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...accountName,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const setAccountValue = useCallback((accountValue, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...accountValue,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const setCatalogQueryCategory = useCallback((catalogCategory, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...catalogCategory,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const perLearnerCap = useCallback((perLearnerCapValue, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...perLearnerCapValue,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
-  const setPerLearnerCap = useCallback((perLearnerCapAmount, index) => {
-    setState(s => {
-      const { policies } = s.formData;
-      policies[index] = {
-        ...policies[index],
-        ...perLearnerCapAmount,
-      };
-      const newPolicies = policies.map((policy) => policy);
-      return {
-        ...s,
-        formData: {
-          ...s.formData,
-          policies: newPolicies,
-        },
-      };
-    });
-  }, [setState]);
-
   const resetFormData = useCallback(() => {
     setState(() => ({
       multipleFunds: undefined,
@@ -322,13 +128,6 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
-  const setAlertMessage = useCallback((alertMessage) => {
-    setState(s => ({
-      ...s,
-      alertMessage,
-    }));
-  }, [setState]);
-
   return {
     setMultipleFunds,
     hydrateCatalogQueryData,
@@ -336,7 +135,7 @@ export default function useProvisioningContext() {
     setCustomerCatalog,
     setCustomerCatalogUUID,
     setCatalogQuerySelection,
-    instatiateMultipleFormData,
+    instantiateMultipleFormData,
     resetPolicies,
     setCustomerUUID,
     setFinancialIdentifier,

@@ -6,7 +6,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
-import {selectProvisioningContext} from '../data/utils';
+import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormSubsidy = () => {
   const { setSubsidyRevReq } = useProvisioningContext();

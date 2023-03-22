@@ -3,7 +3,7 @@ import {
 } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
-import {selectProvisioningContext} from '../data/utils';
+import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;

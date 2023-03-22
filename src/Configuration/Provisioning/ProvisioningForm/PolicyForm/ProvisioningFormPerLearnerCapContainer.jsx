@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import ProvisioningFormPerLearnerCap from './ProvisioningFormPerLearnerCap';
 import ProvisioningFormPerLearnerCapAmount from './ProvisioningFormPerLearnerCapAmount';
-import {selectProvisioningContext} from '../../data/utils';
+import { selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormPerLearnerCapContainer = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
