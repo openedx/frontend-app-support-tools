@@ -23,16 +23,6 @@ const ProvisioningForm = () => {
     instantiateMultipleFormData(sampleCatalogQuery);
   }, [multipleFunds]);
 
-  const renderAlert = () => {
-    if (multipleFunds === undefined || alertMessage) {
-      return (
-        <Alert variant="warning" className="mt-5">
-          {alertMessage}
-        </Alert>
-      );
-    }
-    return null;
-  };
   return (
     <div className="m-0 p-0 mb-5">
       <div className="mt-5">
@@ -49,7 +39,11 @@ const ProvisioningForm = () => {
           index={index}
         />
       ))}
-      {renderAlert()}
+      {(multipleFunds === undefined || alertMessage) && (
+      <Alert variant="warning" className="mt-5">
+        {alertMessage}
+      </Alert>
+      )}
       <ProvisioningFormSubmissionButton />
     </div>
   );

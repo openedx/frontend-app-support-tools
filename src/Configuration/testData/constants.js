@@ -14,6 +14,15 @@ export const singlePolicy = [
 export const sampleCatalogQueries = {
   data: [
     {
+      id: 4,
+      contentFilter: {},
+      created: '2023-03-10T17:24:51.545054Z',
+      modified: '2023-03-10T17:24:51.545054Z',
+      title: 'TestQ4',
+      uuid: '0b2cb3f8-d697-487c-bdc6-24e470878e30',
+      includeExecEd2UCourses: false,
+    },
+    {
       id: 6,
       contentFilter: {},
       created: '2023-03-13T19:09:24.841448Z',
@@ -29,15 +38,6 @@ export const sampleCatalogQueries = {
       modified: '2023-03-12T21:59:28.014016Z',
       title: 'TestQ5',
       uuid: 'df85c9ea-f29d-430a-8e83-a3c37aeaf6ce',
-      includeExecEd2UCourses: false,
-    },
-    {
-      id: 4,
-      contentFilter: {},
-      created: '2023-03-10T17:24:51.545054Z',
-      modified: '2023-03-10T17:24:51.545054Z',
-      title: 'TestQ4',
-      uuid: '0b2cb3f8-d697-487c-bdc6-24e470878e30',
       includeExecEd2UCourses: false,
     },
     {
