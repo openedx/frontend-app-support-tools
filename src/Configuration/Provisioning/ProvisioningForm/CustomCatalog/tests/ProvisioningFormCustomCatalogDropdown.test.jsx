@@ -21,6 +21,9 @@ const ProvisioningFormCustomCatalogDropdownWrapper = ({
 );
 
 describe('ProvisioningFormCustomCatalogDropdown', () => {
+  beforeEach(() => {
+
+  });
   it('renders the custom catalog dropdown', () => {
     renderWithRouter(<ProvisioningFormCustomCatalogDropdownWrapper />);
 
@@ -62,5 +65,21 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
     const filteredDropdowns = autoSuggestDropdownButtons.filter((element) => element.textContent.includes('Test'));
     fireEvent.click(filteredDropdowns[3]);
     expect(autoSuggestInput.getAttribute('value')).toContain(filteredDropdowns[3].textContent);
+  });
+  it('renders default dropdown when catalogQueries is empty', () => {
+    renderWithRouter(<ProvisioningFormCustomCatalogDropdownWrapper
+      value={{
+        ...initialStateValue,
+        catalogQueries: {
+          data: [],
+        },
+      }}
+    />);
+
+    const autoSuggestButton = screen.getAllByRole('button')[0];
+    // open dropdown
+    fireEvent.click(autoSuggestButton);
+
+    expect(screen.getByText('Loading')).toBeTruthy();
   });
 });

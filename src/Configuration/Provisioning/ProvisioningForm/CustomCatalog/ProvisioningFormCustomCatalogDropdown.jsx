@@ -33,9 +33,10 @@ const ProvisioningFormCustomCatalogDropdown = () => {
   const handleOnSelected = (value) => {
     // TODO: In the future the index will have to be brought in for custom catalogs per group
     if (value) {
+      const valueUuid = value.split(' - ')[1].trim();
       setCatalogQueryCategory({
         catalogQueryMetadata: {
-          catalogQuery: catalogQueries.data.filter(({ uuid }) => uuid === value.split(' - ')[1].trim())[0],
+          catalogQuery: catalogQueries.data.find(({ uuid }) => uuid === valueUuid),
         },
       }, 0);
     }

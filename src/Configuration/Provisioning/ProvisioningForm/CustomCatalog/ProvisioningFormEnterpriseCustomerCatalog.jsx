@@ -19,7 +19,6 @@ const ProvisioningFormEnterpriseCustomerCatalog = ({ index }) => {
           data-testid="enterprise-customer-catalog-uuid"
         />
       </Form.Group>
-
     </article>
   );
 };

@@ -1,39 +1,9 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { logError } from '@edx/frontend-platform/logging';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
 import { updatePolicies } from './utils';
-
-export function useLmsCatalogQueries() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(null);
-  const [catalogQueries, setCatalogQuery] = useState([]);
-  // useCallback is used to memoize the function so that it is not re-created on every render
-  const callApi = async () => {
-    try {
-      const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
-      setCatalogQuery(data.results);
-    } catch (error) {
-      logError(error);
-      setFetchError(error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    callApi();
-  }, [callApi]);
-
-  return {
-    isLoading,
-    fetchError,
-    catalogQueries,
-  };
-}
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);

@@ -134,13 +134,6 @@ const PROVISIONING_PAGE_TEXT = {
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
 
-export const CUSTOMER_CATALOG_PATH = (enterpriseCustomerUUID) => {
-  if (enterpriseCustomerUUID) {
-    return `/admin/enterprise/enterprisecustomercatalog/?q=${enterpriseCustomerUUID.slice(0, 7)}`;
-  }
-  return '/admin/enterprise/enterprisecustomercatalog/';
-};
-
 export const INITIAL_CATALOG_QUERIES = {
   multipleQueries: [
     {

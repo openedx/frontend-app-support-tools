@@ -1,4 +1,4 @@
-import { selectProvisioningContext, sortedCatalogQueries } from '../utils';
+import { lmsCustomerCatalog, selectProvisioningContext, sortedCatalogQueries } from '../utils';
 import { sampleCatalogQueries } from '../../../testData/constants';
 
 describe('selectProvisioningContext', () => {
@@ -25,5 +25,14 @@ describe('sortedCatalogQueries', () => {
 
     const testObjectSort = sortedCatalogQueries(testObject);
     expect(testObjectSort).toEqual(testObject);
+  });
+});
+
+describe('lmsCustomerCatalog', () => {
+  it('queryBy returns the correct url', () => {
+    expect(lmsCustomerCatalog.queryBy('testtest')).toEqual('/admin/enterprise/enterprisecustomercatalog/?q=testtes');
+  });
+  it('queryBy returns the correct url', () => {
+    expect(lmsCustomerCatalog.queryBy()).toEqual('/admin/enterprise/enterprisecustomercatalog/');
   });
 });

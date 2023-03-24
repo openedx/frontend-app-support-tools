@@ -8,8 +8,8 @@ import {
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import { Warning } from '@edx/paragon/icons';
-import PROVISIONING_PAGE_TEXT, { CUSTOMER_CATALOG_PATH } from '../../data/constants';
-import { selectProvisioningContext } from '../../data/utils';
+import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import { lmsCustomerCatalog, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormSourceCustomCatalogHeader = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
@@ -23,7 +23,7 @@ const ProvisioningFormSourceCustomCatalogHeader = () => {
         <ActionRow.Spacer />
         <Hyperlink
           target="_blank"
-          destination={`${LMS_BASE_URL}${CUSTOMER_CATALOG_PATH(formData?.enterpriseUUID || null)}`}
+          destination={`${LMS_BASE_URL}${lmsCustomerCatalog.queryBy(formData?.enterpriseUUID || null)}`}
         >
           {CUSTOM_CATALOG.BUTTON.viewCustomerCatalog}
         </Hyperlink>

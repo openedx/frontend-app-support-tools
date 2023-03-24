@@ -21,7 +21,7 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
     return (
       <article className="mt-4.5">
         <ProvisioningFormDefineCustomCatalogHeader index={index} />
-        <ProvisioningFormEnterpriseCustomerCatalog />
+        <ProvisioningFormEnterpriseCustomerCatalog index={index} />
       </article>
     );
   }

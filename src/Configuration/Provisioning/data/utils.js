@@ -1,6 +1,15 @@
 import { useContextSelector } from 'use-context-selector';
 import { ProvisioningContext } from '../ProvisioningContext';
 
+export const lmsCustomerCatalog = {
+  queryBy: (enterpriseCustomerUUID) => {
+    if (enterpriseCustomerUUID) {
+      return `/admin/enterprise/enterprisecustomercatalog/?q=${enterpriseCustomerUUID.slice(0, 7)}`;
+    }
+    return '/admin/enterprise/enterprisecustomercatalog/';
+  },
+};
+
 // Takes an array of catalog queries and sorted them by last modified date (newest first)
 export function sortedCatalogQueries(catalogQueries) {
   return catalogQueries.sort((b, a) => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Form } from '@edx/paragon';
 import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -12,16 +12,20 @@ const ProvisioningFormAccountDetails = ({ index }) => {
   const formFeedbackText = multipleFunds
     ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(formData.policies[index]?.catalogQueryTitle.split(' account')[0])
     : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;
+  const [accountValueState, setAccountValueState] = useState(null);
+  const [accountNameState, setAccountNameState] = useState(null);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const newEvent = e.target;
     const { value, dataset } = newEvent;
     if (dataset.testid === 'account-name') {
       setAccountName({ accountName: value }, index);
+      setAccountNameState(value);
     } else if (dataset.testid === 'account-value') {
       setAccountValue({ accountValue: value }, index);
+      setAccountValueState(value);
     }
-  };
+  }, [index, formData]);
 
   return (
     <article className="mt-4.5">
@@ -31,7 +35,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           floatingLabel={ACCOUNT_DETAIL.OPTIONS.displayName}
-          value={formData.policies[index]?.accountName || null}
+          value={accountNameState}
           onChange={handleChange}
           data-testid="account-name"
         />
@@ -39,7 +43,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
       <Form.Group className="mt-4.5">
         <Form.Control
           floatingLabel={ACCOUNT_DETAIL.OPTIONS.totalAccountValue.title}
-          value={formData.policies[index]?.accountValue || null}
+          value={accountValueState}
           onChange={handleChange}
           data-testid="account-value"
         />

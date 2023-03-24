@@ -17,7 +17,7 @@ const ProvisioningFormCustomCatalogTitle = () => {
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           floatingLabel={CUSTOM_CATALOG.OPTIONS.catalogTitle}
-          value={catalogQueryTitle || null}
+          value={catalogQueryTitle}
           disabled
         />
       </Form.Group>

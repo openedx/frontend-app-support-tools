@@ -9,15 +9,6 @@ import { selectProvisioningContext } from '../../data/utils';
 const ProvisioningFormCustomCatalogTextArea = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData] = selectProvisioningContext('formData');
-  // TODO: Replace this with a real API response
-  // const sampleCourseModesResponse = [
-  //   'verified',
-  //   'professional',
-  //   'no-id-professional',
-  //   'audit',
-  //   'honor',
-  // ];
-  // const [courseModes] = useState(JSON.stringify(sampleCourseModesResponse, null, 4));
 
   const [catalogQueryContentFilter, setCatalogQueryContentFilter] = useState(
     JSON.stringify(formData.policies[0].catalogQueryMetadata.catalogQuery.contentFilter, null, 4),
@@ -38,16 +29,6 @@ const ProvisioningFormCustomCatalogTextArea = () => {
         value={catalogQueryContentFilter}
         disabled
       />
-      {/* Will need to be abstracted to a separate component when
-       enterpriseCustomerCatalog Uuid is added to the API response */}
-      {/* <Form.Control
-        className="mt-4.5"
-        as="textarea"
-        style={{ height: '200px' }}
-        floatingLabel={CUSTOM_CATALOG.OPTIONS.courseModes}
-        value={courseModes}
-        disabled
-      /> */}
     </Stack>
   );
 };
