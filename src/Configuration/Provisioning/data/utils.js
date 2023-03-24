@@ -1,5 +1,10 @@
 import { useContextSelector } from 'use-context-selector';
+import PropTypes from 'prop-types';
 import { ProvisioningContext } from '../ProvisioningContext';
+
+export const indexOnlyPropType = {
+  index: PropTypes.number.isRequired,
+};
 
 export const lmsCustomerCatalog = {
   queryBy: (enterpriseCustomerUUID) => {

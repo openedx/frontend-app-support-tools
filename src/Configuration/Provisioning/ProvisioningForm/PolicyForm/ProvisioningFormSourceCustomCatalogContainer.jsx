@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { indexOnlyPropType } from '../../data/utils';
 import ProvisioningFormSourceCustomCatalogHeader from './ProvisioningFormSourceCustomCatalogHeader';
 import ProvisioningFormSourceCustomCatalogRadio from './ProvisioningFormSourceCustomCatalogRadio';
 
@@ -9,8 +9,6 @@ const ProvisioningFormSourceCustomCatalogContainer = ({ index }) => (
   </article>
 );
 
-ProvisioningFormSourceCustomCatalogContainer.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormSourceCustomCatalogContainer.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormSourceCustomCatalogContainer;

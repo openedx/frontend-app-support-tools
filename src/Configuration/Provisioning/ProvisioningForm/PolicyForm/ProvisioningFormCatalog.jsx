@@ -5,10 +5,9 @@ import {
   Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
@@ -81,8 +80,6 @@ const ProvisioningFormCatalog = ({ index }) => {
   );
 };
 
-ProvisioningFormCatalog.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormCatalog.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormCatalog;

@@ -8,9 +8,8 @@ import {
 } from '@edx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import { Warning } from '@edx/paragon/icons';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT, { CATALOG_QUERY_PATH } from '../../data/constants';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormDefineCustomCatalogHeader = ({ index }) => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
@@ -40,8 +39,6 @@ const ProvisioningFormDefineCustomCatalogHeader = ({ index }) => {
   );
 };
 
-ProvisioningFormDefineCustomCatalogHeader.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormDefineCustomCatalogHeader.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormDefineCustomCatalogHeader;

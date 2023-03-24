@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import ProvisioningFormDefineCustomCatalogHeader from './ProvisioningFormDefineCustomCatalogHeader';
 import ProvisioningFormCustomCatalogDropdown from './ProvisioningFormCustomCatalogDropdown';
 import ProvisioningFormCustomCatalogTitle from './ProvisioningFormCustomCatalogTitle';
 import ProvisioningFormCustomCatalogTextArea from './ProvisioningFormCustomCatalogTextArea';
 import ProvisioningFormEnterpriseCustomerCatalog from './ProvisioningFormEnterpriseCustomerCatalog';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormCustomCatalog = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
@@ -38,8 +37,6 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
   return null;
 };
 
-ProvisioningFormCustomCatalog.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormCustomCatalog.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormCustomCatalog;

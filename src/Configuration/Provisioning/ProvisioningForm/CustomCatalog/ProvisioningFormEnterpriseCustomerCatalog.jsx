@@ -1,9 +1,9 @@
 import {
   Form,
 } from '@edx/paragon';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
+import { indexOnlyPropType } from '../../data/utils';
 
 const ProvisioningFormEnterpriseCustomerCatalog = ({ index }) => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
@@ -23,8 +23,6 @@ const ProvisioningFormEnterpriseCustomerCatalog = ({ index }) => {
   );
 };
 
-ProvisioningFormEnterpriseCustomerCatalog.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormEnterpriseCustomerCatalog.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormEnterpriseCustomerCatalog;

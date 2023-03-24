@@ -1,9 +1,9 @@
 import {
   Form,
 } from '@edx/paragon';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
+import { indexOnlyPropType } from '../../data/utils';
 
 const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
   const { LEARNER_CAP_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
@@ -35,8 +35,6 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
   );
 };
 
-ProvisioningFormPerLearnerCapAmount.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormPerLearnerCapAmount.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormPerLearnerCapAmount;

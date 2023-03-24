@@ -4,10 +4,9 @@ import {
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormPerLearnerCap = ({ index }) => {
   const { perLearnerCap } = useProvisioningContext();
@@ -58,8 +57,6 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
   );
 };
 
-ProvisioningFormPerLearnerCap.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormPerLearnerCap.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormPerLearnerCap;

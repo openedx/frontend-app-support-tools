@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
 import ProvisioningFormCustomCatalog from '../CustomCatalog';
 import ProvisioningFormCatalog from './ProvisioningFormCatalog';
 import ProvisioningFormSourceCustomCatalogContainer from './ProvisioningFormSourceCustomCatalogContainer';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormCatalogContainer = ({ index }) => {
   const [customCatalog] = selectProvisioningContext('customCatalog');
@@ -15,8 +14,6 @@ const ProvisioningFormCatalogContainer = ({ index }) => {
   );
 };
 
-ProvisioningFormCatalogContainer.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormCatalogContainer.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormCatalogContainer;

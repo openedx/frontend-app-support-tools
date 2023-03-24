@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { Form } from '@edx/paragon';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormAccountDetails = ({ index }) => {
   const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
@@ -55,8 +54,5 @@ const ProvisioningFormAccountDetails = ({ index }) => {
   );
 };
 
-ProvisioningFormAccountDetails.propTypes = {
-  index: PropTypes.number.isRequired,
-};
-
+ProvisioningFormAccountDetails.propTypes = indexOnlyPropType;
 export default ProvisioningFormAccountDetails;

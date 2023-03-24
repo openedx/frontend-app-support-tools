@@ -4,10 +4,9 @@ import {
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { selectProvisioningContext } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormSourceCustomCatalogRadio = ({ index }) => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
@@ -61,8 +60,6 @@ const ProvisioningFormSourceCustomCatalogRadio = ({ index }) => {
   );
 };
 
-ProvisioningFormSourceCustomCatalogRadio.propTypes = {
-  index: PropTypes.number.isRequired,
-};
+ProvisioningFormSourceCustomCatalogRadio.propTypes = indexOnlyPropType;
 
 export default ProvisioningFormSourceCustomCatalogRadio;
