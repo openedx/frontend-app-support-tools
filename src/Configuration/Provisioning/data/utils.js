@@ -6,6 +6,13 @@ export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
 };
 
+/**
+ * Given an enterpriseUUID is passed to the 'queryBy' function, it will return url
+ * with a query parameter 'q' that is a substring of the enterpriseUUID (first 7 characters).
+ *
+ * @param {string} enterpriseCustomerUUID - The UUID of the enterprise customer.
+ * @returns {string} - The url to query the LMS for the customer catalog.
+ */
 export const lmsCustomerCatalog = {
   queryBy: (enterpriseCustomerUUID) => {
     if (enterpriseCustomerUUID) {

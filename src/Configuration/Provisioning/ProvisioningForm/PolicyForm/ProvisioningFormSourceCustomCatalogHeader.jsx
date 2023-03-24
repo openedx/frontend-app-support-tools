@@ -23,7 +23,7 @@ const ProvisioningFormSourceCustomCatalogHeader = () => {
         <ActionRow.Spacer />
         <Hyperlink
           target="_blank"
-          destination={`${LMS_BASE_URL}${lmsCustomerCatalog.queryBy(formData?.enterpriseUUID || null)}`}
+          destination={`${LMS_BASE_URL}${lmsCustomerCatalog.queryBy(formData?.enterpriseUUID)}`}
         >
           {CUSTOM_CATALOG.BUTTON.viewCustomerCatalog}
         </Hyperlink>

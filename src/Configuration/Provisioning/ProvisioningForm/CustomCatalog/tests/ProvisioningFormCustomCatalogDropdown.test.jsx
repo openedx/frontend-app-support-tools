@@ -22,7 +22,7 @@ const ProvisioningFormCustomCatalogDropdownWrapper = ({
 
 describe('ProvisioningFormCustomCatalogDropdown', () => {
   beforeEach(() => {
-
+    jest.clearAllMocks();
   });
   it('renders the custom catalog dropdown', () => {
     renderWithRouter(<ProvisioningFormCustomCatalogDropdownWrapper />);
