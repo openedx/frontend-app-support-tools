@@ -34,6 +34,7 @@ describe('API', () => {
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
   const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
   const programRecordsUrl = urls.getLearnerRecordsUrl();
+  const retirementApiUrl = urls.userRetirementUrl();
 
   let mockAdapter;
 
@@ -1163,6 +1164,52 @@ describe('API', () => {
       mockAdapter.onGet(`${programRecordsUrl}/${expectedRecord.uuid}/?username=${testUsername}`).reply(400, expectedRecord);
       const response = await api.getLearnerRecords(testUsername);
       expect(response).toEqual(expectedError);
+    });
+  });
+
+  describe('User Retirement', () => {
+    it('Successful Retirement Call', async () => {
+      const expectedSuccessResponse = {
+        failed_user_retirements: [],
+        successsful_user_retirements: ['test_username'],
+      };
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(200, expectedSuccessResponse);
+      const response = await api.postRetireUser('test_username');
+      expect(response).toEqual(expectedSuccessResponse);
+    });
+
+    it('Unsuccessful call when backend error', async () => {
+      const backendFailureResponse = {
+        failed_user_retirements: ['test_username'],
+        successsful_user_retirements: [],
+      };
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(200, backendFailureResponse);
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Server Error. The backend service(lms) failed to retire the user');
+    });
+
+    it('Unsuccessful call when user does not have appropriate permissions', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(403, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Forbidden. You do not have permissions to retire this user');
+    });
+
+    it('Unsuccessful call when user is not authenticated', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(401, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Authentication Failed');
+    });
+
+    it('Unsuccessful call with 404', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(404, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Not Found');
+    });
+
+    it('Unsuccessful call with unexpected error', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(503, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Unable to connect to the service');
     });
   });
 });
