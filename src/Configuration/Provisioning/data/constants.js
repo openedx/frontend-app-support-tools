@@ -19,7 +19,7 @@ const PROVISIONING_PAGE_TEXT = {
       TITLE: 'Customer',
       OPTIONS: {
         enterpriseUUID: 'Enterprise Customer UUID',
-        financialIdentifier: 'Financial Linkage Identifer',
+        financialIdentifier: 'Opportunity Product',
       },
     },
     TERM: {
@@ -100,6 +100,7 @@ const PROVISIONING_PAGE_TEXT = {
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
+        includeExecEd2UCourses: 'Includes Executive Education courses',
         courseModes: 'Enabled course modes',
       },
     },
