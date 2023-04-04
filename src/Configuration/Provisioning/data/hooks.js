@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
+import { camelCaseObject } from '@edx/frontend-platform';
+import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
 import { updatePolicies } from './utils';
 
@@ -36,6 +38,8 @@ export default function useProvisioningContext() {
 
   const setMultipleFunds = (fundingBoolean) => updateRootDataState({ multipleFunds: fundingBoolean });
 
+  const setAlertMessage = (alertMessage) => updateRootDataState({ alertMessage });
+
   const setCustomCatalog = (customCatalogBoolean) => updateRootDataState({ customCatalog: customCatalogBoolean });
 
   const instantiateMultipleFormData = (catalogQueryTitle) => updateFormDataState({ policies: catalogQueryTitle });
@@ -56,11 +60,33 @@ export default function useProvisioningContext() {
 
   const setAccountValue = (accountValue, index) => updateFormDataState(accountValue, true, index);
 
-  const setCatalogCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
+  const setCustomerCatalog = (customerCatalogBoolean, index) => updateFormDataState(
+    customerCatalogBoolean,
+    true,
+    index,
+  );
+
+  const setCustomerCatalogUUID = (customerCatalogUUID, index) => updateFormDataState(customerCatalogUUID, true, index);
+
+  const setCatalogQueryCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
+
+  const setCatalogQuerySelection = (catalogSelection, index) => updateFormDataState(catalogSelection, true, index);
 
   const perLearnerCap = (perLearnerCapValue, index) => updateFormDataState(perLearnerCapValue, true, index);
 
   const setPerLearnerCap = (perLearnerCapAmount, index) => updateFormDataState(perLearnerCapAmount, true, index);
+
+  const hydrateCatalogQueryData = useCallback(async () => {
+    const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+    setState(s => ({
+      ...s,
+      catalogQueries: {
+        ...s.catalogQueries,
+        data: camelCaseObject(data.results),
+        isLoading: false,
+      },
+    }));
+  });
 
   const resetFormData = useCallback(() => {
     setState(() => ({
@@ -74,7 +100,11 @@ export default function useProvisioningContext() {
 
   return {
     setMultipleFunds,
+    hydrateCatalogQueryData,
     setCustomCatalog,
+    setCustomerCatalog,
+    setCustomerCatalogUUID,
+    setCatalogQuerySelection,
     instantiateMultipleFormData,
     resetPolicies,
     setCustomerUUID,
@@ -84,9 +114,10 @@ export default function useProvisioningContext() {
     setSubsidyRevReq,
     setAccountName,
     setAccountValue,
-    setCatalogCategory,
+    setCatalogQueryCategory,
     perLearnerCap,
     setPerLearnerCap,
     resetFormData,
+    setAlertMessage,
   };
 }

@@ -1,5 +1,39 @@
 import { useContextSelector } from 'use-context-selector';
+import PropTypes from 'prop-types';
 import { ProvisioningContext } from '../ProvisioningContext';
+
+export const indexOnlyPropType = {
+  index: PropTypes.number.isRequired,
+};
+
+/**
+ * Given an enterpriseUUID is passed to the 'queryBy' function, it will return url
+ * with a query parameter 'q' that is a substring of the enterpriseUUID (first 7 characters).
+ *
+ * @param {string} enterpriseCustomerUUID - The UUID of the enterprise customer.
+ * @returns {string} - The url to query the LMS for the customer catalog.
+ */
+export const lmsCustomerCatalog = {
+  queryBy: (enterpriseCustomerUUID) => {
+    if (enterpriseCustomerUUID) {
+      return `/admin/enterprise/enterprisecustomercatalog/?q=${enterpriseCustomerUUID.slice(0, 7)}`;
+    }
+    return '/admin/enterprise/enterprisecustomercatalog/';
+  },
+};
+
+// Takes an array of catalog queries and sorted them by last modified date (newest first)
+export function sortedCatalogQueries(catalogQueries) {
+  return catalogQueries.sort((b, a) => {
+    if (a.modified < b.modified) {
+      return -1;
+    }
+    if (a.modified > b.modified) {
+      return 1;
+    }
+    return 0;
+  });
+}
 
 /**
  * Selects and returns the specified data attributes from the ProvisioningContext using the useContextSelector hook.
@@ -7,7 +41,7 @@ import { ProvisioningContext } from '../ProvisioningContext';
  * @returns {Array} [Array] - An array of the specified data attributes from the ProvisioningContext.
  * @throws {Error} If no arguments are provided.
  */
-export default function selectProvisioningContext(...args) {
+export function selectProvisioningContext(...args) {
   if (args.length === 0) {
     throw new Error('No arguments provided to selectProvisioningContext');
   }

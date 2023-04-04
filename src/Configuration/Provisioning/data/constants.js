@@ -19,7 +19,7 @@ const PROVISIONING_PAGE_TEXT = {
       TITLE: 'Customer',
       OPTIONS: {
         enterpriseUUID: 'Enterprise Customer UUID',
-        financialIdentifier: 'Financial Linkage Identifer',
+        financialIdentifier: 'Opportunity Product',
       },
     },
     TERM: {
@@ -74,18 +74,33 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
     CUSTOM_CATALOG: {
-      TITLE: 'Define custom catalog',
-      SUB_TITLE: 'Ensure the intended custom catalog query has been created in Django before proceeding.',
+      HEADER: {
+        SOURCE: {
+          TITLE: 'Custom catalog source',
+          SUB_TITLE: 'Ensure the intended enterprise customer catalog has been created in Django before proceeding.',
+        },
+        DEFINE: {
+          TITLE: 'Define custom catalog',
+          SUB_TITLE: 'Ensure the intended custom catalog query has been created in Django before proceeding.',
+        },
+      },
       BUTTON: {
-        create: 'Create catalog query',
+        viewCustomerCatalog: 'View Enterprise Customer Catalog list',
+        createQuery: 'Create catalog query',
       },
       OPTIONS: {
+        enterpriseCustomerCatalogUUID: 'Enterprise customer catalog UUID',
+        enterpriseCustomerCatalog: {
+          yes: 'Yes, input an existing Enterprise Customer Catalog UUID',
+          no: 'No, create a new Enterprise Customer Catalog record in this form',
+        },
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
           subtitle: 'Select enterprise catalog query',
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
+        includeExecEd2UCourses: 'Includes Executive Education courses',
         courseModes: 'Enabled course modes',
       },
     },
@@ -108,6 +123,12 @@ const PROVISIONING_PAGE_TEXT = {
     },
     ALERTS: {
       unselectedAccountType: "Please select an 'Account Creation' option to create new policies.",
+      API_ERROR_MESSAGES: {
+        ENTERPRISE_CATALOG_QUERY: {
+          400: 'The enterprise catalog query could not be created.',
+          404: 'Enterprise Catalog Query failed to respond.',
+        },
+      },
     },
   },
 };

@@ -12,7 +12,7 @@ const ProvisioningFormContainer = () => {
 
   return (
     <ProvisioningContextProvider>
-      <Container className="mt-5">
+      <Container size="md" className="mt-5">
         <h1>{FORM.TITLE(pathname)}</h1>
         <ProvisioningForm />
       </Container>

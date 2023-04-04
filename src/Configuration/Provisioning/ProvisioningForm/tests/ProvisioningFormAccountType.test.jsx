@@ -1,12 +1,33 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { ProvisioningContext, initialStateValue } from '../../../testData';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import useProvisioningContext from '../../data/hooks';
 import ProvisioningFormAccountType from '../ProvisioningFormAccountType';
 
 const { ACCOUNT_CREATION } = PROVISIONING_PAGE_TEXT.FORM;
 
+jest.mock('../../data/hooks', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
+// mock usState hook
+const mockUseState = jest.fn();
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useState: (initialState) => [initialState, mockUseState],
+}));
+
+const mockHydrateCatalogQueryData = jest.fn();
+useProvisioningContext.mockReturnValue({
+  setMultipleFunds: jest.fn(),
+  hydrateCatalogQueryData: mockHydrateCatalogQueryData,
+  setCustomCatalog: jest.fn(),
+  setAlertMessage: jest.fn(),
+});
 const ProvisioningFormAccountTypeWrapper = ({
   value = initialStateValue,
 }) => (
@@ -52,5 +73,20 @@ describe('ProvisioningFormAccountType', () => {
     fireEvent.click(singleTestId);
 
     expect(screen.getByTestId(ACCOUNT_CREATION.OPTIONS.single)).toBeTruthy();
+  });
+  it('hydrates catalog query data', async () => {
+    const value = {
+      ...initialStateValue,
+      catalogQueries: {
+        data: [],
+        isLoading: false,
+      },
+    };
+
+    renderWithRouter(<ProvisioningFormAccountTypeWrapper value={value} />);
+
+    const multipleTestId = screen.getByTestId(ACCOUNT_CREATION.OPTIONS.multiple);
+    fireEvent.click(multipleTestId);
+    await waitFor(() => expect(mockHydrateCatalogQueryData).toHaveBeenCalled());
   });
 });
