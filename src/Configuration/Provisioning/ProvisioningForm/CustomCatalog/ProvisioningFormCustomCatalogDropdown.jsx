@@ -21,7 +21,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
       const apiCatalogQueries = sortedData.map(
         ({ title, uuid }) => (
           <Form.AutosuggestOption key={uuid}>
-            {`${title} - ${uuid}`}
+            {`${title} --- ${uuid}`}
           </Form.AutosuggestOption>
         ),
       );
@@ -29,11 +29,10 @@ const ProvisioningFormCustomCatalogDropdown = () => {
     }
     return defaultDropdown;
   });
-
   const handleOnSelected = (value) => {
     // TODO: In the future the index will have to be brought in for custom catalogs per group
     if (value) {
-      const valueUuid = value.split(' - ')[1].trim();
+      const valueUuid = value.split(' --- ')[1].trim();
       setCatalogQueryCategory({
         catalogQueryMetadata: {
           catalogQuery: catalogQueries.data.find(({ uuid }) => uuid === valueUuid),
