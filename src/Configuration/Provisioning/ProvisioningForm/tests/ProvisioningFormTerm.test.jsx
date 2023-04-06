@@ -44,4 +44,23 @@ describe('ProvisioningFormTerm', () => {
     expect(screen.getByText(TERM.OPTIONS.endDate)).toBeTruthy();
     expect(inputValue).toEqual('2021-01-01');
   });
+  it('checks validity', () => {
+    renderWithRouter(<ProvisioningFormTermWrapper />);
+
+    const startDateInput = screen.getByTestId('start-date');
+    fireEvent.change(startDateInput, { target: { value: '2021-01-01' } });
+    const startDateInputValue = startDateInput.getAttribute('value');
+
+    const endDateInput = screen.getByTestId('end-date');
+    fireEvent.change(endDateInput, { target: { value: '2020-01-01' } });
+    const endDateInputValue = endDateInput.getAttribute('value');
+
+    expect(screen.getByText(TERM.OPTIONS.endDate)).toBeTruthy();
+    expect(startDateInputValue).toEqual('2021-01-01');
+
+    expect(screen.getByText(TERM.OPTIONS.endDate)).toBeTruthy();
+    expect(endDateInputValue).toEqual('2020-01-01');
+
+    expect(screen.getByText(TERM.VALIDITY)).toBeTruthy();
+  });
 });
