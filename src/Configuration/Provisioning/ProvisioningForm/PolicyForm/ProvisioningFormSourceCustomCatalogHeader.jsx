@@ -13,7 +13,7 @@ import { lmsCustomerCatalog, selectProvisioningContext } from '../../data/utils'
 
 const ProvisioningFormSourceCustomCatalogHeader = () => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { LMS_BASE_URL } = getConfig();
+  const { DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
   const [formData] = selectProvisioningContext('formData');
 
   return (
@@ -23,7 +23,7 @@ const ProvisioningFormSourceCustomCatalogHeader = () => {
         <ActionRow.Spacer />
         <Hyperlink
           target="_blank"
-          destination={`${LMS_BASE_URL}${lmsCustomerCatalog.queryBy(formData?.enterpriseUUID)}`}
+          destination={`${DJANGO_ADMIN_LMS_BASE_URL}${lmsCustomerCatalog.queryBy(formData?.enterpriseUUID)}`}
         >
           {CUSTOM_CATALOG.BUTTON.viewCustomerCatalog}
         </Hyperlink>

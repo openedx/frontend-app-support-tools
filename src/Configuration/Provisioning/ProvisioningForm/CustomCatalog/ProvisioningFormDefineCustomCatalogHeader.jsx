@@ -13,7 +13,7 @@ import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormDefineCustomCatalogHeader = ({ index }) => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { LMS_BASE_URL } = getConfig();
+  const { DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
   const [formData] = selectProvisioningContext('formData');
   return (
     <>
@@ -22,7 +22,7 @@ const ProvisioningFormDefineCustomCatalogHeader = ({ index }) => {
         <ActionRow.Spacer />
         <Hyperlink
           target="_blank"
-          destination={`${LMS_BASE_URL}${CATALOG_QUERY_PATH}`}
+          destination={`${DJANGO_ADMIN_LMS_BASE_URL}${CATALOG_QUERY_PATH}`}
         >
           {CUSTOM_CATALOG.BUTTON.createQuery}
         </Hyperlink>
