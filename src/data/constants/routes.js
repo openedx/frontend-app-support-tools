@@ -18,6 +18,9 @@ const ROUTES = {
           EDIT: '/enterprise-configuration/learner-credit/edit',
         },
       },
+      CATALOG_CURATION: {
+        HOME: '/enterprise-configuration/catalog-curation',
+      },
     },
   },
 };

@@ -24,6 +24,7 @@ import ProvisioningPage from './Configuration/Provisioning/ProvisioningPage';
 import ROUTES from './data/constants/routes';
 import ConfigurationPage from './Configuration/ConfigurationPage';
 import ProvisioningFormContainer from './Configuration/Provisioning/ProvisioningForm';
+import CatalogCurationPage from './Configuration/CatalogCuration/CatalogCurationPage';
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 mergeConfig({
@@ -41,6 +42,7 @@ subscribe(APP_READY, () => {
     <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT} component={ProvisioningFormContainer} />,
     <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.NEW} component={ProvisioningFormContainer} />,
     <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME} component={ProvisioningPage} />,
+    <Route path={CONFIGURATION.SUB_DIRECTORY.CATALOG_CURATION.HOME} component={CatalogCurationPage} />,
     <Route path={CONFIGURATION.HOME} component={ConfigurationPage} />,
   ];
   ReactDOM.render(
