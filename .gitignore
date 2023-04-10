@@ -16,3 +16,6 @@ temp/babel-plugin-react-intl
 *~
 /temp
 /.vscode
+
+# edx
+.env.private
