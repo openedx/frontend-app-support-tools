@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
+    "@edx/frontend-enterprise-catalog-search": "^3.1.6",
     "@edx/frontend-enterprise-utils": "2.2.1",
     "@edx/frontend-platform": "^2.5.0",
     "@edx/paragon": "^20.26.0",
@@ -38,6 +39,7 @@
     "@fortawesome/free-regular-svg-icons": "5.15.1",
     "@fortawesome/free-solid-svg-icons": "5.15.1",
     "@fortawesome/react-fontawesome": "0.1.14",
+    "algoliasearch": "^4.17.0",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
     "moment": "2.29.1",
@@ -46,6 +48,7 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-helmet": "^6.1.0",
+    "react-instantsearch-dom": "^6.39.1",
     "react-redux": "7.2.2",
     "react-responsive": "8.1.0",
     "react-router": "5.2.0",
