@@ -8,7 +8,7 @@ import { ENABLE_TESTING, MAX_PAGE_SIZE } from './data/constants';
 const CatalogCurationSearch = () => {
   const enterpriseId = 'some-dummy-id-123';
   const { searchClient } = useContextSelector(CatalogCurationContext, v => v[0]);
-  const searchFilters = `enterprise_customer_uuids:${ENABLE_TESTING(enterpriseId)}`;
+  const searchFilters = `enterprise_catalog_query_uuids:${ENABLE_TESTING(enterpriseId)}`;
 
   return (
     <SearchData>
