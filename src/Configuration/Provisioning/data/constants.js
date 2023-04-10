@@ -28,6 +28,7 @@ const PROVISIONING_PAGE_TEXT = {
         startDate: 'Start Date',
         endDate: 'End Date',
       },
+      VALIDITY: 'Please choose an end date later than the start date',
     },
     SUBSIDY_TYPE: {
       TITLE: 'Subsidy Type',
