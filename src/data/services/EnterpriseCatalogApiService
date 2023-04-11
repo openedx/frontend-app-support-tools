@@ -1,0 +1,17 @@
+import qs from 'query-string';
+
+import { getHttpClient, getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+
+class EnterpriseCatalogApiService {
+    static enterpriseCatalogServiceApiUrl = `${process.env.CATALOG_SERVICE_BASE_URL}/api/v1`;
+
+    static apiClient = getAuthenticatedHttpClient;
+
+    static generateNewCustomerCatalog(enterprise_uuid, options, query) {
+        const enterpriseCatalogQueryUrl = `${EnterpriseCatalogApiService.enterpriseCatalogServiceApiUrl
+            }/enterprise-customer/${enterprise_uuid}/catalog_query`;
+        return EnterpriseCatalogApiService.apiClient().post(enterpriseCatalogQueryUrl, query);
+    }
+}
+
+export default EnterpriseCatalogApiService;
