@@ -2,6 +2,7 @@ $darkCyan: #00262b;
 
 .learner-information {
   color: black;
+
   .nav-link.active {
     border-color: #fff;
     color: $darkCyan;
@@ -19,11 +20,13 @@ $darkCyan: #00262b;
 .custom-table {
   font-size: smaller;
   width: 100%;
+
   th {
     margin: 0;
     padding: 0.5rem;
     border-bottom: 1px solid black;
   }
+
   td {
     margin: 0;
     padding: 0.5rem;
@@ -34,11 +37,13 @@ $darkCyan: #00262b;
 .sso-table {
   width: auto;
   font-size: smaller;
+
   th {
     margin: 0;
     padding: 0.5rem;
     border-bottom: 1px solid gray;
   }
+
   td {
     margin: 0;
     padding: 0.5rem;
@@ -72,6 +77,7 @@ $darkCyan: #00262b;
     border-bottom: 1px solid lightgray;
     width: 30%;
   }
+
   table td {
     margin: 0.5rem;
     padding: 0.5rem;
@@ -94,6 +100,7 @@ $darkCyan: #00262b;
     border-bottom: none;
   }
 }
+
 .card-title {
   color: #00262B !important
 }
@@ -110,10 +117,12 @@ $darkCyan: #00262b;
 .course-runs-table {
   font-size: smaller;
   width: 100%;
+
   th {
     margin: 0;
     padding: 0.5rem;
   }
+
   td {
     margin: 0;
     padding: 0.5rem;
@@ -125,12 +134,14 @@ $darkCyan: #00262b;
 .custom-expander-table {
   font-size: smaller;
   margin-left: 10%;
+
   th {
     margin: 0;
     padding: 0.5rem;
     background-color: lightgray;
     border-bottom: 0px;
   }
+
   td {
     margin: 0;
     padding: 0.5rem;
@@ -171,9 +182,22 @@ $darkCyan: #00262b;
   padding-bottom: 15px;
 }
 
-.inspector-name-row{
+.inspector-name-row {
   border-bottom: 1px solid black;
 }
-.modal-title{
+
+.modal-title {
   font-size: 1.9rem !important;
-  }
+}
+
+div.fe__searchfield>div.mb-4 {
+  display: none !important;
+}
+
+.Pikachu {
+  display: none;
+}
+
+div.fe__searchbox-col--default>div.mb-4 {
+  display: none !important;
+}

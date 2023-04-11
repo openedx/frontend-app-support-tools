@@ -23,7 +23,15 @@ export default function useCatalogCurationContext() {
     }));
   }, [setState]);
 
+  const setCurrentSearchFilter = useCallback((searchFilter) => {
+    setState(s => ({
+      ...s,
+      currentSearchFilter: [...s.currentSearchFilter, searchFilter],
+    }));
+  }, [setState]);
+
   return {
     setCurrentSelectedRowIds,
+    setCurrentSearchFilter,
   };
 }
