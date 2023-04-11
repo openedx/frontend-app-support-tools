@@ -15,4 +15,4 @@ export const ENABLE_TESTING = (enterpriseId, enableTest = TEST_FLAG) => {
 /* END LOCAL TESTING CONSTANTS */
 
 // Max items returned per page
-export const MAX_PAGE_SIZE = 24;
+export const MAX_PAGE_SIZE = 12;

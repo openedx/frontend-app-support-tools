@@ -4,11 +4,16 @@ import { useContextSelector } from 'use-context-selector';
 import { configuration } from './data/config';
 import { CatalogCurationContext } from './CatalogCurationContext';
 import { ENABLE_TESTING, MAX_PAGE_SIZE } from './data/constants';
+import CatalogCurationSelectContentDataTable from './CatalogCurationSelectContentDataTable';
+import useCatalogCurationContext from './data/hooks';
 
 const CatalogCurationSearch = () => {
-  const enterpriseId = 'some-dummy-id-123';
+  const catalogQueryId = 'some-dummy-id-123';
   const { searchClient } = useContextSelector(CatalogCurationContext, v => v[0]);
-  const searchFilters = `enterprise_catalog_query_uuids:${ENABLE_TESTING(enterpriseId)}`;
+  const searchFilters = `enterprise_catalog_query_uuids:${ENABLE_TESTING(catalogQueryId)}`;
+
+  const { setCurrentSelectedRowIds } = useCatalogCurationContext();
+  const currentSelectedRowIds = useContextSelector(CatalogCurationContext, v => v[0].currentSelectedRowIds);
 
   return (
     <SearchData>
@@ -21,7 +26,10 @@ const CatalogCurationSearch = () => {
           hitsPerPage={MAX_PAGE_SIZE}
         />
         <SearchHeader variant="default" />
-        {/* DATATABLE HERE */}
+        <CatalogCurationSelectContentDataTable
+          selectedRowIds={currentSelectedRowIds}
+          onSelectedRowsChanged={setCurrentSelectedRowIds}
+        />
       </InstantSearch>
     </SearchData>
   );
