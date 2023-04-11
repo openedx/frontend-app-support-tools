@@ -6,6 +6,7 @@ import ProvisioningFormCustomCatalogTextArea from './ProvisioningFormCustomCatal
 import ProvisioningFormEnterpriseCustomerCatalog from './ProvisioningFormEnterpriseCustomerCatalog';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 import ProvisioningFormCustomCatalogExecEdBoolean from './ProvisioningFormCustomCatalogExecEdBoolean';
+import ProvisioningCatalogCurationContainer from './ProvisioningCatalogCurationContainer';
 
 const ProvisioningFormCustomCatalog = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
@@ -29,6 +30,7 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
     return (
       <article className="mt-4.5">
         <ProvisioningFormDefineCustomCatalogHeader index={index} />
+        <ProvisioningCatalogCurationContainer />
         <ProvisioningFormCustomCatalogDropdown />
         {policyData.catalogQuery.title && <ProvisioningFormCustomCatalogTitle />}
         {policyData.catalogQuery.contentFilter && <ProvisioningFormCustomCatalogTextArea />}
