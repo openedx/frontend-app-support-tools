@@ -116,10 +116,7 @@ export default function Header() {
     submenuContent:
       getConfig().FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
         ? (
-          <>
-            <div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.CATALOG_CURATION.HOME}`}>Catalog Curation</a></div>
-            <div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}`}>Learner Credit Plans</a></div>
-          </>
+          <div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}`}>Learner Credit Plans</a></div>
         )
         : null,
   };
