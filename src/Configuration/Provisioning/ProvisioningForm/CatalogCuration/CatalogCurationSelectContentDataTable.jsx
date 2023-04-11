@@ -13,6 +13,9 @@ import SelectContentSelectionStatus from './SelectContentSelectionStatus';
 import SkeletonContentCard from './SkeletonContentCard';
 import ContentSearchResultCard from './ContentSearchResultCard';
 import SelectContentSearchPagination from './SelectContentSearchPagination';
+import { useContextSelector } from 'use-context-selector';
+import useCatalogCurationContext from './data/hooks';
+import { CatalogCurationContext } from './CatalogCurationContext';
 
 const defaultActiveStateValue = 'card';
 
@@ -49,9 +52,13 @@ const BaseHighlightStepperSelectContentDataTable = ({
 }) => {
   const [currentView, setCurrentView] = useState(defaultActiveStateValue);
   // TODO: searchResults contain all information before its populated into the datatable (do manual filtering here)
+  const { startDate, endDate } = useContextSelector(CatalogCurationContext, v => v[0]);
+  const { setStartDate, setEndDate } = useCatalogCurationContext();
   const tableData = useMemo(() => camelCaseObject(searchResults?.hits || []), [searchResults]);
   const searchResultsItemCount = searchResults?.nbHits || 0;
   const searchResultsPageCount = searchResults?.nbPages || 0;
+  console.log(startDate);
+  console.log(searchResults);
   return (
     <DataTable
       isLoading={isSearchStalled}
