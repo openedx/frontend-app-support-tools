@@ -22,7 +22,7 @@ const CatalogCurationContextProvider = ({
   const contextValue = useState({
     currentSelectedRowIds: {},
     defaultSearchFilter: defaultCurrentSearchFilter,
-    currentSearchFilter: [],
+    currentSearchFilter: {},
     searchClient,
     startDate: '',
     endDate: '',

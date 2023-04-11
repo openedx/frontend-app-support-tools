@@ -6,7 +6,7 @@ import { CatalogCurationContext } from './CatalogCurationContext';
 
 const CatalogCurationDateSelection = () => {
   const TERM = {
-    TITLE: 'Term',
+    TITLE: 'Pick a start and end date for your query',
     OPTIONS: {
       startDate: 'Start Date',
       endDate: 'End Date',
@@ -26,7 +26,7 @@ const CatalogCurationDateSelection = () => {
   };
 
   useEffect(() => {
-    if (endDate < startDate) {
+    if (startDate !== '' && endDate !== '' && endDate < startDate) {
       setHasInvalidEndDate(true);
     } else {
       setHasInvalidEndDate(false);

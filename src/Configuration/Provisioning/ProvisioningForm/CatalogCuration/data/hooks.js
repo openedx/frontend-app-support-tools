@@ -28,17 +28,14 @@ export default function useCatalogCurationContext() {
   const setCurrentSearchFilter = useCallback((searchFilter) => {
     setState(s => ({
       ...s,
-      currentSearchFilter: [...s.currentSearchFilter, searchFilter],
+      ...searchFilter,
     }));
   }, [setState]);
 
   return {
     setCurrentSelectedRowIds,
-<<<<<<< HEAD
     setStartDate,
     setEndDate,
-=======
     setCurrentSearchFilter,
->>>>>>> origin/hackathon-2023
   };
 }

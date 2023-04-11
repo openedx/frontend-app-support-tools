@@ -6,6 +6,7 @@ import { connectStateResults } from 'react-instantsearch-dom';
 import PropTypes from 'prop-types';
 import { useState, useMemo } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { useContextSelector } from 'use-context-selector';
 import { FOOTER_TEXT_BY_CONTENT_TYPE } from './data/utils';
 import SelectContentSelectionCheckbox from './SelectContentSelectionCheckbox';
 import { MAX_PAGE_SIZE } from './data/constants';
@@ -13,7 +14,6 @@ import SelectContentSelectionStatus from './SelectContentSelectionStatus';
 import SkeletonContentCard from './SkeletonContentCard';
 import ContentSearchResultCard from './ContentSearchResultCard';
 import SelectContentSearchPagination from './SelectContentSearchPagination';
-import { useContextSelector } from 'use-context-selector';
 import useCatalogCurationContext from './data/hooks';
 import { CatalogCurationContext } from './CatalogCurationContext';
 
@@ -53,12 +53,23 @@ const BaseHighlightStepperSelectContentDataTable = ({
   const [currentView, setCurrentView] = useState(defaultActiveStateValue);
   // TODO: searchResults contain all information before its populated into the datatable (do manual filtering here)
   const { startDate, endDate } = useContextSelector(CatalogCurationContext, v => v[0]);
-  const { setStartDate, setEndDate } = useCatalogCurationContext();
-  const tableData = useMemo(() => camelCaseObject(searchResults?.hits || []), [searchResults]);
+  const filteredHits = searchResults?.hits.filter((hit) => {
+    const courseStartDate = hit.advertised_course_run?.start ? new Date(hit.advertised_course_run.start) : null;
+    const courseEndDate = hit.advertised_course_run?.end ? new Date(hit.advertised_course_run.end) : null;
+
+    if (startDate && courseStartDate < new Date(startDate)) {
+      return false;
+    }
+
+    if (endDate && courseEndDate > new Date(endDate)) {
+      return false;
+    }
+    return true;
+  });
+
+  const tableData = useMemo(() => camelCaseObject(filteredHits || []), [searchResults]);
   const searchResultsItemCount = searchResults?.nbHits || 0;
   const searchResultsPageCount = searchResults?.nbPages || 0;
-  console.log(startDate);
-  console.log(searchResults);
   return (
     <DataTable
       isLoading={isSearchStalled}
