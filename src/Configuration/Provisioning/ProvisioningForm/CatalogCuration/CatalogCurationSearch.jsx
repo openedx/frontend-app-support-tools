@@ -1,11 +1,13 @@
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import { SearchData, SearchHeader } from '@edx/frontend-enterprise-catalog-search';
 import { useContextSelector } from 'use-context-selector';
+
 import { Button } from '@edx/paragon';
 import { useEffect, useState } from 'react';
 import { configuration } from './data/config';
 import { CatalogCurationContext } from './CatalogCurationContext';
 import { MAX_PAGE_SIZE } from './data/constants';
+
 import CatalogCurationSelectContentDataTable from './CatalogCurationSelectContentDataTable';
 import useCatalogCurationContext from './data/hooks';
 
