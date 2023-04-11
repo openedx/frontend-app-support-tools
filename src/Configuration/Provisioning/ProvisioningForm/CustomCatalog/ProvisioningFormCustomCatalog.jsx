@@ -12,6 +12,11 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
   const [policyData, setPolicyData] = useState(formData.policies[0].catalogQueryMetadata);
   const [customerCatalogBoolean, setCustomerCatalogBoolean] = useState(formData.policies[0].customerCatalog);
+  const [showCatalogCuration, setShowCatalogCuration] = useState();
+
+  const handleShowCatalogCurationButton = () => {
+    setShowCatalogCuration(!showCatalogCuration);
+  };
 
   useEffect(() => {
     setPolicyData(formData.policies[index].catalogQueryMetadata);
@@ -29,8 +34,12 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
   if (customerCatalogBoolean === false) {
     return (
       <article className="mt-4.5">
-        <ProvisioningFormDefineCustomCatalogHeader index={index} />
-        <ProvisioningCatalogCurationContainer />
+        <ProvisioningFormDefineCustomCatalogHeader
+          index={index}
+          handleShowCatalogCurationButton={handleShowCatalogCurationButton}
+          showCatalogCuration={showCatalogCuration}
+        />
+        {showCatalogCuration && <ProvisioningCatalogCurationContainer />}
         <ProvisioningFormCustomCatalogDropdown />
         {policyData.catalogQuery.title && <ProvisioningFormCustomCatalogTitle />}
         {policyData.catalogQuery.contentFilter && <ProvisioningFormCustomCatalogTextArea />}
