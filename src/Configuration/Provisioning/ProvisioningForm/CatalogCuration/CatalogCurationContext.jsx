@@ -16,6 +16,7 @@ const CatalogCurationContextProvider = ({
 }) => {
   const contextValue = useState({
     searchClient,
+    currentSelectedRowIds: {},
   });
 
   return (<CatalogCurationContext.Provider value={contextValue}> {children} </CatalogCurationContext.Provider>);

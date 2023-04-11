@@ -14,6 +14,9 @@ export default function useCatalogCurationContext() {
     },
     [setState],
   );
-
+  const setCurrentSelectedRowIds = (currentSelectedRowIds) => updateRootDataState({ currentSelectedRowIds });
+  const setStartDate = (startDate) => updateRootDataState({ startDate });
+  const setEndDate = (endDate) => updateRootDataState({ endDate });
+  return { setCurrentSelectedRowIds, setStartDate, setEndDate };
   // see src/Configuration/Provisioning/data/hooks.js for more examples to add state management variables
 }
