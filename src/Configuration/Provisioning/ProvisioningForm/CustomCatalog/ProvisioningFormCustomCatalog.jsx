@@ -40,10 +40,10 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
           showCatalogCuration={showCatalogCuration}
         />
         {showCatalogCuration && <ProvisioningCatalogCurationContainer />}
-        <ProvisioningFormCustomCatalogDropdown />
-        {policyData.catalogQuery.title && <ProvisioningFormCustomCatalogTitle />}
-        {policyData.catalogQuery.contentFilter && <ProvisioningFormCustomCatalogTextArea />}
-        {(policyData.catalogQuery.includeExecEd2UCourses !== undefined)
+        {!showCatalogCuration && <ProvisioningFormCustomCatalogDropdown />}
+        {!showCatalogCuration && policyData.catalogQuery.title && <ProvisioningFormCustomCatalogTitle />}
+        {!showCatalogCuration && policyData.catalogQuery.contentFilter && <ProvisioningFormCustomCatalogTextArea />}
+        {!showCatalogCuration && (policyData.catalogQuery.includeExecEd2UCourses !== undefined)
         && <ProvisioningFormCustomCatalogExecEdBoolean />}
       </article>
     );
