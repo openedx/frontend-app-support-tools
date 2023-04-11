@@ -16,4 +16,14 @@ export default function useCatalogCurationContext() {
   );
 
   // see src/Configuration/Provisioning/data/hooks.js for more examples to add state management variables
+  const setCurrentSelectedRowIds = useCallback((selectedRowIds) => {
+    setState(s => ({
+      ...s,
+      currentSelectedRowIds: selectedRowIds,
+    }));
+  }, [setState]);
+
+  return {
+    setCurrentSelectedRowIds,
+  };
 }
