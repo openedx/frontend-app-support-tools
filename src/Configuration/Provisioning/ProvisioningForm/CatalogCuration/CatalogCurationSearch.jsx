@@ -1,9 +1,10 @@
+/* eslint-disable no-restricted-syntax */
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
 import { SearchData, SearchHeader } from '@edx/frontend-enterprise-catalog-search';
 import { useContextSelector } from 'use-context-selector';
 
-import { Button } from '@edx/paragon';
 import { useEffect, useState } from 'react';
+import { Container } from '@edx/paragon';
 import { configuration } from './data/config';
 import { CatalogCurationContext } from './CatalogCurationContext';
 import { MAX_PAGE_SIZE } from './data/constants';
@@ -28,11 +29,11 @@ const CatalogCurationSearch = () => {
     if (startDate !== '' || endDate !== '') {
       setCurrentSearchFilter({ currentSearchFilter: { content_type: 'course' } });
       let placeholderString = '';
-      for (let [key, value] of Object.entries(currentSearchFilter)) {
-        placeholderString = placeholderString + ` AND ${key}:${value}`;
-      };
+      for (const [key, value] of Object.entries(currentSearchFilter)) {
+        placeholderString += ` AND ${key}:${value}`;
+      }
       setCurrentSearchFilterValue(defaultSearchFilter + placeholderString);
-      // set to have contentType = course 
+      // set to have contentType = course
     } else {
       setCurrentSearchFilter({});
       setCurrentSearchFilterValue(defaultSearchFilter);
@@ -40,23 +41,25 @@ const CatalogCurationSearch = () => {
   }, [startDate, endDate]);
 
   return (
-    <SearchData>
-      <InstantSearch
-        indexName={configuration.ALGOLIA.INDEX_NAME}
-        searchClient={searchClient}
-      >
-        <Configure
-          filters={currentSearchFilterValue}
-          hitsPerPage={MAX_PAGE_SIZE}
-        />
-        <SearchHeader variant="default" />
-        <CatalogCurationDateSelection />
-        <CatalogCurationSelectContentDataTable
-          selectedRowIds={currentSelectedRowIds}
-          onSelectedRowsChanged={setCurrentSelectedRowIds}
-        />
-      </InstantSearch>
-    </SearchData>
+    <Container>
+      <SearchData>
+        <InstantSearch
+          indexName={configuration.ALGOLIA.INDEX_NAME}
+          searchClient={searchClient}
+        >
+          <Configure
+            filters={currentSearchFilterValue}
+            hitsPerPage={MAX_PAGE_SIZE}
+          />
+          <SearchHeader variant="default" />
+          <CatalogCurationDateSelection />
+          <CatalogCurationSelectContentDataTable
+            selectedRowIds={currentSelectedRowIds}
+            onSelectedRowsChanged={setCurrentSelectedRowIds}
+          />
+        </InstantSearch>
+      </SearchData>
+    </Container>
   );
 };
 

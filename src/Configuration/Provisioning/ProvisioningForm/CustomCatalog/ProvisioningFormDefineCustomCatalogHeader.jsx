@@ -1,35 +1,26 @@
 import React from 'react';
 import {
   ActionRow,
-  Hyperlink,
   Stack,
   Icon,
   Col,
+  Button,
 } from '@edx/paragon';
-import { getConfig } from '@edx/frontend-platform';
 import { Warning } from '@edx/paragon/icons';
-import PROVISIONING_PAGE_TEXT, { CATALOG_QUERY_PATH } from '../../data/constants';
-import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 import PropTypes from 'prop-types';
-import { Button } from '@edx/paragon';
+import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import { selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormDefineCustomCatalogHeader = ({ index, handleShowCatalogCurationButton, showCatalogCuration }) => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
   const [formData] = selectProvisioningContext('formData');
   return (
     <>
-      <ActionRow className="mb-4.5">
+      <ActionRow className="mb-3">
         <h3>{CUSTOM_CATALOG.HEADER.DEFINE.TITLE}</h3>
         <ActionRow.Spacer />
-        <Hyperlink
-          target="_blank"
-          destination={`${DJANGO_ADMIN_LMS_BASE_URL}${CATALOG_QUERY_PATH}`}
-        >
-          {CUSTOM_CATALOG.BUTTON.createQuery}
-        </Hyperlink>
+        <Button onClick={handleShowCatalogCurationButton}>{showCatalogCuration ? 'Hide' : 'Show'} Catalog Curation</Button>
       </ActionRow>
-      <Button className="mb-3.5" onClick={handleShowCatalogCurationButton}>{showCatalogCuration ? "Hide" : "Show"} Catalog Curation</Button>
       {(formData.policies[index].customerCatalog === false && !showCatalogCuration) && (
       <Stack direction="horizontal">
         <Icon src={Warning} className="align-self-start" />
@@ -43,9 +34,9 @@ const ProvisioningFormDefineCustomCatalogHeader = ({ index, handleShowCatalogCur
 };
 
 ProvisioningFormDefineCustomCatalogHeader.propTypes = {
-  index: PropTypes.number,
-  handleShowCatalogCurationButton: PropTypes.func,
-  showCatalogCuration: PropTypes.bool,
+  index: PropTypes.number.isRequired,
+  handleShowCatalogCurationButton: PropTypes.func.isRequired,
+  showCatalogCuration: PropTypes.bool.isRequired,
 };
 
 export default ProvisioningFormDefineCustomCatalogHeader;

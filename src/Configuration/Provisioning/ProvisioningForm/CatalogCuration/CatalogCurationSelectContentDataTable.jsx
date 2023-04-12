@@ -14,7 +14,6 @@ import SelectContentSelectionStatus from './SelectContentSelectionStatus';
 import SkeletonContentCard from './SkeletonContentCard';
 import ContentSearchResultCard from './ContentSearchResultCard';
 import SelectContentSearchPagination from './SelectContentSearchPagination';
-import useCatalogCurationContext from './data/hooks';
 import { CatalogCurationContext } from './CatalogCurationContext';
 
 const defaultActiveStateValue = 'card';

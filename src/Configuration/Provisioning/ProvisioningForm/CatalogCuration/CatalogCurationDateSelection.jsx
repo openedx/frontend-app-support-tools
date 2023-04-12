@@ -34,9 +34,9 @@ const CatalogCurationDateSelection = () => {
   }, [startDate, endDate]);
 
   return (
-    <article className="mt-4.5">
+    <article className="mt-2.5">
       <div className="mb-1">
-        <h3>{TERM.TITLE}</h3>
+        <h4>{TERM.TITLE}</h4>
       </div>
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
