@@ -47,7 +47,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           data-testid="account-value"
         />
         <Form.Control.Feedback>
-          {formFeedbackText}
+          {formFeedbackText || ""}
         </Form.Control.Feedback>
       </Form.Group>
     </article>

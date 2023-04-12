@@ -101,6 +101,7 @@ const PROVISIONING_PAGE_TEXT = {
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
+        queryPreview: 'What your query is looking like now:',
         includeExecEd2UCourses: 'Includes Executive Education courses',
         courseModes: 'Enabled course modes',
       },

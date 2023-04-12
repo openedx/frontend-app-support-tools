@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { Container } from '@edx/paragon';
 import { configuration } from './data/config';
 import { CatalogCurationContext } from './CatalogCurationContext';
-import { MAX_PAGE_SIZE } from './data/constants';
 import CatalogCurationDateSelection from './CatalogCurationDateSelection';
 import CatalogCurationSelectContentDataTable from './CatalogCurationSelectContentDataTable';
 import useCatalogCurationContext from './data/hooks';
@@ -28,6 +27,7 @@ const CatalogCurationSearch = () => {
     // check to see if one date is not null
     if (startDate !== '' || endDate !== '') {
       setCurrentSearchFilter({ currentSearchFilter: { content_type: 'course' } });
+
       let placeholderString = '';
       for (const [key, value] of Object.entries(currentSearchFilter)) {
         placeholderString += ` AND ${key}:${value}`;
@@ -35,12 +35,12 @@ const CatalogCurationSearch = () => {
       setCurrentSearchFilterValue(defaultSearchFilter + placeholderString);
       // set to have contentType = course
     } else {
-      setCurrentSearchFilter({});
+      setCurrentSearchFilter({ currentSearchFilter: {} });
       setCurrentSearchFilterValue(defaultSearchFilter);
     }
   }, [startDate, endDate]);
-
   return (
+
     <Container>
       <SearchData>
         <InstantSearch
@@ -49,7 +49,7 @@ const CatalogCurationSearch = () => {
         >
           <Configure
             filters={currentSearchFilterValue}
-            hitsPerPage={MAX_PAGE_SIZE}
+            hitsPerPage={500}
           />
           <SearchHeader variant="default" />
           <CatalogCurationDateSelection />

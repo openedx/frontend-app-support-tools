@@ -4,7 +4,7 @@ import {
 } from '@edx/paragon';
 import { connectStateResults } from 'react-instantsearch-dom';
 import PropTypes from 'prop-types';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { useContextSelector } from 'use-context-selector';
 import { FOOTER_TEXT_BY_CONTENT_TYPE } from './data/utils';
@@ -52,21 +52,38 @@ const BaseHighlightStepperSelectContentDataTable = ({
   const [currentView, setCurrentView] = useState(defaultActiveStateValue);
   // TODO: searchResults contain all information before its populated into the datatable (do manual filtering here)
   const { startDate, endDate } = useContextSelector(CatalogCurationContext, v => v[0]);
-  const filteredHits = searchResults?.hits.filter((hit) => {
-    const courseStartDate = hit.advertised_course_run?.start ? new Date(hit.advertised_course_run.start) : null;
-    const courseEndDate = hit.advertised_course_run?.end ? new Date(hit.advertised_course_run.end) : null;
+  const [filteredHits, setFilteredHits] = useState([]);
+  const page_size = 12;
+  const page_index = searchResults?.page || 0;
+  let current_index = 1;
+  const window_start_index = (page_index * page_size) + 1;
 
-    if (startDate && courseStartDate < new Date(startDate)) {
-      return false;
-    }
+  useEffect(() => {
+    setFilteredHits(searchResults?.hits.filter((hit) => {
+      if (current_index < window_start_index + page_size) {
+        const courseStartDate = hit.advertised_course_run?.start ? new Date(hit.advertised_course_run.start) : null;
+        const courseEndDate = hit.advertised_course_run?.end ? new Date(hit.advertised_course_run.end) : null;
+        if (startDate && courseStartDate < new Date(startDate)) {
+          return false;
+        }
 
-    if (endDate && courseEndDate > new Date(endDate)) {
-      return false;
-    }
-    return true;
-  });
+        if (endDate && courseEndDate > new Date(endDate)) {
+          return false;
+        }
 
-  const tableData = useMemo(() => camelCaseObject(filteredHits || []), [searchResults]);
+        if (current_index >= window_start_index && current_index < window_start_index + page_size || (!startDate && !endDate)) {
+          current_index += 1;
+          return true;
+        }
+        current_index += 1;
+        return false;
+      } else {
+        return false;
+      }
+    }));
+  }, [searchResults, startDate, endDate]);
+
+  const tableData = useMemo(() => camelCaseObject(filteredHits || []), [filteredHits, searchResults?.hits]);
   const searchResultsItemCount = searchResults?.nbHits || 0;
   const searchResultsPageCount = searchResults?.nbPages || 0;
   return (
@@ -84,7 +101,7 @@ const BaseHighlightStepperSelectContentDataTable = ({
       manualPagination
       initialState={{
         pageIndex: 0,
-        pageSize: MAX_PAGE_SIZE,
+        pageSize: 12,
         selectedRowIds,
       }}
       pageCount={searchResultsPageCount}
@@ -127,7 +144,7 @@ const BaseHighlightStepperSelectContentDataTable = ({
           CardComponent={ContentSearchResultCard}
         />
       )}
-      {currentView === 'list' && <DataTable.Table /> }
+      {currentView === 'list' && <DataTable.Table />}
       <DataTable.EmptyTable content="No results found" />
       <DataTable.TableFooter>
         <SelectContentSearchPagination />

@@ -7,6 +7,7 @@ import ProvisioningFormEnterpriseCustomerCatalog from './ProvisioningFormEnterpr
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 import ProvisioningFormCustomCatalogExecEdBoolean from './ProvisioningFormCustomCatalogExecEdBoolean';
 import ProvisioningCatalogCurationContainer from './ProvisioningCatalogCurationContainer';
+import CatalogCurationContextProvider from '../CatalogCuration/CatalogCurationContext';
 
 const ProvisioningFormCustomCatalog = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
@@ -33,19 +34,21 @@ const ProvisioningFormCustomCatalog = ({ index }) => {
   }
   if (customerCatalogBoolean === false) {
     return (
-      <article className="mt-4.5">
-        <ProvisioningFormDefineCustomCatalogHeader
-          index={index}
-          handleShowCatalogCurationButton={handleShowCatalogCurationButton}
-          showCatalogCuration={showCatalogCuration}
-        />
-        {showCatalogCuration && <ProvisioningCatalogCurationContainer />}
-        {!showCatalogCuration && <ProvisioningFormCustomCatalogDropdown />}
-        {!showCatalogCuration && policyData.catalogQuery.title && <ProvisioningFormCustomCatalogTitle />}
-        {!showCatalogCuration && policyData.catalogQuery.contentFilter && <ProvisioningFormCustomCatalogTextArea />}
-        {!showCatalogCuration && (policyData.catalogQuery.includeExecEd2UCourses !== undefined)
-        && <ProvisioningFormCustomCatalogExecEdBoolean />}
-      </article>
+      <CatalogCurationContextProvider>
+        <article className="mt-4.5">
+          <ProvisioningFormDefineCustomCatalogHeader
+            index={index}
+            handleShowCatalogCurationButton={handleShowCatalogCurationButton}
+            showCatalogCuration={showCatalogCuration}
+          />
+          {showCatalogCuration && <ProvisioningCatalogCurationContainer />}
+          {!showCatalogCuration && <ProvisioningFormCustomCatalogDropdown />}
+          {!showCatalogCuration && policyData.catalogQuery.title && <ProvisioningFormCustomCatalogTitle />}
+          {!showCatalogCuration && policyData.catalogQuery.contentFilter && <ProvisioningFormCustomCatalogTextArea />}
+          {!showCatalogCuration && (policyData.catalogQuery.includeExecEd2UCourses !== undefined)
+            && <ProvisioningFormCustomCatalogExecEdBoolean />}
+        </article>
+      </CatalogCurationContextProvider>
     );
   }
   return null;
