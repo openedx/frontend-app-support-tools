@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { configuration } from './data/config';
 import { CatalogCurationContext } from './CatalogCurationContext';
 import { MAX_PAGE_SIZE } from './data/constants';
-
+import CatalogCurationDateSelection from './CatalogCurationDateSelection';
 import CatalogCurationSelectContentDataTable from './CatalogCurationSelectContentDataTable';
 import useCatalogCurationContext from './data/hooks';
 
@@ -17,18 +17,27 @@ const CatalogCurationSearch = () => {
     defaultSearchFilter,
     currentSearchFilter,
     currentSelectedRowIds,
+    startDate,
+    endDate,
   } = useContextSelector(CatalogCurationContext, v => v[0]);
   const { setCurrentSelectedRowIds, setCurrentSearchFilter } = useCatalogCurationContext();
   const [currentSearchFilterValue, setCurrentSearchFilterValue] = useState(defaultSearchFilter);
-  // example of working query
-  const appendStuff = () => {
-    setCurrentSearchFilter(' AND content_type:course');
-  };
 
   useEffect(() => {
-    setCurrentSearchFilterValue(defaultSearchFilter + currentSearchFilter.join(''));
-    console.log(currentSearchFilterValue);
-  });
+    // check to see if one date is not null
+    if (startDate !== '' || endDate !== '') {
+      setCurrentSearchFilter({ currentSearchFilter: { content_type: 'course' } });
+      let placeholderString = '';
+      for (let [key, value] of Object.entries(currentSearchFilter)) {
+        placeholderString = placeholderString + ` AND ${key}:${value}`;
+      };
+      setCurrentSearchFilterValue(defaultSearchFilter + placeholderString);
+      // set to have contentType = course 
+    } else {
+      setCurrentSearchFilter({});
+      setCurrentSearchFilterValue(defaultSearchFilter);
+    }
+  }, [startDate, endDate]);
 
   return (
     <SearchData>
@@ -41,7 +50,7 @@ const CatalogCurationSearch = () => {
           hitsPerPage={MAX_PAGE_SIZE}
         />
         <SearchHeader variant="default" />
-        <Button onClick={appendStuff} variant="primary" className="mb-3">Test Button</Button>
+        <CatalogCurationDateSelection />
         <CatalogCurationSelectContentDataTable
           selectedRowIds={currentSelectedRowIds}
           onSelectedRowsChanged={setCurrentSelectedRowIds}

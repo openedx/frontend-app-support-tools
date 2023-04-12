@@ -14,6 +14,8 @@ export default function useCatalogCurationContext() {
     },
     [setState],
   );
+  const setStartDate = (startDate) => updateRootDataState({ startDate });
+  const setEndDate = (endDate) => updateRootDataState({ endDate });
 
   // see src/Configuration/Provisioning/data/hooks.js for more examples to add state management variables
   const setCurrentSelectedRowIds = useCallback((selectedRowIds) => {
@@ -26,12 +28,14 @@ export default function useCatalogCurationContext() {
   const setCurrentSearchFilter = useCallback((searchFilter) => {
     setState(s => ({
       ...s,
-      currentSearchFilter: [...s.currentSearchFilter, searchFilter],
+      ...searchFilter,
     }));
   }, [setState]);
 
   return {
     setCurrentSelectedRowIds,
+    setStartDate,
+    setEndDate,
     setCurrentSearchFilter,
   };
 }

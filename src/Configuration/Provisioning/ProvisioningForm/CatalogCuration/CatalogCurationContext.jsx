@@ -22,8 +22,10 @@ const CatalogCurationContextProvider = ({
   const contextValue = useState({
     currentSelectedRowIds: {},
     defaultSearchFilter: defaultCurrentSearchFilter,
-    currentSearchFilter: [],
+    currentSearchFilter: {},
     searchClient,
+    startDate: '',
+    endDate: '',
   });
 
   return (<CatalogCurationContext.Provider value={contextValue}> {children} </CatalogCurationContext.Provider>);
