@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import TogglePasswordStatus from './TogglePasswordStatus';
 import ResetPassword from './ResetPassword';
+import RetireUser from './RetireUser';
 import PasswordHistory from './PasswordHistory';
 
 export default function AccountActions({ userData, changeHandler }) {
@@ -15,6 +16,11 @@ export default function AccountActions({ userData, changeHandler }) {
         changeHandler={changeHandler}
       />
       <ResetPassword
+        email={userData.email}
+        changeHandler={changeHandler}
+      />
+      <RetireUser
+        username={userData.username}
         email={userData.email}
         changeHandler={changeHandler}
       />

@@ -83,6 +83,9 @@ export const CancelRetirementUrl = () => `${
   LMS_BASE_URL
 }/api/user/v1/accounts/cancel_retirement/`;
 
+export const userRetirementUrl = () => `${
+  LMS_BASE_URL
+}/v1/accounts/bulk_retire_users`;
 export const getAccountActivationUrl = (activationKey) => `${
   LMS_BASE_URL
 }/activate/${activationKey}`;

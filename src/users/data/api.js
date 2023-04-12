@@ -575,6 +575,50 @@ export async function postResetPassword(email) {
   }
 }
 
+export async function postRetireUser(username) {
+  let errMessage = '';
+  try {
+    const response = await getAuthenticatedHttpClient().post(
+      AppUrls.userRetirementUrl(),
+      {
+        usernames: username,
+      },
+    );
+
+    if (response.data.failed_user_retirements.length > 0) {
+      errMessage = 'Server Error. The backend service(lms) failed to retire the user';
+      throw new Error();
+    }
+    return response.data;
+  } catch (error) {
+    let errorStatus = -1;
+    if ('customAttributes' in error) {
+      errorStatus = error.customAttributes.httpErrorStatus;
+    }
+    if (errorStatus === 401) {
+      errMessage = 'Authentication Failed';
+    } else if (errorStatus === 403) {
+      errMessage = 'Forbidden. You do not have permissions to retire this user';
+    } else if (errorStatus === 404) {
+      errMessage = 'Not Found';
+    }
+
+    if (!errMessage) { errMessage = 'Unable to connect to the service'; }
+
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: errMessage,
+          type: 'error',
+          topic: 'retireUser',
+        },
+      ],
+    };
+  }
+}
+
 export async function postCancelRetirement(retirementId) {
   try {
     const { data } = await getAuthenticatedHttpClient().post(AppUrls.CancelRetirementUrl(), `retirement_id=${retirementId}`);
