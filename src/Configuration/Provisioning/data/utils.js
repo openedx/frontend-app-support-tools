@@ -64,3 +64,35 @@ export function updatePolicies(data, newDataAttribute, index) {
   };
   return [...policies];
 }
+
+/**
+ * Checks all form data to ensure that all required fields are filled out,
+ * but not the individual validity of each field.
+ * @param {Object} formData - The form data object.
+ * @returns {Boolean} - Returns true if all form data is valid, false otherwise.
+ */
+export function validFormData(formData) {
+  const { policies } = formData;
+  // Check subsidy specific data
+  const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
+  const isFinancialIdentifierValid = !!formData.financialIdentifier;
+  const isDateRangeValid = !!formData.startDate && !!formData.endDate;
+  const isRevReqValid = !!formData.subsidyRevReq;
+
+  const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid && isDateRangeValid && isRevReqValid;
+
+  // Check policy specific data
+  const arePoliciesValid = policies.every(policy => {
+    const isAccountNameValid = !!policy.accountName;
+    const isAccountValueValid = !!policy.accountValue;
+    const isCatalogQueryValid = policy.customerCatalog
+      ? !!policy.customerCatalogUUID
+      : !!policy.catalogQueryMetadata?.catalogQuery?.id && !!policy.catalogQueryMetadata?.catalogQuery?.title;
+    const { perLearnerCap } = policy;
+    const isPerLearnerCapValid = perLearnerCap ? policy.perLearnerCapAmount > 0 : !perLearnerCap;
+
+    return isAccountNameValid && isAccountValueValid && isCatalogQueryValid && isPerLearnerCapValid;
+  });
+
+  return isSubsidyValid && arePoliciesValid;
+}

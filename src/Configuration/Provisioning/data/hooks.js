@@ -78,11 +78,15 @@ export default function useProvisioningContext() {
 
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+    const camelCasedData = camelCaseObject(data.results);
+    const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
+    const filteredCourses = camelCasedData.filter(({ title }) => title.indexOf(learnerCreditPrefix) !== 0);
+
     setState(s => ({
       ...s,
       catalogQueries: {
         ...s.catalogQueries,
-        data: camelCaseObject(data.results),
+        data: filteredCourses,
         isLoading: false,
       },
     }));

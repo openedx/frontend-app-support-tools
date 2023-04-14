@@ -6,16 +6,17 @@ import { useHistory } from 'react-router';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
-import { selectProvisioningContext } from '../data/utils';
+import { selectProvisioningContext, validFormData } from '../data/utils';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
   const { BUTTON, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-  const { resetFormData, setAlertMessage } = useProvisioningContext();
+  const { resetFormData } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
+  const canCreatePolicyAndSubsidy = validFormData(formData);
 
   const createCatalogs = async (payload) => {
     const data = await LmsApiService.postEnterpriseCustomerCatalog(
@@ -29,16 +30,17 @@ const ProvisioningFormSubmissionButton = () => {
     // handle per policy catalog data
     try {
       policies.forEach(async (policy) => {
-        if (policy.catalogQueryMetadata.catalogQuery && formData.enterpriseUUID) {
+        // checks if policy has all the valid fields and if customerCatalogUUID is not present
+        if (canCreatePolicyAndSubsidy && !policy.customerCatalogUUID) {
           const payload = [
             formData.enterpriseUUID,
             policy.catalogQueryMetadata.catalogQuery.id,
-            `${formData.enterpriseUUID} ${policy.catalogQueryMetadata.catalogQuery.title}`,
+            `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
           ];
-          const response = await createCatalogs(payload);
-          if (response) {
+          const catalogCreatedResponse = await createCatalogs(payload);
+          if (catalogCreatedResponse) {
             // eslint-disable-next-line no-console
-            console.log('response', response);
+            console.log(catalogCreatedResponse);
           }
         }
       });
@@ -46,7 +48,8 @@ const ProvisioningFormSubmissionButton = () => {
       // eslint-disable-next-line no-console
       const { customAttributes } = error;
       if (customAttributes) {
-        setAlertMessage(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
+        // eslint-disable-next-line no-console
+        console.error(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
       }
     }
     resetFormData();

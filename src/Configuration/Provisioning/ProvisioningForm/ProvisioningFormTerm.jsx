@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Form } from '@edx/paragon';
+import {
+  Form,
+  Icon,
+  Stack,
+  OverlayTrigger,
+  Tooltip,
+} from '@edx/paragon';
+import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
@@ -28,9 +35,21 @@ const ProvisioningFormTerm = () => {
 
   return (
     <article className="mt-4.5">
-      <div className="mb-1">
+      <Stack direction="horizontal" className="mb-1">
         <h3>{TERM.TITLE}</h3>
-      </div>
+        <OverlayTrigger
+          placement="right"
+          overlay={(
+            <Tooltip
+              id="term-tooltip"
+            >
+              {TERM.TOOLTIP}
+            </Tooltip>
+          )}
+        >
+          <Icon src={InfoOutline} size="sm" className="align-self-baseline ml-1.5" />
+        </OverlayTrigger>
+      </Stack>
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           name="start-date"

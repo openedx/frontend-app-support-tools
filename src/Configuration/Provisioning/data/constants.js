@@ -29,6 +29,7 @@ const PROVISIONING_PAGE_TEXT = {
         endDate: 'End Date',
       },
       VALIDITY: 'Please choose an end date later than the start date',
+      TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
     SUBSIDY_TYPE: {
       TITLE: 'Subsidy Type',
@@ -39,8 +40,8 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
     ACCOUNT_CREATION: {
-      TITLE: 'Account creation',
-      SUB_TITLE: 'Split Learner Credit value into accounts by products?',
+      TITLE: 'Balance by product',
+      SUB_TITLE: 'Divide Learner Credit purchase value by product?',
       OPTIONS: {
         multiple: 'Yes, create separate Open Courses and Executive Education Learner Credit accounts',
         single: 'No, create one Learner Credit account',
@@ -50,16 +51,16 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         openCourses: 'Open Courses account',
         executiveEducation: 'Executive Education account',
-        default: 'Account',
+        default: 'Balance',
       },
     },
     ACCOUNT_DETAIL: {
-      TITLE: 'Account details',
+      TITLE: 'Balance details',
       OPTIONS: {
         displayName: 'Display Name',
         totalAccountValue: {
-          title: 'Total account value',
-          subtitle: 'The contracted USD value available through the account.',
+          title: 'Starting balance value',
+          subtitle: 'The total contracted USD value available through the balance.',
           dynamicSubtitle: (accountType) => `The contracted USD value available through the account redeemable for ${accountType} enrollment.`,
         },
       },
@@ -97,7 +98,7 @@ const PROVISIONING_PAGE_TEXT = {
         },
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
-          subtitle: 'Select enterprise catalog query',
+          subtitle: 'Select an existing Enterprise Catalog Query to create the new Customer Catalog record from.',
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
