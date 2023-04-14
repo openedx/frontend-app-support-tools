@@ -62,5 +62,14 @@ describe('ProvisioningFormTerm', () => {
     expect(endDateInputValue).toEqual('2020-01-01');
 
     expect(screen.getByText(TERM.VALIDITY)).toBeTruthy();
+
+    fireEvent.change(endDateInput, { target: { value: 'foo' } });
+    const invalidEndDateInputValue = endDateInput.getAttribute('value');
+    expect(invalidEndDateInputValue).toEqual('');
+    expect(startDateInput.getAttribute('value')).toEqual('2021-01-01');
+
+    fireEvent.change(startDateInput, { target: { value: '2020/09/08' } });
+    const invalidStartDateInputValue = startDateInput.getAttribute('value');
+    expect(invalidStartDateInputValue).toEqual('');
   });
 });

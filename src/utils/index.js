@@ -96,3 +96,5 @@ export function extractParams(searchParams) {
       .map(queryParams => queryParams.split('=')),
   );
 }
+
+export const isValidDateString = (dateString) => moment(dateString, 'YYYY-MM-DD', true).isValid();
