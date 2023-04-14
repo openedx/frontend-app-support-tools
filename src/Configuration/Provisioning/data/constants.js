@@ -129,6 +129,11 @@ const PROVISIONING_PAGE_TEXT = {
           400: 'The enterprise catalog query could not be created.',
           404: 'Enterprise Catalog Query failed to respond.',
         },
+        ENTERPRISE_CATALOG_CATALOG: {
+          400: 'The enterprise catalog could not be created.',
+          404: 'Enterprise Catalog failed to respond.',
+          405: 'The enterprise catalog could not be created.',
+        },
       },
     },
   },

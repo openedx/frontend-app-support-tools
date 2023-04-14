@@ -6,9 +6,20 @@ class LmsApiService {
 
   static baseUrl = getConfig().LMS_BASE_URL;
 
-  static enterpriseCatalogQueriesUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise_catalog_query/`;
+  static enterpriseAPIBaseUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/`;
+
+  static enterpriseCatalogQueriesUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_catalog_query/`;
+
+  static enterpriseCustomerCatalogsUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_catalog/`;
 
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
+
+  static postEnterpriseCustomerCatalog = (enterpriseCustomerUUID, catalogQueryUUID, title) => LmsApiService
+    .apiClient().post(LmsApiService.enterpriseCustomerCatalogsUrl, {
+      enterprise_customer: enterpriseCustomerUUID,
+      enterprise_catalog_query: catalogQueryUUID,
+      title,
+    });
 }
 
 export default LmsApiService;

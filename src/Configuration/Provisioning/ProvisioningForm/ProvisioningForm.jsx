@@ -17,7 +17,6 @@ const ProvisioningForm = () => {
   const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
   const sampleCatalogQuery = multipleFunds ? multipleQueries : defaultQuery;
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
-
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(sampleCatalogQuery);

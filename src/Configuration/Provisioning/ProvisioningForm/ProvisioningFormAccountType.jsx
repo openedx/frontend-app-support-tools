@@ -73,7 +73,7 @@ const ProvisioningFormAccountType = () => {
           {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
             <div key={uuidv4()} className="d-flex align-items-center position-relative">
-              {catalogQueries.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
+              {catalogQueries?.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
               <Spinner
                 className="position-absolute"
                 data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}

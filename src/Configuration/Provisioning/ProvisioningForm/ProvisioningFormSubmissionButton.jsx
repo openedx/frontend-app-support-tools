@@ -6,18 +6,49 @@ import { useHistory } from 'react-router';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
+import { selectProvisioningContext } from '../data/utils';
+import LmsApiService from '../../../data/services/EnterpriseApiService';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
-  const { BUTTON } = PROVISIONING_PAGE_TEXT.FORM;
+  const { BUTTON, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-  const { resetFormData } = useProvisioningContext();
+  const { resetFormData, setAlertMessage } = useProvisioningContext();
+  const [formData] = selectProvisioningContext('formData');
+  const { policies } = formData;
+
+  const createCatalogs = async (payload) => {
+    const data = await LmsApiService.postEnterpriseCustomerCatalog(
+      ...payload,
+    );
+    return data;
+  };
   const handleSubmit = async () => {
-    // TODO: do something like this to post the form data to the backend
-    // const response = await postProvisioningData(formData);
-    // if (response) {
-    //     setSuccessMessage(PROVISIONING_PAGE_TEXT.SUCCESS_MESSAGE);
-    // }
+    // handle subsidy data
+
+    // handle per policy catalog data
+    try {
+      policies.forEach(async (policy) => {
+        if (policy.catalogQueryMetadata.catalogQuery && formData.enterpriseUUID) {
+          const payload = [
+            formData.enterpriseUUID,
+            policy.catalogQueryMetadata.catalogQuery.id,
+            `${formData.enterpriseUUID} ${policy.catalogQueryMetadata.catalogQuery.title}`,
+          ];
+          const response = await createCatalogs(payload);
+          if (response) {
+            // eslint-disable-next-line no-console
+            console.log('response', response);
+          }
+        }
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      const { customAttributes } = error;
+      if (customAttributes) {
+        setAlertMessage(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
+      }
+    }
     resetFormData();
     history.push(HOME);
   };
