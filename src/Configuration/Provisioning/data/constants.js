@@ -13,6 +13,9 @@ const PROVISIONING_PAGE_TEXT = {
     SUB_TITLE: 'Plan Details',
     BUTTON: {
       submit: 'Create Learner Credit Plan',
+      pending: 'Creating...',
+      success: 'Plan successfully created',
+      error: 'Failed to create plan',
       cancel: 'Cancel',
     },
     CUSTOMER: {
