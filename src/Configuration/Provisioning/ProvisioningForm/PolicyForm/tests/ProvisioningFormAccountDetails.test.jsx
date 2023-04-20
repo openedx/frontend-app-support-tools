@@ -5,7 +5,7 @@ import { ProvisioningContext, initialStateValue } from '../../../../testData';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
 import ProvisioningFormAccountDetails from '../ProvisioningFormAccountDetails';
 
-const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
+const { ACCOUNT_DETAIL, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
 
 const ProvisioningFormAccountDetailsWrapper = ({
   value = initialStateValue,
@@ -84,5 +84,16 @@ describe('ProvisioningFormAccountDetails', () => {
     fireEvent.change(input, { target: { value: '7777777' } });
 
     expect(input.getAttribute('value')).toEqual('7777777');
+  });
+  it('displays an error message if the input is not a whole dollar amount', () => {
+    renderWithRouter(
+      <ProvisioningFormAccountDetailsWrapper
+        value={initialStateValue}
+        index={0}
+      />,
+    );
+    const input = screen.getByTestId('account-value');
+    fireEvent.change(input, { target: { value: '100.50' } });
+    expect(screen.getByText(ALERTS.incorrectDollarAmount)).toBeTruthy();
   });
 });
