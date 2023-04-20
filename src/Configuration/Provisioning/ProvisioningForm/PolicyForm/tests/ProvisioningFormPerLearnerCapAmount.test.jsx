@@ -5,7 +5,7 @@ import { ProvisioningContext, initialStateValue } from '../../../../testData';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
 import ProvisioningFormPerLearnerCapAmount from '../ProvisioningFormPerLearnerCapAmount';
 
-const { LEARNER_CAP_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
+const { LEARNER_CAP_DETAIL, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
 
 const ProvisioningFormPerLearnerCapAmountWrapper = ({
   value = initialStateValue,
@@ -60,5 +60,17 @@ describe('ProvisioningFormPerLearnerCapAmount', () => {
     const input = screen.getByTestId('per-learner-spend-cap-amount');
     fireEvent.change(input, { target: { value: '100' } });
     expect(input.value).toBe('100');
+  });
+
+  it('displays an error message if the input is not a whole dollar amount', () => {
+    renderWithRouter(
+      <ProvisioningFormPerLearnerCapAmountWrapper
+        value={initialStateValue}
+        index={0}
+      />,
+    );
+    const input = screen.getByTestId('per-learner-spend-cap-amount');
+    fireEvent.change(input, { target: { value: '100.50' } });
+    expect(screen.getByText(ALERTS.incorrectDollarAmount)).toBeTruthy();
   });
 });

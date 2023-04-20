@@ -11,6 +11,8 @@ import {
   isValidCourseID,
   extractMessageTuple,
   extractParams,
+  isValidDateString,
+  isWholeDollarAmount,
 } from './index';
 
 describe('Test Utils', () => {
@@ -208,5 +210,43 @@ describe('Test Utils', () => {
       expect(params.size).toEqual(1);
       expect(params.get('')).toEqual(undefined);
     });
+  });
+
+  describe('isValidDate', () => {
+    it('returns true for valid date string in YYYY-MM-DD format', () => {
+      expect(isValidDateString('2022-03-24')).toBe(true);
+      expect(isValidDateString('1997-11-04')).toBe(true);
+      expect(isValidDateString('2022-01-01')).toBe(true);
+    });
+    it('returns false for invalid date string', () => {
+      expect(isValidDateString('2022-3-24')).toBe(false);
+      expect(isValidDateString('2022-04-3oT12:00:00Z')).toBe(false);
+      expect(isValidDateString('2022/01/01')).toBe(false);
+      expect(isValidDateString('foo')).toBe(false);
+    });
+    it('returns false for null or undefined input', () => {
+      expect(isValidDateString(null)).toBe(false);
+      expect(isValidDateString(undefined)).toBe(false);
+    });
+  });
+});
+
+describe('isWholeDollarAmount', () => {
+  it('returns true for whole dollar amounts', () => {
+    expect(isWholeDollarAmount('1')).toEqual(true);
+    expect(isWholeDollarAmount('999')).toEqual(true);
+  });
+  it('returns false for non-whole dollar amounts', () => {
+    expect(isWholeDollarAmount('10.00')).toEqual(false);
+    expect(isWholeDollarAmount('0.99')).toEqual(false);
+    expect(isWholeDollarAmount('123.45')).toEqual(false);
+    expect(isWholeDollarAmount('0')).toEqual(false);
+  });
+  it('returns false for non-numeric inputs', () => {
+    expect(isWholeDollarAmount('abc')).toEqual(false);
+    expect(isWholeDollarAmount('')).toEqual(false);
+    expect(isWholeDollarAmount(null)).toEqual(false);
+    expect(isWholeDollarAmount('123ab')).toEqual(false);
+    expect(isWholeDollarAmount('ab233')).toEqual(false);
   });
 });

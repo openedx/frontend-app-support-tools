@@ -62,8 +62,8 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         displayName: 'Display Name',
         totalAccountValue: {
-          title: 'Starting balance value',
-          subtitle: 'The total contracted USD value available through the balance.',
+          title: 'Total account value ($)',
+          subtitle: 'The contracted USD value available through the account.',
           dynamicSubtitle: (accountType) => `The contracted USD value available through the account redeemable for ${accountType} enrollment.`,
         },
       },
@@ -121,7 +121,7 @@ const PROVISIONING_PAGE_TEXT = {
       TITLE: 'Define Restrictions',
       OPTIONS: {
         perLearnerSpendCap: {
-          title: 'Per learner spend cap',
+          title: 'Per learner spend cap ($)',
           subtitle: 'The maximum USD value a single learner may redeem from the account.',
         },
       },
@@ -139,6 +139,7 @@ const PROVISIONING_PAGE_TEXT = {
           405: 'The enterprise catalog could not be created.',
         },
       },
+      incorrectDollarAmount: 'Please enter a whole dollar value',
     },
   },
 };

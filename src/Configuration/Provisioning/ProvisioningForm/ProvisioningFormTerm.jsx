@@ -10,6 +10,7 @@ import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
+import { isValidDateString } from '../../../utils';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
@@ -19,10 +20,17 @@ const ProvisioningFormTerm = () => {
 
   const handleDateChange = (e) => {
     const eventTarget = e.target;
-    if (eventTarget.dataset.testid.includes('start')) {
-      return setStartDate(eventTarget.value);
+    const isStartDate = eventTarget.dataset.testid.includes('start');
+    if (isValidDateString(eventTarget.value)) {
+      if (isStartDate) {
+        return setStartDate(eventTarget.value);
+      }
+      return setEndDate(eventTarget.value);
     }
-    return setEndDate(eventTarget.value);
+    if (isStartDate) {
+      return setStartDate('');
+    }
+    return setEndDate('');
   };
 
   useEffect(() => {
