@@ -12,10 +12,10 @@ const PROVISIONING_PAGE_TEXT = {
     TITLE: (pathName) => `${titleCase(pathName.split('/').reverse()[0])} Learner Credit Plan`,
     SUB_TITLE: 'Plan Details',
     BUTTON: {
-      submit: 'Create Learner Credit Plan',
+      submit: 'Create learner credit plan',
       pending: 'Creating...',
       success: 'Plan successfully created',
-      error: 'Failed to create plan',
+      error: 'Failed to create plan. Please try again.',
       cancel: 'Cancel',
     },
     CUSTOMER: {
@@ -145,6 +145,7 @@ const PROVISIONING_PAGE_TEXT = {
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
 
+// Used to create pre-populated catalog queries for the form. Catalog query ids added in ProvisioningForm.jsx component
 export const INITIAL_CATALOG_QUERIES = {
   multipleQueries: [
     {
@@ -163,7 +164,5 @@ export const INITIAL_CATALOG_QUERIES = {
     },
   ],
 };
-
-export const autoSuggestSampleOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'];
 
 export default PROVISIONING_PAGE_TEXT;

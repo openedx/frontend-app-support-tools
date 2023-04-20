@@ -1,6 +1,7 @@
 import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import { ProvisioningContext } from '../ProvisioningContext';
+import LmsApiService from '../../../data/services/EnterpriseApiService';
 
 export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
@@ -22,7 +23,11 @@ export const lmsCustomerCatalog = {
   },
 };
 
-// Takes an array of catalog queries and sorted them by last modified date (newest first)
+/**
+ * Sorts an array of catalog queries by most recently modified date
+ * @param {Array} catalogQueries - Object array of catalog queries
+ * @returns {Array} - Sorted catalog queries by most recently modified
+ */
 export function sortedCatalogQueries(catalogQueries) {
   return catalogQueries.sort((b, a) => {
     if (a.modified < b.modified) {
@@ -93,6 +98,12 @@ export function validFormData(formData) {
 
     return isAccountNameValid && isAccountValueValid && isCatalogQueryValid && isPerLearnerCapValid;
   });
-
   return isSubsidyValid && arePoliciesValid;
+}
+
+export async function createCatalogs(payload) {
+  const { data } = await LmsApiService.postEnterpriseCustomerCatalog(
+    ...payload,
+  );
+  return data;
 }

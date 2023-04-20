@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import ProvisioningFormSubmissionButton from '../ProvisioningFormSubmissionButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -34,13 +34,13 @@ describe('ProvisioningFormSubmissionButton', () => {
     expect(screen.getByText(BUTTON.submit)).toBeTruthy();
     expect(screen.getByText(BUTTON.cancel)).toBeTruthy();
   });
-  it('calls handleSubmit when clicked', () => {
+  it('calls handleSubmit error state when clicked with no data', async () => {
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper />);
 
     const submitButton = screen.getByText(BUTTON.submit);
     fireEvent.click(submitButton);
 
-    expect(useHistoryPush).toHaveBeenCalledWith(`${PROVISIONING.HOME}`);
+    await waitFor(() => expect(screen.getByText(BUTTON.error)).toBeTruthy());
   });
   it('calls handleCancel when clicked', () => {
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper />);

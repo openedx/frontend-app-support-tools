@@ -9,8 +9,7 @@ import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
-import { selectProvisioningContext, validFormData } from '../data/utils';
-import LmsApiService from '../../../data/services/EnterpriseApiService';
+import { createCatalogs, selectProvisioningContext, validFormData } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
@@ -23,20 +22,23 @@ const ProvisioningFormSubmissionButton = () => {
 
   const [submitButtonState, setSubmitButtonState] = useState('default');
 
-  const createCatalogs = async (payload) => {
-    const data = await LmsApiService.postEnterpriseCustomerCatalog(
-      ...payload,
-    );
-    return data;
+  const clearFormAndRedirect = () => {
+    resetFormData();
+    history.push(HOME);
   };
+
+  // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
     // handle subsidy data
     // handle per policy catalog data
+    if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
+      return setSubmitButtonState('error');
+    }
     try {
       policies.forEach(async (policy) => {
         // checks if policy has all the valid fields and if customerCatalogUUID is not present
-        if (canCreatePolicyAndSubsidy && !policy.customerCatalogUUID) {
+        if (!policy.customerCatalogUUID) {
           const payload = [
             formData.enterpriseUUID,
             policy.catalogQueryMetadata.catalogQuery.id,
@@ -45,7 +47,6 @@ const ProvisioningFormSubmissionButton = () => {
           const catalogCreatedResponse = await createCatalogs(payload);
           // attach catalogs to policies here
           if (catalogCreatedResponse) {
-            // eslint-disable-next-line no-console
             return setSubmitButtonState('complete');
           }
         }
@@ -57,22 +58,20 @@ const ProvisioningFormSubmissionButton = () => {
       const { customAttributes } = error;
       if (customAttributes) {
         // eslint-disable-next-line no-console
-        console.log(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
+        return console.log(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
       }
     }
   };
-  useEffect(() => {
-    if (submitButtonState === 'complete') {
-      resetFormData();
-      history.push(HOME);
-    }
-  });
 
   const handleCancel = () => {
-    // verify form data clears, default restored
-    resetFormData();
-    history.push(HOME);
+    clearFormAndRedirect();
   };
+
+  useEffect(() => {
+    if (submitButtonState === 'complete') {
+      clearFormAndRedirect();
+    }
+  }, [submitButtonState]);
 
   const buttonLabels = {
     default: BUTTON.submit,

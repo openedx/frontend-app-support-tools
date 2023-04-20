@@ -19,7 +19,7 @@ export const sampleCatalogQueries = {
       created: '2023-03-10T17:24:51.545054Z',
       modified: '2023-03-10T17:24:51.545054Z',
       title: 'TestQ4',
-      uuid: '0b2cb3f8-d697-487c-bdc6-24e470878e30',
+      uuid: uuidv4(),
       includeExecEd2UCourses: false,
     },
     {
@@ -28,7 +28,7 @@ export const sampleCatalogQueries = {
       created: '2023-03-13T19:09:24.841448Z',
       modified: '2023-03-13T19:09:24.841448Z',
       title: 'TestQ6',
-      uuid: '20cb6503-424f-4877-a606-b054808e6174',
+      uuid: uuidv4(),
       includeExecEd2UCourses: false,
     },
     {
@@ -37,7 +37,7 @@ export const sampleCatalogQueries = {
       created: '2023-03-12T21:59:28.014016Z',
       modified: '2023-03-12T21:59:28.014016Z',
       title: 'TestQ5',
-      uuid: 'df85c9ea-f29d-430a-8e83-a3c37aeaf6ce',
+      uuid: uuidv4(),
       includeExecEd2UCourses: false,
     },
     {
@@ -46,7 +46,7 @@ export const sampleCatalogQueries = {
       created: '2023-03-10T16:31:57.251750Z',
       modified: '2023-03-10T16:31:57.251750Z',
       title: 'TestQ3',
-      uuid: 'd8c0f20e-55fd-41a6-8b3e-41682720281b',
+      uuid: uuidv4(),
       includeExecEd2UCourses: true,
     },
     {
@@ -57,7 +57,7 @@ export const sampleCatalogQueries = {
       created: '2023-02-22T19:30:19.611766Z',
       modified: '2023-02-22T19:30:19.611766Z',
       title: 'TestQ2',
-      uuid: '312af8b3-8999-475f-b8df-c1522170a5ce',
+      uuid: uuidv4(),
       includeExecEd2UCourses: false,
     },
     {
@@ -68,9 +68,125 @@ export const sampleCatalogQueries = {
       created: '2023-02-22T19:26:42.920525Z',
       modified: '2023-02-22T19:26:42.920525Z',
       title: 'TestQ1',
-      uuid: 'd9b5d92b-e5c6-4cca-812c-57bb536e7c9b',
+      uuid: uuidv4(),
       includeExecEd2UCourses: false,
     },
   ],
   isLoading: false,
+};
+
+export const sampleMultiplePolicyFormData = {
+  policies: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: 'Open Courses account',
+      catalogQueryMetadata: {
+        catalogQuery: {
+          id: 9,
+          title: 'Open Courses account',
+        },
+      },
+      accountName: 'Super Awesome Open Courses',
+      accountValue: '250000',
+      perLearnerCap: false,
+    },
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: 'Executive Education account',
+      catalogQueryMetadata: {
+        catalogQuery: {
+          id: 10,
+          title: 'Executive Education account',
+        },
+      },
+      accountName: 'Ever Expanding Executive Education',
+      accountValue: '750000',
+      perLearnerCap: true,
+      perLearnerCapAmount: '2500',
+    },
+  ],
+  enterpriseUUID: uuidv4(),
+  financialIdentifier: 'abc123',
+  startDate: '2023-04-18',
+  endDate: '2023-04-21',
+  subsidyRevReq: 'No (partner no rev prepay)',
+};
+
+export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
+  policies: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: 'Balance',
+      catalogQueryMetadata: {
+        catalogQuery: {
+          id: '10',
+          title: 'Executive Education',
+        },
+      },
+      accountName: 'I love Executive Education Only',
+      accountValue: '250000',
+      perLearnerCap: true,
+      perLearnerCapAmount: '2000',
+    },
+  ],
+  enterpriseUUID: uuidv4(),
+  financialIdentifier: 'abc123',
+  startDate: '2023-04-18',
+  endDate: '2023-04-21',
+  subsidyRevReq: 'No (partner no rev prepay)',
+};
+
+export const sampleSinglePolicyExistingCustomerCatalogFormData = {
+  policies: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: 'Balance',
+      catalogQueryMetadata: {
+        catalogQuery: '',
+      },
+      accountName: 'I have my own catalog',
+      accountValue: '250000',
+      perLearnerCap: false,
+      perLearnerCapAmount: '2000',
+      customerCatalog: true,
+      customerCatalogUUID: 'a2b2c2',
+    },
+  ],
+  enterpriseUUID: uuidv4(),
+  financialIdentifier: 'abc123',
+  startDate: '2023-04-18',
+  endDate: '2023-04-21',
+  subsidyRevReq: 'No (partner no rev prepay)',
+};
+
+export const sampleSinglePolicyCustomCatalogQueryFormData = {
+  policies: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: 'Balance',
+      catalogQueryMetadata: {
+        catalogQuery: {
+          id: 2,
+          contentFilter: {
+            contentType: 'courses',
+          },
+          created: '2023-02-22T19:30:19.611766Z',
+          modified: '2023-02-22T19:30:19.611766Z',
+          title: 'TestQ2',
+          uuid: uuidv4(),
+          includeExecEd2UCourses: false,
+        },
+      },
+      accountName: 'Super Cool Awesome',
+      customerCatalog: false,
+      customerCatalogUUID: null,
+      accountValue: '250000',
+      perLearnerCap: false,
+    },
+  ],
+  enterpriseUUID: 'abc',
+  financialIdentifier: 'abc',
+  startDate: '2023-04-06',
+  endDate: '2023-04-27',
+  subsidyRevReq: 'No (partner no rev prepay)',
 };

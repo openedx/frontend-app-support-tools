@@ -10,7 +10,7 @@ import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormSourceCustomCatalogRadio = ({ index }) => {
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const { setCustomerCatalog } = useProvisioningContext();
+  const { setCustomerCatalog, setCustomerCatalogUUID } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const [value, setValue] = useState(null);
 
@@ -31,6 +31,9 @@ const ProvisioningFormSourceCustomCatalogRadio = ({ index }) => {
     setCustomerCatalog({
       customerCatalog: newTabValue === CUSTOM_CATALOG.OPTIONS.enterpriseCustomerCatalog.yes,
     }, index);
+    setCustomerCatalogUUID({
+      customerCatalogUUID: null,
+    });
     setValue(newTabValue);
   };
 
