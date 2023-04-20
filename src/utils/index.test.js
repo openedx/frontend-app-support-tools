@@ -11,6 +11,7 @@ import {
   isValidCourseID,
   extractMessageTuple,
   extractParams,
+  isValidDateString,
   isWholeDollarAmount,
 } from './index';
 
@@ -208,6 +209,24 @@ describe('Test Utils', () => {
       const params = extractParams(query);
       expect(params.size).toEqual(1);
       expect(params.get('')).toEqual(undefined);
+    });
+  });
+
+  describe('isValidDate', () => {
+    it('returns true for valid date string in YYYY-MM-DD format', () => {
+      expect(isValidDateString('2022-03-24')).toBe(true);
+      expect(isValidDateString('1997-11-04')).toBe(true);
+      expect(isValidDateString('2022-01-01')).toBe(true);
+    });
+    it('returns false for invalid date string', () => {
+      expect(isValidDateString('2022-3-24')).toBe(false);
+      expect(isValidDateString('2022-04-3oT12:00:00Z')).toBe(false);
+      expect(isValidDateString('2022/01/01')).toBe(false);
+      expect(isValidDateString('foo')).toBe(false);
+    });
+    it('returns false for null or undefined input', () => {
+      expect(isValidDateString(null)).toBe(false);
+      expect(isValidDateString(undefined)).toBe(false);
     });
   });
 });
