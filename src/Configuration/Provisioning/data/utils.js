@@ -101,9 +101,27 @@ export function validFormData(formData) {
   return isSubsidyValid && arePoliciesValid;
 }
 
+/**
+ *
+ * @param {Array} payload - Array of data to be sent to the LMS, in the form of
+ * [enterpriseCustomerUUID, catalogQueryUUID, title]
+ * @returns - The response data from the LMS
+ */
 export async function createCatalogs(payload) {
   const { data } = await LmsApiService.postEnterpriseCustomerCatalog(
     ...payload,
   );
   return data;
+}
+
+/**
+ * Extracts the catalog title from the catalogQueryTitle field of a policy.
+ * @param {Object} policy - The policy object.
+ * @returns {String} - The catalog title.
+ */
+export function extractDefinedCatalogTitle(policy) {
+  if (!policy) {
+    return null;
+  }
+  return policy.catalogQueryTitle.split(' account')[0];
 }

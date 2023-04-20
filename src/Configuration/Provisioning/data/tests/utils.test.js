@@ -79,7 +79,7 @@ describe('createCatalogs', () => {
     const data = await createCatalogs([
       'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
       10,
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd' - 'title',
+      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
     ]);
     expect(data).toEqual(sampleCreateCatalogResponse.data);
   });

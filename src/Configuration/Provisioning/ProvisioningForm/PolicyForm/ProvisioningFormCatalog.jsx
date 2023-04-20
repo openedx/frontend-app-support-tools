@@ -8,7 +8,7 @@ import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { indexOnlyPropType } from '../../data/utils';
+import { extractDefinedCatalogTitle, indexOnlyPropType } from '../../data/utils';
 import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
@@ -58,7 +58,7 @@ const ProvisioningFormCatalog = ({ index }) => {
         && (
         <Container>
           <h4>
-            {formData.policies[index]?.catalogQueryTitle.split(' account')[0]}
+            {extractDefinedCatalogTitle(formData.policies[index])}
           </h4>
         </Container>
         )}

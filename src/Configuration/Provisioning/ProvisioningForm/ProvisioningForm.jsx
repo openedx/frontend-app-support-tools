@@ -13,7 +13,7 @@ import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, alertMessage] = selectProvisioningContext('multipleFunds', 'alertMessage', 'formData');
+  const [multipleFunds, alertMessage] = selectProvisioningContext('multipleFunds', 'alertMessage');
   const camelCasedQueries = camelCaseObject(getConfig().PREDEFINED_CATALOG_QUERIES);
   const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
@@ -44,7 +44,10 @@ const ProvisioningForm = () => {
       <ProvisioningFormTerm />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
-      {!alertMessage && definedCatalogQueries && definedCatalogQueries.map(({ uuid, catalogQueryTitle }, index) => (
+      {!alertMessage && definedCatalogQueries && definedCatalogQueries.map(({
+        uuid,
+        catalogQueryTitle,
+      }, index) => (
         <ProvisioningFormPolicyContainer
           key={uuid}
           title={catalogQueryTitle}

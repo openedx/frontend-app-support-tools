@@ -14,12 +14,15 @@ class LmsApiService {
 
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
 
-  static postEnterpriseCustomerCatalog = (enterpriseCustomerUUID, catalogQueryUUID, title) => LmsApiService
-    .apiClient().post(LmsApiService.enterpriseCustomerCatalogsUrl, {
-      enterprise_customer: enterpriseCustomerUUID,
-      enterprise_catalog_query: catalogQueryUUID,
-      title,
-    });
+  static postEnterpriseCustomerCatalog = (
+    enterpriseCustomerUUID,
+    catalogQueryUUID,
+    title,
+  ) => LmsApiService.apiClient().post(LmsApiService.enterpriseCustomerCatalogsUrl, {
+    enterprise_customer: enterpriseCustomerUUID,
+    enterprise_catalog_query: catalogQueryUUID,
+    title,
+  });
 }
 
 export default LmsApiService;
