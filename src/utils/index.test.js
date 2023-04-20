@@ -12,6 +12,7 @@ import {
   extractMessageTuple,
   extractParams,
   isValidDateString,
+  isWholeDollarAmount,
 } from './index';
 
 describe('Test Utils', () => {
@@ -227,5 +228,25 @@ describe('Test Utils', () => {
       expect(isValidDateString(null)).toBe(false);
       expect(isValidDateString(undefined)).toBe(false);
     });
+  });
+});
+
+describe('isWholeDollarAmount', () => {
+  it('returns true for whole dollar amounts', () => {
+    expect(isWholeDollarAmount('1')).toEqual(true);
+    expect(isWholeDollarAmount('999')).toEqual(true);
+  });
+  it('returns false for non-whole dollar amounts', () => {
+    expect(isWholeDollarAmount('10.00')).toEqual(false);
+    expect(isWholeDollarAmount('0.99')).toEqual(false);
+    expect(isWholeDollarAmount('123.45')).toEqual(false);
+    expect(isWholeDollarAmount('0')).toEqual(false);
+  });
+  it('returns false for non-numeric inputs', () => {
+    expect(isWholeDollarAmount('abc')).toEqual(false);
+    expect(isWholeDollarAmount('')).toEqual(false);
+    expect(isWholeDollarAmount(null)).toEqual(false);
+    expect(isWholeDollarAmount('123ab')).toEqual(false);
+    expect(isWholeDollarAmount('ab233')).toEqual(false);
   });
 });
