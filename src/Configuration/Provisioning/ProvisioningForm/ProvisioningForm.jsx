@@ -12,13 +12,15 @@ import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, alertMessage] = selectProvisioningContext('multipleFunds', 'alertMessage');
+  const [multipleFunds, alertMessage, customers] = selectProvisioningContext('multipleFunds', 'alertMessage', 'customers');
   // TODO: Extract catalog queries from API to iterate and render policies instead of this for V1
   const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
   const sampleCatalogQuery = multipleFunds ? multipleQueries : defaultQuery;
-  const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
-
+  const { instantiateMultipleFormData, resetPolicies, getCustomers } = useProvisioningContext();
   useEffect(() => {
+    if (customers.length === 0) {
+      getCustomers();
+    }
     resetPolicies();
     instantiateMultipleFormData(sampleCatalogQuery);
   }, [multipleFunds]);

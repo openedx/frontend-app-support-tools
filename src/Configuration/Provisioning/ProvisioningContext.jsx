@@ -7,6 +7,7 @@ export const ProvisioningContext = createContext(null);
 const ProvisioningContextProvider = ({ children }) => {
   const { ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const contextValue = useState({
+    customers: [],
     multipleFunds: undefined,
     customCatalog: false,
     alertMessage: ALERTS.unselectedAccountType,

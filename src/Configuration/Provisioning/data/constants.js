@@ -18,7 +18,7 @@ const PROVISIONING_PAGE_TEXT = {
     CUSTOMER: {
       TITLE: 'Customer',
       OPTIONS: {
-        enterpriseUUID: 'Enterprise Customer UUID',
+        enterpriseUUID: 'Enterprise Customer Name/UUID',
         financialIdentifier: 'Opportunity Product',
       },
     },

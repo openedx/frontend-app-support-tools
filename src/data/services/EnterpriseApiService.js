@@ -8,7 +8,11 @@ class LmsApiService {
 
   static enterpriseCatalogQueriesUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise_catalog_query/`;
 
+  static enterpriseCustomersBasicListUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/basic_list/`;
+
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
+
+  static fetchEnterpriseCustomersBasicList = () => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomersBasicListUrl}`);
 }
 
 export default LmsApiService;
