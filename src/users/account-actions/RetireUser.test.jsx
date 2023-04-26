@@ -48,7 +48,9 @@ describe('Retire User Component Tests', () => {
     expect(retireUserModal.find('h2.pgn__modal-title').text()).toEqual('Retire User Confirmation');
     const confirmAlert = retireUserModal.find('.alert-warning');
     expect(confirmAlert.text()).toEqual(
-      "You are about to retire edx with the email address: edx@example.com. This is a serious action that will revoke this user's access to edX and their earned certificates. Furthermore, the email address associated with the retired account will not be able to be used to create a new account.",
+      "You are about to retire edx with the email address: edx@example.com. This is a serious action that will revoke this user's access to edX and their earned certificates. "
+      + 'Furthermore, the email address associated with the retired account will not be able to be used to create a new account. By taking this action, you are affirming that you '
+      + 'are following our legal/support procedures here',
     );
     retireUserModal.find('button.btn-danger').hostNodes().simulate('click');
     await waitForComponentToPaint(wrapper);
