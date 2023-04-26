@@ -54,6 +54,7 @@ const ProvisioningFormCustomerDropdown = () => {
       onChange={updateDropdown}
       helpMessage="Select an existing enterprise to provision"
       errorMessageText="Error, no selected value"
+      data-testid="customer-uuid"
     >
       {dropdownValues.map(option => (
         <Form.AutosuggestOption key={uuidv4()}>
