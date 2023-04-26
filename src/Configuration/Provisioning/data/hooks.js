@@ -50,6 +50,8 @@ export default function useProvisioningContext() {
 
   const getCustomers = useCallback(async (customer) => {
     const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(customer);
+    // const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList();
+
     setState(s => ({
       ...s,
       customers: data,
