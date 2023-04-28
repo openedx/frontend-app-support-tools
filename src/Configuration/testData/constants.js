@@ -74,3 +74,17 @@ export const sampleCatalogQueries = {
   ],
   isLoading: false,
 };
+
+export const sampleDataTableData = (count, actionComponent) => {
+  const data = [];
+  for (let i = 0; i < count; i++) {
+    data.push({
+      uuid: uuidv4(),
+      customerName: `Catalog Query ${i + 1}`,
+      startDate: '2021-01-01',
+      endDate: '2021-12-31',
+      actionComponent,
+    });
+  }
+  return data;
+};
