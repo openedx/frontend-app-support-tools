@@ -71,7 +71,7 @@ const ProvisioningFormCatalog = ({ index }) => {
               type="radio"
               key={uuidv4()}
               data-testid={CATALOG.OPTIONS[key]}
-              data-catalogQueryId={camelCasedQueries[key]}
+              data-catalogqueryid={camelCasedQueries[key]}
             >
               {CATALOG.OPTIONS[key]}
             </Form.Radio>

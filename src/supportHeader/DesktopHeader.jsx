@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 // Local Components
 import { Dropdown, AvatarButton } from '@edx/paragon';
+import { v4 as uuidv4 } from 'uuid';
 import { Menu, MenuTrigger, MenuContent } from './Menu';
 import { LinkedLogo, Logo } from './Logo';
 
@@ -52,7 +53,7 @@ export default class DesktopHeader extends React.Component {
 
     return (
       <Dropdown>
-        <Dropdown.Toggle as={AvatarButton} src={avatar}>
+        <Dropdown.Toggle id={uuidv4()} as={AvatarButton} src={avatar}>
           {username}
         </Dropdown.Toggle>
 

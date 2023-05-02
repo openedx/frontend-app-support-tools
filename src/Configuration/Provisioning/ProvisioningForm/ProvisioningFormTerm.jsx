@@ -50,6 +50,7 @@ const ProvisioningFormTerm = () => {
           iconAs={Icon}
           invertColors
           isActive
+          alt="Plan activation tooltip"
         />
       </div>
       <Form.Group className="mt-4.5 mb-1">
