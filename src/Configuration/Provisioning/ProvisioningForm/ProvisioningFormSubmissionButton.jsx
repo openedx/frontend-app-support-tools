@@ -27,7 +27,6 @@ const ProvisioningFormSubmissionButton = () => {
     resetFormData();
     history.push(HOME);
   };
-
   // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
@@ -37,35 +36,26 @@ const ProvisioningFormSubmissionButton = () => {
       return setSubmitButtonState('error');
     }
     try {
-      /* istanbul ignore next */
-      policies.forEach(async (policy) => {
-        // checks if policy has all the valid fields and if customerCatalogUUID is not present
+      const responses = await Promise.all(policies.map(async (policy) => {
         if (!policy.customerCatalogUUID) {
-          /* istanbul ignore next */
           const payload = {
             enterpriseCustomerUUID: formData.enterpriseUUID,
             catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
             title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
           };
-          /* istanbul ignore next */
           const catalogCreatedResponse = await createCatalogs(payload);
-          // TODO: attach newly created catalogs to policies here
-          if (catalogCreatedResponse) {
-            /* istanbul ignore next */
-            return setSubmitButtonState('complete');
-          }
+          return catalogCreatedResponse;
         }
-        /* istanbul ignore next */
-        return setSubmitButtonState('error');
-      });
+        return { uuid: policy.customerCatalogUUID };
+      }));
+      if (responses.filter((response) => response.uuid).length === policies.length) {
+        return setSubmitButtonState('complete');
+      }
     } catch (error) {
-      logError(error);
       setSubmitButtonState('error');
-      /* istanbul ignore next */
       const { customAttributes } = error;
       if (customAttributes) {
-        /* istanbul ignore next */
-        logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
+        logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]} ${error}`);
       }
     }
   };
@@ -76,7 +66,6 @@ const ProvisioningFormSubmissionButton = () => {
 
   useEffect(() => {
     if (submitButtonState === 'complete') {
-      /* istanbul ignore next */
       clearFormAndRedirect();
     }
   }, [submitButtonState]);

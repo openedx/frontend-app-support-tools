@@ -10,7 +10,7 @@ class LmsApiService {
 
   static enterpriseCatalogQueriesUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_catalog_query/`;
 
-  static enterpriseCustomerCatalogsUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_catalo/`;
+  static enterpriseCustomerCatalogsUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_catalog/`;
 
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
 

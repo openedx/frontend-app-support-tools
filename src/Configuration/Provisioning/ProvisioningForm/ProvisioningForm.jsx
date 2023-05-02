@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Alert } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
@@ -28,13 +28,17 @@ const ProvisioningForm = () => {
     },
   }));
 
-  const definedCatalogQueries = multipleFunds ? assignedMultipleQueries : defaultQuery;
+  const definedCatalogQueries = useMemo(() => {
+    if (multipleFunds) {
+      return assignedMultipleQueries;
+    }
+    return defaultQuery;
+  }, [multipleFunds]);
 
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(definedCatalogQueries);
-  }, [multipleFunds]);
-
+  }, [multipleFunds, definedCatalogQueries]);
   return (
     <div className="m-0 p-0 mb-5">
       <div className="mt-5">

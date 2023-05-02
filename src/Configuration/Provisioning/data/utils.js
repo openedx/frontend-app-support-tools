@@ -104,8 +104,17 @@ export function hasValidData(formData) {
 
 /**
  * Creates a new catalog for the specified valid enterprise customer.
- * @param {{enterpriseCustomerUUID: string, catalogQueryUUID: string, title: string}}
- * @returns
+ * @param {{
+ * enterpriseCustomerUUID: string,
+ * catalogQueryUUID: Number,
+ * title: string
+ * }} - The new catalog data.
+ * @returns {{
+ * uuid: string,
+ * title: string,
+ * catalogQueryUUID: Number,
+ * enterpriseCustomerUUID: string
+ * }} - The newly created catalog where uuid is the catalog UUID.
  */
 export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID, title }) {
   const { data } = await LmsApiService.postEnterpriseCustomerCatalog(
@@ -119,7 +128,7 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
 /**
  * Extracts the catalog title from the catalogQueryTitle field of a policy.
  * Splitting on ' account' for the case with multiple catalog queries, where the title
- * of each individual 'Policy' form data is  `${title} account`
+ * of each individual 'Policy' form data is `${title} account`
  * @param {Object} policy - The policy object.
  * @returns {String} - The catalog title.
  */

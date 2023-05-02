@@ -3,6 +3,7 @@ import {
   Form,
   Icon,
   IconButtonWithTooltip,
+  Stack,
 } from '@edx/paragon';
 import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
@@ -40,7 +41,7 @@ const ProvisioningFormTerm = () => {
 
   return (
     <article className="mt-4.5">
-      <div className="row mb-1 ml-0">
+      <Stack direction="horizontal" className=" mb-1">
         <h3 className="mb-0 align-self-center">{TERM.TITLE}</h3>
         <IconButtonWithTooltip
           src={InfoOutline}
@@ -52,7 +53,7 @@ const ProvisioningFormTerm = () => {
           isActive
           alt="Plan activation tooltip"
         />
-      </div>
+      </Stack>
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           name="start-date"
