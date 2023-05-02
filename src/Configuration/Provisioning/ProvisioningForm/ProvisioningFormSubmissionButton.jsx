@@ -10,7 +10,7 @@ import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
-import { createCatalogs, selectProvisioningContext, validFormData } from '../data/utils';
+import { createCatalogs, selectProvisioningContext, hasValidData } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
@@ -19,7 +19,7 @@ const ProvisioningFormSubmissionButton = () => {
   const { resetFormData } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
-  const canCreatePolicyAndSubsidy = validFormData(formData);
+  const canCreatePolicyAndSubsidy = hasValidData(formData);
 
   const [submitButtonState, setSubmitButtonState] = useState('default');
 
@@ -42,11 +42,11 @@ const ProvisioningFormSubmissionButton = () => {
         // checks if policy has all the valid fields and if customerCatalogUUID is not present
         if (!policy.customerCatalogUUID) {
           /* istanbul ignore next */
-          const payload = [
-            formData.enterpriseUUID,
-            policy.catalogQueryMetadata.catalogQuery.id,
-            `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
-          ];
+          const payload = {
+            enterpriseCustomerUUID: formData.enterpriseUUID,
+            catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
+            title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
+          };
           /* istanbul ignore next */
           const catalogCreatedResponse = await createCatalogs(payload);
           // TODO: attach newly created catalogs to policies here
@@ -65,7 +65,7 @@ const ProvisioningFormSubmissionButton = () => {
       const { customAttributes } = error;
       if (customAttributes) {
         /* istanbul ignore next */
-        return logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
+        logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]);
       }
     }
   };

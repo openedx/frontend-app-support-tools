@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Form,
   Icon,
-  Stack,
-  OverlayTrigger,
-  Tooltip,
+  IconButtonWithTooltip,
 } from '@edx/paragon';
 import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
@@ -32,7 +30,6 @@ const ProvisioningFormTerm = () => {
     }
     return setEndDate('');
   };
-
   useEffect(() => {
     if (formData.endDate < formData.startDate) {
       setHasInvalidEndDate(true);
@@ -43,21 +40,18 @@ const ProvisioningFormTerm = () => {
 
   return (
     <article className="mt-4.5">
-      <Stack direction="horizontal" className="mb-1">
-        <h3>{TERM.TITLE}</h3>
-        <OverlayTrigger
-          placement="right"
-          overlay={(
-            <Tooltip
-              id="term-tooltip"
-            >
-              {TERM.TOOLTIP}
-            </Tooltip>
-          )}
-        >
-          <Icon src={InfoOutline} size="sm" className="align-self-baseline ml-1.5" />
-        </OverlayTrigger>
-      </Stack>
+      <div className="row mb-1 ml-0">
+        <h3 className="mb-0 align-self-center">{TERM.TITLE}</h3>
+        <IconButtonWithTooltip
+          src={InfoOutline}
+          size="sm"
+          tooltipPlacement="right"
+          tooltipContent={TERM.TOOLTIP}
+          iconAs={Icon}
+          invertColors
+          isActive
+        />
+      </div>
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           name="start-date"

@@ -5,10 +5,9 @@ import {
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { useContextSelector } from 'use-context-selector';
-import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { extractDefinedCatalogTitle, indexOnlyPropType } from '../../data/utils';
+import { extractDefinedCatalogTitle, getCamelCasedConfigAttribute, indexOnlyPropType } from '../../data/utils';
 import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
@@ -17,9 +16,8 @@ const ProvisioningFormCatalog = ({ index }) => {
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
   const { multipleFunds, formData } = contextData;
-  const camelCasedQueries = camelCaseObject(getConfig().PREDEFINED_CATALOG_QUERIES);
+  const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
   const [value, setValue] = useState(null);
-
   if (multipleFunds === undefined) {
     return null;
   }
@@ -54,14 +52,11 @@ const ProvisioningFormCatalog = ({ index }) => {
         <h3>{CATALOG.TITLE}</h3>
       </div>
       <p className="mt-4">{CATALOG.SUB_TITLE}</p>
-      {multipleFunds
-        && (
-        <Container>
-          <h4>
-            {extractDefinedCatalogTitle(formData.policies[index])}
-          </h4>
-        </Container>
-        )}
+      {multipleFunds && (
+        <h4>
+          {extractDefinedCatalogTitle(formData.policies[index])}
+        </h4>
+      )}
       {multipleFunds === false && (
       <Container>
         <Form.RadioSet

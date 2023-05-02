@@ -1,6 +1,6 @@
 import {
   createCatalogs,
-  lmsCustomerCatalog, selectProvisioningContext, sortedCatalogQueries, validFormData,
+  lmsCustomerCatalog, selectProvisioningContext, sortedCatalogQueries, hasValidData,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -46,7 +46,7 @@ describe('lmsCustomerCatalog', () => {
   });
 });
 
-describe('validFormData', () => {
+describe('hasValidData', () => {
   const formDataUseCases = [
     sampleMultiplePolicyFormData,
     sampleSinglePolicyCustomCatalogQueryFormData,
@@ -55,7 +55,7 @@ describe('validFormData', () => {
   ];
   it('returns true if all required fields are filled out', () => {
     formDataUseCases.forEach((formData) => {
-      expect(validFormData(formData)).toBeTruthy();
+      expect(hasValidData(formData)).toBeTruthy();
     });
   });
 });

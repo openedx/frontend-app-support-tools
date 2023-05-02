@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Alert } from '@edx/paragon';
-import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
 import ProvisioningFormTerm from './ProvisioningFormTerm';
@@ -9,12 +8,13 @@ import ProvisioningFormPolicyContainer from './PolicyForm';
 import ProvisioningFormAccountType from './ProvisioningFormAccountType';
 import ProvisioningFormSubmissionButton from './ProvisioningFormSubmissionButton';
 import useProvisioningContext from '../data/hooks';
-import { selectProvisioningContext } from '../data/utils';
+import { getCamelCasedConfigAttribute, selectProvisioningContext } from '../data/utils';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
   const [multipleFunds, alertMessage] = selectProvisioningContext('multipleFunds', 'alertMessage');
-  const camelCasedQueries = camelCaseObject(getConfig().PREDEFINED_CATALOG_QUERIES);
+  const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
+
   const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
 
@@ -44,7 +44,7 @@ const ProvisioningForm = () => {
       <ProvisioningFormTerm />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
-      {!alertMessage && definedCatalogQueries && definedCatalogQueries.map(({
+      {!alertMessage && definedCatalogQueries?.map(({
         uuid,
         catalogQueryTitle,
       }, index) => (

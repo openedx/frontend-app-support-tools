@@ -1,5 +1,6 @@
 import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
+import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 
@@ -76,7 +77,7 @@ export function updatePolicies(data, newDataAttribute, index) {
  * @param {Object} formData - The form data object.
  * @returns {Boolean} - Returns true if all form data is valid, false otherwise.
  */
-export function validFormData(formData) {
+export function hasValidData(formData) {
   const { policies } = formData;
   // Check subsidy specific data
   const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
@@ -102,20 +103,23 @@ export function validFormData(formData) {
 }
 
 /**
- *
- * @param {Array} payload - Array of data to be sent to the LMS, in the form of
- * [enterpriseCustomerUUID, catalogQueryUUID, title]
- * @returns - The response data from the LMS
+ * Creates a new catalog for the specified valid enterprise customer.
+ * @param {{enterpriseCustomerUUID: string, catalogQueryUUID: string, title: string}}
+ * @returns
  */
-export async function createCatalogs(payload) {
+export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID, title }) {
   const { data } = await LmsApiService.postEnterpriseCustomerCatalog(
-    ...payload,
+    enterpriseCustomerUUID,
+    catalogQueryUUID,
+    title,
   );
   return data;
 }
 
 /**
  * Extracts the catalog title from the catalogQueryTitle field of a policy.
+ * Splitting on ' account' for the case with multiple catalog queries, where the title
+ * of each individual 'Policy' form data is  `${title} account`
  * @param {Object} policy - The policy object.
  * @returns {String} - The catalog title.
  */
@@ -124,4 +128,20 @@ export function extractDefinedCatalogTitle(policy) {
     return null;
   }
   return policy.catalogQueryTitle.split(' account')[0];
+}
+
+/**
+ * Returns a camelCased version of the specified config attribute from the frontend-platform config.
+ * @param {String} attribute - The config attribute to retrieve.
+ * @returns {Object} - The camelCased config attribute. Returns null if the attribute is not found.
+ */
+export function getCamelCasedConfigAttribute(attribute) {
+  if (!attribute) {
+    return null;
+  }
+  const camelCasedConfigurationObject = camelCaseObject(getConfig()[attribute]);
+  if (camelCasedConfigurationObject) {
+    return camelCasedConfigurationObject;
+  }
+  return null;
 }
