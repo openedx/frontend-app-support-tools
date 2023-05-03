@@ -141,6 +141,7 @@ export function extractDefinedCatalogTitle(policy) {
 
 /**
  * Returns a camelCased version of the specified config attribute from the frontend-platform config.
+ * With the introduction of runtime config, the config attribute can now support JSON objects.
  * @param {String} attribute - The config attribute to retrieve.
  * @returns {Object} - The camelCased config attribute. Returns null if the attribute is not found.
  */

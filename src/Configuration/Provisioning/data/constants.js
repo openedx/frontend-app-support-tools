@@ -131,10 +131,14 @@ const PROVISIONING_PAGE_TEXT = {
       API_ERROR_MESSAGES: {
         ENTERPRISE_CATALOG_QUERY: {
           400: 'The enterprise catalog query could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
           404: 'Enterprise Catalog Query failed to respond.',
         },
         ENTERPRISE_CUSTOMER_CATALOG: {
           400: 'The enterprise catalog could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
           404: 'Enterprise Catalog failed to respond.',
           405: 'The enterprise catalog could not be created.',
         },

@@ -43,7 +43,7 @@ const ProvisioningFormSubmissionButton = () => {
             catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
             title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
           };
-          const catalogCreatedResponse = await createCatalogs(payload);
+          const catalogCreatedResponse = createCatalogs(payload);
           return catalogCreatedResponse;
         }
         return { uuid: policy.customerCatalogUUID };

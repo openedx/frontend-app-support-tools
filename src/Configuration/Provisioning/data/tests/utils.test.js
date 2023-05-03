@@ -1,6 +1,7 @@
+import { camelCaseObject } from '@edx/frontend-platform';
 import {
   createCatalogs,
-  lmsCustomerCatalog, selectProvisioningContext, sortedCatalogQueries, hasValidData,
+  lmsCustomerCatalog, selectProvisioningContext, sortedCatalogQueries, hasValidData, getCamelCasedConfigAttribute,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -59,7 +60,6 @@ describe('hasValidData', () => {
     });
   });
 });
-// Write a test for createCatalogs
 const sampleCreateCatalogResponse = {
   data:
       {
@@ -74,6 +74,7 @@ jest.mock('@edx/frontend-platform/auth', () => ({
     post: () => Promise.resolve(sampleCreateCatalogResponse),
   }),
 }));
+
 describe('createCatalogs', () => {
   it('returns the correct data', async () => {
     const data = await createCatalogs([
@@ -82,5 +83,22 @@ describe('createCatalogs', () => {
       'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
     ]);
     expect(data).toEqual(sampleCreateCatalogResponse.data);
+  });
+});
+
+describe('getCamelCasedConfigAttribute', () => {
+  const PREDEFINED_CATALOG_QUERIES = {
+    everything: 1,
+    open_courses: 2,
+    executive_education: 3,
+  };
+  it('returns the correct camelCased attribute', () => {
+    expect(getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES')).toEqual(camelCaseObject(PREDEFINED_CATALOG_QUERIES));
+  });
+  it('returns null if no attribute is passed', () => {
+    expect(getCamelCasedConfigAttribute()).toEqual(null);
+  });
+  it('returns null if attribute is passed but no configuration exist', () => {
+    expect(getCamelCasedConfigAttribute('PIKACHU_FEATURE_FLAG')).toEqual(null);
   });
 });

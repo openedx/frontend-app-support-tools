@@ -6,10 +6,33 @@ import ProvisioningFormSubmissionButton from '../ProvisioningFormSubmissionButto
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext, initialStateValue } from '../../../testData';
 import ROUTES from '../../../../data/constants/routes';
+import {
+  sampleMultiplePolicyFormData,
+  sampleSinglePolicyCustomCatalogQueryFormData,
+  sampleSinglePolicyExistingCustomerCatalogFormData,
+  sampleSinglePolicyPredefinedCatalogQueryFormData,
+} from '../../../testData/constants';
 
 const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING } } } = ROUTES;
 const useHistoryPush = jest.fn();
 const historyMock = { push: useHistoryPush, location: {}, listen: jest.fn() };
+
+jest.mock('@edx/frontend-platform/auth', () => ({
+  ...jest.requireActual('@edx/frontend-platform/auth'),
+  getAuthenticatedHttpClient: jest.fn(() => ({
+    get: jest.fn(() => Promise.resolve({ data: { results: [] } })),
+    post: jest.fn(() => Promise.resolve({
+      data: {
+        uuid: 'test-uuid',
+      },
+    })),
+  })),
+}));
+
+jest.mock('@edx/frontend-platform/logging', () => ({
+  ...jest.requireActual('@edx/frontend-platform/logging'),
+  logError: jest.fn(),
+}));
 
 const { BUTTON } = PROVISIONING_PAGE_TEXT.FORM;
 
@@ -28,6 +51,12 @@ describe('ProvisioningFormSubmissionButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  const sampleDataSet = [
+    { sampleMultiplePolicyFormData },
+    { sampleSinglePolicyPredefinedCatalogQueryFormData },
+    { sampleSinglePolicyExistingCustomerCatalogFormData },
+    { sampleSinglePolicyCustomCatalogQueryFormData },
+  ];
   it('renders', () => {
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper />);
 
@@ -50,4 +79,18 @@ describe('ProvisioningFormSubmissionButton', () => {
 
     expect(useHistoryPush).toHaveBeenCalledWith(`${PROVISIONING.HOME}`);
   });
+  for (let i = 0; i < sampleDataSet.length; i++) {
+    it(`calls handleSubmit complete state when clicked with ${Object.keys(sampleDataSet[i])} data`, async () => {
+      const value = {
+        ...initialStateValue,
+        formData: sampleDataSet[i][Object.keys(sampleDataSet[i])],
+      };
+      renderWithRouter(<ProvisioningFormSubmissionButtonWrapper value={value} />);
+
+      const submitButton = screen.getByText(BUTTON.submit);
+      fireEvent.click(submitButton);
+
+      await waitFor(() => expect(screen.getByText(BUTTON.success)).toBeTruthy());
+    });
+  }
 });
