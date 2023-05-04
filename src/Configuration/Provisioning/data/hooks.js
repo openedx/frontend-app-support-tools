@@ -68,8 +68,6 @@ export default function useProvisioningContext() {
     index,
   );
 
-  const setCustomerCatalogUUID = (customerCatalogUUID, index) => updateFormDataState(customerCatalogUUID, true, index);
-
   const setCatalogQueryCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
 
   const setCatalogQuerySelection = (catalogSelection, index) => updateFormDataState(catalogSelection, true, index);
@@ -109,7 +107,6 @@ export default function useProvisioningContext() {
     hydrateCatalogQueryData,
     setCustomCatalog,
     setCustomerCatalog,
-    setCustomerCatalogUUID,
     setCatalogQuerySelection,
     instantiateMultipleFormData,
     resetPolicies,

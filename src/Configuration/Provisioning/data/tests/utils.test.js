@@ -7,7 +7,6 @@ import {
   sampleCatalogQueries,
   sampleMultiplePolicyFormData,
   sampleSinglePolicyCustomCatalogQueryFormData,
-  sampleSinglePolicyExistingCustomerCatalogFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
 
@@ -51,7 +50,6 @@ describe('hasValidData', () => {
   const formDataUseCases = [
     sampleMultiplePolicyFormData,
     sampleSinglePolicyCustomCatalogQueryFormData,
-    sampleSinglePolicyExistingCustomerCatalogFormData,
     sampleSinglePolicyPredefinedCatalogQueryFormData,
   ];
   it('returns true if all required fields are filled out', () => {

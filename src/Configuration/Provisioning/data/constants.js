@@ -101,11 +101,6 @@ const PROVISIONING_PAGE_TEXT = {
         createQuery: 'Create catalog query',
       },
       OPTIONS: {
-        enterpriseCustomerCatalogUUID: 'Enterprise customer catalog UUID',
-        enterpriseCustomerCatalog: {
-          yes: 'Yes, input an existing Enterprise Customer Catalog UUID',
-          no: 'No, create a new Enterprise Customer Catalog record in this form',
-        },
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
           subtitle: 'Select an existing Enterprise Catalog Query to create the new Customer Catalog record from.',

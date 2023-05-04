@@ -136,29 +136,6 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
   subsidyRevReq: 'No (partner no rev prepay)',
 };
 
-export const sampleSinglePolicyExistingCustomerCatalogFormData = {
-  policies: [
-    {
-      uuid: uuidv4(),
-      catalogQueryTitle: 'Balance',
-      catalogQueryMetadata: {
-        catalogQuery: '',
-      },
-      accountName: 'I have my own catalog',
-      accountValue: '250000',
-      perLearnerCap: false,
-      perLearnerCapAmount: '2000',
-      customerCatalog: true,
-      customerCatalogUUID: 'a2b2c2',
-    },
-  ],
-  enterpriseUUID: uuidv4(),
-  financialIdentifier: 'abc123',
-  startDate: '2023-04-18',
-  endDate: '2023-04-21',
-  subsidyRevReq: 'No (partner no rev prepay)',
-};
-
 export const sampleSinglePolicyCustomCatalogQueryFormData = {
   policies: [
     {
@@ -179,7 +156,6 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
       },
       accountName: 'Super Cool Awesome',
       customerCatalog: false,
-      customerCatalogUUID: null,
       accountValue: '250000',
       perLearnerCap: false,
     },

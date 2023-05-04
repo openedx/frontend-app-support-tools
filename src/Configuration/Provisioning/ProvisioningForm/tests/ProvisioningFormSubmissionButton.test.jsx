@@ -9,7 +9,6 @@ import ROUTES from '../../../../data/constants/routes';
 import {
   sampleMultiplePolicyFormData,
   sampleSinglePolicyCustomCatalogQueryFormData,
-  sampleSinglePolicyExistingCustomerCatalogFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
 
@@ -54,7 +53,6 @@ describe('ProvisioningFormSubmissionButton', () => {
   const sampleDataSet = [
     { sampleMultiplePolicyFormData },
     { sampleSinglePolicyPredefinedCatalogQueryFormData },
-    { sampleSinglePolicyExistingCustomerCatalogFormData },
     { sampleSinglePolicyCustomCatalogQueryFormData },
   ];
   it('renders', () => {

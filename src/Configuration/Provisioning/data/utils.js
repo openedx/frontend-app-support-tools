@@ -91,9 +91,8 @@ export function hasValidData(formData) {
   const arePoliciesValid = policies.every(policy => {
     const isAccountNameValid = !!policy.accountName;
     const isAccountValueValid = !!policy.accountValue;
-    const isCatalogQueryValid = policy.customerCatalog
-      ? !!policy.customerCatalogUUID
-      : !!policy.catalogQueryMetadata?.catalogQuery?.id && !!policy.catalogQueryMetadata?.catalogQuery?.title;
+    const isCatalogQueryValid = !!policy.catalogQueryMetadata?.catalogQuery?.id
+    && !!policy.catalogQueryMetadata?.catalogQuery?.title;
     const { perLearnerCap } = policy;
     const isPerLearnerCapValid = perLearnerCap ? policy.perLearnerCapAmount > 0 : !perLearnerCap;
 

@@ -37,16 +37,13 @@ const ProvisioningFormSubmissionButton = () => {
     }
     try {
       const responses = await Promise.all(policies.map(async (policy) => {
-        if (!policy.customerCatalogUUID) {
-          const payload = {
-            enterpriseCustomerUUID: formData.enterpriseUUID,
-            catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
-            title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
-          };
-          const catalogCreatedResponse = createCatalogs(payload);
-          return catalogCreatedResponse;
-        }
-        return { uuid: policy.customerCatalogUUID };
+        const payload = {
+          enterpriseCustomerUUID: formData.enterpriseUUID,
+          catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
+          title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
+        };
+        const catalogCreatedResponse = createCatalogs(payload);
+        return catalogCreatedResponse;
       }));
       if (responses.filter((response) => response.uuid).length === policies.length) {
         return setSubmitButtonState('complete');
