@@ -9,6 +9,7 @@ import ProvisioningFormAccountType from './ProvisioningFormAccountType';
 import ProvisioningFormSubmissionButton from './ProvisioningFormSubmissionButton';
 import useProvisioningContext from '../data/hooks';
 import { getCamelCasedConfigAttribute, selectProvisioningContext } from '../data/utils';
+import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
@@ -34,7 +35,6 @@ const ProvisioningForm = () => {
     }
     return defaultQuery;
   }, [multipleFunds]);
-
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(definedCatalogQueries);
@@ -46,6 +46,7 @@ const ProvisioningForm = () => {
       </div>
       <ProvisioningFormCustomer />
       <ProvisioningFormTerm />
+      <ProvisioningFormInternalOnly />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
       {!alertMessage && definedCatalogQueries?.map(({

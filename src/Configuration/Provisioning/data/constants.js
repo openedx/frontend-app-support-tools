@@ -42,6 +42,13 @@ const PROVISIONING_PAGE_TEXT = {
         no: 'No (partner no rev prepay)',
       },
     },
+    INTERNAL_ONLY: {
+      TITLE: 'Internal only',
+      OPTIONS: {
+        yes: 'Yes',
+        no: 'No',
+      },
+    },
     ACCOUNT_CREATION: {
       TITLE: 'Balance by product',
       SUB_TITLE: 'Divide Learner Credit purchase value by product?',

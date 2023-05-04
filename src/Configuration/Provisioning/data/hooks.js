@@ -56,6 +56,8 @@ export default function useProvisioningContext() {
 
   const setSubsidyRevReq = (subsidyRevReq) => updateFormDataState({ subsidyRevReq });
 
+  const setInternalOnly = (internalOnly) => updateFormDataState({ internalOnly });
+
   const setAccountName = (accountName, index) => updateFormDataState(accountName, true, index);
 
   const setAccountValue = (accountValue, index) => updateFormDataState(accountValue, true, index);
@@ -116,6 +118,7 @@ export default function useProvisioningContext() {
     setStartDate,
     setEndDate,
     setSubsidyRevReq,
+    setInternalOnly,
     setAccountName,
     setAccountValue,
     setCatalogQueryCategory,
