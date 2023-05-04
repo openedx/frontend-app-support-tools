@@ -8,7 +8,7 @@ import ProvisioningFormCustomCatalogExecEdBoolean from './ProvisioningFormCustom
 
 const ProvisioningFormCustomCatalog = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
-  const [policyData, setPolicyData] = useState(formData.policies[0].catalogQueryMetadata);
+  const [policyData, setPolicyData] = useState(formData.policies[index].catalogQueryMetadata);
 
   useEffect(() => {
     setPolicyData(formData.policies[index].catalogQueryMetadata);
