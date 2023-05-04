@@ -109,6 +109,7 @@ export const sampleMultiplePolicyFormData = {
   financialIdentifier: 'abc123',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
+  internalOnly: 'Yes',
   subsidyRevReq: 'No (partner no rev prepay)',
 };
 
@@ -133,6 +134,7 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
   financialIdentifier: 'abc123',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
+  internalOnly: 'No',
   subsidyRevReq: 'No (partner no rev prepay)',
 };
 
@@ -164,5 +166,6 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
   financialIdentifier: 'abc',
   startDate: '2023-04-06',
   endDate: '2023-04-27',
+  internalOnly: 'Yes',
   subsidyRevReq: 'No (partner no rev prepay)',
 };

@@ -58,6 +58,7 @@ describe('hasValidData', () => {
     });
   });
 });
+
 const sampleCreateCatalogResponse = {
   data:
       {
@@ -72,7 +73,6 @@ jest.mock('@edx/frontend-platform/auth', () => ({
     post: () => Promise.resolve(sampleCreateCatalogResponse),
   }),
 }));
-
 describe('createCatalogs', () => {
   it('returns the correct data', async () => {
     const data = await createCatalogs([

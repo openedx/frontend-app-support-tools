@@ -83,9 +83,11 @@ export function hasValidData(formData) {
   const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
   const isFinancialIdentifierValid = !!formData.financialIdentifier;
   const isDateRangeValid = !!formData.startDate && !!formData.endDate;
+  const isInternalOnlyValid = !!formData.internalOnly;
   const isRevReqValid = !!formData.subsidyRevReq;
 
-  const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid && isDateRangeValid && isRevReqValid;
+  const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
+  && isDateRangeValid && isInternalOnlyValid && isRevReqValid;
 
   // Check policy specific data
   const arePoliciesValid = policies.every(policy => {

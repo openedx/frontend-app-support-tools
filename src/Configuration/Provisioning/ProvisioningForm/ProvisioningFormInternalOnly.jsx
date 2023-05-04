@@ -22,10 +22,9 @@ const ProvisioningFormInternalOnly = () => {
 
   return (
     <article className="mt-4.5">
-      <div>
+      <div className="mb-4">
         <h3>{INTERNAL_ONLY.TITLE}</h3>
       </div>
-      <p className="mt-4">{INTERNAL_ONLY.SUB_TITLE}</p>
       <Container>
         <Form.RadioSet
           name="display-internally-only"
