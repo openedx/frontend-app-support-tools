@@ -4,6 +4,24 @@ import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
 import { updatePolicies } from './utils';
+import { DashboardContext } from '../DashboardContext';
+import { sampleDataTableData } from '../../testData/constants';
+
+export function useDashboardContext() {
+  const setState = useContextSelector(DashboardContext, v => v[1]);
+
+  const hydrateEnterpriseSubsidies = useCallback((count, action) => {
+    const data = sampleDataTableData(count, action);
+    setState(s => ({
+      ...s,
+      enterpriseSubsidies: [data],
+    }));
+  });
+
+  return {
+    hydrateEnterpriseSubsidies,
+  };
+}
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);

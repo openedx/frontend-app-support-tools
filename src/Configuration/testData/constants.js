@@ -83,7 +83,7 @@ export const sampleDataTableData = (count, actionComponent) => {
       customerName: `Catalog Query ${i + 1}`,
       startDate: '2021-01-01',
       endDate: '2021-12-31',
-      actionComponent,
+      actions: actionComponent,
     });
   }
   return data;
