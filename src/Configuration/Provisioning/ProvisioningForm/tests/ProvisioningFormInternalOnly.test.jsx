@@ -6,7 +6,6 @@ import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormInternalOnly from '../ProvisioningFormInternalOnly';
 
 const { INTERNAL_ONLY } = PROVISIONING_PAGE_TEXT.FORM;
-const internalOnlyOptions = Object.keys(INTERNAL_ONLY.OPTIONS);
 
 const ProvisioningFormInternalOnlyWrapper = ({
   value = initialStateValue,
@@ -24,24 +23,25 @@ describe('ProvisioningFormSubsidy', () => {
     renderWithRouter(<ProvisioningFormInternalOnlyWrapper />);
 
     expect(screen.getByText(INTERNAL_ONLY.TITLE)).toBeTruthy();
-
-    // Checks value for each radio input label
-    for (let i = 0; i < internalOnlyOptions.length; i++) {
-      expect(screen.getByText(INTERNAL_ONLY.OPTIONS[internalOnlyOptions[i]])).toBeTruthy();
-    }
+    expect(screen.getByText(INTERNAL_ONLY.CHECKBOX.label)).toBeTruthy();
+    expect(screen.getByText(INTERNAL_ONLY.CHECKBOX.description)).toBeTruthy();
   });
-  it('switches active interal only flag', () => {
+  it('default value is false', () => {
     renderWithRouter(<ProvisioningFormInternalOnlyWrapper />);
 
-    const internalOnlyButtons = [];
-    // Retrieves a list of input elements based on test ids
-    for (let i = 0; i < internalOnlyOptions.length; i++) {
-      internalOnlyButtons.push(screen.getByTestId(INTERNAL_ONLY.OPTIONS[internalOnlyOptions[i]]));
-    }
-    // Clicks on each input element and checks if it is checked
-    for (let i = 0; i < internalOnlyButtons.length; i++) {
-      fireEvent.click(internalOnlyButtons[i]);
-      expect(internalOnlyButtons[i].checked).toBeTruthy();
-    }
+    const checkbox = screen.getByTestId('internal-only-checkbox');
+
+    expect(checkbox.checked).toBeFalsy();
+  });
+  it('toggles checkbox state on click', () => {
+    renderWithRouter(<ProvisioningFormInternalOnlyWrapper />);
+
+    const checkbox = screen.getByTestId('internal-only-checkbox');
+
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBeTruthy();
+
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBeFalsy();
   });
 });

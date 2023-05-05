@@ -44,9 +44,9 @@ const PROVISIONING_PAGE_TEXT = {
     },
     INTERNAL_ONLY: {
       TITLE: 'Internal only',
-      OPTIONS: {
-        yes: 'Yes',
-        no: 'No',
+      CHECKBOX: {
+        label: 'Test Plan',
+        description: 'Select if this plan is intended for internal purposes only',
       },
     },
     ACCOUNT_CREATION: {

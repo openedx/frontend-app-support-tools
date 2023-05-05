@@ -3,47 +3,33 @@ import {
   Form,
   Container,
 } from '@edx/paragon';
-import { v4 as uuidv4 } from 'uuid';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
-import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormInternalOnly = () => {
   const { setInternalOnly } = useProvisioningContext();
   const { INTERNAL_ONLY } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData] = selectProvisioningContext('formData');
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(false);
 
   const handleChange = async (e) => {
-    const newTabValue = e.target.value;
-    setInternalOnly(newTabValue);
-    setValue(newTabValue);
+    const checkedState = e.target.checked;
+    setInternalOnly(checkedState);
+    setValue(checkedState);
   };
-
   return (
     <article className="mt-4.5">
-      <div className="mb-4">
+      <div>
         <h3>{INTERNAL_ONLY.TITLE}</h3>
       </div>
-      <Container>
-        <Form.RadioSet
-          name="display-internally-only"
+      <Container className="mt-4">
+        <Form.Checkbox
+          description={INTERNAL_ONLY.CHECKBOX.description}
           onChange={handleChange}
-          value={value || formData.subsidyRevReq}
+          checked={value}
+          data-testid="internal-only-checkbox"
         >
-          {
-          Object.keys(INTERNAL_ONLY.OPTIONS).map((key) => (
-            <Form.Radio
-              value={INTERNAL_ONLY.OPTIONS[key]}
-              type="radio"
-              key={uuidv4()}
-              data-testid={INTERNAL_ONLY.OPTIONS[key]}
-            >
-              {INTERNAL_ONLY.OPTIONS[key]}
-            </Form.Radio>
-          ))
-        }
-        </Form.RadioSet>
+          {INTERNAL_ONLY.CHECKBOX.label}
+        </Form.Checkbox>
       </Container>
     </article>
   );
