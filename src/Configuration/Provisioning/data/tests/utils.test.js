@@ -6,6 +6,7 @@ import {
   sortedCatalogQueries,
   hasValidPolicyAndSubidy,
   getCamelCasedConfigAttribute,
+  extractDefinedCatalogTitle,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -102,5 +103,16 @@ describe('getCamelCasedConfigAttribute', () => {
   });
   it('returns null if attribute is passed but no configuration exist', () => {
     expect(getCamelCasedConfigAttribute('PIKACHU_FEATURE_FLAG')).toEqual(null);
+  });
+});
+describe('extractDefinedCatalogTitle', () => {
+  it('returns the correct title', () => {
+    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests account' })).toEqual('The Bestests');
+  });
+  it('returns null if policy does not container ` account`', () => {
+    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual(null);
+  });
+  it('returns null if no policy is passed', () => {
+    expect(extractDefinedCatalogTitle({})).toEqual(null);
   });
 });

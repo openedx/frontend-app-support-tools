@@ -135,10 +135,13 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
  * @returns {String} - The catalog title.
  */
 export function extractDefinedCatalogTitle(policy) {
-  if (!policy) {
+  if (!policy || !policy?.catalogQueryTitle) {
     return null;
   }
-  return policy.catalogQueryTitle.split(' account')[0];
+  if (policy.catalogQueryTitle.includes(' account')) {
+    return policy.catalogQueryTitle.split(' account')[0];
+  }
+  return null;
 }
 
 /**
