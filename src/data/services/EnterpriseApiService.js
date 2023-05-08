@@ -12,7 +12,7 @@ class LmsApiService {
 
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
 
-  static fetchEnterpriseCustomersBasicList = (query) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomersBasicListUrl}${query !== undefined ? `?name_or_uuid=${query}` : ''}`);
+  static fetchEnterpriseCustomersBasicList = (enterpriseNameOrUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomersBasicListUrl}${enterpriseNameOrUuid !== undefined ? `?name_or_uuid=${enterpriseNameOrUuid}` : ''}`);
 }
 
 export default LmsApiService;

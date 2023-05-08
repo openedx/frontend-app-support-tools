@@ -21,6 +21,8 @@ const ProvisioningFormCustomerDropdown = () => {
     leading: false,
   }), [formData.enterpriseUUID]);
   const handleOnSelected = (value) => {
+    /* .includes('---') and .split(' --- ') are used to get the UUID from the
+    dropdown value, and populate the customerUUID state */
     if (value && value.includes('---')) {
       const valueUuid = value.split(' --- ')[1].trim();
       setCustomerUUID(valueUuid);
@@ -45,7 +47,7 @@ const ProvisioningFormCustomerDropdown = () => {
       debouncedSearch(formData.enterpriseUUID);
     }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [formData.enterpriseUUID]);
+  }, [formData.enterpriseUUID, debouncedSearch]);
   return (
     <Form.Autosuggest
       floatingLabel={CUSTOMER.OPTIONS.enterpriseUUID}
