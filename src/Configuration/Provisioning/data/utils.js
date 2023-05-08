@@ -77,8 +77,9 @@ export function updatePolicies(data, newDataAttribute, index) {
  * @param {Object} formData - The form data object.
  * @returns {Boolean} - Returns true if all form data is valid, false otherwise.
  */
-export function hasValidData(formData) {
+export function hasValidPolicyAndSubidy(formData) {
   const { policies } = formData;
+
   // Check subsidy specific data
   const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
   const isFinancialIdentifierValid = !!formData.financialIdentifier;

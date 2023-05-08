@@ -41,7 +41,7 @@ const ProvisioningFormTerm = () => {
 
   return (
     <article className="mt-4.5">
-      <Stack direction="horizontal" className=" mb-1">
+      <Stack direction="horizontal" className="mb-1">
         <h3 className="mb-0 align-self-center">{TERM.TITLE}</h3>
         <IconButtonWithTooltip
           src={InfoOutline}

@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { Alert } from '@edx/paragon';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../data/constants';
+import React, { useEffect } from 'react';
+import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
 import ProvisioningFormTerm from './ProvisioningFormTerm';
 import ProvisioningFormSubsidy from './ProvisioningFormSubsidy';
@@ -8,37 +7,23 @@ import ProvisioningFormPolicyContainer from './PolicyForm';
 import ProvisioningFormAccountType from './ProvisioningFormAccountType';
 import ProvisioningFormSubmissionButton from './ProvisioningFormSubmissionButton';
 import useProvisioningContext from '../data/hooks';
-import { getCamelCasedConfigAttribute, selectProvisioningContext } from '../data/utils';
+import { selectProvisioningContext } from '../data/utils';
 import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, alertMessage] = selectProvisioningContext('multipleFunds', 'alertMessage');
-  const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
-
-  const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
+  const [multipleFunds, alertMessage, formData] = selectProvisioningContext(
+    'multipleFunds',
+    'alertMessage',
+    'formData',
+  );
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
 
-  const assignedMultipleQueries = multipleQueries?.map((query, index) => ({
-    ...query,
-    catalogQueryMetadata: {
-      catalogQuery: {
-        id: camelCasedQueries[Object.keys(FORM.ACCOUNT_TYPE.OPTIONS)[index]],
-        title: Object.values(FORM.ACCOUNT_TYPE.OPTIONS)[index],
-      },
-    },
-  }));
-
-  const definedCatalogQueries = useMemo(() => {
-    if (multipleFunds) {
-      return assignedMultipleQueries;
-    }
-    return defaultQuery;
-  }, [multipleFunds]);
   useEffect(() => {
     resetPolicies();
-    instantiateMultipleFormData(definedCatalogQueries);
-  }, [multipleFunds, definedCatalogQueries]);
+    instantiateMultipleFormData(multipleFunds);
+  }, [multipleFunds]);
+
   return (
     <div className="m-0 p-0 mb-5">
       <div className="mt-5">
@@ -49,7 +34,7 @@ const ProvisioningForm = () => {
       <ProvisioningFormInternalOnly />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
-      {!alertMessage && definedCatalogQueries?.map(({
+      {!alertMessage && formData.policies?.map(({
         uuid,
         catalogQueryTitle,
       }, index) => (
@@ -59,11 +44,6 @@ const ProvisioningForm = () => {
           index={index}
         />
       ))}
-      {alertMessage && (
-      <Alert variant="warning" className="mt-5">
-        {alertMessage}
-      </Alert>
-      )}
       <ProvisioningFormSubmissionButton />
     </div>
   );

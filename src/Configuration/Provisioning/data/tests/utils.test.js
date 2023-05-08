@@ -1,7 +1,11 @@
 import { camelCaseObject } from '@edx/frontend-platform';
 import {
   createCatalogs,
-  lmsCustomerCatalog, selectProvisioningContext, sortedCatalogQueries, hasValidData, getCamelCasedConfigAttribute,
+  lmsCustomerCatalog,
+  selectProvisioningContext,
+  sortedCatalogQueries,
+  hasValidPolicyAndSubidy,
+  getCamelCasedConfigAttribute,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -46,7 +50,7 @@ describe('lmsCustomerCatalog', () => {
   });
 });
 
-describe('hasValidData', () => {
+describe('hasValidPolicyAndSubidy', () => {
   const formDataUseCases = [
     sampleMultiplePolicyFormData,
     sampleSinglePolicyCustomCatalogQueryFormData,
@@ -54,7 +58,7 @@ describe('hasValidData', () => {
   ];
   it('returns true if all required fields are filled out', () => {
     formDataUseCases.forEach((formData) => {
-      expect(hasValidData(formData)).toBeTruthy();
+      expect(hasValidPolicyAndSubidy(formData)).toBeTruthy();
     });
   });
 });

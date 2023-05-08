@@ -1,16 +1,15 @@
-// TODO: Remove instanbul next and test file when submission button is complete
 import {
   Button,
   ActionRow,
   StatefulButton,
 } from '@edx/paragon';
 import { useHistory } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
-import { createCatalogs, selectProvisioningContext, hasValidData } from '../data/utils';
+import { createCatalogs, selectProvisioningContext, hasValidPolicyAndSubidy } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
@@ -19,7 +18,7 @@ const ProvisioningFormSubmissionButton = () => {
   const { resetFormData } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
-  const canCreatePolicyAndSubsidy = hasValidData(formData);
+  const canCreatePolicyAndSubsidy = useMemo(() => { hasValidPolicyAndSubidy(formData); }, [formData]);
 
   const [submitButtonState, setSubmitButtonState] = useState('default');
 
@@ -27,13 +26,12 @@ const ProvisioningFormSubmissionButton = () => {
     resetFormData();
     history.push(HOME);
   };
-  // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
     // handle subsidy data
     // handle per policy catalog data
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
-      return setSubmitButtonState('error');
+      setSubmitButtonState('error');
     }
     try {
       const responses = await Promise.all(policies.map(async (policy) => {
@@ -46,7 +44,7 @@ const ProvisioningFormSubmissionButton = () => {
         return catalogCreatedResponse;
       }));
       if (responses.filter((response) => response.uuid).length === policies.length) {
-        return setSubmitButtonState('complete');
+        setSubmitButtonState('complete');
       }
     } catch (error) {
       setSubmitButtonState('error');
