@@ -20,7 +20,7 @@ const ProvisioningFormCustomer = () => {
       </Form.Group>
       <Form.Group className="mt-4.5">
         <Form.Control
-          floatingLabel={CUSTOMER.OPTIONS.financialIdentifier}
+          floatingLabel={CUSTOMER.FINANCIAL_IDENTIFIER.TITLE}
           defaultValue={formData.financialIdentifier || undefined}
           onChange={e => setFinancialIdentifier(e.target.value)}
           data-testid="customer-financial-identifier"

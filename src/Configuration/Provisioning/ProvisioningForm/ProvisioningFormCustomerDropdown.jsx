@@ -11,12 +11,11 @@ import { selectProvisioningContext } from '../data/utils';
 import useProvisioningContext from '../data/hooks';
 
 const ProvisioningFormCustomerDropdown = () => {
-  const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
+  const { ENTERPRISE_UUID } = PROVISIONING_PAGE_TEXT.FORM.CUSTOMER;
   const [formData, customers] = selectProvisioningContext('formData', 'customers');
   const { setCustomerUUID, getCustomers } = useProvisioningContext();
   const [selected, setSelected] = useState({ title: '' });
-  const [dropdownValues, setDropdownValues] = useState(['No matching enterprise']);
-
+  const [dropdownValues, setDropdownValues] = useState([ENTERPRISE_UUID.DROPDOWN_DEFAULT]);
   const debouncedSearch = useMemo(() => debounce(getCustomers, 500, {
     leading: false,
   }), [formData.enterpriseUUID]);
@@ -50,12 +49,12 @@ const ProvisioningFormCustomerDropdown = () => {
   }, [formData.enterpriseUUID, debouncedSearch]);
   return (
     <Form.Autosuggest
-      floatingLabel={CUSTOMER.OPTIONS.enterpriseUUID}
+      floatingLabel={ENTERPRISE_UUID.TITLE}
       value={selected.title}
       onSelected={handleOnSelected}
       onChange={updateDropdown}
-      helpMessage="Select an existing enterprise to provision"
-      errorMessageText="Error, no selected value"
+      helpMessage={ENTERPRISE_UUID.SUB_TITLE}
+      errorMessageText={ENTERPRISE_UUID.ERROR}
       data-testid="customer-uuid"
     >
       {dropdownValues.map(option => (

@@ -17,9 +17,14 @@ const PROVISIONING_PAGE_TEXT = {
     },
     CUSTOMER: {
       TITLE: 'Customer',
-      OPTIONS: {
-        enterpriseUUID: 'Enterprise Customer Name/UUID',
-        financialIdentifier: 'Opportunity Product',
+      ENTERPRISE_UUID: {
+        TITLE: 'Enterprise Customer Name/UUID',
+        SUB_TITLE: 'Select an existing enterprise to provision',
+        ERROR: 'Error, no selected value',
+        DROPDOWN_DEFAULT: 'No matching enterprise',
+      },
+      FINANCIAL_IDENTIFIER: {
+        TITLE: 'Opportunity Product',
       },
     },
     TERM: {

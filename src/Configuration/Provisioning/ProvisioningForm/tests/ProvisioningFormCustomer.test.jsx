@@ -31,7 +31,7 @@ describe('ProvisioningFormCustomer', () => {
     fireEvent.change(input, { target: { value: 'test-title' } });
     const inputValue = input.getAttribute('value');
 
-    expect(screen.getByText(CUSTOMER.OPTIONS.enterpriseUUID)).toBeTruthy();
+    expect(screen.getByText(CUSTOMER.ENTERPRISE_UUID.TITLE)).toBeTruthy();
     expect(inputValue).toEqual('test-title');
   });
   it('renders customer financial linkage', () => {
@@ -41,7 +41,7 @@ describe('ProvisioningFormCustomer', () => {
     fireEvent.change(input, { target: { value: 'test-financial-linkage' } });
     const inputValue = input.getAttribute('value');
 
-    expect(screen.getByText(CUSTOMER.OPTIONS.enterpriseUUID)).toBeTruthy();
+    expect(screen.getByText(CUSTOMER.ENTERPRISE_UUID.TITLE)).toBeTruthy();
     expect(inputValue).toEqual('test-financial-linkage');
   });
 });
