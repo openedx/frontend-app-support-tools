@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
 import {
   Form,
-  Hyperlink,
   Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
+import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
+import { extractDefinedCatalogTitle, getCamelCasedConfigAttribute, indexOnlyPropType } from '../../data/utils';
+import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
   const { setCustomCatalog, setCatalogQueryCategory } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
-  const [multipleFunds, formData] = selectProvisioningContext('multipleFunds', 'formData');
+  const contextData = useContextSelector(ProvisioningContext, v => v[0]);
+  const { multipleFunds, formData } = contextData;
+  const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
   const [value, setValue] = useState(null);
-
   if (multipleFunds === undefined) {
     return null;
   }
 
   const handleChange = (e) => {
     const newTabValue = e.target.value;
+    const newCatalogQuery = e.target.dataset.catalogqueryid;
     if (newTabValue === CATALOG.OPTIONS.custom) {
       setCustomCatalog(true);
       setCatalogQueryCategory({
@@ -33,7 +36,10 @@ const ProvisioningFormCatalog = ({ index }) => {
       setCustomCatalog(false);
       setCatalogQueryCategory({
         catalogQueryMetadata: {
-          catalogQuery: 'To Be Populated with a Predetermined Catalog Query that currently does not exist',
+          catalogQuery: {
+            id: newCatalogQuery,
+            title: newTabValue,
+          },
         },
       }, index);
     }
@@ -47,12 +53,9 @@ const ProvisioningFormCatalog = ({ index }) => {
       </div>
       <p className="mt-4">{CATALOG.SUB_TITLE}</p>
       {multipleFunds && (
-      <Hyperlink
-        target="_blank"
-        destination="https://www.google.com"
-      >
-        {formData.policies[index]?.catalogQueryTitle.split(' account')[0]}
-      </Hyperlink>
+        <h4>
+          {extractDefinedCatalogTitle(formData.policies[index])}
+        </h4>
       )}
       {multipleFunds === false && (
       <Container>
@@ -68,6 +71,7 @@ const ProvisioningFormCatalog = ({ index }) => {
               type="radio"
               key={uuidv4()}
               data-testid={CATALOG.OPTIONS[key]}
+              data-catalogqueryid={camelCasedQueries[key]}
             >
               {CATALOG.OPTIONS[key]}
             </Form.Radio>

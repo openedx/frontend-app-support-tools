@@ -3,7 +3,8 @@ import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
-import { updatePolicies } from './utils';
+import { getCamelCasedConfigAttribute, updatePolicies } from './utils';
+import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from './constants';
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
@@ -42,7 +43,26 @@ export default function useProvisioningContext() {
 
   const setCustomCatalog = (customCatalogBoolean) => updateRootDataState({ customCatalog: customCatalogBoolean });
 
-  const instantiateMultipleFormData = (catalogQueryTitle) => updateFormDataState({ policies: catalogQueryTitle });
+  const instantiateMultipleFormData = (multipleFunds) => {
+    const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
+    const { FORM } = PROVISIONING_PAGE_TEXT;
+    const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
+
+    if (multipleFunds) {
+      const multipleFormData = multipleQueries?.map((query, index) => ({
+        ...query,
+        catalogQueryMetadata: {
+          catalogQuery: {
+            id: camelCasedQueries[Object.keys(FORM.ACCOUNT_TYPE.OPTIONS)[index]],
+            title: Object.values(FORM.ACCOUNT_TYPE.OPTIONS)[index],
+          },
+        },
+      }));
+      updateFormDataState({ policies: multipleFormData });
+      return;
+    }
+    updateFormDataState({ policies: defaultQuery });
+  };
 
   const resetPolicies = () => updateFormDataState({ policies: [] });
 
@@ -64,6 +84,8 @@ export default function useProvisioningContext() {
 
   const setSubsidyRevReq = (subsidyRevReq) => updateFormDataState({ subsidyRevReq });
 
+  const setInternalOnly = (internalOnly) => updateFormDataState({ internalOnly });
+
   const setAccountName = (accountName, index) => updateFormDataState(accountName, true, index);
 
   const setAccountValue = (accountValue, index) => updateFormDataState(accountValue, true, index);
@@ -73,8 +95,6 @@ export default function useProvisioningContext() {
     true,
     index,
   );
-
-  const setCustomerCatalogUUID = (customerCatalogUUID, index) => updateFormDataState(customerCatalogUUID, true, index);
 
   const setCatalogQueryCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
 
@@ -86,11 +106,15 @@ export default function useProvisioningContext() {
 
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+    const camelCasedData = camelCaseObject(data.results);
+    const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
+    const filteredCourses = camelCasedData.filter(({ title }) => title.indexOf(learnerCreditPrefix) !== 0);
+
     setState(s => ({
       ...s,
       catalogQueries: {
         ...s.catalogQueries,
-        data: camelCaseObject(data.results),
+        data: filteredCourses,
         isLoading: false,
       },
     }));
@@ -111,7 +135,6 @@ export default function useProvisioningContext() {
     hydrateCatalogQueryData,
     setCustomCatalog,
     setCustomerCatalog,
-    setCustomerCatalogUUID,
     setCatalogQuerySelection,
     instantiateMultipleFormData,
     resetPolicies,
@@ -120,6 +143,7 @@ export default function useProvisioningContext() {
     setStartDate,
     setEndDate,
     setSubsidyRevReq,
+    setInternalOnly,
     setAccountName,
     setAccountValue,
     setCatalogQueryCategory,

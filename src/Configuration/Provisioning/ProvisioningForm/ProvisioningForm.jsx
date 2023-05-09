@@ -1,8 +1,5 @@
-import React, {
-  useEffect,
-} from 'react';
-import { Alert } from '@edx/paragon';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../data/constants';
+import React, { useEffect } from 'react';
+import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
 import ProvisioningFormTerm from './ProvisioningFormTerm';
 import ProvisioningFormSubsidy from './ProvisioningFormSubsidy';
@@ -11,19 +8,21 @@ import ProvisioningFormAccountType from './ProvisioningFormAccountType';
 import ProvisioningFormSubmissionButton from './ProvisioningFormSubmissionButton';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
+import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, alertMessage, formData] = selectProvisioningContext('multipleFunds', 'alertMessage', 'customers', 'formData');
-  // TODO: Extract catalog queries from API to iterate and render policies instead of this for V1
-  const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
-  const sampleCatalogQuery = multipleFunds ? multipleQueries : defaultQuery;
+  const [multipleFunds, alertMessage, formData] = selectProvisioningContext(
+    'multipleFunds',
+    'alertMessage',
+    'formData',
+  );
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
 
   useEffect(() => {
     resetPolicies();
-    instantiateMultipleFormData(sampleCatalogQuery);
-  }, [multipleFunds, formData.enterpriseUUID]);
+    instantiateMultipleFormData(multipleFunds);
+  }, [multipleFunds]);
 
   return (
     <div className="m-0 p-0 mb-5">
@@ -32,20 +31,19 @@ const ProvisioningForm = () => {
       </div>
       <ProvisioningFormCustomer />
       <ProvisioningFormTerm />
+      <ProvisioningFormInternalOnly />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
-      {!alertMessage && sampleCatalogQuery && sampleCatalogQuery.map(({ uuid, catalogQueryTitle }, index) => (
+      {!alertMessage && formData.policies?.map(({
+        uuid,
+        catalogQueryTitle,
+      }, index) => (
         <ProvisioningFormPolicyContainer
           key={uuid}
           title={catalogQueryTitle}
           index={index}
         />
       ))}
-      {(multipleFunds === undefined || alertMessage) && (
-      <Alert variant="warning" className="mt-5">
-        {alertMessage}
-      </Alert>
-      )}
       <ProvisioningFormSubmissionButton />
     </div>
   );

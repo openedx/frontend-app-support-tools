@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
 
 import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
+import { v4 as uuidv4 } from 'uuid';
 import Header from './supportHeader';
 import appMessages from './i18n';
 import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
@@ -38,10 +39,26 @@ subscribe(APP_READY, () => {
     return;
   }
   const configurationRoutes = [
-    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT} component={ProvisioningFormContainer} />,
-    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.NEW} component={ProvisioningFormContainer} />,
-    <Route path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME} component={ProvisioningPage} />,
-    <Route path={CONFIGURATION.HOME} component={ConfigurationPage} />,
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT}
+      component={ProvisioningFormContainer}
+    />,
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.NEW}
+      component={ProvisioningFormContainer}
+    />,
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}
+      component={ProvisioningPage}
+    />,
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.HOME}
+      component={ConfigurationPage}
+    />,
   ];
   ReactDOM.render(
     <AppProvider>
@@ -50,7 +67,7 @@ subscribe(APP_READY, () => {
         <Header />
         <Switch>
           {/* Start: Configuration Dropdown Routes */}
-          {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes.map((route) => route)}
+          {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
           {/* End: Configuration Dropdown Routes */}
           <Route path={SUPPORT_TOOLS_TABS.HOME} component={SupportToolsTab} />
           <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} component={UserPage} />

@@ -6,6 +6,7 @@ import {
   Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
+import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
@@ -38,14 +39,13 @@ const ProvisioningFormAccountType = () => {
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
-    // test this TODO
     if (catalogQueries.data.length === 0) {
       try {
         handleSpinnerLoadingState(newTabValue);
         await hydrateCatalogQueryData();
         setAlertMessage(null);
       } catch (error) {
-        // eslint-disable-next-line no-console
+        logError(error);
         const { customAttributes } = error;
         if (customAttributes) {
           setAlertMessage(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CATALOG_QUERY[customAttributes.httpErrorStatus]);
@@ -73,7 +73,7 @@ const ProvisioningFormAccountType = () => {
           {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
             <div key={uuidv4()} className="d-flex align-items-center position-relative">
-              {catalogQueries.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
+              {catalogQueries?.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
               <Spinner
                 className="position-absolute"
                 data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}
