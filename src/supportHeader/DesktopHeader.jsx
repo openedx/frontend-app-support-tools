@@ -52,7 +52,7 @@ export default class DesktopHeader extends React.Component {
 
     return (
       <Dropdown>
-        <Dropdown.Toggle as={AvatarButton} src={avatar}>
+        <Dropdown.Toggle id="desktop-header-dropdown-toggle" as={AvatarButton} src={avatar}>
           {username}
         </Dropdown.Toggle>
 

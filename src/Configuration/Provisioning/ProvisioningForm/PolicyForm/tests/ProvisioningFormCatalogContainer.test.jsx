@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { ProvisioningContext, initialStateValue } from '../../../../testData';
 import ProvisioningFormCatalogContainer from '../ProvisioningFormCatalogContainer';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import PROVISIONING_PAGE_TEXT from '../../../data/constants';
 
 const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
 
@@ -26,12 +26,20 @@ describe('ProvisioningFormCatalogContainer', () => {
       customCatalog: true,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: [{
+          catalogQueryMetadata: {
+            catalogQuery: {
+              title: 'test title',
+              contentFilter: {},
+              includeExecEd2UCourses: true,
+            },
+          },
+        }],
       },
     };
     renderWithRouter(<ProvisioningFormCatalogContainerWrapper
       value={updatedInitialState}
     />);
-    expect(screen.queryByText(CUSTOM_CATALOG.HEADER.SOURCE.TITLE)).toBeTruthy();
+    expect(screen.queryByText(CUSTOM_CATALOG.HEADER.DEFINE.TITLE)).toBeTruthy();
   });
 });

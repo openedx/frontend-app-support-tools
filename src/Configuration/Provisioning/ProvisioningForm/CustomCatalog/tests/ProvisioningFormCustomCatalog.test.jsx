@@ -36,24 +36,6 @@ describe('ProvisioningFormCustomCatalog', () => {
     expect(screen.getByText(CUSTOM_CATALOG.HEADER.DEFINE.TITLE)).toBeTruthy();
     expect(screen.getByText(CUSTOM_CATALOG.HEADER.DEFINE.SUB_TITLE)).toBeTruthy();
   });
-  it('renders the custom catalog form with customer catalog', () => {
-    const customCatalogPolicies = singlePolicy
-      .map(policy => ({ ...policy, customerCatalog: true }));
-    const customInitialStateValue = {
-      ...initialStateValue,
-      catalogQueries,
-      formData: {
-        ...initialStateValue.formData,
-        policies: customCatalogPolicies,
-      },
-    };
-
-    renderWithRouter(<ProvisioningFormCustomCatalogWrapper
-      value={customInitialStateValue}
-    />);
-
-    expect(screen.getByText(CUSTOM_CATALOG.OPTIONS.enterpriseCustomerCatalogUUID)).toBeTruthy();
-  });
   it('renders dropdown if customerCatalog is false', () => {
     const customCatalogPolicies = singlePolicy
       .map(policy => ({ ...policy, customerCatalog: false }));
@@ -80,24 +62,6 @@ describe('ProvisioningFormCustomCatalog', () => {
 
     expect(screen.getByText(CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle)).toBeTruthy();
   });
-  it('updates the enterprise customer catalog field on input', () => {
-    const customCatalogPolicies = singlePolicy
-      .map(policy => ({ ...policy, customerCatalog: true }));
-    const customInitialStateValue = {
-      ...initialStateValue,
-      catalogQueries,
-      formData: {
-        ...initialStateValue.formData,
-        policies: customCatalogPolicies,
-      },
-    };
-    renderWithRouter(<ProvisioningFormCustomCatalogWrapper
-      value={customInitialStateValue}
-    />);
-    const input = screen.getByTestId('enterprise-customer-catalog-uuid');
-    fireEvent.change(input, { target: { value: 'test' } });
-    expect(input.value).toBe('test');
-  });
   it('renders null if customerCatalog is undefined', () => {
     const customCatalogPolicies = singlePolicy
       .map(policy => ({ ...policy, customerCatalog: undefined }));
@@ -114,8 +78,6 @@ describe('ProvisioningFormCustomCatalog', () => {
       value={customInitialStateValue}
     />);
 
-    expect(screen.queryByText(CUSTOM_CATALOG.OPTIONS.enterpriseCustomerCatalogUUID)).toBeFalsy();
     expect(screen.queryByText(CUSTOM_CATALOG.HEADER.DEFINE.SUB_TITLE)).toBeFalsy();
-    expect(screen.queryByText(CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle)).toBeFalsy();
   });
 });

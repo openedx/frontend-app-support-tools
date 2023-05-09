@@ -1,6 +1,5 @@
 import ProvisioningFormCustomCatalog from '../CustomCatalog';
 import ProvisioningFormCatalog from './ProvisioningFormCatalog';
-import ProvisioningFormSourceCustomCatalogContainer from './ProvisioningFormSourceCustomCatalogContainer';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormCatalogContainer = ({ index }) => {
@@ -8,7 +7,6 @@ const ProvisioningFormCatalogContainer = ({ index }) => {
   return (
     <>
       <ProvisioningFormCatalog index={index} />
-      {customCatalog && <ProvisioningFormSourceCustomCatalogContainer index={index} />}
       {customCatalog && <ProvisioningFormCustomCatalog index={index} />}
     </>
   );
