@@ -33,18 +33,22 @@ const DashboardDatatable = () => {
         FilterStatusComponent={filterStatus}
         columns={[
           {
+            Header: 'Customer ID',
+            accessor: 'enterpriseCustomerUuid',
+          },
+          {
             Header: 'Customer name',
             accessor: 'customerName',
           },
           {
             Header: 'Start date',
-            accessor: 'startDate',
+            accessor: 'activeDatetime',
             disableFilters: true,
 
           },
           {
             Header: 'End date',
-            accessor: 'endDate',
+            accessor: 'expirationDatetime',
             disableFilters: true,
 
           },

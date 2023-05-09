@@ -10,11 +10,24 @@ import { sampleDataTableData } from '../../testData/constants';
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
 
-  const hydrateEnterpriseSubsidies = useCallback((count, action) => {
-    const data = sampleDataTableData(count, action);
+  const hydrateEnterpriseSubsidies = useCallback((count, action, redirect) => {
+    const data = camelCaseObject(sampleDataTableData(count, action));
+    // Adds a redirect function to each row of data mapping to the subsidy UUID, converts dates to local date strings
+    const normalizedData = data.map((item) => {
+      const {
+        uuid, activeDatetime, expirationDatetime, ...rest
+      } = item;
+      const redirectUrl = () => redirect(uuid);
+      return {
+        ...rest,
+        activeDatetime: new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-'),
+        expirationDatetime: new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-'),
+        actions: action(redirectUrl),
+      };
+    });
     setState(s => ({
       ...s,
-      enterpriseSubsidies: [data],
+      enterpriseSubsidies: [normalizedData],
     }));
   });
 

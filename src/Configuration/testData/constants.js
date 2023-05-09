@@ -75,16 +75,19 @@ export const sampleCatalogQueries = {
   isLoading: false,
 };
 
-export const sampleDataTableData = (count, actionComponent) => {
+export const sampleDataTableData = (count) => {
   const data = [];
   for (let i = 0; i < count; i++) {
     data.push({
       uuid: uuidv4(),
+      enterprise_customer_uuid: uuidv4(),
       customerName: `Catalog Query ${i + 1}`,
-      startDate: '2021-01-01',
-      endDate: '2021-12-31',
-      actions: actionComponent,
+      active_datetime: '2021-03-10T16:31:57.251750Z',
+      expiration_datetime: '2021-12-31T16:31:57.251750Z',
     });
   }
   return data;
 };
+
+const testTime = '2021-03-10T16:31:57.251750Z';
+export const testTimeLocal = new Date(testTime).toLocaleDateString().replace(/\//g, '-');
