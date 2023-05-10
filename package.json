@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
-    "@edx/frontend-enterprise-utils": "2.2.1",
-    "@edx/frontend-platform": "^2.5.0",
+    "@edx/frontend-enterprise-utils": "^3.0.0",
+    "@edx/frontend-platform": "^4.2.0",
     "@edx/paragon": "^20.26.0",
     "@fortawesome/fontawesome-svg-core": "1.2.32",
     "@fortawesome/free-brands-svg-icons": "5.15.1",

@@ -12,7 +12,7 @@ import { Switch, Route } from 'react-router-dom';
 import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
 import { v4 as uuidv4 } from 'uuid';
 import Header from './supportHeader';
-import appMessages from './i18n';
+import messages from './i18n';
 import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
 import UserPage from './users/UserPage';
 import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
@@ -86,7 +86,5 @@ subscribe(APP_INIT_ERROR, (error) => {
 
 initialize({
   requireAuthenticatedUser: true,
-  messages: [
-    appMessages,
-  ],
+  messages,
 });
