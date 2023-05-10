@@ -4,7 +4,9 @@ import {
   StatefulButton,
 } from '@edx/paragon';
 import { useHistory } from 'react-router';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useEffect, useMemo, useState,
+} from 'react';
 import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
@@ -18,7 +20,7 @@ const ProvisioningFormSubmissionButton = () => {
   const { resetFormData } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
-  const canCreatePolicyAndSubsidy = useMemo(() => { hasValidPolicyAndSubidy(formData); }, [formData]);
+  const canCreatePolicyAndSubsidy = useMemo(() => hasValidPolicyAndSubidy(formData), [formData]);
 
   const [submitButtonState, setSubmitButtonState] = useState('default');
 
@@ -32,6 +34,7 @@ const ProvisioningFormSubmissionButton = () => {
     // handle per policy catalog data
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
+      return;
     }
     try {
       const responses = await Promise.all(policies.map(async (policy) => {

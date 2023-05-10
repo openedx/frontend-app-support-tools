@@ -89,16 +89,24 @@ export function hasValidPolicyAndSubidy(formData) {
 
   const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
   && isDateRangeValid && isInternalOnlyValid && isRevReqValid;
-
   // Check policy specific data
+  if (policies.length === 0) {
+    return false;
+  }
   const arePoliciesValid = policies.every(policy => {
     const isAccountNameValid = !!policy.accountName;
     const isAccountValueValid = !!policy.accountValue;
     const isCatalogQueryValid = !!policy.catalogQueryMetadata?.catalogQuery?.id
     && !!policy.catalogQueryMetadata?.catalogQuery?.title;
-    const { perLearnerCap } = policy;
-    const isPerLearnerCapValid = perLearnerCap ? policy.perLearnerCapAmount > 0 : !perLearnerCap;
-
+    const { perLearnerCap, perLearnerCapAmount } = policy;
+    let isPerLearnerCapValid = false;
+    if (perLearnerCap !== undefined) {
+      if (!perLearnerCap) {
+        isPerLearnerCapValid = true;
+      } else if (perLearnerCap && perLearnerCapAmount && perLearnerCapAmount > 0) {
+        isPerLearnerCapValid = true;
+      }
+    }
     return isAccountNameValid && isAccountValueValid && isCatalogQueryValid && isPerLearnerCapValid;
   });
   return isSubsidyValid && arePoliciesValid;
