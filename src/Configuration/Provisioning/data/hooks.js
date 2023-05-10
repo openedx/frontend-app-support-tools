@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
+import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
-import { updatePolicies } from './utils';
+import { updatePolicies, getCamelCasedConfigAttribute } from './utils';
 import { DashboardContext } from '../DashboardContext';
 import { sampleDataTableData } from '../../testData/constants';
 
@@ -73,11 +74,38 @@ export default function useProvisioningContext() {
 
   const setCustomCatalog = (customCatalogBoolean) => updateRootDataState({ customCatalog: customCatalogBoolean });
 
-  const instantiateMultipleFormData = (catalogQueryTitle) => updateFormDataState({ policies: catalogQueryTitle });
+  const instantiateMultipleFormData = (multipleFunds) => {
+    const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
+    const { FORM } = PROVISIONING_PAGE_TEXT;
+    const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
+
+    if (multipleFunds) {
+      const multipleFormData = multipleQueries?.map((query, index) => ({
+        ...query,
+        catalogQueryMetadata: {
+          catalogQuery: {
+            id: camelCasedQueries[Object.keys(FORM.ACCOUNT_TYPE.OPTIONS)[index]],
+            title: Object.values(FORM.ACCOUNT_TYPE.OPTIONS)[index],
+          },
+        },
+      }));
+      updateFormDataState({ policies: multipleFormData });
+      return;
+    }
+    updateFormDataState({ policies: defaultQuery });
+  };
 
   const resetPolicies = () => updateFormDataState({ policies: [] });
 
   const setCustomerUUID = (customerUUID) => updateFormDataState({ enterpriseUUID: customerUUID });
+
+  const getCustomers = useCallback(async (customer) => {
+    const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(customer);
+    setState(s => ({
+      ...s,
+      customers: data,
+    }));
+  }, [setState]);
 
   const setFinancialIdentifier = (financialIdentifier) => updateFormDataState({ financialIdentifier });
 
@@ -86,6 +114,8 @@ export default function useProvisioningContext() {
   const setEndDate = (endDate) => updateFormDataState({ endDate });
 
   const setSubsidyRevReq = (subsidyRevReq) => updateFormDataState({ subsidyRevReq });
+
+  const setInternalOnly = (internalOnly) => updateFormDataState({ internalOnly });
 
   const setAccountName = (accountName, index) => updateFormDataState(accountName, true, index);
 
@@ -97,8 +127,6 @@ export default function useProvisioningContext() {
     index,
   );
 
-  const setCustomerCatalogUUID = (customerCatalogUUID, index) => updateFormDataState(customerCatalogUUID, true, index);
-
   const setCatalogQueryCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
 
   const setCatalogQuerySelection = (catalogSelection, index) => updateFormDataState(catalogSelection, true, index);
@@ -109,11 +137,15 @@ export default function useProvisioningContext() {
 
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+    const camelCasedData = camelCaseObject(data.results);
+    const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
+    const filteredCourses = camelCasedData.filter(({ title }) => title.indexOf(learnerCreditPrefix) !== 0);
+
     setState(s => ({
       ...s,
       catalogQueries: {
         ...s.catalogQueries,
-        data: camelCaseObject(data.results),
+        data: filteredCourses,
         isLoading: false,
       },
     }));
@@ -134,7 +166,6 @@ export default function useProvisioningContext() {
     hydrateCatalogQueryData,
     setCustomCatalog,
     setCustomerCatalog,
-    setCustomerCatalogUUID,
     setCatalogQuerySelection,
     instantiateMultipleFormData,
     resetPolicies,
@@ -143,6 +174,7 @@ export default function useProvisioningContext() {
     setStartDate,
     setEndDate,
     setSubsidyRevReq,
+    setInternalOnly,
     setAccountName,
     setAccountValue,
     setCatalogQueryCategory,
@@ -150,5 +182,6 @@ export default function useProvisioningContext() {
     setPerLearnerCap,
     resetFormData,
     setAlertMessage,
+    getCustomers,
   };
 }

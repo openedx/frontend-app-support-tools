@@ -9,6 +9,11 @@ Enzyme.configure({ adapter: new Adapter() });
 
 mergeConfig({
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
+  PREDEFINED_CATALOG_QUERIES: {
+    everything: 1,
+    open_courses: 2,
+    executive_education: 3,
+  },
 });
 
 initialize({

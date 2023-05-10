@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Form } from '@edx/paragon';
+import {
+  Form,
+  Icon,
+  IconButtonWithTooltip,
+  Stack,
+} from '@edx/paragon';
+import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
@@ -25,7 +31,6 @@ const ProvisioningFormTerm = () => {
     }
     return setEndDate('');
   };
-
   useEffect(() => {
     if (formData.endDate < formData.startDate) {
       setHasInvalidEndDate(true);
@@ -36,9 +41,19 @@ const ProvisioningFormTerm = () => {
 
   return (
     <article className="mt-4.5">
-      <div className="mb-1">
-        <h3>{TERM.TITLE}</h3>
-      </div>
+      <Stack direction="horizontal" className="mb-1">
+        <h3 className="mb-0 align-self-center">{TERM.TITLE}</h3>
+        <IconButtonWithTooltip
+          src={InfoOutline}
+          size="sm"
+          tooltipPlacement="right"
+          tooltipContent={TERM.TOOLTIP}
+          iconAs={Icon}
+          invertColors
+          isActive
+          alt="Plan activation tooltip"
+        />
+      </Stack>
       <Form.Group className="mt-4.5 mb-1">
         <Form.Control
           name="start-date"

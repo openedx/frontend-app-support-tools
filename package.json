@@ -4,7 +4,7 @@
   "description": "Frontend support application",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openedx/frontend-app-support.git"
+    "url": "git+https://github.com/openedx/frontend-app-support-tools.git"
   },
   "browserslist": [
     "extends @edx/browserslist-config"
@@ -21,12 +21,12 @@
   },
   "author": "edX",
   "license": "AGPL-3.0",
-  "homepage": "https://github.com/openedx/frontend-app-support#readme",
+  "homepage": "https://github.com/openedx/frontend-app-support-tools#readme",
   "publishConfig": {
     "access": "public"
   },
   "bugs": {
-    "url": "https://github.com/openedx/frontend-app-support/issues"
+    "url": "https://github.com/openedx/frontend-app-support-tools/issues"
   },
   "dependencies": {
     "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
@@ -40,6 +40,7 @@
     "@fortawesome/react-fontawesome": "0.1.14",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
+    "lodash.debounce": "4.0.8",
     "moment": "2.29.1",
     "newrelic": "5.13.1",
     "prop-types": "15.7.2",

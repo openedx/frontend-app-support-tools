@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Form } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
-import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
+import { extractDefinedCatalogTitle, indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 import { isWholeDollarAmount } from '../../../../utils';
 
 const ProvisioningFormAccountDetails = ({ index }) => {
@@ -10,12 +10,11 @@ const ProvisioningFormAccountDetails = ({ index }) => {
   const { setAccountName, setAccountValue } = useProvisioningContext();
   const [multipleFunds, formData] = selectProvisioningContext('multipleFunds', 'formData');
   const formFeedbackText = multipleFunds
-    ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(formData.policies[index]?.catalogQueryTitle.split(' account')[0])
+    ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(extractDefinedCatalogTitle(formData.policies[index]))
     : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;
   const [accountValueState, setAccountValueState] = useState('');
   const [accountNameState, setAccountNameState] = useState('');
   const [isWholeDollar, setIsWholeDollar] = useState(true);
-
   const handleChange = useCallback((e) => {
     const newEvent = e.target;
     const { value, dataset } = newEvent;

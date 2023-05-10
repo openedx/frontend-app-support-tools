@@ -12,14 +12,22 @@ const PROVISIONING_PAGE_TEXT = {
     TITLE: (pathName) => `${titleCase(pathName.split('/').reverse()[0])} Learner Credit Plan`,
     SUB_TITLE: 'Plan Details',
     BUTTON: {
-      submit: 'Create Learner Credit Plan',
+      submit: 'Create learner credit plan',
+      pending: 'Creating...',
+      success: 'Plan successfully created',
+      error: 'Failed to create plan. Please try again.',
       cancel: 'Cancel',
     },
     CUSTOMER: {
       TITLE: 'Customer',
-      OPTIONS: {
-        enterpriseUUID: 'Enterprise Customer UUID',
-        financialIdentifier: 'Opportunity Product',
+      ENTERPRISE_UUID: {
+        TITLE: 'Enterprise Customer Name/UUID',
+        SUB_TITLE: 'Select an existing enterprise to provision',
+        ERROR: 'Error, no selected value',
+        DROPDOWN_DEFAULT: 'No matching enterprise',
+      },
+      FINANCIAL_IDENTIFIER: {
+        TITLE: 'Opportunity Product',
       },
     },
     TERM: {
@@ -29,6 +37,7 @@ const PROVISIONING_PAGE_TEXT = {
         endDate: 'End Date',
       },
       VALIDITY: 'Please choose an end date later than the start date',
+      TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
     SUBSIDY_TYPE: {
       TITLE: 'Subsidy Type',
@@ -38,9 +47,16 @@ const PROVISIONING_PAGE_TEXT = {
         no: 'No (partner no rev prepay)',
       },
     },
+    INTERNAL_ONLY: {
+      TITLE: 'Internal only',
+      CHECKBOX: {
+        label: 'Test Plan',
+        description: 'Select if this plan is intended for internal purposes only',
+      },
+    },
     ACCOUNT_CREATION: {
-      TITLE: 'Account creation',
-      SUB_TITLE: 'Split Learner Credit value into accounts by products?',
+      TITLE: 'Balance by product',
+      SUB_TITLE: 'Divide Learner Credit purchase value by product?',
       OPTIONS: {
         multiple: 'Yes, create separate Open Courses and Executive Education Learner Credit accounts',
         single: 'No, create one Learner Credit account',
@@ -50,11 +66,11 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         openCourses: 'Open Courses account',
         executiveEducation: 'Executive Education account',
-        default: 'Account',
+        default: 'Balance',
       },
     },
     ACCOUNT_DETAIL: {
-      TITLE: 'Account details',
+      TITLE: 'Balance details',
       OPTIONS: {
         displayName: 'Display Name',
         totalAccountValue: {
@@ -90,14 +106,9 @@ const PROVISIONING_PAGE_TEXT = {
         createQuery: 'Create catalog query',
       },
       OPTIONS: {
-        enterpriseCustomerCatalogUUID: 'Enterprise customer catalog UUID',
-        enterpriseCustomerCatalog: {
-          yes: 'Yes, input an existing Enterprise Customer Catalog UUID',
-          no: 'No, create a new Enterprise Customer Catalog record in this form',
-        },
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
-          subtitle: 'Select enterprise catalog query',
+          subtitle: 'Select an existing Enterprise Catalog Query to create the new Customer Catalog record from.',
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
@@ -127,7 +138,16 @@ const PROVISIONING_PAGE_TEXT = {
       API_ERROR_MESSAGES: {
         ENTERPRISE_CATALOG_QUERY: {
           400: 'The enterprise catalog query could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
           404: 'Enterprise Catalog Query failed to respond.',
+        },
+        ENTERPRISE_CUSTOMER_CATALOG: {
+          400: 'The enterprise catalog could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
+          404: 'Enterprise Catalog failed to respond.',
+          405: 'The enterprise catalog could not be created.',
         },
       },
       incorrectDollarAmount: 'Please enter a whole dollar value',
@@ -137,6 +157,7 @@ const PROVISIONING_PAGE_TEXT = {
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
 
+// Used to create pre-populated catalog queries for the form. Catalog query ids added in ProvisioningForm.jsx component
 export const INITIAL_CATALOG_QUERIES = {
   multipleQueries: [
     {
@@ -155,7 +176,5 @@ export const INITIAL_CATALOG_QUERIES = {
     },
   ],
 };
-
-export const autoSuggestSampleOptions = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5'];
 
 export default PROVISIONING_PAGE_TEXT;
