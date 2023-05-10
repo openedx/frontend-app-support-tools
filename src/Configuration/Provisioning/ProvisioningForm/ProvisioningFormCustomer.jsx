@@ -11,7 +11,7 @@ import ProvisioningFormCustomerDropdown from './ProvisioningFormCustomerDropdown
 const ProvisioningFormCustomer = () => {
   const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData] = selectProvisioningContext('formData');
-  const { setCustomerUUID, setFinancialIdentifier } = useProvisioningContext();
+  const { setFinancialIdentifier } = useProvisioningContext();
   const [isOpportunityProduct, setIsOpportunityProduct] = useState(true);
 
   const handleChange = useCallback((e) => {

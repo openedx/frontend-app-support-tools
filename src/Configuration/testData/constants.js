@@ -89,6 +89,7 @@ export const sampleDataTableData = (count) => {
   return data;
 };
 
+export function getSampleCustomers(count = 10) {
   const sampleCustomers = [];
   for (let i = 0; i < count; i++) {
     sampleCustomers.push({
