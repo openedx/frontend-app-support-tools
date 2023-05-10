@@ -68,6 +68,14 @@ export default function useProvisioningContext() {
 
   const setCustomerUUID = (customerUUID) => updateFormDataState({ enterpriseUUID: customerUUID });
 
+  const getCustomers = useCallback(async (customer) => {
+    const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(customer);
+    setState(s => ({
+      ...s,
+      customers: data,
+    }));
+  }, [setState]);
+
   const setFinancialIdentifier = (financialIdentifier) => updateFormDataState({ financialIdentifier });
 
   const setStartDate = (startDate) => updateFormDataState({ startDate });
@@ -143,5 +151,6 @@ export default function useProvisioningContext() {
     setPerLearnerCap,
     resetFormData,
     setAlertMessage,
+    getCustomers,
   };
 }

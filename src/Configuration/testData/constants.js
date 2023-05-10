@@ -75,6 +75,17 @@ export const sampleCatalogQueries = {
   isLoading: false,
 };
 
+export function getSampleCustomers(count = 10) {
+  const sampleCustomers = [];
+  for (let i = 0; i < count; i++) {
+    sampleCustomers.push({
+      id: uuidv4(),
+      name: `Customer ${i + 1}`,
+    });
+  }
+  return sampleCustomers;
+}
+
 export const sampleMultiplePolicyFormData = {
   policies: [
     {

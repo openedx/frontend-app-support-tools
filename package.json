@@ -40,6 +40,7 @@
     "@fortawesome/react-fontawesome": "0.1.14",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
+    "lodash.debounce": "4.0.8",
     "moment": "2.29.1",
     "newrelic": "5.13.1",
     "prop-types": "15.7.2",

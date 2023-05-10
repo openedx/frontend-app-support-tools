@@ -7,6 +7,7 @@ import { ProvisioningContext as NestedProvisioningContext } from '../Provisionin
 const { ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
 
 export const initialStateValue = {
+  customers: [],
   multipleFunds: undefined,
   customCatalog: false,
   alertMessage: ALERTS.unselectedAccountType,

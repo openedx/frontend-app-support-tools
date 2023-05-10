@@ -14,7 +14,7 @@ jest.mock('../../data/hooks', () => ({
   default: jest.fn(),
 }));
 
-// mock usState hook
+// mock useState hook
 const mockUseState = jest.fn();
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
