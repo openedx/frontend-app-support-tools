@@ -33,8 +33,12 @@ const DashboardDatatable = () => {
         FilterStatusComponent={filterStatus}
         columns={[
           {
-            Header: 'Customer ID',
-            accessor: 'enterpriseCustomerUuid',
+            Header: 'Plan ID',
+            accessor: 'uuid',
+          },
+          {
+            Header: 'Plan name',
+            accessor: 'title',
           },
           {
             Header: 'Customer name',

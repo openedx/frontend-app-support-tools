@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { titleCase } from '../../../utils';
 
+// Set to true or false to enable local testing, populates DataTable with sample data
+export const TESTING = false;
+
 const PROVISIONING_PAGE_TEXT = {
   DASHBOARD: {
     TITLE: 'Learner Credit Plans',

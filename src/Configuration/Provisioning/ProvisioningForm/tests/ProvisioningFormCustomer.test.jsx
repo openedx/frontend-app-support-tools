@@ -36,7 +36,6 @@ describe('ProvisioningFormCustomer', () => {
   });
   it('renders customer financial linkage', () => {
     renderWithRouter(<ProvisioningFormCustomerWrapper />);
-    console.log(testFinancialLinkage.length);
     const input = screen.getByTestId('customer-financial-identifier');
     fireEvent.change(input, { target: { value: testFinancialLinkage } });
     const inputValue = input.getAttribute('value');
