@@ -149,6 +149,13 @@ const PROVISIONING_PAGE_TEXT = {
           404: 'Enterprise Catalog failed to respond.',
           405: 'The enterprise catalog could not be created.',
         },
+        SUBSIDY_CREATION: {
+          400: 'The subsidy could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
+          404: 'Subsidy creation endpoint failed to respond',
+          405: 'The subsidy could not be created.',
+        },
       },
       incorrectDollarAmount: 'Please enter a whole dollar value',
     },

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { getConfig } from '@edx/frontend-platform';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
 import ProvisioningFormTerm from './ProvisioningFormTerm';
@@ -23,7 +22,6 @@ const ProvisioningForm = () => {
     resetPolicies();
     instantiateMultipleFormData(multipleFunds);
   }, [multipleFunds]);
-
   return (
     <div className="m-0 p-0 mb-5">
       <div className="mt-5">

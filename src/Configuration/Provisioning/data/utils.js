@@ -85,11 +85,10 @@ export function hasValidPolicyAndSubidy(formData) {
   const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
   const isFinancialIdentifierValid = !!formData.financialIdentifier;
   const isDateRangeValid = !!formData.startDate && !!formData.endDate;
-  const isInternalOnlyValid = !!formData.internalOnly;
   const isRevReqValid = !!formData.subsidyRevReq;
 
   const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
-  && isDateRangeValid && isInternalOnlyValid && isRevReqValid;
+  && isDateRangeValid && isRevReqValid;
   // Check policy specific data
   if (policies.length === 0) {
     return false;
@@ -116,15 +115,15 @@ export function hasValidPolicyAndSubidy(formData) {
 /**
  * Creates a new catalog for the specified valid enterprise customer.
  * @param {{
- * enterpriseCustomerUUID: string,
+ * enterpriseCustomerUUID: String,
  * catalogQueryUUID: Number,
- * title: string
+ * title: String
  * }} - The new catalog data.
  * @returns {{
- * uuid: string,
- * title: string,
+ * uuid: String,
+ * title: String,
  * catalogQueryUUID: Number,
- * enterpriseCustomerUUID: string
+ * enterpriseCustomerUUID: String
  * }} - The newly created catalog where uuid is the catalog UUID.
  */
 export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID, title }) {
@@ -170,6 +169,32 @@ export function getCamelCasedConfigAttribute(attribute) {
   return null;
 }
 
+/**
+ *
+ * @param {{
+ * financialIdentifier: String,
+ * title: String,
+ * enterpriseCustomerUUID: String,
+ * startDate: String,
+ * endDate: String,
+ * startingBalance: Number,
+ * revenueCategory: String,
+ * internalOnly: Boolean,
+ * }} - Object fields required to create a new subsidy
+ * @returns {{
+ * uuid: String,
+ * title: String,
+ * enterprise_customer_uuid: String,
+ * active_datetime: String,
+ * expiration_datetime: String,
+ * unit: String,
+ * reference_type: String,
+ * current_balance: Number,
+ * starting_balance: Number,
+ * internal_only: Boolean,
+ * revenue_category: String
+ * }} - Returns the 'data' response back where uuid is the subsidy uuid
+ */
 export async function createSubsidy({
   financialIdentifier,
   title,
@@ -180,7 +205,7 @@ export async function createSubsidy({
   revenueCategory,
   internalOnly,
 }) {
-  const data = await SubsidyApiService.postSubsidy(
+  const { data } = await SubsidyApiService.postSubsidy(
     financialIdentifier,
     title,
     enterpriseCustomerUUID,
@@ -191,4 +216,75 @@ export async function createSubsidy({
     internalOnly,
   );
   return data;
+}
+
+/**
+ * Takes in the formData object from context, and transforms it into an object
+ * that can be used to create a new subsidy.
+ *
+ * @param {Object} formData
+ * @returns - Returns a subsidy data object that can be used to create a new subsidy
+ */
+export function transformSubsidyData(formData) {
+  const { enterpriseUUID, financialIdentifier, internalOnly } = formData;
+  const isoEndDate = new Date(formData.endDate).toISOString();
+  const isoStartDate = new Date(formData.startDate).toISOString();
+  const revenueCategory = formData.subsidyRevReq.includes('bulk')
+    ? 'bulk-enrollment-prepay'
+    : 'partner-no-rev-prepay';
+  let subsidyTitle = '';
+  const startingBalance = formData.policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0);
+  if (formData.policies.length > 1) {
+    formData.policies.forEach(async ({ accountName }, index) => {
+      if (index === formData.policies.length - 1) {
+        subsidyTitle += `${accountName.trim()}`;
+      } else {
+        subsidyTitle += `${accountName.trim()} --- `;
+      }
+    });
+  } else {
+    subsidyTitle = formData.policies[0].accountName.trim();
+  }
+  return {
+    enterpriseUUID,
+    financialIdentifier,
+    internalOnly,
+    isoStartDate,
+    isoEndDate,
+    revenueCategory,
+    startingBalance,
+    subsidyTitle,
+  };
+}
+
+export async function createPolicy({
+  description,
+  enterpriseCustomerUuid,
+  catalogUuid,
+  subsidyUuid,
+  perLearnerSpendLimit,
+  spendLimit,
+}) {
+  const { data } = await LmsApiService.postSubsidyAccessPolicy(
+    description,
+    enterpriseCustomerUuid,
+    catalogUuid,
+    subsidyUuid,
+    perLearnerSpendLimit,
+    spendLimit,
+  );
+  return data;
+}
+
+export function transformPolicyData(formData, catalogCreationResponse, subsidyCreationResponse) {
+  const { enterpriseUUID, policies } = formData;
+  const payloads = policies.map((policy, index) => ({
+    description: `This policy created for subsidy ${subsidyCreationResponse[0].uuid} with ${policies.length} associated policies`,
+    enterpriseCustomerUuid: enterpriseUUID,
+    catalogUuid: catalogCreationResponse[0][index].uuid,
+    subsidyUuid: subsidyCreationResponse[0].uuid,
+    perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
+    spendLimit: parseInt(policy.accountValue, 10) * 100,
+  }));
+  return payloads;
 }
