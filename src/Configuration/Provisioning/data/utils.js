@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
+import SubsidyApiService from '../../../data/services/SubsidyApiService';
 
 export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
@@ -167,4 +168,27 @@ export function getCamelCasedConfigAttribute(attribute) {
     return camelCasedConfigurationObject;
   }
   return null;
+}
+
+export async function createSubsidy({
+  financialIdentifier,
+  title,
+  enterpriseCustomerUUID,
+  startDate,
+  endDate,
+  startingBalance,
+  revenueCategory,
+  internalOnly,
+}) {
+  const data = await SubsidyApiService.postSubsidy(
+    financialIdentifier,
+    title,
+    enterpriseCustomerUUID,
+    startDate,
+    endDate,
+    startingBalance,
+    revenueCategory,
+    internalOnly,
+  );
+  return data;
 }

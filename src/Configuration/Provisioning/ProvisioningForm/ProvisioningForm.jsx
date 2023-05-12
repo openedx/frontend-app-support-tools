@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { getConfig } from '@edx/frontend-platform';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningFormCustomer from './ProvisioningFormCustomer';
 import ProvisioningFormTerm from './ProvisioningFormTerm';
@@ -18,7 +19,6 @@ const ProvisioningForm = () => {
     'formData',
   );
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
-
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(multipleFunds);
