@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 import DashboardHeader from './DashboardHeader';
 import DashboardToast from './DashboardToast';
+import { toastText } from './data/constants';
 // TODO: Create a new item header, search box and datatable
 const Dashboard = () => {
   const history = useHistory();
@@ -13,18 +14,18 @@ const Dashboard = () => {
   useEffect(() => {
     if (locationState?.planSuccessfullyCreated) {
       setToasts((prevState) => [...prevState, {
-        toastText: 'Plan successfully created',
+        text: toastText.successfulPlanCreation,
         uuid: uuidv4(),
       }]);
       const newState = { ...locationState };
       delete newState.planSuccessfullyCreated;
       history.replace({ ...location, state: newState });
     }
-  });
+  }, [toastText.successfulPlanCreation, history, location, locationState]);
   return (
     <>
       <DashboardHeader />
-      {toasts.map(({ toastText, uuid }) => (<DashboardToast toastText={toastText} key={uuid} />))}
+      {toasts.map(({ text, uuid }) => (<DashboardToast toastText={text} key={uuid} />))}
     </>
   );
 };

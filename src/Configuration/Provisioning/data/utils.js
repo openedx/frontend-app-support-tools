@@ -233,18 +233,20 @@ export function transformSubsidyData(formData) {
   const revenueCategory = formData.subsidyRevReq.includes('bulk')
     ? 'bulk-enrollment-prepay'
     : 'partner-no-rev-prepay';
-  let subsidyTitle = '';
+  let subsidyTitle = formData?.subsidyTitle || '';
   const startingBalance = formData.policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0);
-  if (formData.policies.length > 1) {
-    formData.policies.forEach(async ({ accountName }, index) => {
-      if (index === formData.policies.length - 1) {
-        subsidyTitle += `${accountName.trim()}`;
-      } else {
-        subsidyTitle += `${accountName.trim()} --- `;
-      }
-    });
-  } else {
-    subsidyTitle = formData.policies[0].accountName.trim();
+  if (subsidyTitle.length === 0) {
+    if (formData.policies.length > 1) {
+      formData.policies.forEach(async ({ accountName }, index) => {
+        if (index === formData.policies.length - 1) {
+          subsidyTitle += `${accountName.trim()}`;
+        } else {
+          subsidyTitle += `${accountName.trim()} --- `;
+        }
+      });
+    } else {
+      subsidyTitle = formData.policies[0].accountName.trim();
+    }
   }
   return {
     enterpriseUUID,

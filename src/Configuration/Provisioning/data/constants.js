@@ -18,6 +18,10 @@ const PROVISIONING_PAGE_TEXT = {
       error: 'Failed to create plan. Please try again.',
       cancel: 'Cancel',
     },
+    PLAN_TITLE: {
+      HEADER: 'Title',
+      TITLE: 'Plan title',
+    },
     CUSTOMER: {
       TITLE: 'Customer',
       ENTERPRISE_UUID: {
@@ -163,6 +167,10 @@ const PROVISIONING_PAGE_TEXT = {
 };
 
 export const splitStringBudget = ' budget';
+
+export const toastText = {
+  successfulPlanCreation: 'Plan successfully created',
+};
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
 

@@ -19,7 +19,6 @@ const DashboardToast = ({ toastText }) => {
     >
       {toastText}
     </Toast>
-
   );
 };
 

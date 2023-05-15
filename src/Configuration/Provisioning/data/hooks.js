@@ -66,6 +66,8 @@ export default function useProvisioningContext() {
 
   const resetPolicies = () => updateFormDataState({ policies: [] });
 
+  const setSubsidyTitle = (subsidyTitle) => updateFormDataState({ subsidyTitle });
+
   const setCustomerUUID = (customerUUID) => updateFormDataState({ enterpriseUUID: customerUUID });
 
   const getCustomers = useCallback(async (customer) => {
@@ -134,6 +136,7 @@ export default function useProvisioningContext() {
     setMultipleFunds,
     hydrateCatalogQueryData,
     setCustomCatalog,
+    setSubsidyTitle,
     setCustomerCatalog,
     setCatalogQuerySelection,
     instantiateMultipleFormData,
