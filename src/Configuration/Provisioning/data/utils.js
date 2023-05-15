@@ -4,6 +4,7 @@ import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
+import { splitStringBudget } from './constants';
 
 export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
@@ -137,7 +138,7 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
 
 /**
  * Extracts the catalog title from the catalogQueryTitle field of a policy.
- * Splitting on ' account' for the case with multiple catalog queries, where the title
+ * Splitting on ' budget' for the case with multiple catalog queries, where the title
  * of each individual 'Policy' form data is `${title} account`
  * @param {Object} policy - The policy object.
  * @returns {String} - The catalog title.
@@ -146,8 +147,8 @@ export function extractDefinedCatalogTitle(policy) {
   if (!policy || !policy?.catalogQueryTitle) {
     return null;
   }
-  if (policy.catalogQueryTitle.includes(' account')) {
-    return policy.catalogQueryTitle.split(' account')[0];
+  if (policy.catalogQueryTitle.includes(splitStringBudget)) {
+    return policy.catalogQueryTitle.split(splitStringBudget)[0];
   }
   return null;
 }
@@ -257,7 +258,7 @@ export function transformSubsidyData(formData) {
   };
 }
 
-export async function createPolicy({
+export function createPolicy({
   description,
   enterpriseCustomerUuid,
   catalogUuid,
@@ -265,7 +266,7 @@ export async function createPolicy({
   perLearnerSpendLimit,
   spendLimit,
 }) {
-  const { data } = await LmsApiService.postSubsidyAccessPolicy(
+  const data = LmsApiService.postSubsidyAccessPolicy(
     description,
     enterpriseCustomerUuid,
     catalogUuid,

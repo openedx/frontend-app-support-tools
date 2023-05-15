@@ -98,11 +98,9 @@ const ProvisioningFormSubmissionButton = () => {
       }
     }
     const policyPayloads = transformPolicyData(formData, catalogCreationResponse, subsidyCreationResponse);
-    console.log(policyPayloads);
     try {
       const policyResponses = await Promise.all(policyPayloads.map(async (payload) => {
         const policyCreatedResponse = createPolicy(payload);
-        console.log(policyCreatedResponse);
         return policyCreatedResponse;
       }));
       if (policyResponses) {

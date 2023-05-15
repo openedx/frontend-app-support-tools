@@ -84,11 +84,11 @@ initialize({
   handlers: {
     config: () => {
       mergeConfig({
-        LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
-        ENTERPRISE_ACCESS_BASE_URL: process.env.ENTERPRISE_ACCESS_BASE_URL,
+        LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL || null,
+        ENTERPRISE_ACCESS_BASE_URL: process.env.ENTERPRISE_ACCESS_BASE_URL || null,
         FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
         FEATURE_CONFIGURATION_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION') || null,
-        SUBSIDY_BASE_URL: process.env.SUBSIDY_BASE_URL,
+        SUBSIDY_BASE_URL: process.env.SUBSIDY_BASE_URL || null,
       });
     },
   },

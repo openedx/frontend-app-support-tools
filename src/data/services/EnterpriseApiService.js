@@ -37,6 +37,7 @@ class LmsApiService {
     spendLimit,
     accessMethod = 'direct',
     active = true,
+    perLearnerEnrollmentLimit = null,
     policyType = 'PerLearnerSpendCreditAccessPolicy',
   ) => {
     LmsApiService.apiClient().post(
@@ -50,6 +51,7 @@ class LmsApiService {
         subsidy_uuid: subsidyUuid,
         access_method: accessMethod,
         per_learner_spend_limit: perLearnerSpendLimit,
+        per_learner_enrollment_limit: perLearnerEnrollmentLimit,
         spend_limit: spendLimit,
       },
     );

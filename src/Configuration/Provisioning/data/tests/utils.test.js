@@ -107,9 +107,9 @@ describe('getCamelCasedConfigAttribute', () => {
 });
 describe('extractDefinedCatalogTitle', () => {
   it('returns the correct title', () => {
-    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests account' })).toEqual('The Bestests');
+    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests budget' })).toEqual('The Bestests');
   });
-  it('returns null if policy does not container ` account`', () => {
+  it('returns null if policy does not container ` budget`', () => {
     expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual(null);
   });
   it('returns null if no policy is passed', () => {
