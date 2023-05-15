@@ -34,6 +34,12 @@ const ProvisioningFormSubmissionButton = () => {
 
   const clearFormAndRedirect = () => {
     resetFormData();
+    if (submitButtonState === 'complete') {
+      history.push(HOME, {
+        planSuccessfullyCreated: true,
+      });
+      return;
+    }
     history.push(HOME);
   };
   const handleSubmit = async () => {
