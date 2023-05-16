@@ -27,11 +27,7 @@ import ConfigurationPage from './Configuration/ConfigurationPage';
 import ProvisioningFormContainer from './Configuration/Provisioning/ProvisioningForm';
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
-mergeConfig({
-  LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
-  FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
-  FEATURE_CONFIGURATION_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION') || null,
-});
+
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();
   if (!administrator) {
@@ -85,6 +81,17 @@ subscribe(APP_INIT_ERROR, (error) => {
 });
 
 initialize({
+  handlers: {
+    config: () => {
+      mergeConfig({
+        LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL || null,
+        ENTERPRISE_ACCESS_BASE_URL: process.env.ENTERPRISE_ACCESS_BASE_URL || null,
+        FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
+        FEATURE_CONFIGURATION_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION') || null,
+        SUBSIDY_BASE_URL: process.env.SUBSIDY_BASE_URL || null,
+      });
+    },
+  },
   requireAuthenticatedUser: true,
   messages: [
     appMessages,

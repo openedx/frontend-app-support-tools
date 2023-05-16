@@ -9,6 +9,7 @@ import ProvisioningFormSubmissionButton from './ProvisioningFormSubmissionButton
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
+import ProvisioningFormTitle from './ProvisioningFormTitle';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
@@ -18,17 +19,16 @@ const ProvisioningForm = () => {
     'formData',
   );
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
-
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(multipleFunds);
   }, [multipleFunds]);
-
   return (
     <div className="m-0 p-0 mb-5">
       <div className="mt-5">
         <h2>{FORM.SUB_TITLE}</h2>
       </div>
+      <ProvisioningFormTitle />
       <ProvisioningFormCustomer />
       <ProvisioningFormTerm />
       <ProvisioningFormInternalOnly />

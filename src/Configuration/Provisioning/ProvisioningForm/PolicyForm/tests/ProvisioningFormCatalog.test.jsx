@@ -3,7 +3,7 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import ProvisioningFormCatalog from '../ProvisioningFormCatalog';
 import { ProvisioningContext, initialStateValue } from '../../../../testData';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, splitStringBudget } from '../../../data/constants';
 
 const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
 
@@ -72,7 +72,7 @@ describe('ProvisioningFormCatalog', () => {
     expect(screen.getByText(CATALOG.TITLE)).toBeTruthy();
     expect(screen.getByText(CATALOG.SUB_TITLE)).toBeTruthy();
     expect(screen.getByText(
-      INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle.split(' account')[0],
+      INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle.split(splitStringBudget)[0],
     )).toBeTruthy();
   });
   it('sets context state', () => {

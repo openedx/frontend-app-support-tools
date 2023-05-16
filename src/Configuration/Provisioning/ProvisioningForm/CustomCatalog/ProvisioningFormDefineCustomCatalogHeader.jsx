@@ -17,7 +17,7 @@ const ProvisioningFormDefineCustomCatalogHeader = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
   return (
     <>
-      <ActionRow className="mb-4.5">
+      <ActionRow className="mb-1">
         <h3>{CUSTOM_CATALOG.HEADER.DEFINE.TITLE}</h3>
         <ActionRow.Spacer />
         <Hyperlink

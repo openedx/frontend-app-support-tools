@@ -11,7 +11,15 @@ import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
-import { createCatalogs, selectProvisioningContext, hasValidPolicyAndSubidy } from '../data/utils';
+import {
+  createCatalogs,
+  selectProvisioningContext,
+  hasValidPolicyAndSubidy,
+  createSubsidy,
+  transformSubsidyData,
+  transformPolicyData,
+  createPolicy,
+} from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
@@ -26,18 +34,43 @@ const ProvisioningFormSubmissionButton = () => {
 
   const clearFormAndRedirect = () => {
     resetFormData();
+    if (submitButtonState === 'complete') {
+      // Second parameter of push triggers the toast notification on dashboard
+      history.push(HOME, {
+        planSuccessfullyCreated: true,
+      });
+      return;
+    }
     history.push(HOME);
   };
+
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
-    // handle subsidy data
-    // handle per policy catalog data
+    // Checks validiy before performing any API calls
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
       return;
     }
+
+    // transforms formData into the correct shape for the API
+    const {
+      enterpriseUUID,
+      financialIdentifier,
+      internalOnly,
+      isoStartDate,
+      isoEndDate,
+      revenueCategory,
+      startingBalance,
+      subsidyTitle,
+    } = transformSubsidyData(formData);
+
+    // containers for the API responses
+    const catalogCreationResponse = [];
+    const subsidyCreationResponse = [];
+
+    // creates catalog for each policy
     try {
-      const responses = await Promise.all(policies.map(async (policy) => {
+      const catalogResponses = await Promise.all(policies.map(async (policy) => {
         const payload = {
           enterpriseCustomerUUID: formData.enterpriseUUID,
           catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
@@ -46,8 +79,9 @@ const ProvisioningFormSubmissionButton = () => {
         const catalogCreatedResponse = createCatalogs(payload);
         return catalogCreatedResponse;
       }));
-      if (responses.filter((response) => response.uuid).length === policies.length) {
-        setSubmitButtonState('complete');
+      // checks if all catalogs were created successfully before proceeding
+      if (catalogResponses.filter((response) => response.uuid).length === policies.length) {
+        catalogCreationResponse.push(catalogResponses);
       }
     } catch (error) {
       setSubmitButtonState('error');
@@ -56,6 +90,53 @@ const ProvisioningFormSubmissionButton = () => {
         logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]} ${error}`);
       }
     }
+
+    // creates subsidy
+    try {
+      const subsidyPayload = {
+        financialIdentifier,
+        title: subsidyTitle,
+        enterpriseCustomerUUID: enterpriseUUID,
+        startDate: isoStartDate,
+        endDate: isoEndDate,
+        startingBalance,
+        revenueCategory,
+        internalOnly,
+      };
+      const subsidyResponse = await createSubsidy(subsidyPayload);
+      // checks if subsidy was created successfully before proceeding
+      if (subsidyResponse) {
+        subsidyCreationResponse.push(subsidyResponse);
+      }
+    } catch (error) {
+      setSubmitButtonState('error');
+      const { customAttributes } = error;
+      if (customAttributes) {
+        logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.SUBSIDY_CREATION[customAttributes.httpErrorStatus]} ${error}`);
+      }
+    }
+
+    // transforms formData, catalogCreationResponse and subsidyCreationResponse into the correct shape for the API
+    const policyPayloads = transformPolicyData(
+      formData,
+      catalogCreationResponse,
+      subsidyCreationResponse,
+    );
+
+    // creates subsidy access policy for each policy in the form
+    try {
+      const policyResponses = await Promise.all(policyPayloads.map(async (payload) => {
+        const policyCreatedResponse = createPolicy(payload);
+        return policyCreatedResponse;
+      }));
+      // checks if all policies were created successfully before proceeding
+      if (policyResponses) {
+        setSubmitButtonState('complete');
+      }
+    } catch (error) {
+      setSubmitButtonState('error');
+      logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.POLICY_CREATION} ${error}`);
+    }
   };
 
   const handleCancel = () => {
@@ -63,6 +144,7 @@ const ProvisioningFormSubmissionButton = () => {
   };
 
   useEffect(() => {
+    // resets form and redirects to dashboard if the form was successfully submitted
     if (submitButtonState === 'complete') {
       clearFormAndRedirect();
     }

@@ -27,6 +27,35 @@ class LmsApiService {
     enterprise_catalog_query: catalogQueryUUID,
     title,
   });
+
+  static postSubsidyAccessPolicy = (
+    description,
+    enterpriseCustomerUuid,
+    catalogUuid,
+    subsidyUuid,
+    perLearnerSpendLimit,
+    spendLimit,
+    accessMethod = 'direct',
+    active = true,
+    perLearnerEnrollmentLimit = null,
+    policyType = 'PerLearnerSpendCreditAccessPolicy',
+  ) => {
+    LmsApiService.apiClient().post(
+      `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/admin/policy/`,
+      {
+        policy_type: policyType,
+        description,
+        active,
+        enterprise_customer_uuid: enterpriseCustomerUuid,
+        catalog_uuid: catalogUuid,
+        subsidy_uuid: subsidyUuid,
+        access_method: accessMethod,
+        per_learner_spend_limit: perLearnerSpendLimit,
+        per_learner_enrollment_limit: perLearnerEnrollmentLimit,
+        spend_limit: spendLimit,
+      },
+    );
+  };
 }
 
 export default LmsApiService;

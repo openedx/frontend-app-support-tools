@@ -4,13 +4,14 @@ import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, TESTING } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
-import { updatePolicies, getCamelCasedConfigAttribute, normalizeSubsidyDataTableData } from './utils';
+import {
+  updatePolicies, getCamelCasedConfigAttribute, normalizeSubsidyDataTableData, filterIndexOfCatalogQueryTitle,
+} from './utils';
 import { DashboardContext } from '../DashboardContext';
 import { sampleDataTableData } from '../../testData/constants';
 
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
-
   const hydrateEnterpriseSubsidies = useCallback((count, action, redirect) => {
     const data = camelCaseObject(sampleDataTableData(count, TESTING));
     const normalizedData = normalizeSubsidyDataTableData(data, action, redirect);
@@ -85,6 +86,8 @@ export default function useProvisioningContext() {
 
   const resetPolicies = () => updateFormDataState({ policies: [] });
 
+  const setSubsidyTitle = (subsidyTitle) => updateFormDataState({ subsidyTitle });
+
   const setCustomerUUID = (customerUUID) => updateFormDataState({ enterpriseUUID: customerUUID });
 
   const getCustomers = useCallback(async (customer) => {
@@ -125,15 +128,14 @@ export default function useProvisioningContext() {
 
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
-    const camelCasedData = camelCaseObject(data.results);
     const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
-    const filteredCourses = camelCasedData.filter(({ title }) => title.indexOf(learnerCreditPrefix) !== 0);
+    const filteredCatalogQueries = filterIndexOfCatalogQueryTitle(data.results, learnerCreditPrefix);
 
     setState(s => ({
       ...s,
       catalogQueries: {
         ...s.catalogQueries,
-        data: filteredCourses,
+        data: filteredCatalogQueries,
         isLoading: false,
       },
     }));
@@ -153,6 +155,7 @@ export default function useProvisioningContext() {
     setMultipleFunds,
     hydrateCatalogQueryData,
     setCustomCatalog,
+    setSubsidyTitle,
     setCustomerCatalog,
     setCatalogQuerySelection,
     instantiateMultipleFormData,
