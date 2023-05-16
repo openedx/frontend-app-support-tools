@@ -18,10 +18,14 @@ const PROVISIONING_PAGE_TEXT = {
       error: 'Failed to create plan. Please try again.',
       cancel: 'Cancel',
     },
+    PLAN_TITLE: {
+      HEADER: 'Title',
+      TITLE: 'Plan title',
+    },
     CUSTOMER: {
       TITLE: 'Customer',
       ENTERPRISE_UUID: {
-        TITLE: 'Enterprise Customer Name/UUID',
+        TITLE: 'Enterprise Customer / UUID',
         SUB_TITLE: 'Select an existing enterprise to provision',
         ERROR: 'Error, no selected value',
         DROPDOWN_DEFAULT: 'No matching enterprise',
@@ -39,6 +43,13 @@ const PROVISIONING_PAGE_TEXT = {
       VALIDITY: 'Please choose an end date later than the start date',
       TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
+    INTERNAL_ONLY: {
+      TITLE: 'Internal only',
+      CHECKBOX: {
+        label: 'Test Plan',
+        description: 'Select if plan is intended for internal purposes only',
+      },
+    },
     SUBSIDY_TYPE: {
       TITLE: 'Subsidy Type',
       SUB_TITLE: 'Rev req through standard commercial process?',
@@ -47,36 +58,29 @@ const PROVISIONING_PAGE_TEXT = {
         no: 'No (partner no rev prepay)',
       },
     },
-    INTERNAL_ONLY: {
-      TITLE: 'Internal only',
-      CHECKBOX: {
-        label: 'Test Plan',
-        description: 'Select if this plan is intended for internal purposes only',
-      },
-    },
     ACCOUNT_CREATION: {
-      TITLE: 'Balance by product',
+      TITLE: 'Budget by product',
       SUB_TITLE: 'Divide Learner Credit purchase value by product?',
       OPTIONS: {
-        multiple: 'Yes, create separate Open Courses and Executive Education Learner Credit accounts',
-        single: 'No, create one Learner Credit account',
+        multiple: 'Yes, create separate Open Courses and Executive Education Learner Credit budgets',
+        single: 'No, create one Learner Credit budget',
       },
     },
     ACCOUNT_TYPE: {
       OPTIONS: {
-        openCourses: 'Open Courses account',
-        executiveEducation: 'Executive Education account',
+        openCourses: 'Open Courses budget',
+        executiveEducation: 'Executive Education budget',
         default: 'Balance',
       },
     },
     ACCOUNT_DETAIL: {
-      TITLE: 'Balance details',
+      TITLE: 'Budget details',
       OPTIONS: {
-        displayName: 'Display Name',
+        displayName: 'Display name',
         totalAccountValue: {
-          title: 'Total account value ($)',
-          subtitle: 'The contracted USD value available through the account.',
-          dynamicSubtitle: (accountType) => `The contracted USD value available through the account redeemable for ${accountType} enrollment.`,
+          title: 'Budget starting balance ($)',
+          subtitle: 'The contracted USD value available through the budget.',
+          dynamicSubtitle: (budgetType) => `The contracted USD value available through the budget redeemable for ${budgetType} enrollment.`,
         },
       },
     },
@@ -117,19 +121,19 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
     LEARNER_CAP: {
-      TITLE: 'Restrictions',
-      SUB_TITLE: 'Create learner spend restrictions?',
+      TITLE: 'Limits',
+      SUB_TITLE: 'Create learner spend limits?',
       OPTIONS: {
         yes: 'Yes',
         no: 'No, first come first serve',
       },
     },
     LEARNER_CAP_DETAIL: {
-      TITLE: 'Define Restrictions',
+      TITLE: 'Define limits',
       OPTIONS: {
         perLearnerSpendCap: {
-          title: 'Per learner spend cap ($)',
-          subtitle: 'The maximum USD value a single learner may redeem from the account.',
+          title: 'Per learner spend limit ($)',
+          subtitle: 'The maximum USD value a single learner may redeem from the budget.',
         },
       },
     },
@@ -149,10 +153,30 @@ const PROVISIONING_PAGE_TEXT = {
           404: 'Enterprise Catalog failed to respond.',
           405: 'The enterprise catalog could not be created.',
         },
+        SUBSIDY_CREATION: {
+          400: 'The subsidy could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
+          404: 'Subsidy creation endpoint failed to respond',
+          405: 'The subsidy could not be created.',
+        },
+        POLICY_CREATION: {
+          400: 'The subsidy could not be created.',
+          401: 'Authentication failed.',
+          403: 'Authentication recognized but incorrect credentials.',
+          404: 'Subsidy creation endpoint failed to respond',
+          405: 'The subsidy could not be created.',
+        },
       },
       incorrectDollarAmount: 'Please enter a whole dollar value',
     },
   },
+};
+
+export const splitStringBudget = ' budget';
+
+export const toastText = {
+  successfulPlanCreation: 'Plan successfully created',
 };
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
