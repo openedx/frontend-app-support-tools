@@ -28,6 +28,7 @@ export const lmsCustomerCatalog = {
 
 /**
  * Sorts an array of catalog queries by most recently modified date
+ *
  * @param {Array} catalogQueries - Object array of catalog queries
  * @returns {Array} - Sorted catalog queries by most recently modified
  */
@@ -45,6 +46,7 @@ export function sortedCatalogQueries(catalogQueries) {
 
 /**
  * Selects and returns the specified data attributes from the ProvisioningContext using the useContextSelector hook.
+ *
  * @param {...string} args - The list of data attributes to retrieve from the ProvisioningContext.
  * @returns {Array} [Array] - An array of the specified data attributes from the ProvisioningContext.
  * @throws {Error} If no arguments are provided.
@@ -59,6 +61,7 @@ export function selectProvisioningContext(...args) {
 
 /**
  * Updates a single policy attribute within an array of policies and returns a new array with the updated policies.
+ *
  * @param {Object} data - The data object of the current data state.
  * @param {Object} newDataAttribute - The new data attribute to update policies with.
  * @param {Number} index - The index of the policy to update.
@@ -76,6 +79,7 @@ export function updatePolicies(data, newDataAttribute, index) {
 /**
  * Checks all form data to ensure that all required fields are filled out,
  * but not the individual validity of each field.
+ *
  * @param {Object} formData - The form data object.
  * @returns {Boolean} - Returns true if all form data is valid, false otherwise.
  */
@@ -115,6 +119,7 @@ export function hasValidPolicyAndSubidy(formData) {
 
 /**
  * Creates a new catalog for the specified valid enterprise customer.
+ *
  * @param {{
  * enterpriseCustomerUUID: String,
  * catalogQueryUUID: Number,
@@ -140,6 +145,7 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
  * Extracts the catalog title from the catalogQueryTitle field of a policy.
  * Splitting on ' budget' for the case with multiple catalog queries, where the title
  * of each individual 'Policy' form data is `${title} account`
+ *
  * @param {Object} policy - The policy object.
  * @returns {String} - The catalog title.
  */
@@ -156,6 +162,7 @@ export function extractDefinedCatalogTitle(policy) {
 /**
  * Returns a camelCased version of the specified config attribute from the frontend-platform config.
  * With the introduction of runtime config, the config attribute can now support JSON objects.
+ *
  * @param {String} attribute - The config attribute to retrieve.
  * @returns {Object} - The camelCased config attribute. Returns null if the attribute is not found.
  */
@@ -171,6 +178,7 @@ export function getCamelCasedConfigAttribute(attribute) {
 }
 
 /**
+ * Creates a new subsidy for the specified valid enterprise customer.
  *
  * @param {{
  * financialIdentifier: String,
@@ -260,6 +268,19 @@ export function transformSubsidyData(formData) {
   };
 }
 
+/**
+ * Creates a new policy for the specified valid enterprise customer,subsidy and catalog uuid.
+ *
+ * @param {{
+ * description: String,
+ * enterpriseCustomerUuid: String,
+ * catalogUuid: String,
+ * subsidyUuid: String,
+ * perLearnerSpendLimit: Number,
+ * spendLimit: Number
+ * }} - Object fields required to create a new policy
+ * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
+ */
 export function createPolicy({
   description,
   enterpriseCustomerUuid,
@@ -279,6 +300,15 @@ export function createPolicy({
   return data;
 }
 
+/**
+ * Takes the response of catalog creation, the response of subsidy creation and the formData object from context
+ * to create an array of policy data objects that can be used to create new policies.
+ *
+ * @param {Object} formData - The formData object from context
+ * @param {Object} catalogCreationResponse - The response from the catalog creation API
+ * @param {Object} subsidyCreationResponse - The response from the subsidy creation API
+ * @returns - Returns an array of policy data objects that can be used to create new policies
+ */
 export function transformPolicyData(formData, catalogCreationResponse, subsidyCreationResponse) {
   const { enterpriseUUID, policies } = formData;
   const payloads = policies.map((policy, index) => ({
@@ -290,4 +320,19 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     spendLimit: parseInt(policy.accountValue, 10) * 100,
   }));
   return payloads;
+}
+
+/**
+ * Takes in the catalog query data and a string to perform an `indexOf` filter the catalog query data `title` field.
+ *
+ * @param {Object} data - The catalog query data
+ * @param {String} filteredBy - The string to filter the catalog query data by
+ * @returns - Returns the filtered catalog query data
+ */
+export function filterIndexOfCatalogQueryTitle(catalogQueries, filteredBy) {
+  const camelCasedData = camelCaseObject(catalogQueries);
+  if (typeof filteredBy === 'string' && camelCasedData.length > 0 && camelCasedData[0]?.title) {
+    return camelCasedData.filter(({ title }) => title.indexOf(filteredBy) !== 0);
+  }
+  return camelCasedData;
 }

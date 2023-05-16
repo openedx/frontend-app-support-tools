@@ -7,6 +7,7 @@ import {
   hasValidPolicyAndSubidy,
   getCamelCasedConfigAttribute,
   extractDefinedCatalogTitle,
+  filterIndexOfCatalogQueryTitle,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -105,6 +106,7 @@ describe('getCamelCasedConfigAttribute', () => {
     expect(getCamelCasedConfigAttribute('PIKACHU_FEATURE_FLAG')).toEqual(null);
   });
 });
+
 describe('extractDefinedCatalogTitle', () => {
   it('returns the correct title', () => {
     expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests budget' })).toEqual('The Bestests');
@@ -114,5 +116,25 @@ describe('extractDefinedCatalogTitle', () => {
   });
   it('returns null if no policy is passed', () => {
     expect(extractDefinedCatalogTitle({})).toEqual(null);
+  });
+});
+
+describe('filterIndexOfCatalogQuery', () => {
+  it('filters correctly', () => {
+    const sampleFilterBy = '[SPLIT][HERE]';
+    const modifedSampleCatalogQueries = sampleCatalogQueries.data.map((query, index) => ({
+      ...query,
+      title: index % 2 ? `${sampleFilterBy} ${query.title}` : query.title,
+    }));
+    const modifiedFilteredByResponse = sampleCatalogQueries.data
+      .map((query, index) => (!(index % 2) ? query : false))
+      .filter((query) => query !== false);
+    expect(filterIndexOfCatalogQueryTitle(
+      modifedSampleCatalogQueries,
+      sampleFilterBy,
+    )).toEqual(modifiedFilteredByResponse);
+  });
+  it('returns the original array if no filter is passed', () => {
+    expect(filterIndexOfCatalogQueryTitle(sampleCatalogQueries.data)).toEqual(sampleCatalogQueries.data);
   });
 });

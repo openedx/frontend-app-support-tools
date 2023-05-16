@@ -1,9 +1,12 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import { ProvisioningContext } from '../ProvisioningContext';
-import { getCamelCasedConfigAttribute, updatePolicies } from './utils';
+import {
+  filterIndexOfCatalogQueryTitle,
+  getCamelCasedConfigAttribute,
+  updatePolicies,
+} from './utils';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from './constants';
 
 export default function useProvisioningContext() {
@@ -108,15 +111,14 @@ export default function useProvisioningContext() {
 
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
-    const camelCasedData = camelCaseObject(data.results);
     const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
-    const filteredCourses = camelCasedData.filter(({ title }) => title.indexOf(learnerCreditPrefix) !== 0);
+    const filteredCatalogQueries = filterIndexOfCatalogQueryTitle(data.results, learnerCreditPrefix);
 
     setState(s => ({
       ...s,
       catalogQueries: {
         ...s.catalogQueries,
-        data: filteredCourses,
+        data: filteredCatalogQueries,
         isLoading: false,
       },
     }));
