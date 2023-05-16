@@ -92,17 +92,23 @@ export function hasValidPolicyAndSubidy(formData) {
   const isDateRangeValid = !!formData.startDate && !!formData.endDate;
   const isRevReqValid = !!formData.subsidyRevReq;
 
+  // Checks user defined values related to subsidy creation to determine validity
   const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
   && isDateRangeValid && isRevReqValid;
-  // Check policy specific data
+
+  // Check if there are any policies
   if (policies.length === 0) {
     return false;
   }
   const arePoliciesValid = policies.every(policy => {
     const isAccountNameValid = !!policy.accountName;
     const isAccountValueValid = !!policy.accountValue;
+
+    // Requires both an id and title to be valid
     const isCatalogQueryValid = !!policy.catalogQueryMetadata?.catalogQuery?.id
     && !!policy.catalogQueryMetadata?.catalogQuery?.title;
+
+    // Requires learner cap to pass conditionals to be true
     const { perLearnerCap, perLearnerCapAmount } = policy;
     let isPerLearnerCapValid = false;
     if (perLearnerCap !== undefined) {
@@ -112,8 +118,12 @@ export function hasValidPolicyAndSubidy(formData) {
         isPerLearnerCapValid = true;
       }
     }
+
+    // returns true if all fields are valid for every policy
     return isAccountNameValid && isAccountValueValid && isCatalogQueryValid && isPerLearnerCapValid;
   });
+
+  // returns true if all fields are valid for subsidy fields and all policy fields
   return isSubsidyValid && arePoliciesValid;
 }
 
