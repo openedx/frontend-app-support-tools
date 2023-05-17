@@ -201,17 +201,6 @@ const ProvisioningFormSubmissionButton = () => {
       >
         {BUTTON.cancel}
       </Button>
-      <Button
-        variant="secondary"
-        onClick={() => {
-          history.push(ERROR, {
-            errorMessage: 'Error 500: System Failure',
-          });
-        }}
-      >
-        click me
-      </Button>
-
     </ActionRow>
   );
 };

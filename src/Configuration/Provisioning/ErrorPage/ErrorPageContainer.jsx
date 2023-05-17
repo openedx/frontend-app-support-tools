@@ -8,7 +8,6 @@ import ErrorPageImage from './ErrorPageImage';
 import ErrorPageMessage from './ErrorPageMessage';
 import ErrorPageButton from './ErrorPageButton';
 
-// TODO: Update routing to determine error page message based on error code
 const ErrorPageContainer = () => {
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
   const history = useHistory();
@@ -29,7 +28,6 @@ const ErrorPageContainer = () => {
   const handleOnClick = () => {
     history.push(HOME);
   };
-  // TODO: Update routing message based on error code
 
   return (
     <Container size="md" className="mt-5 text-center">
