@@ -12,6 +12,7 @@ const ProvisioningFormCustomer = () => {
   const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData] = selectProvisioningContext('formData');
   const { setFinancialIdentifier } = useProvisioningContext();
+  const [financialIdentifier, setFinancialIdentifierState] = useState('');
   const [isOpportunityProduct, setIsOpportunityProduct] = useState(true);
 
   const handleChange = useCallback((e) => {
@@ -22,8 +23,9 @@ const ProvisioningFormCustomer = () => {
         setIsOpportunityProduct(false);
         return;
       }
-      setFinancialIdentifier(value);
       setIsOpportunityProduct(true);
+      setFinancialIdentifier(value);
+      setFinancialIdentifierState(value);
     }
   }, [formData.financialIdentifier]);
 
@@ -38,7 +40,7 @@ const ProvisioningFormCustomer = () => {
       <Form.Group className="mt-4.5">
         <Form.Control
           floatingLabel={CUSTOMER.FINANCIAL_IDENTIFIER.TITLE}
-          defaultValue={formData.financialIdentifier || undefined}
+          value={financialIdentifier}
           onChange={handleChange}
           data-testid="customer-financial-identifier"
         />
@@ -46,7 +48,7 @@ const ProvisioningFormCustomer = () => {
           <Form.Control.Feedback
             type="invalid"
           >
-            Invalid format. Must be 18 characters long, alphanumeric and contain start with a number.
+            {CUSTOMER.FINANCIAL_IDENTIFIER.ERROR}
           </Form.Control.Feedback>
         )}
       </Form.Group>

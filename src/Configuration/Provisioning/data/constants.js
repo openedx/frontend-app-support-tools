@@ -35,6 +35,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       FINANCIAL_IDENTIFIER: {
         TITLE: 'Opportunity Product',
+        ERROR: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
       },
     },
     TERM: {

@@ -141,7 +141,7 @@ describe('normalizeSubsidyDataTableData', () => {
 describe('TESTING', () => {
   it('should be false so testing state does not get sent to prod', () => {
     expect(TESTING).toEqual(false);
-  })
+  });
 });
 
 describe('filterIndexOfCatalogQuery', () => {

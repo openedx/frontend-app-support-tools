@@ -5,7 +5,7 @@ const EMAIL_REGEX = '^[a-zA-Z0-9\'!#$&*._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 const USERNAME_REGEX = '^[\\w.@_+-]+$';
 const LMS_USER_ID_REGEX = '^(?!0)[0-9]+$';
 const DIGITS_ONLY_REGEX = /^(?!0\d)[1-9]\d*(?<!\.)$/;
-const OPPORTUNITY_PRODUCT_REGEX = /^\d{1}[0-9A-Za-z]{17}$/;
+const OPPORTUNITY_PRODUCT_REGEX = /^\d{1}(?:[0-9A-Za-z]{1,17})?$/;
 
 export const formatDate = (date) => {
   if (date) {

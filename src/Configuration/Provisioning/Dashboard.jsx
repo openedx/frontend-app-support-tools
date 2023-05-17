@@ -19,8 +19,8 @@ const Dashboard = () => {
   const { location } = history;
   const { state: locationState } = location;
   const [toasts, setToasts] = useState([]);
-  
-    const editLearnerCreditPlan = (uuid) => {
+
+  const editLearnerCreditPlan = (uuid) => {
     // TODO: Navigate to the edit page for the selected learner credit plan based on UUID
     history.push(`/enterprise-configuration/learner-credit/${uuid}/edit`);
   };
@@ -32,7 +32,7 @@ const Dashboard = () => {
       onClick={onIconInteraction}
     />
   );
-  
+
   useEffect(() => {
     if (locationState?.planSuccessfullyCreated) {
       setToasts((prevState) => [...prevState, {
