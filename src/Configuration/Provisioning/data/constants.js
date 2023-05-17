@@ -173,6 +173,12 @@ const PROVISIONING_PAGE_TEXT = {
   },
 };
 
+export const ERROR_PAGE_TEXT = {
+  TITLE: 'We\'re sorry.',
+  SPANNED_TITLE: 'Something went wrong.',
+  SUB_TITLE: 'Please try again later. If the problem persists, please contact your system administrator.',
+};
+
 export const splitStringBudget = ' budget';
 
 export const toastText = {
