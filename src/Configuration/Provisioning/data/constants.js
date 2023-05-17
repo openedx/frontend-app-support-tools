@@ -145,6 +145,7 @@ const PROVISIONING_PAGE_TEXT = {
           401: 'Authentication failed.',
           403: 'Authentication recognized but incorrect credentials.',
           404: 'Enterprise Catalog Query failed to respond.',
+          500: 'System failure',
         },
         ENTERPRISE_CUSTOMER_CATALOG: {
           400: 'The enterprise catalog could not be created.',
@@ -152,6 +153,7 @@ const PROVISIONING_PAGE_TEXT = {
           403: 'Authentication recognized but incorrect credentials.',
           404: 'Enterprise Catalog failed to respond.',
           405: 'The enterprise catalog could not be created.',
+          500: 'System failure',
         },
         SUBSIDY_CREATION: {
           400: 'The subsidy could not be created.',
@@ -159,14 +161,17 @@ const PROVISIONING_PAGE_TEXT = {
           403: 'Authentication recognized but incorrect credentials.',
           404: 'Subsidy creation endpoint failed to respond',
           405: 'The subsidy could not be created.',
+          500: 'System failure',
         },
         POLICY_CREATION: {
-          400: 'The subsidy could not be created.',
+          400: 'The policy could not be created.',
           401: 'Authentication failed.',
           403: 'Authentication recognized but incorrect credentials.',
-          404: 'Subsidy creation endpoint failed to respond',
-          405: 'The subsidy could not be created.',
+          404: 'Policy creation endpoint failed to respond',
+          405: 'The policy could not be created.',
+          500: 'System failure',
         },
+        DEFAULT: 'System failure',
       },
       incorrectDollarAmount: 'Please enter a whole dollar value',
     },
@@ -177,6 +182,7 @@ export const ERROR_PAGE_TEXT = {
   TITLE: 'We\'re sorry.',
   SPANNED_TITLE: 'Something went wrong.',
   SUB_TITLE: 'Please try again later. If the problem persists, please contact your system administrator.',
+  BUTTON: 'Return to Learner Credit Plans',
 };
 
 export const splitStringBudget = ' budget';

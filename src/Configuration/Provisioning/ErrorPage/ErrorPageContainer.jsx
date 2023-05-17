@@ -1,53 +1,41 @@
-import { Button, Container, Image } from '@edx/paragon';
+import { Container } from '@edx/paragon';
+import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import ErrorPage from '../data/images/ErrorPage.svg';
 import ROUTES from '../../../data/constants/routes';
 import { ERROR_PAGE_TEXT } from '../data/constants';
+import ErrorPageImage from './ErrorPageImage';
+import ErrorPageMessage from './ErrorPageMessage';
+import ErrorPageButton from './ErrorPageButton';
 
 // TODO: Update routing to determine error page message based on error code
 const ErrorPageContainer = () => {
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
+  const history = useHistory();
+  const { location } = history;
+  const { state: locationState } = location;
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (locationState?.errorMessage) {
+      setErrorMessage(locationState.errorMessage);
+    }
+    const newState = { ...locationState };
+    delete newState.errorMessage;
+    history.replace({ ...location, state: newState });
+  }, [locationState.error]);
+
+  // Went with this implementation to allow for future expansion of error page
+  const handleOnClick = () => {
+    history.push(HOME);
+  };
+  // TODO: Update routing message based on error code
 
   return (
-    <Container
-      size="md"
-      className="mt-5 text-center"
-    >
-      <Image
-        src={ErrorPage}
-        fluid
-        alt="Portable computer in need of a repair shop"
-      />
-      <div className="mt-4">
-        <h1
-          className="text-danger"
-          style={{
-            fontSize: '3.75rem',
-            lineHeight: '4rem',
-          }}
-        >
-          {ERROR_PAGE_TEXT.TITLE}&nbsp;
-          <span className="text-primary">
-            {ERROR_PAGE_TEXT.SPANNED_TITLE}
-          </span>
-        </h1>
-      </div>
-      <div className="mt-4">
-        <p>
-          Error 500: System Failure
-          <p>
-            {ERROR_PAGE_TEXT.SUB_TITLE}
-          </p>
-        </p>
-      </div>
-      <div className="mt-4">
-        <Button
-          variant="primary"
-          as="a"
-          href={HOME}
-        >
-          Return to Learner Credit Plans
-        </Button>
-      </div>
+    <Container size="md" className="mt-5 text-center">
+      <ErrorPageImage image={ErrorPage} />
+      <ErrorPageMessage message={errorMessage} />
+      <ErrorPageButton buttonInteraction={handleOnClick} buttonText={ERROR_PAGE_TEXT.BUTTON} />
     </Container>
   );
 };

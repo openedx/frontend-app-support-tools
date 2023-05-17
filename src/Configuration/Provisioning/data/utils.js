@@ -291,7 +291,7 @@ export function transformSubsidyData(formData) {
  * }} - Object fields required to create a new policy
  * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
  */
-export function createPolicy({
+export async function createPolicy({
   description,
   enterpriseCustomerUuid,
   catalogUuid,
@@ -307,6 +307,7 @@ export function createPolicy({
     perLearnerSpendLimit,
     spendLimit,
   );
+
   return data;
 }
 
