@@ -82,7 +82,9 @@ const ProvisioningFormSubmissionButton = () => {
           catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
           title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
         };
-        const catalogCreatedResponse = createCatalogs(payload);
+        const catalogCreatedResponse = createCatalogs(payload).catch((error) => {
+          throw error;
+        });
         return catalogCreatedResponse;
       }));
       // checks if all catalogs were created successfully before proceeding
@@ -144,9 +146,7 @@ const ProvisioningFormSubmissionButton = () => {
     // creates subsidy access policy for each policy in the form
     try {
       const policyResponses = await Promise.all(policyPayloads.map(async (payload) => {
-        const policyCreatedResponse = await createPolicy(payload).catch((error) => {
-          throw error;
-        });
+        const policyCreatedResponse = await createPolicy(payload);
         return policyCreatedResponse;
       }));
       // checks if all policies were created successfully before proceeding
