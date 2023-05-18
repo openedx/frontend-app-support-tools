@@ -1,16 +1,17 @@
 import { Image } from '@edx/paragon';
 import PropTypes from 'prop-types';
 
-const ErrorPageImage = ({ image }) => (
+const ErrorPageImage = ({ image, imageAltText }) => (
   <Image
     src={image}
+    alt={imageAltText}
     fluid
-    alt="Portable computer in need of a repair shop"
   />
 );
 
 ErrorPageImage.propTypes = {
   image: PropTypes.string.isRequired,
+  imageAltText: PropTypes.string.isRequired,
 };
 
 export default ErrorPageImage;

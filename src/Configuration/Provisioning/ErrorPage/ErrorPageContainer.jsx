@@ -22,7 +22,7 @@ const ErrorPageContainer = () => {
     const newState = { ...locationState };
     delete newState.errorMessage;
     history.replace({ ...location, state: newState });
-  }, [locationState.error]);
+  }, [locationState.errorMessage]);
 
   // Went with this implementation to allow for future expansion of error page
   const handleOnClick = () => {
@@ -31,7 +31,7 @@ const ErrorPageContainer = () => {
 
   return (
     <Container size="md" className="mt-5 text-center">
-      <ErrorPageImage image={ErrorPage} />
+      <ErrorPageImage image={ErrorPage} imageAltText="Portable computer in need of a repair shop" />
       <ErrorPageMessage message={errorMessage} />
       <ErrorPageButton buttonInteraction={handleOnClick} buttonText={ERROR_PAGE_TEXT.BUTTON} />
     </Container>
