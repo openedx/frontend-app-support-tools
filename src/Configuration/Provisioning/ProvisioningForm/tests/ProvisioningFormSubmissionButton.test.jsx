@@ -43,7 +43,6 @@ jest.mock('@edx/frontend-platform/auth', () => ({
     })),
   })),
 }));
-
 const ProvisioningFormSubmissionButtonWrapper = ({
   value = initialStateValue,
 }) => (
@@ -103,7 +102,11 @@ describe('ProvisioningFormSubmissionButton', () => {
     });
   }
   it('confirming rejected catalog creation handles error via API', async () => {
-    createCatalogs.mockRejectedValue(new Error('Internal Server Error'));
+    const error = new Error('Internal Server Error');
+    error.customAttributes = {
+      httpStatusCode: 500,
+    };
+    createCatalogs.mockRejectedValue(error);
     const value = {
       ...initialStateValue,
       formData: sampleDataSet[0][Object.keys(sampleDataSet[0])],
@@ -116,8 +119,12 @@ describe('ProvisioningFormSubmissionButton', () => {
     await waitFor(() => expect(screen.getByText(BUTTON.error)).toBeTruthy());
   });
   it('confirming rejected subsidy creation handles error via API', async () => {
+    const error = new Error('Internal Server Error');
+    error.customAttributes = {
+      httpStatusCode: 500,
+    };
     createCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
-    createSubsidy.mockRejectedValue(new Error('Internal Server Error'));
+    createSubsidy.mockRejectedValue(error);
     const value = {
       ...initialStateValue,
       formData: sampleDataSet[0][Object.keys(sampleDataSet[0])],
@@ -130,9 +137,13 @@ describe('ProvisioningFormSubmissionButton', () => {
     await waitFor(() => expect(screen.getByText(BUTTON.error)).toBeTruthy());
   });
   it('confirming rejected policy creation handles error via API', async () => {
+    const error = new Error('Internal Server Error');
+    error.customAttributes = {
+      httpStatusCode: 500,
+    };
     createCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
     createSubsidy.mockResolvedValue({ uuid: 'test-subsidy-uuid' });
-    createPolicy.mockRejectedValue(new Error('Internal Server Error'));
+    createPolicy.mockRejectedValue(error);
 
     const value = {
       ...initialStateValue,
