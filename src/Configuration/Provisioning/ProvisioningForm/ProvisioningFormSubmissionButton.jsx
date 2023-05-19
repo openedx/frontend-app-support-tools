@@ -19,13 +19,14 @@ import {
   transformSubsidyData,
   transformPolicyData,
   createPolicy,
+  determineInvalidFields,
 } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
   const { BUTTON, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-  const { resetFormData } = useProvisioningContext();
+  const { resetFormData, setInvalidSubsidyFields, setInvalidPolicyFields } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
   const canCreatePolicyAndSubsidy = useMemo(() => hasValidPolicyAndSubidy(formData), [formData]);
@@ -49,6 +50,13 @@ const ProvisioningFormSubmissionButton = () => {
     // Checks validiy before performing any API calls
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
+      const data = determineInvalidFields(formData);
+      // setInvalidSubsidyFields(data[0]);
+      // data[1].forEach((policy, index) => {
+      //   setInvalidPolicyFields(policy, index);
+      // });
+      console.log(data, 'invalid');
+      global.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 

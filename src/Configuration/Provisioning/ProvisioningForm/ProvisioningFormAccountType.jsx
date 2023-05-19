@@ -16,7 +16,6 @@ const ProvisioningFormAccountType = () => {
     setMultipleFunds,
     setCustomCatalog,
     hydrateCatalogQueryData,
-    setAlertMessage,
   } = useProvisioningContext();
   const { ACCOUNT_CREATION, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, catalogQueries] = selectProvisioningContext('formData', 'catalogQueries');
@@ -43,12 +42,11 @@ const ProvisioningFormAccountType = () => {
       try {
         handleSpinnerLoadingState(newTabValue);
         await hydrateCatalogQueryData();
-        setAlertMessage(null);
       } catch (error) {
         logError(error);
         const { customAttributes } = error;
         if (customAttributes) {
-          setAlertMessage(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CATALOG_QUERY[customAttributes.httpErrorStatus]);
+          logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CATALOG_QUERY[customAttributes.httpErrorStatus]);
           handleSpinnerLoadingState(false);
         }
       } finally {

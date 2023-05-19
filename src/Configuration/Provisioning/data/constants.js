@@ -113,6 +113,7 @@ const PROVISIONING_PAGE_TEXT = {
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
           subtitle: 'Select an existing Enterprise Catalog Query to create the new Customer Catalog record from.',
+          error: 'Error, no selected value',
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
@@ -138,6 +139,10 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
     ALERTS: {
+      MISSING_FIELD_MESSAGES: {
+        TITLE: 'Missing required fields',
+        SUB_TITLE: 'Please enter incomplete fields and try again.',
+      },
       unselectedAccountType: "Please select an 'Account Creation' option to create new policies.",
       API_ERROR_MESSAGES: {
         ENTERPRISE_CATALOG_QUERY: {

@@ -18,6 +18,9 @@ export const initialStateValue = {
   formData: {
     policies: [],
   },
+  formDataValidity: {
+    policies: [],
+  },
 };
 
 export const ProvisioningContext = ({

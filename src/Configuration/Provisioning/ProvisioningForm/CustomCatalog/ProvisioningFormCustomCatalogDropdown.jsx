@@ -49,6 +49,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
           className="mt-4.5"
           floatingLabel={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}
           helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle}
+          errorMessageText={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.error}
           value={selected.title}
           onSelected={handleOnSelected}
           data-testid="autosuggest"

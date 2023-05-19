@@ -40,6 +40,27 @@ export default function useProvisioningContext() {
     }, [setState]);
   }, [setState]);
 
+  const updateShowInvalidFieldState = useCallback((newDataAttribute, copyPolicies = false, index = 0) => {
+    setState((s) => {
+      const output = copyPolicies
+        ? {
+          ...s,
+          showInvalidField: {
+            ...s.formData,
+            policies: updatePolicies(s.showInvalidField, newDataAttribute, index),
+          },
+        }
+        : {
+          ...s,
+          showInvalidField: {
+            ...s.showInvalidField,
+            ...newDataAttribute,
+          },
+        };
+      return output;
+    }, [setState]);
+  }, [setState]);
+
   const setMultipleFunds = (fundingBoolean) => updateRootDataState({ multipleFunds: fundingBoolean });
 
   const setAlertMessage = (alertMessage) => updateRootDataState({ alertMessage });
@@ -134,6 +155,10 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const setInvalidSubsidyFields = (subsidy) => updateShowInvalidFieldState({ subsidy });
+
+  const setInvalidPolicyFields = (policy, index) => updateShowInvalidFieldState(policy, true, index);
+
   return {
     setMultipleFunds,
     hydrateCatalogQueryData,
@@ -157,5 +182,7 @@ export default function useProvisioningContext() {
     resetFormData,
     setAlertMessage,
     getCustomers,
+    setInvalidSubsidyFields,
+    setInvalidPolicyFields,
   };
 }

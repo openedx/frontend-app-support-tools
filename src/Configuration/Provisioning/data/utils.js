@@ -76,6 +76,64 @@ export function updatePolicies(data, newDataAttribute, index) {
   return [...policies];
 }
 
+export function determineInvalidFields(formData) {
+  const { policies } = formData;
+  const invalidSubsidyFields = [];
+  const allInvalidPolicyFields = [];
+  const data = {
+    enterpriseUUID: !!formData.enterpriseUUID,
+    financialIdentifier: !!formData.financialIdentifier,
+    startDate: !!formData.startDate,
+    endDate: !!formData.endDate,
+    subsidyRevReq: !!formData.subsidyRevReq,
+  };
+  if (!data.enterpriseUUID) {
+    invalidSubsidyFields.push('enterpriseUUID');
+  }
+  if (!data.financialIdentifier) {
+    invalidSubsidyFields.push('financialIdentifier');
+  }
+  if (!data.startDate || !data.endDate) {
+    invalidSubsidyFields.push('date');
+  }
+  if (!data.subsidyRevReq) {
+    invalidSubsidyFields.push('subsidyRevReq');
+  }
+  if (policies.length === 0) {
+    return invalidSubsidyFields;
+  }
+  policies.forEach((policy) => {
+    const {
+      accountName, accountValue, catalogQueryMetadata, perLearnerCap, perLearnerCapAmount,
+    } = policy;
+    const invalidPolicyFields = [];
+    const policyData = {
+      accountName: !!accountName,
+      accountValue: !!accountValue,
+      catalogQueryMetadata: !!catalogQueryMetadata?.catalogQuery?.id,
+      perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
+      perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
+    };
+    if (!policyData.accountName) {
+      invalidPolicyFields.push('accountName');
+    }
+    if (!policyData.accountValue) {
+      invalidPolicyFields.push('accountValue');
+    }
+    if (!policyData.catalogQueryMetadata) {
+      invalidPolicyFields.push('catalogQueryMetadata');
+    }
+    if (!policyData.perLearnerCap) {
+      invalidPolicyFields.push('perLearnerCap');
+    }
+    if (!policyData.perLearnerCapAmount) {
+      invalidPolicyFields.push('perLearnerCapAmount');
+    }
+    allInvalidPolicyFields.push(invalidPolicyFields);
+  });
+  const allInvalidFields = [invalidSubsidyFields, allInvalidPolicyFields];
+  return allInvalidFields;
+}
 /**
  * Checks all form data to ensure that all required fields are filled out,
  * but not the individual validity of each field.

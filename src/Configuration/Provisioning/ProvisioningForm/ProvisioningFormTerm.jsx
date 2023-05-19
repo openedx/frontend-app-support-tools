@@ -13,10 +13,9 @@ import { isValidDateString } from '../../../utils';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData] = selectProvisioningContext('formData');
+  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
   const { setStartDate, setEndDate } = useProvisioningContext();
   const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
-
   const handleDateChange = (e) => {
     const eventTarget = e.target;
     const isStartDate = eventTarget.dataset.testid.includes('start');
@@ -73,7 +72,7 @@ const ProvisioningFormTerm = () => {
           onChange={handleDateChange}
           data-testid="end-date"
         />
-        {hasInvalidEndDate && (
+        {showInvalidField.date && hasInvalidEndDate && (
           <Form.Control.Feedback
             type="invalid"
           >

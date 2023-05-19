@@ -10,22 +10,26 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
 import ProvisioningFormTitle from './ProvisioningFormTitle';
+import ProvisioningFormAlert from './ProvisioningFormAlert';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, alertMessage, formData] = selectProvisioningContext(
+  const [multipleFunds, alertMessage, formData, showInvalidField] = selectProvisioningContext(
     'multipleFunds',
     'alertMessage',
     'formData',
+    'showInvalidField',
   );
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(multipleFunds);
   }, [multipleFunds]);
+  console.log(formData, showInvalidField, 'form data');
   return (
-    <div className="m-0 p-0 mb-5">
-      <div className="mt-5">
+    <div className="m-0 p-0 mb-5 mt-5">
+      {alertMessage && <ProvisioningFormAlert />}
+      <div className="mt-4.5">
         <h2>{FORM.SUB_TITLE}</h2>
       </div>
       <ProvisioningFormTitle />
@@ -34,7 +38,7 @@ const ProvisioningForm = () => {
       <ProvisioningFormInternalOnly />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
-      {!alertMessage && formData.policies?.map(({
+      {(multipleFunds !== undefined) && formData.policies?.map(({
         uuid,
         catalogQueryTitle,
       }, index) => (
