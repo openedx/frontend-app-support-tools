@@ -1,21 +1,31 @@
 import { Button } from '@edx/paragon';
 import PropTypes from 'prop-types';
 
-const ErrorPageButton = ({ buttonInteraction, buttonText }) => (
-  <div className="mt-4">
-    <Button
-      variant="primary"
-      as="a"
-      onClick={buttonInteraction}
-    >
-      {buttonText}
-    </Button>
-  </div>
+const ErrorPageButton = ({
+  as, to, className, children, onClick,
+}) => (
+  <Button
+    as={as}
+    to={to}
+    className={className}
+    onClick={onClick}
+    variant="primary"
+  >
+    {children}
+  </Button>
 );
 
 ErrorPageButton.propTypes = {
-  buttonInteraction: PropTypes.func.isRequired,
-  buttonText: PropTypes.string.isRequired,
+  as: PropTypes.shape({}).isRequired,
+  to: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+};
+
+ErrorPageButton.defaultProps = {
+  className: '',
+  onClick: () => {},
 };
 
 export default ErrorPageButton;

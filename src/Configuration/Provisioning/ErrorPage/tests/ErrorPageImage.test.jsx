@@ -12,6 +12,8 @@ describe('<ErrorPageImage />', () => {
         imageAltText={imageAltText}
       />,
     );
+    const image = screen.getByAltText(imageAltText);
+    expect(image.getAttribute('src')).toBe(ErrorPage);
     expect(screen.getByAltText(imageAltText)).toBeTruthy();
   });
 });

@@ -14,7 +14,7 @@ const ErrorPageContainerWrapper = ({
     history.push(location.pathname, { errorMessage });
   }
   return (
-    <ErrorPageContainer />
+    <ErrorPageContainer to={location.pathname} />
   );
 };
 

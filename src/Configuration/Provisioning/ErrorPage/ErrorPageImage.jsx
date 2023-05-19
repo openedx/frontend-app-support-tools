@@ -11,7 +11,11 @@ const ErrorPageImage = ({ image, imageAltText }) => (
 
 ErrorPageImage.propTypes = {
   image: PropTypes.string.isRequired,
-  imageAltText: PropTypes.string.isRequired,
+  imageAltText: PropTypes.string,
+};
+
+ErrorPageImage.defaultProps = {
+  imageAltText: '',
 };
 
 export default ErrorPageImage;

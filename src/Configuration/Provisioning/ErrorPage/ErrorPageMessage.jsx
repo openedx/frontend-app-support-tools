@@ -20,7 +20,8 @@ const ErrorPageMessage = ({ message }) => (
     <div className="mt-4">
       <p>
         {message}
-        <br />
+      </p>
+      <p>
         {ERROR_PAGE_TEXT.SUB_TITLE}
       </p>
     </div>
