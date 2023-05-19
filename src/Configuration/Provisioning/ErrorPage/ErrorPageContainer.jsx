@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import ErrorPage from '../data/images/ErrorPage.svg';
-import { ERROR_PAGE_TEXT } from '../data/constants';
+import ErrorPage from './data/images/ErrorPage.svg';
 import ErrorPageImage from './ErrorPageImage';
 import ErrorPageMessage from './ErrorPageMessage';
 import ErrorPageButton from './ErrorPageButton';
+import { ERROR_PAGE_TEXT } from './data/constants';
 
 const ErrorPageContainer = ({ to }) => {
   const history = useHistory();

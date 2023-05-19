@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { ERROR_PAGE_TEXT } from '../data/constants';
+import { ERROR_PAGE_TEXT } from './data/constants';
 
 const ErrorPageMessage = ({ message }) => (
   <section className="mt-4">

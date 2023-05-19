@@ -1,7 +1,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { screen } from '@testing-library/react';
 import ErrorPageImage from '../ErrorPageImage';
-import ErrorPage from '../../data/images/ErrorPage.svg';
+import ErrorPage from '../data/images/ErrorPage.svg';
 
 describe('<ErrorPageImage />', () => {
   it('renders the image', () => {

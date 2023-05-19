@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { screen } from '@testing-library/react';
 import ErrorPageMessage from '../ErrorPageMessage';
-import { ERROR_PAGE_TEXT } from '../../data/constants';
+import { ERROR_PAGE_TEXT } from '../data/constants';
 
 const { TITLE, SPANNED_TITLE, SUB_TITLE } = ERROR_PAGE_TEXT;
 const ErrorPageMessageWrapper = ({

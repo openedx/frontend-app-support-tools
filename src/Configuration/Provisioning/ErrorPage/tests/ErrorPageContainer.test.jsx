@@ -3,7 +3,7 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import { useHistory } from 'react-router';
 import ErrorPageContainer from '../ErrorPageContainer';
-import { ERROR_PAGE_TEXT } from '../../data/constants';
+import { ERROR_PAGE_TEXT } from '../data/constants';
 
 const ErrorPageContainerWrapper = ({
   errorMessage,
