@@ -3,7 +3,6 @@ import {
   Form,
   Spinner,
   ActionRow,
-  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { logError } from '@edx/frontend-platform/logging';
@@ -61,8 +60,8 @@ const ProvisioningFormAccountType = () => {
       <div>
         <h3>{ACCOUNT_CREATION.TITLE}</h3>
       </div>
-      <p className="mt-4">{ACCOUNT_CREATION.SUB_TITLE}</p>
-      <Container>
+      <Form.Group className="mt-3.5">
+        <Form.Label className="mb-2.5">{ACCOUNT_CREATION.SUB_TITLE}</Form.Label>
         <Form.RadioSet
           name="display-account-type"
           onChange={handleChange}
@@ -95,7 +94,7 @@ const ProvisioningFormAccountType = () => {
           ))
         }
         </Form.RadioSet>
-      </Container>
+      </Form.Group>
     </article>
   );
 };

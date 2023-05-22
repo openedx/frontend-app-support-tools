@@ -5,6 +5,7 @@ import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
 import { splitStringBudget } from './constants';
+import { isValidOpportunityProduct } from '../../../utils';
 
 export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
@@ -78,35 +79,24 @@ export function updatePolicies(data, newDataAttribute, index) {
 
 export function determineInvalidFields(formData) {
   const { policies } = formData;
-  const invalidSubsidyFields = [];
   const allInvalidPolicyFields = [];
-  const data = {
+  const invalidSubsidyData = {
     enterpriseUUID: !!formData.enterpriseUUID,
-    financialIdentifier: !!formData.financialIdentifier,
-    startDate: !!formData.startDate,
-    endDate: !!formData.endDate,
+    financialIdentifier: !!formData.financialIdentifier
+    && isValidOpportunityProduct(formData.financialIdentifier)
+    && formData.financialIdentifier.length === 18,
+    startDate: !!formData.startDate && formData.endDate >= formData.startDate,
+    endDate: !!formData.endDate && formData.endDate >= formData.startDate,
     subsidyRevReq: !!formData.subsidyRevReq,
+    multipleFunds: !(formData.multipleFunds === undefined),
   };
-  if (!data.enterpriseUUID) {
-    invalidSubsidyFields.push('enterpriseUUID');
-  }
-  if (!data.financialIdentifier) {
-    invalidSubsidyFields.push('financialIdentifier');
-  }
-  if (!data.startDate || !data.endDate) {
-    invalidSubsidyFields.push('date');
-  }
-  if (!data.subsidyRevReq) {
-    invalidSubsidyFields.push('subsidyRevReq');
-  }
-  if (policies.length === 0) {
-    return invalidSubsidyFields;
+  if (!invalidSubsidyData.multipleFunds || policies.length === 0) {
+    return [invalidSubsidyData];
   }
   policies.forEach((policy) => {
     const {
       accountName, accountValue, catalogQueryMetadata, perLearnerCap, perLearnerCapAmount,
     } = policy;
-    const invalidPolicyFields = [];
     const policyData = {
       accountName: !!accountName,
       accountValue: !!accountValue,
@@ -114,25 +104,9 @@ export function determineInvalidFields(formData) {
       perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
       perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
     };
-    if (!policyData.accountName) {
-      invalidPolicyFields.push('accountName');
-    }
-    if (!policyData.accountValue) {
-      invalidPolicyFields.push('accountValue');
-    }
-    if (!policyData.catalogQueryMetadata) {
-      invalidPolicyFields.push('catalogQueryMetadata');
-    }
-    if (!policyData.perLearnerCap) {
-      invalidPolicyFields.push('perLearnerCap');
-    }
-    if (!policyData.perLearnerCapAmount) {
-      invalidPolicyFields.push('perLearnerCapAmount');
-    }
-    allInvalidPolicyFields.push(invalidPolicyFields);
+    allInvalidPolicyFields.push(policyData);
   });
-  const allInvalidFields = [invalidSubsidyFields, allInvalidPolicyFields];
-  return allInvalidFields;
+  return [invalidSubsidyData, allInvalidPolicyFields];
 }
 /**
  * Checks all form data to ensure that all required fields are filled out,

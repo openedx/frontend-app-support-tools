@@ -46,7 +46,7 @@ export default function useProvisioningContext() {
         ? {
           ...s,
           showInvalidField: {
-            ...s.formData,
+            ...s.showInvalidField,
             policies: updatePolicies(s.showInvalidField, newDataAttribute, index),
           },
         }
@@ -155,6 +155,16 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const resetInvalidFields = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      showInvalidField: {
+        subsidy: [],
+        policies: [],
+      },
+    }));
+  });
+
   const setInvalidSubsidyFields = (subsidy) => updateShowInvalidFieldState({ subsidy });
 
   const setInvalidPolicyFields = (policy, index) => updateShowInvalidFieldState(policy, true, index);
@@ -184,5 +194,6 @@ export default function useProvisioningContext() {
     getCustomers,
     setInvalidSubsidyFields,
     setInvalidPolicyFields,
+    resetInvalidFields,
   };
 }

@@ -14,7 +14,7 @@ const ProvisioningFormCustomCatalogTitle = () => {
   }, [formData.policies[0].catalogQueryMetadata.catalogQuery.title]);
   return (
     <article className="mt-4.5">
-      <Form.Group className="mt-4.5 mb-1">
+      <Form.Group className="mt-3.5 mb-1">
         <Form.Control
           floatingLabel={CUSTOM_CATALOG.OPTIONS.catalogTitle}
           value={catalogQueryTitle}

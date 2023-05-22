@@ -1,5 +1,4 @@
 import {
-  Container,
   Form,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
@@ -32,8 +31,8 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
       <div>
         <h3>{LEARNER_CAP.TITLE}</h3>
       </div>
-      <p className="mt-4">{LEARNER_CAP.SUB_TITLE}</p>
-      <Container>
+      <Form.Group className="mt-3.5">
+        <Form.Label className="mb-2.5">{LEARNER_CAP.SUB_TITLE}</Form.Label>
         <Form.RadioSet
           name={`display-per-learner-cap-${index}`}
           onChange={handleChange}
@@ -52,7 +51,8 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
           ))
         }
         </Form.RadioSet>
-      </Container>
+        <Form.Control.Feedback>{LEARNER_CAP.ERROR}</Form.Control.Feedback>
+      </Form.Group>
     </article>
   );
 };

@@ -25,7 +25,7 @@ const ProvisioningForm = () => {
     resetPolicies();
     instantiateMultipleFormData(multipleFunds);
   }, [multipleFunds]);
-  console.log(formData, showInvalidField, 'form data');
+  console.log(showInvalidField);
   return (
     <div className="m-0 p-0 mb-5 mt-5">
       {alertMessage && <ProvisioningFormAlert />}

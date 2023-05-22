@@ -32,6 +32,10 @@ const PROVISIONING_PAGE_TEXT = {
       },
       FINANCIAL_IDENTIFIER: {
         TITLE: 'Opportunity Product',
+        ERROR: {
+          validity: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
+          emptyField: 'Field cannot be left blank or incomplete.',
+        },
       },
     },
     TERM: {
@@ -40,7 +44,10 @@ const PROVISIONING_PAGE_TEXT = {
         startDate: 'Start Date',
         endDate: 'End Date',
       },
-      VALIDITY: 'Please choose an end date later than the start date',
+      ERROR: {
+        validity: 'Please choose an end date later than the start date',
+        emptyField: 'Field cannot be left blank or incomplete.',
+      },
       TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
     INTERNAL_ONLY: {
@@ -93,6 +100,7 @@ const PROVISIONING_PAGE_TEXT = {
         executiveEducation: 'Executive Education',
         custom: 'Custom',
       },
+      ERROR: 'Please select a Catalog',
     },
     CUSTOM_CATALOG: {
       HEADER: {
@@ -128,6 +136,7 @@ const PROVISIONING_PAGE_TEXT = {
         yes: 'Yes',
         no: 'No, first come first serve',
       },
+      ERROR: 'Please select an option.',
     },
     LEARNER_CAP_DETAIL: {
       TITLE: 'Define limits',
@@ -136,6 +145,10 @@ const PROVISIONING_PAGE_TEXT = {
           title: 'Per learner spend limit ($)',
           subtitle: 'The maximum USD value a single learner may redeem from the budget.',
         },
+      },
+      ERROR: {
+        incorrectDollarAmount: 'Please enter a whole dollar value',
+        emptyField: 'Field cannot be left blank.',
       },
     },
     ALERTS: {

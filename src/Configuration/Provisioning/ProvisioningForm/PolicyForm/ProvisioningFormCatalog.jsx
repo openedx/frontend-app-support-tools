@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Form,
-  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { useContextSelector } from 'use-context-selector';
@@ -51,14 +50,14 @@ const ProvisioningFormCatalog = ({ index }) => {
       <div>
         <h3>{CATALOG.TITLE}</h3>
       </div>
-      <p className="mt-4">{CATALOG.SUB_TITLE}</p>
       {multipleFunds && (
         <h4>
           {extractDefinedCatalogTitle(formData.policies[index])}
         </h4>
       )}
       {multipleFunds === false && (
-      <Container>
+      <Form.Group className="mt-3.5">
+        <Form.Label className="mb-2.5">{CATALOG.SUB_TITLE}</Form.Label>
         <Form.RadioSet
           name="display-catalog-content"
           onChange={handleChange}
@@ -78,7 +77,8 @@ const ProvisioningFormCatalog = ({ index }) => {
           ))
         }
         </Form.RadioSet>
-      </Container>
+        <Form.Control.Feedback>{CATALOG.ERROR}</Form.Control.Feedback>
+      </Form.Group>
       )}
     </article>
   );

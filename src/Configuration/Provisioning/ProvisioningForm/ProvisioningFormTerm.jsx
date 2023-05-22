@@ -14,12 +14,15 @@ import { isValidDateString } from '../../../utils';
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
-  const { setStartDate, setEndDate } = useProvisioningContext();
+  const { subsidy } = showInvalidField;
+
+  const { setStartDate, setEndDate, setInvalidSubsidyFields } = useProvisioningContext();
   const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
   const handleDateChange = (e) => {
     const eventTarget = e.target;
     const isStartDate = eventTarget.dataset.testid.includes('start');
     if (isValidDateString(eventTarget.value)) {
+      setInvalidSubsidyFields(isStartDate ? { ...subsidy, startDate: true } : { ...subsidy, endDate: true });
       if (isStartDate) {
         return setStartDate(eventTarget.value);
       }
@@ -53,7 +56,10 @@ const ProvisioningFormTerm = () => {
           alt="Plan activation tooltip"
         />
       </Stack>
-      <Form.Group className="mt-4.5 mb-1">
+      <Form.Group
+        className="mt-3.5 mb-1"
+        isInvalid={(subsidy.startDate === false || subsidy.endDate === false) || hasInvalidEndDate}
+      >
         <Form.Control
           name="start-date"
           type="date"
@@ -62,8 +68,6 @@ const ProvisioningFormTerm = () => {
           value={formData.startDate || ''}
           data-testid="start-date"
         />
-      </Form.Group>
-      <Form.Group className="mt-4.5">
         <Form.Control
           name="end-date"
           type="date"
@@ -71,13 +75,21 @@ const ProvisioningFormTerm = () => {
           value={formData.endDate || ''}
           onChange={handleDateChange}
           data-testid="end-date"
+          className="mt-3.5"
         />
-        {showInvalidField.date && hasInvalidEndDate && (
-          <Form.Control.Feedback
-            type="invalid"
-          >
-            {TERM.VALIDITY}
-          </Form.Control.Feedback>
+        {hasInvalidEndDate && (
+        <Form.Control.Feedback
+          type="invalid"
+        >
+          {TERM.ERROR.validity}
+        </Form.Control.Feedback>
+        )}
+        {(subsidy.startDate === false || subsidy.endDate === false) && (
+        <Form.Control.Feedback
+          type="invalid"
+        >
+          {TERM.ERROR.emptyField}
+        </Form.Control.Feedback>
         )}
       </Form.Group>
     </article>

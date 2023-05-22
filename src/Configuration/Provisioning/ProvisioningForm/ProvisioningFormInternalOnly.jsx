@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Form,
-  Container,
 } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
@@ -28,16 +27,15 @@ const ProvisioningFormInternalOnly = () => {
       <div>
         <h3>{INTERNAL_ONLY.TITLE}</h3>
       </div>
-      <Container className="mt-4">
-        <Form.Checkbox
-          description={INTERNAL_ONLY.CHECKBOX.description}
-          onChange={handleChange}
-          checked={value}
-          data-testid="internal-only-checkbox"
-        >
-          {INTERNAL_ONLY.CHECKBOX.label}
-        </Form.Checkbox>
-      </Container>
+      <Form.Checkbox
+        className="mt-3.5"
+        description={INTERNAL_ONLY.CHECKBOX.description}
+        onChange={handleChange}
+        checked={value}
+        data-testid="internal-only-checkbox"
+      >
+        {INTERNAL_ONLY.CHECKBOX.label}
+      </Form.Checkbox>
     </article>
   );
 };

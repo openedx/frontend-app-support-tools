@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Form,
-  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
@@ -25,8 +24,8 @@ const ProvisioningFormSubsidy = () => {
       <div>
         <h3>{SUBSIDY_TYPE.TITLE}</h3>
       </div>
-      <p className="mt-4">{SUBSIDY_TYPE.SUB_TITLE}</p>
-      <Container>
+      <Form.Group className="mt-3.5">
+        <Form.Label className="mb-2.5">{SUBSIDY_TYPE.SUB_TITLE}</Form.Label>
         <Form.RadioSet
           name="display-subsidy"
           onChange={handleChange}
@@ -45,7 +44,7 @@ const ProvisioningFormSubsidy = () => {
           ))
         }
         </Form.RadioSet>
-      </Container>
+      </Form.Group>
     </article>
   );
 };

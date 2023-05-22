@@ -39,7 +39,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
       <div className="mb-1">
         <h3>{ACCOUNT_DETAIL.TITLE}</h3>
       </div>
-      <Form.Group className="mt-4.5 mb-1">
+      <Form.Group className="mt-3.5 mb-1">
         <Form.Control
           floatingLabel={ACCOUNT_DETAIL.OPTIONS.displayName}
           value={accountNameState}
@@ -47,7 +47,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           data-testid="account-name"
         />
       </Form.Group>
-      <Form.Group className="mt-4.5">
+      <Form.Group className="mt-3.5">
         <Form.Control
           floatingLabel={ACCOUNT_DETAIL.OPTIONS.totalAccountValue.title}
           value={accountValueState}
