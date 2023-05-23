@@ -12,6 +12,7 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
   const { LEARNER_CAP } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
   const { policies } = showInvalidField;
+  const isPerLearnerCapDefinedAndFalse = policies[index]?.perLearnerCap === false;
   const [value, setValue] = useState(null);
 
   const handleChange = (e) => {
@@ -49,19 +50,19 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
               type="radio"
               key={uuidv4()}
               data-testid={LEARNER_CAP.OPTIONS[key]}
-              isInvalid={policies[index]?.perLearnerCap === false}
+              isInvalid={isPerLearnerCapDefinedAndFalse}
             >
               {LEARNER_CAP.OPTIONS[key]}
             </Form.Radio>
           ))
         }
         </Form.RadioSet>
-        {policies[index]?.perLearnerCap === false && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {LEARNER_CAP.ERROR}
-        </Form.Control.Feedback>
+        {isPerLearnerCapDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {LEARNER_CAP.ERROR}
+          </Form.Control.Feedback>
         )}
       </Form.Group>
     </article>

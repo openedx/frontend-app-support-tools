@@ -12,6 +12,7 @@ const ProvisioningFormSubsidy = () => {
   const { SUBSIDY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
   const { subsidy } = showInvalidField;
+  const isSubsidyRevReqDefinedAndFalse = subsidy?.subsidyRevReq === false;
   const [value, setValue] = useState(null);
 
   const handleChange = async (e) => {
@@ -40,19 +41,19 @@ const ProvisioningFormSubsidy = () => {
               type="radio"
               key={uuidv4()}
               data-testid={SUBSIDY_TYPE.OPTIONS[key]}
-              isInvalid={subsidy?.subsidyRevReq === false}
+              isInvalid={isSubsidyRevReqDefinedAndFalse}
             >
               {SUBSIDY_TYPE.OPTIONS[key]}
             </Form.Radio>
           ))
         }
         </Form.RadioSet>
-        {subsidy?.subsidyRevReq === false && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {SUBSIDY_TYPE.ERROR}
-        </Form.Control.Feedback>
+        {isSubsidyRevReqDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {SUBSIDY_TYPE.ERROR}
+          </Form.Control.Feedback>
         )}
       </Form.Group>
     </article>

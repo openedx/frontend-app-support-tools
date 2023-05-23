@@ -12,6 +12,7 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
   const { setPerLearnerCap, setInvalidPolicyFields } = useProvisioningContext();
   const [showInvalidField] = selectProvisioningContext('showInvalidField');
   const { policies } = showInvalidField;
+  const isPerLearnerCapAmountDefinedAndFalse = policies[index]?.perLearnerCapAmount === false;
   const [isWholeDollar, setIsWholeDollar] = useState(true);
   const [perLearnerCapValue, setPerLearnerCapValue] = useState('');
 
@@ -40,7 +41,7 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
           onChange={handleChange}
           data-testid="per-learner-spend-cap-amount"
           value={perLearnerCapValue}
-          isInvalid={!isWholeDollar || (policies[index]?.perLearnerCapAmount === false)}
+          isInvalid={!isWholeDollar || isPerLearnerCapAmountDefinedAndFalse}
         />
         <Form.Control.Feedback>
           {LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.subtitle}
@@ -52,7 +53,7 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
             {LEARNER_CAP_DETAIL.ERROR.incorrectDollarAmount}
           </Form.Control.Feedback>
         )}
-        {(policies[index]?.perLearnerCapAmount === false) && (
+        {isPerLearnerCapAmountDefinedAndFalse && (
           <Form.Control.Feedback
             type="invalid"
           >

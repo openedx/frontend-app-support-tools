@@ -38,43 +38,43 @@ export default function useProvisioningContext() {
 
   const updateFormDataState = useCallback((newDataAttribute, copyPolicies = false, index = 0) => {
     setState((s) => {
-      const output = copyPolicies
-        ? {
+      if (copyPolicies) {
+        return {
           ...s,
           formData: {
             ...s.formData,
             policies: updatePolicies(s.formData, newDataAttribute, index),
           },
-        }
-        : {
-          ...s,
-          formData: {
-            ...s.formData,
-            ...newDataAttribute,
-          },
         };
-      return output;
+      }
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          ...newDataAttribute,
+        },
+      };
     }, [setState]);
   }, [setState]);
 
   const updateShowInvalidFieldState = useCallback((newDataAttribute, copyPolicies = false, index = 0) => {
     setState((s) => {
-      const output = copyPolicies
-        ? {
+      if (copyPolicies) {
+        return {
           ...s,
           showInvalidField: {
             ...s.showInvalidField,
             policies: updatePolicies(s.showInvalidField, newDataAttribute, index),
           },
-        }
-        : {
-          ...s,
-          showInvalidField: {
-            ...s.showInvalidField,
-            ...newDataAttribute,
-          },
         };
-      return output;
+      }
+      return {
+        ...s,
+        showInvalidField: {
+          ...s.showInvalidField,
+          ...newDataAttribute,
+        },
+      };
     }, [setState]);
   }, [setState]);
 

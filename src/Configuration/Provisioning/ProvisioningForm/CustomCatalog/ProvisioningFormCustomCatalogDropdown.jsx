@@ -9,6 +9,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: '' });
   const [catalogQueries, showInvalidField] = selectProvisioningContext('catalogQueries', 'showInvalidField');
   const { policies } = showInvalidField;
+  const isCatalogQueryMetadataDefinedAndFalse = policies[0]?.catalogQueryMetadata === false;
   const { hydrateCatalogQueryData, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const generateAutosuggestOptions = useCallback(() => {
@@ -47,22 +48,25 @@ const ProvisioningFormCustomCatalogDropdown = () => {
   return (
     <div className="row">
       <div className="col-10">
-        <Form.Group>
+        <Form.Group
+          className="mt-4.5"
+        >
           <Form.Autosuggest
-            className="mt-4.5"
             floatingLabel={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}
             helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle}
             value={selected.title}
             onSelected={handleOnSelected}
-            data-testid="autosuggest"
-            isInvalid={policies[0]?.catalogQueryMetadata === false}
+            data-testid="custom-catalog-dropdown-autosuggest"
+            isInvalid={isCatalogQueryMetadataDefinedAndFalse}
           >
             {generateAutosuggestOptions()}
           </Form.Autosuggest>
-          {policies[0]?.catalogQueryMetadata === false && (
-          <Form.Control.Feedback type="invalid">
-            {CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.error}
-          </Form.Control.Feedback>
+          {isCatalogQueryMetadataDefinedAndFalse && (
+            <Form.Control.Feedback
+              type="invalid"
+            >
+              {CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.error}
+            </Form.Control.Feedback>
           )}
         </Form.Group>
       </div>

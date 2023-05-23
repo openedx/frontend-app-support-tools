@@ -27,15 +27,18 @@ const ProvisioningFormInternalOnly = () => {
       <div>
         <h3>{INTERNAL_ONLY.TITLE}</h3>
       </div>
-      <Form.Checkbox
+      <Form.Group
         className="mt-3.5"
-        description={INTERNAL_ONLY.CHECKBOX.description}
-        onChange={handleChange}
-        checked={value}
-        data-testid="internal-only-checkbox"
       >
-        {INTERNAL_ONLY.CHECKBOX.label}
-      </Form.Checkbox>
+        <Form.Checkbox
+          description={INTERNAL_ONLY.CHECKBOX.description}
+          onChange={handleChange}
+          checked={value}
+          data-testid="internal-only-checkbox"
+        >
+          {INTERNAL_ONLY.CHECKBOX.label}
+        </Form.Checkbox>
+      </Form.Group>
     </article>
   );
 };

@@ -15,7 +15,7 @@ const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
   const { subsidy } = showInvalidField;
-
+  const areDatesDefinedAndFalse = subsidy?.startDate === false || subsidy?.endDate === false;
   const { setStartDate, setEndDate, setInvalidSubsidyFields } = useProvisioningContext();
   const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
   const handleDateChange = (e) => {
@@ -58,7 +58,7 @@ const ProvisioningFormTerm = () => {
       </Stack>
       <Form.Group
         className="mt-3.5 mb-1"
-        isInvalid={(subsidy?.startDate === false || subsidy?.endDate === false) || hasInvalidEndDate}
+        isInvalid={areDatesDefinedAndFalse || hasInvalidEndDate}
       >
         <Form.Control
           name="start-date"
@@ -78,18 +78,18 @@ const ProvisioningFormTerm = () => {
           className="mt-3.5"
         />
         {hasInvalidEndDate && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {TERM.ERROR.validity}
-        </Form.Control.Feedback>
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {TERM.ERROR.validity}
+          </Form.Control.Feedback>
         )}
-        {(subsidy?.startDate === false || subsidy?.endDate === false) && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {TERM.ERROR.emptyField}
-        </Form.Control.Feedback>
+        {areDatesDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {TERM.ERROR.emptyField}
+          </Form.Control.Feedback>
         )}
       </Form.Group>
     </article>

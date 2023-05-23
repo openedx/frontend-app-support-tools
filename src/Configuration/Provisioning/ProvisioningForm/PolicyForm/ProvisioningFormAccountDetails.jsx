@@ -10,6 +10,8 @@ const ProvisioningFormAccountDetails = ({ index }) => {
   const { setAccountName, setAccountValue, setInvalidPolicyFields } = useProvisioningContext();
   const [multipleFunds, formData, showInvalidField] = selectProvisioningContext('multipleFunds', 'formData', 'showInvalidField');
   const { policies } = showInvalidField;
+  const isAccountNameDefinedAndFalse = policies[index]?.accountName === false;
+  const isAccountValueDefinedAndFalse = policies[index]?.accountValue === false;
   const formFeedbackText = multipleFunds
     ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(extractDefinedCatalogTitle(formData.policies[index]))
     : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;
@@ -45,7 +47,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
       </div>
       <Form.Group
         className="mt-3.5 mb-1"
-        isInvalid={policies[index]?.accountName === false}
+        isInvalid={isAccountNameDefinedAndFalse}
       >
         <Form.Control
           floatingLabel={ACCOUNT_DETAIL.OPTIONS.displayName}
@@ -53,14 +55,13 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           onChange={handleChange}
           data-testid="account-name"
         />
-        {policies[index]?.accountName === false
-          && (
+        {isAccountNameDefinedAndFalse && (
           <Form.Control.Feedback
             type="invalid"
           >
             {ACCOUNT_DETAIL.ERROR.emptyField}
           </Form.Control.Feedback>
-          )}
+        )}
       </Form.Group>
       <Form.Group
         className="mt-3.5"
@@ -70,7 +71,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           value={accountValueState}
           onChange={handleChange}
           data-testid="account-value"
-          isInvalid={policies[index]?.accountValue === false || !isWholeDollar}
+          isInvalid={isAccountValueDefinedAndFalse || !isWholeDollar}
         />
         <Form.Control.Feedback>
           {formFeedbackText}
@@ -82,14 +83,13 @@ const ProvisioningFormAccountDetails = ({ index }) => {
             {ACCOUNT_DETAIL.ERROR.incorrectDollarAmount}
           </Form.Control.Feedback>
         )}
-        {policies[index]?.accountValue === false
-          && (
+        {isAccountValueDefinedAndFalse && (
           <Form.Control.Feedback
             type="invalid"
           >
             {ACCOUNT_DETAIL.ERROR.emptyField}
           </Form.Control.Feedback>
-          )}
+        )}
       </Form.Group>
     </article>
   );

@@ -14,6 +14,7 @@ const ProvisioningFormCustomerDropdown = () => {
   const { ENTERPRISE_UUID } = PROVISIONING_PAGE_TEXT.FORM.CUSTOMER;
   const [formData, customers, showInvalidField] = selectProvisioningContext('formData', 'customers', 'showInvalidField');
   const { subsidy } = showInvalidField;
+  const isEnterpriseUuidDefinedAndFalse = subsidy?.enterpriseUUID === false;
   const { setCustomerUUID, getCustomers, setInvalidSubsidyFields } = useProvisioningContext();
   const [selected, setSelected] = useState({ title: '' });
   const [dropdownValues, setDropdownValues] = useState([ENTERPRISE_UUID.DROPDOWN_DEFAULT]);
@@ -50,7 +51,7 @@ const ProvisioningFormCustomerDropdown = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [formData.enterpriseUUID, debouncedSearch]);
   return (
-    <>
+    <Form.Group>
       <Form.Autosuggest
         floatingLabel={ENTERPRISE_UUID.TITLE}
         value={selected.title}
@@ -59,7 +60,7 @@ const ProvisioningFormCustomerDropdown = () => {
         helpMessage={ENTERPRISE_UUID.SUB_TITLE}
         errorMessageText={ENTERPRISE_UUID.ERROR.selected}
         data-testid="customer-uuid"
-        isInvalid={subsidy?.enterpriseUUID === false}
+        isInvalid={isEnterpriseUuidDefinedAndFalse}
       >
         {dropdownValues.map(option => (
           <Form.AutosuggestOption key={uuidv4()}>
@@ -67,14 +68,14 @@ const ProvisioningFormCustomerDropdown = () => {
           </Form.AutosuggestOption>
         ))}
       </Form.Autosuggest>
-      {subsidy?.enterpriseUUID === false && (
-      <Form.Control.Feedback
-        type="invalid"
-      >
-        {ENTERPRISE_UUID.ERROR.invalid}
-      </Form.Control.Feedback>
+      {isEnterpriseUuidDefinedAndFalse && (
+        <Form.Control.Feedback
+          type="invalid"
+        >
+          {ENTERPRISE_UUID.ERROR.invalid}
+        </Form.Control.Feedback>
       )}
-    </>
+    </Form.Group>
   );
 };
 

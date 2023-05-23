@@ -20,6 +20,7 @@ const ProvisioningFormAccountType = () => {
   const { ACCOUNT_CREATION, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, catalogQueries, showInvalidField] = selectProvisioningContext('formData', 'catalogQueries', 'showInvalidField');
   const { subsidy } = showInvalidField;
+  const isMultipleFundsDefinedAndFalse = subsidy?.multipleFunds === false;
   const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
   const [value, setValue] = useState(null);
 
@@ -74,23 +75,23 @@ const ProvisioningFormAccountType = () => {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
             <div key={uuidv4()} className="d-flex align-items-center position-relative">
               {catalogQueries?.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
-              <Spinner
-                className="position-absolute"
-                data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}
-                size="sm"
-                style={{
-                  left: -24,
-                }}
-                animation="border"
-                screenReaderText={`loading changes to view ${key} form type`}
-              />
+                <Spinner
+                  className="position-absolute"
+                  data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}
+                  size="sm"
+                  style={{
+                    left: -24,
+                  }}
+                  animation="border"
+                  screenReaderText={`loading changes to view ${key} form type`}
+                />
               )}
               <ActionRow.Spacer />
               <Form.Radio
                 value={ACCOUNT_CREATION.OPTIONS[key]}
                 type="radio"
                 data-testid={ACCOUNT_CREATION.OPTIONS[key]}
-                isInvalid={subsidy?.multipleFunds === false}
+                isInvalid={isMultipleFundsDefinedAndFalse}
               >
                 {ACCOUNT_CREATION.OPTIONS[key]}
               </Form.Radio>
@@ -98,12 +99,12 @@ const ProvisioningFormAccountType = () => {
           ))
         }
         </Form.RadioSet>
-        {subsidy?.multipleFunds === false && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {ACCOUNT_CREATION.ERROR}
-        </Form.Control.Feedback>
+        {isMultipleFundsDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {ACCOUNT_CREATION.ERROR}
+          </Form.Control.Feedback>
         )}
       </Form.Group>
     </article>

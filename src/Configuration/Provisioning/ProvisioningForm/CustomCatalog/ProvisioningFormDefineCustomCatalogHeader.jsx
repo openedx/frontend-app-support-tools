@@ -28,12 +28,12 @@ const ProvisioningFormDefineCustomCatalogHeader = ({ index }) => {
         </Hyperlink>
       </ActionRow>
       {formData.policies[index].customerCatalog === false && (
-      <Stack direction="horizontal">
-        <Icon src={Warning} className="align-self-start" />
-        <Col className="col-8 pl-2">
-          {CUSTOM_CATALOG.HEADER.DEFINE.SUB_TITLE}
-        </Col>
-      </Stack>
+        <Stack direction="horizontal">
+          <Icon src={Warning} className="align-self-start" />
+          <Col className="col-8 pl-2">
+            {CUSTOM_CATALOG.HEADER.DEFINE.SUB_TITLE}
+          </Col>
+        </Stack>
       )}
     </>
   );

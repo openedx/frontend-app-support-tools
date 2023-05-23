@@ -7,7 +7,6 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 import { isValidOpportunityProduct } from '../../../utils';
 import ProvisioningFormCustomerDropdown from './ProvisioningFormCustomerDropdown';
-import { isValidOpportunityProduct } from '../../../utils';
 
 const ProvisioningFormCustomer = () => {
   const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
@@ -16,7 +15,7 @@ const ProvisioningFormCustomer = () => {
   const [financialIdentifier, setFinancialIdentifierState] = useState('');
   const [isOpportunityProduct, setIsOpportunityProduct] = useState(true);
   const { subsidy } = showInvalidField;
-
+  const isOpportunityProductDefinedAndFalse = subsidy?.financialIdentifier === false;
   const handleChange = useCallback((e) => {
     const newEvent = e.target;
     const { value, dataset } = newEvent;
@@ -42,7 +41,7 @@ const ProvisioningFormCustomer = () => {
       </Form.Group>
       <Form.Group
         className="mt-3.5"
-        isInvalid={(!isOpportunityProduct || subsidy?.financialIdentifier === false)}
+        isInvalid={(!isOpportunityProduct || isOpportunityProductDefinedAndFalse)}
       >
         <Form.Control
           floatingLabel={CUSTOMER.FINANCIAL_IDENTIFIER.TITLE}
@@ -51,18 +50,18 @@ const ProvisioningFormCustomer = () => {
           data-testid="customer-financial-identifier"
         />
         {!isOpportunityProduct && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {CUSTOMER.FINANCIAL_IDENTIFIER.ERROR.validity}
-        </Form.Control.Feedback>
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {CUSTOMER.FINANCIAL_IDENTIFIER.ERROR.validity}
+          </Form.Control.Feedback>
         )}
-        {subsidy?.financialIdentifier === false && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {CUSTOMER.FINANCIAL_IDENTIFIER.ERROR.emptyField}
-        </Form.Control.Feedback>
+        {isOpportunityProductDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {CUSTOMER.FINANCIAL_IDENTIFIER.ERROR.emptyField}
+          </Form.Control.Feedback>
         )}
       </Form.Group>
     </article>

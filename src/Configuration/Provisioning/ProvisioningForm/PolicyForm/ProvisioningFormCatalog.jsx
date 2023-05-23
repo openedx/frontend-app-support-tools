@@ -15,8 +15,10 @@ const ProvisioningFormCatalog = ({ index }) => {
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
   const { multipleFunds, formData, showInvalidField: { policies } } = contextData;
+  const isCatalogQueryMetadataDefinedAndFalse = policies[index]?.catalogQueryMetadata === false;
   const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
   const [value, setValue] = useState(null);
+  const customCatalogSelected = value === CATALOG.OPTIONS.custom;
   if (multipleFunds === undefined) {
     return null;
   }
@@ -57,36 +59,36 @@ const ProvisioningFormCatalog = ({ index }) => {
         </h4>
       )}
       {multipleFunds === false && (
-      <Form.Group className="mt-3.5">
-        <Form.Label className="mb-2.5">{CATALOG.SUB_TITLE}</Form.Label>
-        <Form.RadioSet
-          name="display-catalog-content"
-          onChange={handleChange}
-          value={value || formData.policies[index].catalogCategory}
-        >
-          {
-          Object.keys(CATALOG.OPTIONS).map((key) => (
-            <Form.Radio
-              value={CATALOG.OPTIONS[key]}
-              type="radio"
-              key={uuidv4()}
-              data-testid={CATALOG.OPTIONS[key]}
-              data-catalogqueryid={camelCasedQueries[key]}
-              isInvalid={value === CATALOG.OPTIONS.custom ? false : policies[index]?.catalogQueryMetadata === false}
+        <Form.Group className="mt-3.5">
+          <Form.Label className="mb-2.5">{CATALOG.SUB_TITLE}</Form.Label>
+          <Form.RadioSet
+            name="display-catalog-content"
+            onChange={handleChange}
+            value={value || formData.policies[index].catalogCategory}
+          >
+            {
+            Object.keys(CATALOG.OPTIONS).map((key) => (
+              <Form.Radio
+                value={CATALOG.OPTIONS[key]}
+                type="radio"
+                key={uuidv4()}
+                data-testid={CATALOG.OPTIONS[key]}
+                data-catalogqueryid={camelCasedQueries[key]}
+                isInvalid={customCatalogSelected ? false : isCatalogQueryMetadataDefinedAndFalse}
+              >
+                {CATALOG.OPTIONS[key]}
+              </Form.Radio>
+            ))
+          }
+          </Form.RadioSet>
+          {!customCatalogSelected && isCatalogQueryMetadataDefinedAndFalse && (
+            <Form.Control.Feedback
+              type="invalid"
             >
-              {CATALOG.OPTIONS[key]}
-            </Form.Radio>
-          ))
-        }
-        </Form.RadioSet>
-        {value !== CATALOG.OPTIONS.custom && policies[index]?.catalogQueryMetadata === false && (
-        <Form.Control.Feedback
-          type="invalid"
-        >
-          {CATALOG.ERROR}
-        </Form.Control.Feedback>
-        )}
-      </Form.Group>
+              {CATALOG.ERROR}
+            </Form.Control.Feedback>
+          )}
+        </Form.Group>
       )}
     </article>
   );

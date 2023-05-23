@@ -33,7 +33,7 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
   it('renders the custom catalog dropdown options', async () => {
     renderWithRouter(<ProvisioningFormCustomCatalogDropdownWrapper />);
 
-    const autoSuggestInput = screen.getByTestId('autosuggest');
+    const autoSuggestInput = screen.getByTestId('custom-catalog-dropdown-autosuggest');
     const autoSuggestButton = screen.getAllByRole('button')[0];
     // open dropdown
     fireEvent.click(autoSuggestButton);
@@ -55,7 +55,7 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
   it('setSelected is called when autosuggest option is selected', () => {
     renderWithRouter(<ProvisioningFormCustomCatalogDropdownWrapper />);
 
-    const autoSuggestInput = screen.getByTestId('autosuggest');
+    const autoSuggestInput = screen.getByTestId('custom-catalog-dropdown-autosuggest');
     const autoSuggestButton = screen.getAllByRole('button')[0];
 
     // open dropdown
