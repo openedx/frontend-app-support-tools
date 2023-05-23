@@ -16,6 +16,7 @@ const ROUTES = {
         SUB_DIRECTORY: {
           NEW: '/enterprise-configuration/learner-credit/new',
           EDIT: '/enterprise-configuration/learner-credit/:id/edit',
+          ERROR: '/enterprise-configuration/learner-credit/error',
         },
       },
     },
