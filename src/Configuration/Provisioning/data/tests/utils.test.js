@@ -7,16 +7,19 @@ import {
   hasValidPolicyAndSubidy,
   getCamelCasedConfigAttribute,
   extractDefinedCatalogTitle,
+  normalizeSubsidyDataTableData,
   filterIndexOfCatalogQueryTitle,
   createSubsidy,
   createPolicy,
 } from '../utils';
 import {
   sampleCatalogQueries,
+  sampleDataTableData,
   sampleMultiplePolicyFormData,
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
+import { USES_LOCAL_TEST_DATA } from '../constants';
 
 describe('selectProvisioningContext', () => {
   it('throws an error when no arguments are passed', () => {
@@ -93,6 +96,28 @@ describe('extractDefinedCatalogTitle', () => {
   });
   it('returns null if no policy is passed', () => {
     expect(extractDefinedCatalogTitle({})).toEqual(null);
+  });
+});
+
+describe('normalizeSubsidyDataTableData', () => {
+  const fetchedData = camelCaseObject(sampleDataTableData(10));
+  const redirectURL = jest.fn();
+  const actionIcon = jest.fn();
+  it('returns the correct data', () => {
+    const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
+    fetchedData.forEach((item, index) => {
+      expect(normalizedData[index].enterpriseCustomerUuid).toEqual(item.enterpriseCustomerUuid);
+      const convertedActiveDateTime = new Date(item.activeDatetime).toLocaleDateString().replace(/\//g, '-');
+      const convertedExpirationDateTime = new Date(item.expirationDatetime).toLocaleDateString().replace(/\//g, '-');
+      expect(normalizedData[index].activeDatetime).toEqual(convertedActiveDateTime);
+      expect(normalizedData[index].expirationDatetime).toEqual(convertedExpirationDateTime);
+    });
+  });
+});
+
+describe('USES_LOCAL_TEST_DATA', () => {
+  it('should be false so testing state does not get sent to prod', () => {
+    expect(USES_LOCAL_TEST_DATA).toEqual(false);
   });
 });
 

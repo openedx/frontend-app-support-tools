@@ -6,7 +6,7 @@ import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormCustomer from '../ProvisioningFormCustomer';
 
 const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
-
+const testFinancialLinkage = '0000abc12a332c1444';
 const ProvisioningFormCustomerWrapper = ({
   value = initialStateValue,
 }) => (
@@ -36,12 +36,11 @@ describe('ProvisioningFormCustomer', () => {
   });
   it('renders customer financial linkage', () => {
     renderWithRouter(<ProvisioningFormCustomerWrapper />);
-
     const input = screen.getByTestId('customer-financial-identifier');
-    fireEvent.change(input, { target: { value: 'test-financial-linkage' } });
+    fireEvent.change(input, { target: { value: testFinancialLinkage } });
     const inputValue = input.getAttribute('value');
 
     expect(screen.getByText(CUSTOMER.ENTERPRISE_UUID.TITLE)).toBeTruthy();
-    expect(inputValue).toEqual('test-financial-linkage');
+    expect(inputValue).toEqual(testFinancialLinkage);
   });
 });
