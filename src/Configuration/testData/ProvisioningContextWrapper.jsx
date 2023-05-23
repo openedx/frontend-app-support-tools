@@ -18,7 +18,8 @@ export const initialStateValue = {
   formData: {
     policies: [],
   },
-  formDataValidity: {
+  showInvalidField: {
+    subsidy: [],
     policies: [],
   },
 };
