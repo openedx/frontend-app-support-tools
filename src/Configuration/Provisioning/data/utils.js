@@ -188,6 +188,32 @@ export function getCamelCasedConfigAttribute(attribute) {
 }
 
 /**
+ *
+ * @param {Array} fetchedData - The data fetched from the API
+ * @param {Function} actionIcon - The icon to be displayed in the action column, passes the redirectURL function
+ * @param {Function} redirectURL - The function to be called when the icon is clicked, redirects to passed UUID
+ * @returns - The normalized data to be displayed in the table
+ */
+export function normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL }) {
+  if (fetchedData.length === 0) {
+    return [];
+  }
+  const normalizedData = fetchedData.map((item) => {
+    const {
+      uuid, activeDatetime, expirationDatetime, ...rest
+    } = item;
+    const redirectUrl = () => redirectURL(uuid);
+    return {
+      ...rest,
+      uuid,
+      activeDatetime: new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-'),
+      expirationDatetime: new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-'),
+      actions: actionIcon(redirectUrl),
+    };
+  });
+  return normalizedData;
+}
+/**
  * Creates a new subsidy for the specified valid enterprise customer.
  *
  * @param {{

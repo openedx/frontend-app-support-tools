@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { titleCase } from '../../../utils';
 
+// Set to true or false to enable local testing, populates DataTable with sample data
+export const USES_LOCAL_TEST_DATA = false;
+
 const PROVISIONING_PAGE_TEXT = {
   DASHBOARD: {
     TITLE: 'Learner Credit Plans',
@@ -32,6 +35,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       FINANCIAL_IDENTIFIER: {
         TITLE: 'Opportunity Product',
+        ERROR: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
       },
     },
     TERM: {
