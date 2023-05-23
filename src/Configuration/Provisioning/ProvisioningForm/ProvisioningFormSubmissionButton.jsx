@@ -23,8 +23,8 @@ import {
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
-  const { BUTTON, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
-  const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
+  const { BUTTON, ALERTS: { API_ERROR_MESSAGES } } = PROVISIONING_PAGE_TEXT.FORM;
+  const { HOME, SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
   const { resetFormData } = useProvisioningContext();
   const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
@@ -42,6 +42,12 @@ const ProvisioningFormSubmissionButton = () => {
       return;
     }
     history.push(HOME);
+  };
+
+  const redirectOnError = (statusCode, message) => {
+    history.push(ERROR, {
+      errorMessage: `Error ${statusCode}: ${message}`,
+    });
   };
 
   const handleSubmit = async () => {
@@ -76,7 +82,9 @@ const ProvisioningFormSubmissionButton = () => {
           catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
           title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
         };
-        const catalogCreatedResponse = createCatalogs(payload);
+        const catalogCreatedResponse = createCatalogs(payload).catch((error) => {
+          throw error;
+        });
         return catalogCreatedResponse;
       }));
       // checks if all catalogs were created successfully before proceeding
@@ -87,7 +95,14 @@ const ProvisioningFormSubmissionButton = () => {
       setSubmitButtonState('error');
       const { customAttributes } = error;
       if (customAttributes) {
-        logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]} ${error}`);
+        logError(`Alert Error: ${API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]} ${error}`);
+        redirectOnError(
+          customAttributes.httpErrorStatus,
+          API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[
+            customAttributes.httpErrorStatus
+          ] || API_ERROR_MESSAGES.DEFAULT,
+        );
+        return;
       }
     }
 
@@ -112,7 +127,12 @@ const ProvisioningFormSubmissionButton = () => {
       setSubmitButtonState('error');
       const { customAttributes } = error;
       if (customAttributes) {
-        logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.SUBSIDY_CREATION[customAttributes.httpErrorStatus]} ${error}`);
+        logError(`Alert Error: ${API_ERROR_MESSAGES.SUBSIDY_CREATION[customAttributes.httpErrorStatus]} ${error}`);
+        redirectOnError(
+          customAttributes.httpErrorStatus,
+          API_ERROR_MESSAGES.SUBSIDY_CREATION[customAttributes.httpErrorStatus] || API_ERROR_MESSAGES.DEFAULT,
+        );
+        return;
       }
     }
 
@@ -126,7 +146,7 @@ const ProvisioningFormSubmissionButton = () => {
     // creates subsidy access policy for each policy in the form
     try {
       const policyResponses = await Promise.all(policyPayloads.map(async (payload) => {
-        const policyCreatedResponse = createPolicy(payload);
+        const policyCreatedResponse = await createPolicy(payload);
         return policyCreatedResponse;
       }));
       // checks if all policies were created successfully before proceeding
@@ -135,7 +155,16 @@ const ProvisioningFormSubmissionButton = () => {
       }
     } catch (error) {
       setSubmitButtonState('error');
-      logError(`Alert Error: ${ALERTS.API_ERROR_MESSAGES.POLICY_CREATION} ${error}`);
+      const { customAttributes } = error;
+      if (customAttributes) {
+        logError(
+          `Alert Error: ${API_ERROR_MESSAGES.POLICY_CREATION[customAttributes.httpErrorStatus] || API_ERROR_MESSAGES.DEFAULT} ${error}`,
+        );
+        redirectOnError(
+          customAttributes.httpErrorStatus,
+          API_ERROR_MESSAGES.POLICY_CREATION[customAttributes.httpErrorStatus] || API_ERROR_MESSAGES.DEFAULT,
+        );
+      }
     }
   };
 

@@ -9,6 +9,8 @@ import {
   extractDefinedCatalogTitle,
   normalizeSubsidyDataTableData,
   filterIndexOfCatalogQueryTitle,
+  createSubsidy,
+  createPolicy,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -65,31 +67,6 @@ describe('hasValidPolicyAndSubidy', () => {
     formDataUseCases.forEach((formData) => {
       expect(hasValidPolicyAndSubidy(formData)).toBeTruthy();
     });
-  });
-});
-
-const sampleCreateCatalogResponse = {
-  data:
-      {
-        uuid: 'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
-        title: 'test123',
-        enterprise_customer: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0',
-        enterprise_catalog_query: 10,
-      },
-};
-jest.mock('@edx/frontend-platform/auth', () => ({
-  getAuthenticatedHttpClient: () => ({
-    post: () => Promise.resolve(sampleCreateCatalogResponse),
-  }),
-}));
-describe('createCatalogs', () => {
-  it('returns the correct data', async () => {
-    const data = await createCatalogs([
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
-      10,
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
-    ]);
-    expect(data).toEqual(sampleCreateCatalogResponse.data);
   });
 });
 
@@ -161,5 +138,95 @@ describe('filterIndexOfCatalogQuery', () => {
   });
   it('returns the original array if no filter is passed', () => {
     expect(filterIndexOfCatalogQueryTitle(sampleCatalogQueries.data)).toEqual(sampleCatalogQueries.data);
+  });
+});
+
+const sampleResponses = {
+  data: {
+    createCatalog: {
+      uuid: 'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
+      title: 'test123',
+      enterprise_customer: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0',
+      enterprise_catalog_query: 10,
+    },
+    createSubsidy: {
+      uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      title: '321',
+      enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+      active_datetime: '2023-05-09T00:00:00Z',
+      expiration_datetime: '2023-06-02T00:00:00Z',
+      unit: 'usd_cents',
+      reference_id: '112211',
+      reference_type: 'salesforce_opportunity_line_item',
+      current_balance: 1200,
+      starting_balance: 1200,
+      internal_only: true,
+      revenue_category: 'partner-no-rev-prepay',
+    },
+    createPolicy: {
+      uuid: '7a5e4882-16a6-4a5f-bfe1-eda91014aff4',
+      policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      description: 'This policy created for subsidy 205f11a4-0303-4407-a2e7-80261ef8fb8f with 1 associated policies',
+      active: true,
+      enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+      catalog_uuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
+      subsidy_uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      access_method: 'direct',
+      per_learner_enrollment_limit: null,
+      per_learner_spend_limit: null,
+      spend_limit: 1200,
+    },
+  },
+};
+
+jest.mock('@edx/frontend-platform/auth', () => ({
+  getAuthenticatedHttpClient: () => ({
+    post: () => Promise.resolve(sampleResponses),
+  }),
+}));
+
+describe('createCatalogs', () => {
+  it('returns the correct data', async () => {
+    const data = await createCatalogs([
+      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
+      10,
+      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
+    ]);
+    expect(data.createCatalog).toEqual(sampleResponses.data.createCatalog);
+  });
+});
+
+describe('createSubsidy', () => {
+  it('returns the correct data', async () => {
+    const data = await createSubsidy({
+      reference_id: '112211',
+      default_title: '321',
+      default_enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+      default_active_datetime: '2023-05-09T00:00:00.000Z',
+      default_expiration_datetime: '2023-06-02T00:00:00.000Z',
+      default_unit: 'usd_cents',
+      default_starting_balance: 1200,
+      default_revenue_category: 'partner-no-rev-prepay',
+      default_internal_only: true,
+    });
+    expect(data.createSubsidy).toEqual(sampleResponses.data.createSubsidy);
+  });
+});
+
+describe('createPolicies', () => {
+  it('returns the correct data', async () => {
+    const { data } = await createPolicy({
+      policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      description: 'This policy created for subsidy 205f11a4-0303-4407-a2e7-80261ef8fb8f with 1 associated policies',
+      active: true,
+      enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+      catalog_uuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
+      subsidy_uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      access_method: 'direct',
+      per_learner_spend_limit: null,
+      per_learner_enrollment_limit: null,
+      spend_limit: 1200,
+    });
+    expect(data.createPolicy).toEqual(sampleResponses.data.createPolicy);
   });
 });

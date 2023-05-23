@@ -317,7 +317,7 @@ export function transformSubsidyData(formData) {
  * }} - Object fields required to create a new policy
  * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
  */
-export function createPolicy({
+export async function createPolicy({
   description,
   enterpriseCustomerUuid,
   catalogUuid,
@@ -333,6 +333,7 @@ export function createPolicy({
     perLearnerSpendLimit,
     spendLimit,
   );
+
   return data;
 }
 
@@ -347,8 +348,13 @@ export function createPolicy({
  */
 export function transformPolicyData(formData, catalogCreationResponse, subsidyCreationResponse) {
   const { enterpriseUUID, policies } = formData;
+  if (
+    policies.length === 0
+    || catalogCreationResponse.length === 0
+    || subsidyCreationResponse.length === 0
+  ) { return []; }
   const payloads = policies.map((policy, index) => ({
-    description: `This policy created for subsidy ${subsidyCreationResponse[0].uuid} with ${policies.length} associated policies`,
+    description: `This policy created for subsidy ${subsidyCreationResponse[0]?.uuid} with ${policies.length} associated policies`,
     enterpriseCustomerUuid: enterpriseUUID,
     catalogUuid: catalogCreationResponse[0][index].uuid,
     subsidyUuid: subsidyCreationResponse[0].uuid,
