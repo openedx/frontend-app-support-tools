@@ -11,10 +11,10 @@ import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
-  const { setCustomCatalog, setCatalogQueryCategory } = useProvisioningContext();
+  const { setCustomCatalog, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
-  const { multipleFunds, formData } = contextData;
+  const { multipleFunds, formData, showInvalidField: { policies } } = contextData;
   const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
   const [value, setValue] = useState(null);
   if (multipleFunds === undefined) {
@@ -43,6 +43,7 @@ const ProvisioningFormCatalog = ({ index }) => {
       }, index);
     }
     setValue(newTabValue);
+    setInvalidPolicyFields({ catalogQueryMetadata: true }, index);
   };
 
   return (
@@ -71,13 +72,20 @@ const ProvisioningFormCatalog = ({ index }) => {
               key={uuidv4()}
               data-testid={CATALOG.OPTIONS[key]}
               data-catalogqueryid={camelCasedQueries[key]}
+              isInvalid={value === CATALOG.OPTIONS.custom ? false : policies[index]?.catalogQueryMetadata === false}
             >
               {CATALOG.OPTIONS[key]}
             </Form.Radio>
           ))
         }
         </Form.RadioSet>
-        <Form.Control.Feedback>{CATALOG.ERROR}</Form.Control.Feedback>
+        {value !== CATALOG.OPTIONS.custom && policies[index]?.catalogQueryMetadata === false && (
+        <Form.Control.Feedback
+          type="invalid"
+        >
+          {CATALOG.ERROR}
+        </Form.Control.Feedback>
+        )}
       </Form.Group>
       )}
     </article>

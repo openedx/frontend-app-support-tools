@@ -77,11 +77,17 @@ export function updatePolicies(data, newDataAttribute, index) {
   return [...policies];
 }
 
-export function determineInvalidFields(formData) {
+export async function determineInvalidFields(formData) {
   const { policies } = formData;
   const allInvalidPolicyFields = [];
+  let isValidEnterpriseUUID;
+  if (formData?.enterpriseUUID?.length > 0) {
+    const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(formData.enterpriseUUD);
+    const filteredCustomer = data.filter(customer => customer.id === formData.enterpriseUUID);
+    isValidEnterpriseUUID = filteredCustomer.length === 1 && formData.enterpriseUUID === filteredCustomer[0].id;
+  }
   const invalidSubsidyData = {
-    enterpriseUUID: !!formData.enterpriseUUID,
+    enterpriseUUID: !!formData.enterpriseUUID && isValidEnterpriseUUID,
     financialIdentifier: !!formData.financialIdentifier
     && isValidOpportunityProduct(formData.financialIdentifier)
     && formData.financialIdentifier.length === 18,
@@ -108,6 +114,7 @@ export function determineInvalidFields(formData) {
   });
   return [invalidSubsidyData, allInvalidPolicyFields];
 }
+
 /**
  * Checks all form data to ensure that all required fields are filled out,
  * but not the individual validity of each field.
@@ -120,7 +127,9 @@ export function hasValidPolicyAndSubidy(formData) {
 
   // Check subsidy specific data
   const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
-  const isFinancialIdentifierValid = !!formData.financialIdentifier;
+  const isFinancialIdentifierValid = !!formData.financialIdentifier
+    && isValidOpportunityProduct(formData.financialIdentifier)
+    && formData.financialIdentifier.length === 18;
   const isDateRangeValid = !!formData.startDate && !!formData.endDate;
   const isRevReqValid = !!formData.subsidyRevReq;
 

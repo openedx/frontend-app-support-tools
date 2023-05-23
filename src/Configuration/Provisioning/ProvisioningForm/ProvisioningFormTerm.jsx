@@ -58,7 +58,7 @@ const ProvisioningFormTerm = () => {
       </Stack>
       <Form.Group
         className="mt-3.5 mb-1"
-        isInvalid={(subsidy.startDate === false || subsidy.endDate === false) || hasInvalidEndDate}
+        isInvalid={(subsidy?.startDate === false || subsidy?.endDate === false) || hasInvalidEndDate}
       >
         <Form.Control
           name="start-date"
@@ -84,7 +84,7 @@ const ProvisioningFormTerm = () => {
           {TERM.ERROR.validity}
         </Form.Control.Feedback>
         )}
-        {(subsidy.startDate === false || subsidy.endDate === false) && (
+        {(subsidy?.startDate === false || subsidy?.endDate === false) && (
         <Form.Control.Feedback
           type="invalid"
         >

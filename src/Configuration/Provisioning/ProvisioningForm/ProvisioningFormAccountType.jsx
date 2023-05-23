@@ -15,9 +15,11 @@ const ProvisioningFormAccountType = () => {
     setMultipleFunds,
     setCustomCatalog,
     hydrateCatalogQueryData,
+    setInvalidSubsidyFields,
   } = useProvisioningContext();
   const { ACCOUNT_CREATION, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, catalogQueries] = selectProvisioningContext('formData', 'catalogQueries');
+  const [formData, catalogQueries, showInvalidField] = selectProvisioningContext('formData', 'catalogQueries', 'showInvalidField');
+  const { subsidy } = showInvalidField;
   const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
   const [value, setValue] = useState(null);
 
@@ -33,6 +35,7 @@ const ProvisioningFormAccountType = () => {
       setMultipleFunds(false);
     }
     setValue(selectedValue);
+    setInvalidSubsidyFields({ ...subsidy, multipleFunds: true });
   };
 
   const handleChange = async (e) => {
@@ -87,6 +90,7 @@ const ProvisioningFormAccountType = () => {
                 value={ACCOUNT_CREATION.OPTIONS[key]}
                 type="radio"
                 data-testid={ACCOUNT_CREATION.OPTIONS[key]}
+                isInvalid={subsidy?.multipleFunds === false}
               >
                 {ACCOUNT_CREATION.OPTIONS[key]}
               </Form.Radio>
@@ -94,6 +98,13 @@ const ProvisioningFormAccountType = () => {
           ))
         }
         </Form.RadioSet>
+        {subsidy?.multipleFunds === false && (
+        <Form.Control.Feedback
+          type="invalid"
+        >
+          {ACCOUNT_CREATION.ERROR}
+        </Form.Control.Feedback>
+        )}
       </Form.Group>
     </article>
   );

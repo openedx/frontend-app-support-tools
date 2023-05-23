@@ -27,7 +27,10 @@ const PROVISIONING_PAGE_TEXT = {
       ENTERPRISE_UUID: {
         TITLE: 'Enterprise Customer / UUID',
         SUB_TITLE: 'Select an existing enterprise to provision',
-        ERROR: 'Error, no selected value',
+        ERROR: {
+          selected: 'Error, no selected value',
+          invalid: 'Not a valid enterprise customer',
+        },
         DROPDOWN_DEFAULT: 'No matching enterprise',
       },
       FINANCIAL_IDENTIFIER: {
@@ -46,7 +49,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       ERROR: {
         validity: 'Please choose an end date later than the start date',
-        emptyField: 'Field cannot be left blank or incomplete.',
+        emptyField: 'Fields cannot be left blank or incomplete.',
       },
       TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
@@ -64,6 +67,7 @@ const PROVISIONING_PAGE_TEXT = {
         yes: 'Yes (bulk enrollment prepay)',
         no: 'No (partner no rev prepay)',
       },
+      ERROR: 'Please select an option.',
     },
     ACCOUNT_CREATION: {
       TITLE: 'Budget by product',
@@ -72,6 +76,7 @@ const PROVISIONING_PAGE_TEXT = {
         multiple: 'Yes, create separate Open Courses and Executive Education Learner Credit budgets',
         single: 'No, create one Learner Credit budget',
       },
+      ERROR: 'Please select a product configuration.',
     },
     ACCOUNT_TYPE: {
       OPTIONS: {
@@ -89,6 +94,10 @@ const PROVISIONING_PAGE_TEXT = {
           subtitle: 'The contracted USD value available through the budget.',
           dynamicSubtitle: (budgetType) => `The contracted USD value available through the budget redeemable for ${budgetType} enrollment.`,
         },
+      },
+      ERROR: {
+        incorrectDollarAmount: 'Please enter a whole dollar value',
+        emptyField: 'Field cannot be left blank.',
       },
     },
     CATALOG: {

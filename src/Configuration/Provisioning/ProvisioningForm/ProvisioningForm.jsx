@@ -14,18 +14,16 @@ import ProvisioningFormAlert from './ProvisioningFormAlert';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, alertMessage, formData, showInvalidField] = selectProvisioningContext(
+  const [multipleFunds, alertMessage, formData] = selectProvisioningContext(
     'multipleFunds',
     'alertMessage',
     'formData',
-    'showInvalidField',
   );
   const { instantiateMultipleFormData, resetPolicies } = useProvisioningContext();
   useEffect(() => {
     resetPolicies();
     instantiateMultipleFormData(multipleFunds);
   }, [multipleFunds]);
-  console.log(showInvalidField);
   return (
     <div className="m-0 p-0 mb-5 mt-5">
       {alertMessage && <ProvisioningFormAlert />}

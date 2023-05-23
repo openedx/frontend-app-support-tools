@@ -43,10 +43,7 @@ export const isValidCourseID = (value) => Boolean(value && value.match(COURSE_ID
 
 export const isWholeDollarAmount = (value) => Boolean(value && value.match(DIGITS_ONLY_REGEX));
 
-export const isValidOpportunityProduct = (value) => {
-  console.log(value, Boolean(value && value.match(OPPORTUNITY_PRODUCT_REGEX)));
-  return Boolean(value && value.match(OPPORTUNITY_PRODUCT_REGEX));
-};
+export const isValidOpportunityProduct = (value) => Boolean(value && value.match(OPPORTUNITY_PRODUCT_REGEX));
 
 export function sort(firstElement, secondElement, key, direction) {
   const directionIsAsc = direction === 'asc';

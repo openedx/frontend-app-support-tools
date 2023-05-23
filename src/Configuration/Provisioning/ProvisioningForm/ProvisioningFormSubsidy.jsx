@@ -8,15 +8,17 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormSubsidy = () => {
-  const { setSubsidyRevReq } = useProvisioningContext();
+  const { setSubsidyRevReq, setInvalidSubsidyFields } = useProvisioningContext();
   const { SUBSIDY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData] = selectProvisioningContext('formData');
+  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const { subsidy } = showInvalidField;
   const [value, setValue] = useState(null);
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
     setSubsidyRevReq(newTabValue);
     setValue(newTabValue);
+    setInvalidSubsidyFields({ ...subsidy, subsidyRevReq: true });
   };
 
   return (
@@ -38,12 +40,20 @@ const ProvisioningFormSubsidy = () => {
               type="radio"
               key={uuidv4()}
               data-testid={SUBSIDY_TYPE.OPTIONS[key]}
+              isInvalid={subsidy?.subsidyRevReq === false}
             >
               {SUBSIDY_TYPE.OPTIONS[key]}
             </Form.Radio>
           ))
         }
         </Form.RadioSet>
+        {subsidy?.subsidyRevReq === false && (
+        <Form.Control.Feedback
+          type="invalid"
+        >
+          {SUBSIDY_TYPE.ERROR}
+        </Form.Control.Feedback>
+        )}
       </Form.Group>
     </article>
   );

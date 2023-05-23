@@ -27,7 +27,6 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
     setInvalidPolicyFields({ perLearnerCapAmount: true }, index);
     setPerLearnerCapValue(newEventValue);
   };
-  console.log(policies, 'perlear');
   return (
     <article className="mt-4.5">
       <div className="mb-1">
@@ -35,13 +34,13 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
       </div>
       <Form.Group
         className="mt-3.5"
-        isInvalid={!isWholeDollar || (policies[index]?.perLearnerCapAmount === false)}
       >
         <Form.Control
           floatingLabel={LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.title}
           onChange={handleChange}
           data-testid="per-learner-spend-cap-amount"
           value={perLearnerCapValue}
+          isInvalid={!isWholeDollar || (policies[index]?.perLearnerCapAmount === false)}
         />
         <Form.Control.Feedback>
           {LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.subtitle}

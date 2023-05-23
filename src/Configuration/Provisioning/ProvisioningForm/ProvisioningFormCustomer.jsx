@@ -19,7 +19,6 @@ const ProvisioningFormCustomer = () => {
   const handleChange = useCallback((e) => {
     const newEvent = e.target;
     const { value, dataset } = newEvent;
-    console.log(value);
     if (dataset.testid === 'customer-financial-identifier') {
       if (value !== '' && !isValidOpportunityProduct(value)) {
         setIsOpportunityProduct(false);
@@ -42,7 +41,7 @@ const ProvisioningFormCustomer = () => {
       </Form.Group>
       <Form.Group
         className="mt-3.5"
-        isInvalid={(!isOpportunityProduct || subsidy.financialIdentifier === false)}
+        isInvalid={(!isOpportunityProduct || subsidy?.financialIdentifier === false)}
       >
         <Form.Control
           floatingLabel={CUSTOMER.FINANCIAL_IDENTIFIER.TITLE}
@@ -57,7 +56,7 @@ const ProvisioningFormCustomer = () => {
           {CUSTOMER.FINANCIAL_IDENTIFIER.ERROR.validity}
         </Form.Control.Feedback>
         )}
-        {subsidy.financialIdentifier === false && (
+        {subsidy?.financialIdentifier === false && (
         <Form.Control.Feedback
           type="invalid"
         >

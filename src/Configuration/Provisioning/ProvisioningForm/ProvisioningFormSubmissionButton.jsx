@@ -54,7 +54,7 @@ const ProvisioningFormSubmissionButton = () => {
       setSubmitButtonState('error');
       resetInvalidFields();
 
-      const data = determineInvalidFields({ ...formData, multipleFunds });
+      const data = await determineInvalidFields({ ...formData, multipleFunds });
       setInvalidSubsidyFields(data[0]);
       if (data.length > 1) {
         data[1].forEach((element, index) => {

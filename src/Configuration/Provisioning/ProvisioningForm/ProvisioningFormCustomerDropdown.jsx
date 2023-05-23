@@ -12,8 +12,9 @@ import useProvisioningContext from '../data/hooks';
 
 const ProvisioningFormCustomerDropdown = () => {
   const { ENTERPRISE_UUID } = PROVISIONING_PAGE_TEXT.FORM.CUSTOMER;
-  const [formData, customers] = selectProvisioningContext('formData', 'customers');
-  const { setCustomerUUID, getCustomers } = useProvisioningContext();
+  const [formData, customers, showInvalidField] = selectProvisioningContext('formData', 'customers', 'showInvalidField');
+  const { subsidy } = showInvalidField;
+  const { setCustomerUUID, getCustomers, setInvalidSubsidyFields } = useProvisioningContext();
   const [selected, setSelected] = useState({ title: '' });
   const [dropdownValues, setDropdownValues] = useState([ENTERPRISE_UUID.DROPDOWN_DEFAULT]);
   const debouncedSearch = useMemo(() => debounce(getCustomers, 500, {
@@ -25,6 +26,7 @@ const ProvisioningFormCustomerDropdown = () => {
     if (value && value.includes('---')) {
       const valueUuid = value.split(' --- ')[1].trim();
       setCustomerUUID(valueUuid);
+      setInvalidSubsidyFields({ ...subsidy, enterpriseUUID: true });
     }
     setSelected(prevState => ({ selected: { ...prevState.selected, title: value } }));
   };
@@ -48,21 +50,31 @@ const ProvisioningFormCustomerDropdown = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [formData.enterpriseUUID, debouncedSearch]);
   return (
-    <Form.Autosuggest
-      floatingLabel={ENTERPRISE_UUID.TITLE}
-      value={selected.title}
-      onSelected={handleOnSelected}
-      onChange={updateDropdown}
-      helpMessage={ENTERPRISE_UUID.SUB_TITLE}
-      errorMessageText={ENTERPRISE_UUID.ERROR}
-      data-testid="customer-uuid"
-    >
-      {dropdownValues.map(option => (
-        <Form.AutosuggestOption key={uuidv4()}>
-          {option}
-        </Form.AutosuggestOption>
-      ))}
-    </Form.Autosuggest>
+    <>
+      <Form.Autosuggest
+        floatingLabel={ENTERPRISE_UUID.TITLE}
+        value={selected.title}
+        onSelected={handleOnSelected}
+        onChange={updateDropdown}
+        helpMessage={ENTERPRISE_UUID.SUB_TITLE}
+        errorMessageText={ENTERPRISE_UUID.ERROR.selected}
+        data-testid="customer-uuid"
+        isInvalid={subsidy?.enterpriseUUID === false}
+      >
+        {dropdownValues.map(option => (
+          <Form.AutosuggestOption key={uuidv4()}>
+            {option}
+          </Form.AutosuggestOption>
+        ))}
+      </Form.Autosuggest>
+      {subsidy?.enterpriseUUID === false && (
+      <Form.Control.Feedback
+        type="invalid"
+      >
+        {ENTERPRISE_UUID.ERROR.invalid}
+      </Form.Control.Feedback>
+      )}
+    </>
   );
 };
 
