@@ -16,7 +16,7 @@ const ErrorPageButton = ({
 );
 
 ErrorPageButton.propTypes = {
-  as: PropTypes.shape({}).isRequired,
+  as: PropTypes.node.isRequired,
   to: PropTypes.string.isRequired,
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
@@ -24,7 +24,7 @@ ErrorPageButton.propTypes = {
 };
 
 ErrorPageButton.defaultProps = {
-  className: '',
+  className: undefined,
   onClick: () => {},
 };
 
