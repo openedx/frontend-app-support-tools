@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, TESTING } from './constants';
+import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, USES_LOCAL_TEST_DATA } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
 import {
   updatePolicies, getCamelCasedConfigAttribute, normalizeSubsidyDataTableData, filterIndexOfCatalogQueryTitle,
@@ -12,9 +12,9 @@ import { sampleDataTableData } from '../../testData/constants';
 
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
-  const hydrateEnterpriseSubsidies = useCallback((count, action, redirect) => {
-    const data = camelCaseObject(sampleDataTableData(count, TESTING));
-    const normalizedData = normalizeSubsidyDataTableData(data, action, redirect);
+  const hydrateEnterpriseSubsidies = useCallback((count, actionIcon, redirectURL) => {
+    const fetchedData = camelCaseObject(sampleDataTableData(count, USES_LOCAL_TEST_DATA));
+    const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
     setState(s => ({
       ...s,
       enterpriseSubsidies: [normalizedData],

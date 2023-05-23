@@ -194,7 +194,7 @@ export function getCamelCasedConfigAttribute(attribute) {
  * @param {Function} redirectURL - The function to be called when the icon is clicked, redirects to passed UUID
  * @returns - The normalized data to be displayed in the table
  */
-export function normalizeSubsidyDataTableData(fetchedData, actionIcon, redirectURL) {
+export function normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL }) {
   if (fetchedData.length === 0) {
     return [];
   }

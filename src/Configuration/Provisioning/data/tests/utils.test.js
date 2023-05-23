@@ -17,7 +17,7 @@ import {
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
-import { TESTING } from '../constants';
+import { USES_LOCAL_TEST_DATA } from '../constants';
 
 describe('selectProvisioningContext', () => {
   it('throws an error when no arguments are passed', () => {
@@ -124,10 +124,10 @@ describe('extractDefinedCatalogTitle', () => {
 
 describe('normalizeSubsidyDataTableData', () => {
   const fetchedData = camelCaseObject(sampleDataTableData(10));
-  const redirect = jest.fn();
-  const action = jest.fn();
+  const redirectURL = jest.fn();
+  const actionIcon = jest.fn();
   it('returns the correct data', () => {
-    const normalizedData = normalizeSubsidyDataTableData(fetchedData, action, redirect);
+    const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
     fetchedData.forEach((item, index) => {
       expect(normalizedData[index].enterpriseCustomerUuid).toEqual(item.enterpriseCustomerUuid);
       const convertedActiveDateTime = new Date(item.activeDatetime).toLocaleDateString().replace(/\//g, '-');
@@ -138,9 +138,9 @@ describe('normalizeSubsidyDataTableData', () => {
   });
 });
 
-describe('TESTING', () => {
+describe('USES_LOCAL_TEST_DATA', () => {
   it('should be false so testing state does not get sent to prod', () => {
-    expect(TESTING).toEqual(false);
+    expect(USES_LOCAL_TEST_DATA).toEqual(false);
   });
 });
 
