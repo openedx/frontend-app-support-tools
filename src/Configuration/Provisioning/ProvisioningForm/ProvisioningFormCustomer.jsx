@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
+import { isValidOpportunityProduct } from '../../../utils';
 import ProvisioningFormCustomerDropdown from './ProvisioningFormCustomerDropdown';
 import { isValidOpportunityProduct } from '../../../utils';
 

@@ -75,6 +75,24 @@ export const sampleCatalogQueries = {
   isLoading: false,
 };
 
+export const sampleDataTableData = (count, testing = true) => {
+  if (!testing) {
+    return [];
+  }
+  const data = [];
+  for (let i = 0; i < count; i++) {
+    data.push({
+      uuid: uuidv4(),
+      title: `Subidy Title ${i + 1}`,
+      enterprise_customer_uuid: uuidv4(),
+      customerName: `Enterprise Customer ${i + 1}`,
+      active_datetime: '2021-03-10T16:31:57.251750Z',
+      expiration_datetime: '2021-12-31T16:31:57.251750Z',
+    });
+  }
+  return data;
+};
+
 export function getSampleCustomers(count = 10) {
   const sampleCustomers = [];
   for (let i = 0; i < count; i++) {
