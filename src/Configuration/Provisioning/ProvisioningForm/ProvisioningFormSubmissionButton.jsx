@@ -27,7 +27,11 @@ const ProvisioningFormSubmissionButton = () => {
   const { BUTTON, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
   const {
-    resetFormData, setInvalidSubsidyFields, setInvalidPolicyFields, resetInvalidFields,
+    resetFormData,
+    setInvalidSubsidyFields,
+    setInvalidPolicyFields,
+    resetInvalidFields,
+    setAlertMessage,
   } = useProvisioningContext();
   const [formData, multipleFunds] = selectProvisioningContext('formData', 'multipleFunds');
   const { policies } = formData;
@@ -49,6 +53,8 @@ const ProvisioningFormSubmissionButton = () => {
 
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
+    setAlertMessage(false);
+
     // Checks validiy before performing any API calls
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
@@ -61,6 +67,7 @@ const ProvisioningFormSubmissionButton = () => {
           setInvalidPolicyFields(element, index);
         });
       }
+      setAlertMessage(true);
       global.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }

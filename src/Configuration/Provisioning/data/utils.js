@@ -77,6 +77,12 @@ export function updatePolicies(data, newDataAttribute, index) {
   return [...policies];
 }
 
+/**
+ * Takes values from formData on submission after preliminary failure of hasValidPolicyAndSubidy function
+ * and determines which fields are not valid, and sets an object in the context for setting the isInvalid UI states
+ * @param {Object} formData - values from formData state on submission
+ * @returns {Array}  An array of subsidy and policy boolean value objects
+ */
 export async function determineInvalidFields(formData) {
   const { policies } = formData;
   const allInvalidPolicyFields = [];
