@@ -38,22 +38,43 @@ export default function useProvisioningContext() {
 
   const updateFormDataState = useCallback((newDataAttribute, copyPolicies = false, index = 0) => {
     setState((s) => {
-      const output = copyPolicies
-        ? {
+      if (copyPolicies) {
+        return {
           ...s,
           formData: {
             ...s.formData,
             policies: updatePolicies(s.formData, newDataAttribute, index),
           },
-        }
-        : {
+        };
+      }
+      return {
+        ...s,
+        formData: {
+          ...s.formData,
+          ...newDataAttribute,
+        },
+      };
+    }, [setState]);
+  }, [setState]);
+
+  const updateShowInvalidFieldState = useCallback((newDataAttribute, copyPolicies = false, index = 0) => {
+    setState((s) => {
+      if (copyPolicies) {
+        return {
           ...s,
-          formData: {
-            ...s.formData,
-            ...newDataAttribute,
+          showInvalidField: {
+            ...s.showInvalidField,
+            policies: updatePolicies(s.showInvalidField, newDataAttribute, index),
           },
         };
-      return output;
+      }
+      return {
+        ...s,
+        showInvalidField: {
+          ...s.showInvalidField,
+          ...newDataAttribute,
+        },
+      };
     }, [setState]);
   }, [setState]);
 
@@ -151,6 +172,20 @@ export default function useProvisioningContext() {
     }));
   }, [setState]);
 
+  const resetInvalidFields = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      showInvalidField: {
+        subsidy: [],
+        policies: [],
+      },
+    }));
+  });
+
+  const setInvalidSubsidyFields = (subsidy) => updateShowInvalidFieldState({ subsidy });
+
+  const setInvalidPolicyFields = (policy, index) => updateShowInvalidFieldState(policy, true, index);
+
   return {
     setMultipleFunds,
     hydrateCatalogQueryData,
@@ -174,5 +209,8 @@ export default function useProvisioningContext() {
     resetFormData,
     setAlertMessage,
     getCustomers,
+    setInvalidSubsidyFields,
+    setInvalidPolicyFields,
+    resetInvalidFields,
   };
 }

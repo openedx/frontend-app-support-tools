@@ -1,5 +1,4 @@
 import {
-  Container,
   Form,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,9 +8,11 @@ import useProvisioningContext from '../../data/hooks';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormPerLearnerCap = ({ index }) => {
-  const { perLearnerCap } = useProvisioningContext();
+  const { perLearnerCap, setInvalidPolicyFields } = useProvisioningContext();
   const { LEARNER_CAP } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData] = selectProvisioningContext('formData');
+  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const { policies } = showInvalidField;
+  const isPerLearnerCapDefinedAndFalse = policies[index]?.perLearnerCap === false;
   const [value, setValue] = useState(null);
 
   const handleChange = (e) => {
@@ -26,14 +27,17 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
       }, index);
     }
     setValue(newTabValue);
+    setInvalidPolicyFields({ perLearnerCap: true }, index);
   };
   return (
     <article className="mt-4.5">
       <div>
         <h3>{LEARNER_CAP.TITLE}</h3>
       </div>
-      <p className="mt-4">{LEARNER_CAP.SUB_TITLE}</p>
-      <Container>
+      <Form.Group
+        className="mt-3.5"
+      >
+        <Form.Label className="mb-2.5">{LEARNER_CAP.SUB_TITLE}</Form.Label>
         <Form.RadioSet
           name={`display-per-learner-cap-${index}`}
           onChange={handleChange}
@@ -46,13 +50,21 @@ const ProvisioningFormPerLearnerCap = ({ index }) => {
               type="radio"
               key={uuidv4()}
               data-testid={LEARNER_CAP.OPTIONS[key]}
+              isInvalid={isPerLearnerCapDefinedAndFalse}
             >
               {LEARNER_CAP.OPTIONS[key]}
             </Form.Radio>
           ))
         }
         </Form.RadioSet>
-      </Container>
+        {isPerLearnerCapDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {LEARNER_CAP.ERROR}
+          </Form.Control.Feedback>
+        )}
+      </Form.Group>
     </article>
   );
 };

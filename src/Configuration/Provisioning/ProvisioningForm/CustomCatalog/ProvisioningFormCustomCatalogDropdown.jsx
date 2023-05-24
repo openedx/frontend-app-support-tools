@@ -7,8 +7,10 @@ import { selectProvisioningContext, sortedCatalogQueries } from '../../data/util
 
 const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: '' });
-  const [catalogQueries] = selectProvisioningContext('catalogQueries');
-  const { hydrateCatalogQueryData, setCatalogQueryCategory } = useProvisioningContext();
+  const [catalogQueries, showInvalidField] = selectProvisioningContext('catalogQueries', 'showInvalidField');
+  const { policies } = showInvalidField;
+  const isCatalogQueryMetadataDefinedAndFalse = policies[0]?.catalogQueryMetadata === false;
+  const { hydrateCatalogQueryData, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const generateAutosuggestOptions = useCallback(() => {
     const defaultDropdown = (
@@ -38,6 +40,7 @@ const ProvisioningFormCustomCatalogDropdown = () => {
           catalogQuery: catalogQueries.data.find(({ uuid }) => uuid === valueUuid),
         },
       }, 0);
+      setInvalidPolicyFields({ catalogQueryMetadata: true }, 0);
     }
     setSelected(prevState => ({ selected: { ...prevState.selected, title: value } }));
   };
@@ -45,17 +48,29 @@ const ProvisioningFormCustomCatalogDropdown = () => {
   return (
     <div className="row">
       <div className="col-10">
-        <Form.Autosuggest
+        <Form.Group
           className="mt-4.5"
-          floatingLabel={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}
-          helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle}
-          value={selected.title}
-          onSelected={handleOnSelected}
-          data-testid="autosuggest"
         >
-          {generateAutosuggestOptions()}
-        </Form.Autosuggest>
+          <Form.Autosuggest
+            floatingLabel={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}
+            helpMessage={CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle}
+            value={selected.title}
+            onSelected={handleOnSelected}
+            data-testid="custom-catalog-dropdown-autosuggest"
+            isInvalid={isCatalogQueryMetadataDefinedAndFalse}
+          >
+            {generateAutosuggestOptions()}
+          </Form.Autosuggest>
+          {isCatalogQueryMetadataDefinedAndFalse && (
+            <Form.Control.Feedback
+              type="invalid"
+            >
+              {CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.error}
+            </Form.Control.Feedback>
+          )}
+        </Form.Group>
       </div>
+      {/* TODO: Button should be removed in favor of react-query's refetch functionality */}
       <div className="col-2 align-self-center mb-3">
         <Button onClick={hydrateCatalogQueryData}>Refresh</Button>
       </div>

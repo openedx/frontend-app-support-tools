@@ -13,14 +13,16 @@ import { isValidDateString } from '../../../utils';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData] = selectProvisioningContext('formData');
-  const { setStartDate, setEndDate } = useProvisioningContext();
+  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const { subsidy } = showInvalidField;
+  const areDatesDefinedAndFalse = subsidy?.startDate === false || subsidy?.endDate === false;
+  const { setStartDate, setEndDate, setInvalidSubsidyFields } = useProvisioningContext();
   const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
-
   const handleDateChange = (e) => {
     const eventTarget = e.target;
     const isStartDate = eventTarget.dataset.testid.includes('start');
     if (isValidDateString(eventTarget.value)) {
+      setInvalidSubsidyFields(isStartDate ? { ...subsidy, startDate: true } : { ...subsidy, endDate: true });
       if (isStartDate) {
         return setStartDate(eventTarget.value);
       }
@@ -54,7 +56,10 @@ const ProvisioningFormTerm = () => {
           alt="Plan activation tooltip"
         />
       </Stack>
-      <Form.Group className="mt-4.5 mb-1">
+      <Form.Group
+        className="mt-3.5 mb-1"
+        isInvalid={areDatesDefinedAndFalse || hasInvalidEndDate}
+      >
         <Form.Control
           name="start-date"
           type="date"
@@ -63,8 +68,6 @@ const ProvisioningFormTerm = () => {
           value={formData.startDate || ''}
           data-testid="start-date"
         />
-      </Form.Group>
-      <Form.Group className="mt-4.5">
         <Form.Control
           name="end-date"
           type="date"
@@ -72,12 +75,20 @@ const ProvisioningFormTerm = () => {
           value={formData.endDate || ''}
           onChange={handleDateChange}
           data-testid="end-date"
+          className="mt-3.5"
         />
         {hasInvalidEndDate && (
           <Form.Control.Feedback
             type="invalid"
           >
-            {TERM.VALIDITY}
+            {TERM.ERROR.validity}
+          </Form.Control.Feedback>
+        )}
+        {areDatesDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {TERM.ERROR.emptyField}
           </Form.Control.Feedback>
         )}
       </Form.Group>

@@ -19,14 +19,21 @@ import {
   transformSubsidyData,
   transformPolicyData,
   createPolicy,
+  determineInvalidFields,
 } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
   const history = useHistory();
+  const {
+    resetFormData,
+    setInvalidSubsidyFields,
+    setInvalidPolicyFields,
+    resetInvalidFields,
+    setAlertMessage,
+  } = useProvisioningContext();
+  const [formData, multipleFunds] = selectProvisioningContext('formData', 'multipleFunds');
   const { BUTTON, ALERTS: { API_ERROR_MESSAGES } } = PROVISIONING_PAGE_TEXT.FORM;
   const { HOME, SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-  const { resetFormData } = useProvisioningContext();
-  const [formData] = selectProvisioningContext('formData');
   const { policies } = formData;
   const canCreatePolicyAndSubsidy = useMemo(() => hasValidPolicyAndSubidy(formData), [formData]);
 
@@ -52,9 +59,22 @@ const ProvisioningFormSubmissionButton = () => {
 
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
+    setAlertMessage(false);
+
     // Checks validiy before performing any API calls
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
+      resetInvalidFields();
+
+      const data = await determineInvalidFields({ ...formData, multipleFunds });
+      setInvalidSubsidyFields(data[0]);
+      if (data.length > 1) {
+        data[1].forEach((element, index) => {
+          setInvalidPolicyFields(element, index);
+        });
+      }
+      setAlertMessage(true);
+      global.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 

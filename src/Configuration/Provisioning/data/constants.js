@@ -30,12 +30,18 @@ const PROVISIONING_PAGE_TEXT = {
       ENTERPRISE_UUID: {
         TITLE: 'Enterprise Customer / UUID',
         SUB_TITLE: 'Select an existing enterprise to provision',
-        ERROR: 'Error, no selected value',
+        ERROR: {
+          selected: 'Error, no selected value',
+          invalid: 'Not a valid enterprise customer',
+        },
         DROPDOWN_DEFAULT: 'No matching enterprise',
       },
       FINANCIAL_IDENTIFIER: {
         TITLE: 'Opportunity Product',
-        ERROR: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
+        ERROR: {
+          validity: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
+          emptyField: 'Field cannot be left blank or incomplete.',
+        },
       },
     },
     TERM: {
@@ -44,7 +50,10 @@ const PROVISIONING_PAGE_TEXT = {
         startDate: 'Start Date',
         endDate: 'End Date',
       },
-      VALIDITY: 'Please choose an end date later than the start date',
+      ERROR: {
+        validity: 'Please choose an end date later than the start date',
+        emptyField: 'Fields cannot be left blank or incomplete.',
+      },
       TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
     INTERNAL_ONLY: {
@@ -61,6 +70,7 @@ const PROVISIONING_PAGE_TEXT = {
         yes: 'Yes (bulk enrollment prepay)',
         no: 'No (partner no rev prepay)',
       },
+      ERROR: 'Please select an option.',
     },
     ACCOUNT_CREATION: {
       TITLE: 'Budget by product',
@@ -69,6 +79,7 @@ const PROVISIONING_PAGE_TEXT = {
         multiple: 'Yes, create separate Open Courses and Executive Education Learner Credit budgets',
         single: 'No, create one Learner Credit budget',
       },
+      ERROR: 'Please select a product configuration.',
     },
     ACCOUNT_TYPE: {
       OPTIONS: {
@@ -87,6 +98,10 @@ const PROVISIONING_PAGE_TEXT = {
           dynamicSubtitle: (budgetType) => `The contracted USD value available through the budget redeemable for ${budgetType} enrollment.`,
         },
       },
+      ERROR: {
+        incorrectDollarAmount: 'Please enter a whole dollar value',
+        emptyField: 'Field cannot be left blank.',
+      },
     },
     CATALOG: {
       TITLE: 'Catalog',
@@ -97,6 +112,7 @@ const PROVISIONING_PAGE_TEXT = {
         executiveEducation: 'Executive Education',
         custom: 'Custom',
       },
+      ERROR: 'Please select a Catalog',
     },
     CUSTOM_CATALOG: {
       HEADER: {
@@ -117,6 +133,7 @@ const PROVISIONING_PAGE_TEXT = {
         enterpriseCatalogQuery: {
           title: 'Enterprise Catalog Query',
           subtitle: 'Select an existing Enterprise Catalog Query to create the new Customer Catalog record from.',
+          error: 'Error, no selected value',
         },
         catalogTitle: 'Catalog title',
         contentFilter: 'Content filter',
@@ -131,6 +148,7 @@ const PROVISIONING_PAGE_TEXT = {
         yes: 'Yes',
         no: 'No, first come first serve',
       },
+      ERROR: 'Please select an option.',
     },
     LEARNER_CAP_DETAIL: {
       TITLE: 'Define limits',
@@ -140,8 +158,16 @@ const PROVISIONING_PAGE_TEXT = {
           subtitle: 'The maximum USD value a single learner may redeem from the budget.',
         },
       },
+      ERROR: {
+        incorrectDollarAmount: 'Please enter a whole dollar value',
+        emptyField: 'Field cannot be left blank.',
+      },
     },
     ALERTS: {
+      MISSING_FIELD_MESSAGES: {
+        TITLE: 'Missing required fields',
+        SUB_TITLE: 'Please enter incomplete fields and try again.',
+      },
       unselectedAccountType: "Please select an 'Account Creation' option to create new policies.",
       API_ERROR_MESSAGES: {
         ENTERPRISE_CATALOG_QUERY: {

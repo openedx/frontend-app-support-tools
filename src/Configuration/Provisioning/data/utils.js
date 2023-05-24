@@ -5,6 +5,7 @@ import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
 import { splitStringBudget } from './constants';
+import { isValidOpportunityProduct } from '../../../utils';
 
 export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
@@ -77,6 +78,50 @@ export function updatePolicies(data, newDataAttribute, index) {
 }
 
 /**
+ * Takes values from formData on submission after preliminary failure of hasValidPolicyAndSubidy function
+ * and determines which fields are not valid, and sets an object in the context for setting the isInvalid UI states
+ * @param {Object} formData - values from formData state on submission
+ * @returns {Array}  An array of subsidy and policy boolean value objects
+ */
+export async function determineInvalidFields(formData) {
+  const { policies } = formData;
+  const allInvalidPolicyFields = [];
+  let isValidEnterpriseUUID;
+  if (formData?.enterpriseUUID?.length > 0) {
+    const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(formData.enterpriseUUD);
+    const filteredCustomer = data.filter(customer => customer.id === formData.enterpriseUUID);
+    isValidEnterpriseUUID = filteredCustomer.length === 1 && formData.enterpriseUUID === filteredCustomer[0].id;
+  }
+  const invalidSubsidyData = {
+    enterpriseUUID: !!formData.enterpriseUUID && isValidEnterpriseUUID,
+    financialIdentifier: !!formData.financialIdentifier
+    && isValidOpportunityProduct(formData.financialIdentifier)
+    && formData.financialIdentifier.length === 18,
+    startDate: !!formData.startDate && formData.endDate >= formData.startDate,
+    endDate: !!formData.endDate && formData.endDate >= formData.startDate,
+    subsidyRevReq: !!formData.subsidyRevReq,
+    multipleFunds: !(formData.multipleFunds === undefined),
+  };
+  if (!invalidSubsidyData.multipleFunds || policies.length === 0) {
+    return [invalidSubsidyData];
+  }
+  policies.forEach((policy) => {
+    const {
+      accountName, accountValue, catalogQueryMetadata, perLearnerCap, perLearnerCapAmount,
+    } = policy;
+    const policyData = {
+      accountName: !!accountName,
+      accountValue: !!accountValue,
+      catalogQueryMetadata: !!catalogQueryMetadata?.catalogQuery?.id,
+      perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
+      perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
+    };
+    allInvalidPolicyFields.push(policyData);
+  });
+  return [invalidSubsidyData, allInvalidPolicyFields];
+}
+
+/**
  * Checks all form data to ensure that all required fields are filled out,
  * but not the individual validity of each field.
  *
@@ -88,7 +133,9 @@ export function hasValidPolicyAndSubidy(formData) {
 
   // Check subsidy specific data
   const isEnterpriseUUIDValid = !!formData.enterpriseUUID;
-  const isFinancialIdentifierValid = !!formData.financialIdentifier;
+  const isFinancialIdentifierValid = !!formData.financialIdentifier
+    && isValidOpportunityProduct(formData.financialIdentifier)
+    && formData.financialIdentifier.length === 18;
   const isDateRangeValid = !!formData.startDate && !!formData.endDate;
   const isRevReqValid = !!formData.subsidyRevReq;
 

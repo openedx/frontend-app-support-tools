@@ -18,6 +18,10 @@ export const initialStateValue = {
   formData: {
     policies: [],
   },
+  showInvalidField: {
+    subsidy: [],
+    policies: [],
+  },
 };
 
 export const ProvisioningContext = ({

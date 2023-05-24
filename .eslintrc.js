@@ -12,7 +12,6 @@ config.rules = {
   }],
   'react-hooks/exhaustive-deps': 'off',
   'react/function-component-definition': 'off',
-
 };
 
 module.exports = config;

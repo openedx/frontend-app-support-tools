@@ -3,7 +3,6 @@ import {
   Form,
   Spinner,
   ActionRow,
-  Container,
 } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { logError } from '@edx/frontend-platform/logging';
@@ -16,10 +15,12 @@ const ProvisioningFormAccountType = () => {
     setMultipleFunds,
     setCustomCatalog,
     hydrateCatalogQueryData,
-    setAlertMessage,
+    setInvalidSubsidyFields,
   } = useProvisioningContext();
   const { ACCOUNT_CREATION, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, catalogQueries] = selectProvisioningContext('formData', 'catalogQueries');
+  const [formData, catalogQueries, showInvalidField] = selectProvisioningContext('formData', 'catalogQueries', 'showInvalidField');
+  const { subsidy } = showInvalidField;
+  const isMultipleFundsDefinedAndFalse = subsidy?.multipleFunds === false;
   const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
   const [value, setValue] = useState(null);
 
@@ -35,6 +36,7 @@ const ProvisioningFormAccountType = () => {
       setMultipleFunds(false);
     }
     setValue(selectedValue);
+    setInvalidSubsidyFields({ ...subsidy, multipleFunds: true });
   };
 
   const handleChange = async (e) => {
@@ -43,12 +45,11 @@ const ProvisioningFormAccountType = () => {
       try {
         handleSpinnerLoadingState(newTabValue);
         await hydrateCatalogQueryData();
-        setAlertMessage(null);
       } catch (error) {
         logError(error);
         const { customAttributes } = error;
         if (customAttributes) {
-          setAlertMessage(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CATALOG_QUERY[customAttributes.httpErrorStatus]);
+          logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CATALOG_QUERY[customAttributes.httpErrorStatus]);
           handleSpinnerLoadingState(false);
         }
       } finally {
@@ -63,8 +64,8 @@ const ProvisioningFormAccountType = () => {
       <div>
         <h3>{ACCOUNT_CREATION.TITLE}</h3>
       </div>
-      <p className="mt-4">{ACCOUNT_CREATION.SUB_TITLE}</p>
-      <Container>
+      <Form.Group className="mt-3.5">
+        <Form.Label className="mb-2.5">{ACCOUNT_CREATION.SUB_TITLE}</Form.Label>
         <Form.RadioSet
           name="display-account-type"
           onChange={handleChange}
@@ -74,22 +75,23 @@ const ProvisioningFormAccountType = () => {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
             <div key={uuidv4()} className="d-flex align-items-center position-relative">
               {catalogQueries?.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
-              <Spinner
-                className="position-absolute"
-                data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}
-                size="sm"
-                style={{
-                  left: -24,
-                }}
-                animation="border"
-                screenReaderText={`loading changes to view ${key} form type`}
-              />
+                <Spinner
+                  className="position-absolute"
+                  data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}
+                  size="sm"
+                  style={{
+                    left: -24,
+                  }}
+                  animation="border"
+                  screenReaderText={`loading changes to view ${key} form type`}
+                />
               )}
               <ActionRow.Spacer />
               <Form.Radio
                 value={ACCOUNT_CREATION.OPTIONS[key]}
                 type="radio"
                 data-testid={ACCOUNT_CREATION.OPTIONS[key]}
+                isInvalid={isMultipleFundsDefinedAndFalse}
               >
                 {ACCOUNT_CREATION.OPTIONS[key]}
               </Form.Radio>
@@ -97,7 +99,14 @@ const ProvisioningFormAccountType = () => {
           ))
         }
         </Form.RadioSet>
-      </Container>
+        {isMultipleFundsDefinedAndFalse && (
+          <Form.Control.Feedback
+            type="invalid"
+          >
+            {ACCOUNT_CREATION.ERROR}
+          </Form.Control.Feedback>
+        )}
+      </Form.Group>
     </article>
   );
 };

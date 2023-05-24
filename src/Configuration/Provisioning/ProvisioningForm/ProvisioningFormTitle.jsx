@@ -12,7 +12,7 @@ const ProvisioningFormTitle = () => {
       <div className="mb-1">
         <h3>{PLAN_TITLE.HEADER}</h3>
       </div>
-      <Form.Group className="mt-4.5">
+      <Form.Group className="mt-3.5">
         <Form.Control
           floatingLabel={PLAN_TITLE.TITLE}
           onChange={e => setSubsidyTitle(e.target.value)}
