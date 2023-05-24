@@ -53,20 +53,21 @@ const ProvisioningFormCatalog = ({ index }) => {
       <div>
         <h3>{CATALOG.TITLE}</h3>
       </div>
-      {multipleFunds && (
+      <Form.Group className="mt-3.5">
+        <Form.Label className="mb-2.5">{CATALOG.SUB_TITLE}</Form.Label>
+        {multipleFunds && (
         <h4>
           {extractDefinedCatalogTitle(formData.policies[index])}
         </h4>
-      )}
-      {multipleFunds === false && (
-        <Form.Group className="mt-3.5">
-          <Form.Label className="mb-2.5">{CATALOG.SUB_TITLE}</Form.Label>
-          <Form.RadioSet
-            name="display-catalog-content"
-            onChange={handleChange}
-            value={value || formData.policies[index].catalogCategory}
-          >
-            {
+        )}
+        {multipleFunds === false && (
+          <>
+            <Form.RadioSet
+              name="display-catalog-content"
+              onChange={handleChange}
+              value={value || formData.policies[index].catalogCategory}
+            >
+              {
             Object.keys(CATALOG.OPTIONS).map((key) => (
               <Form.Radio
                 value={CATALOG.OPTIONS[key]}
@@ -80,16 +81,18 @@ const ProvisioningFormCatalog = ({ index }) => {
               </Form.Radio>
             ))
           }
-          </Form.RadioSet>
-          {!customCatalogSelected && isCatalogQueryMetadataDefinedAndFalse && (
+            </Form.RadioSet>
+            {!customCatalogSelected && isCatalogQueryMetadataDefinedAndFalse && (
             <Form.Control.Feedback
               type="invalid"
             >
               {CATALOG.ERROR}
             </Form.Control.Feedback>
-          )}
-        </Form.Group>
-      )}
+            )}
+          </>
+        )}
+
+      </Form.Group>
     </article>
   );
 };

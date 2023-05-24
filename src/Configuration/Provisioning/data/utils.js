@@ -142,7 +142,6 @@ export function hasValidPolicyAndSubidy(formData) {
   // Checks user defined values related to subsidy creation to determine validity
   const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
   && isDateRangeValid && isRevReqValid;
-
   // Check if there are any policies
   if (policies.length === 0) {
     return false;

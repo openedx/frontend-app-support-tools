@@ -27,6 +27,7 @@ useProvisioningContext.mockReturnValue({
   hydrateCatalogQueryData: mockHydrateCatalogQueryData,
   setCustomCatalog: jest.fn(),
   setAlertMessage: jest.fn(),
+  setInvalidSubsidyFields: jest.fn(),
 });
 const ProvisioningFormAccountTypeWrapper = ({
   value = initialStateValue,

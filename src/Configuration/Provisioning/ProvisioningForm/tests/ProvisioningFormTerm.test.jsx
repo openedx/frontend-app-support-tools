@@ -61,7 +61,7 @@ describe('ProvisioningFormTerm', () => {
     expect(screen.getByText(TERM.OPTIONS.endDate)).toBeTruthy();
     expect(endDateInputValue).toEqual('2020-01-01');
 
-    expect(screen.getByText(TERM.VALIDITY)).toBeTruthy();
+    expect(screen.getByText(TERM.ERROR.validity)).toBeTruthy();
 
     fireEvent.change(endDateInput, { target: { value: 'foo' } });
     const invalidEndDateInputValue = endDateInput.getAttribute('value');
