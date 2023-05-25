@@ -92,10 +92,13 @@ describe('extractDefinedCatalogTitle', () => {
     expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests budget' })).toEqual('The Bestests');
   });
   it('returns null if policy does not container ` budget`', () => {
-    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual(null);
+    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual('');
   });
   it('returns null if no policy is passed', () => {
     expect(extractDefinedCatalogTitle({})).toEqual(null);
+  });
+  it('returns catalog query title', () => {
+    expect(extractDefinedCatalogTitle({ catalogQueryMetadata: { catalogQuery: { title: 'The Bestests' } } })).toEqual('The Bestests');
   });
 });
 

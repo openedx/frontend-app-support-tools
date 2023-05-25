@@ -16,7 +16,7 @@ const ErrorPageButton = ({
 );
 
 ErrorPageButton.propTypes = {
-  as: PropTypes.node.isRequired,
+  as: PropTypes.oneOfType([PropTypes.node, PropTypes.shape({})]).isRequired,
   to: PropTypes.string.isRequired,
   className: PropTypes.string,
   children: PropTypes.node.isRequired,

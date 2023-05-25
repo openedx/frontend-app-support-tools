@@ -60,7 +60,6 @@ const ProvisioningFormSubmissionButton = () => {
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
     setAlertMessage(false);
-
     // Checks validiy before performing any API calls
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
@@ -210,7 +209,7 @@ const ProvisioningFormSubmissionButton = () => {
     <ActionRow className="justify-content-start mt-5">
       <StatefulButton
         labels={buttonLabels}
-        variant="primary"
+        variant={submitButtonState === 'error' ? 'danger' : 'primary'}
         state={submitButtonState}
         onClick={handleSubmit}
       />
@@ -218,6 +217,7 @@ const ProvisioningFormSubmissionButton = () => {
         variant="secondary"
         value={BUTTON.cancel}
         onClick={handleCancel}
+        disabled={submitButtonState === 'pending'}
       >
         {BUTTON.cancel}
       </Button>

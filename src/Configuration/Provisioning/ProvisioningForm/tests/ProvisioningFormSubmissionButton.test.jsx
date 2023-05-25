@@ -43,6 +43,9 @@ jest.mock('@edx/frontend-platform/auth', () => ({
     })),
   })),
 }));
+
+global.scrollTo = jest.fn();
+
 const ProvisioningFormSubmissionButtonWrapper = ({
   value = initialStateValue,
 }) => (

@@ -207,14 +207,14 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
  * @returns {String} - The catalog title.
  */
 export function extractDefinedCatalogTitle(policy) {
-  if (!policy || !policy?.catalogQueryTitle) {
-    return null;
+  if (policy?.catalogQueryMetadata?.catalogQuery) {
+    return policy?.catalogQueryMetadata?.catalogQuery.title;
   }
-  if (policy.catalogQueryTitle.includes(splitStringBudget)) {
+  if (policy?.catalogQueryTitle?.includes(splitStringBudget)) {
     return policy.catalogQueryTitle.split(splitStringBudget)[0];
   }
-  if (policy.catalogQueryMetadata.catalogQuery) {
-    return policy.catalogQueryMetadata.catalogQuery.title;
+  if (!policy || !policy?.catalogQueryTitle) {
+    return null;
   }
   return '';
   // return policy?.catalogQueryMetadata?.catalogQuery.title;

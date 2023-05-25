@@ -6,6 +6,7 @@ import { ProvisioningContext, initialStateValue } from '../../../testData';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import ProvisioningFormAccountType from '../ProvisioningFormAccountType';
+import ProvisioningFormTitle from '../ProvisioningFormTitle';
 
 const { ACCOUNT_CREATION } = PROVISIONING_PAGE_TEXT.FORM;
 
@@ -20,9 +21,10 @@ jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useState: (initialState) => [initialState, mockUseState],
 }));
-
+global.scrollTo = jest.fn();
 const mockHydrateCatalogQueryData = jest.fn();
 useProvisioningContext.mockReturnValue({
+  setSubsidyTitle: jest.fn(),
   setMultipleFunds: jest.fn(),
   hydrateCatalogQueryData: mockHydrateCatalogQueryData,
   setCustomCatalog: jest.fn(),
@@ -33,6 +35,7 @@ const ProvisioningFormAccountTypeWrapper = ({
   value = initialStateValue,
 }) => (
   <ProvisioningContext value={value}>
+    <ProvisioningFormTitle />
     <ProvisioningFormAccountType />
   </ProvisioningContext>
 );
@@ -82,10 +85,15 @@ describe('ProvisioningFormAccountType', () => {
         data: [],
         isLoading: false,
       },
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'test',
+      },
     };
 
     renderWithRouter(<ProvisioningFormAccountTypeWrapper value={value} />);
 
+    // sets input value to 'test'
     const multipleTestId = screen.getByTestId(ACCOUNT_CREATION.OPTIONS.multiple);
     fireEvent.click(multipleTestId);
     await waitFor(() => expect(mockHydrateCatalogQueryData).toHaveBeenCalled());

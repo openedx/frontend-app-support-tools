@@ -24,7 +24,7 @@ const PROVISIONING_PAGE_TEXT = {
     PLAN_TITLE: {
       HEADER: 'Title',
       TITLE: 'Plan title',
-      ERROR: 'Field cannot be left blank.',
+      ERROR: 'Please enter a plan title.',
     },
     CUSTOMER: {
       TITLE: 'Customer',
@@ -32,8 +32,8 @@ const PROVISIONING_PAGE_TEXT = {
         TITLE: 'Enterprise Customer / UUID',
         SUB_TITLE: 'Select an existing enterprise to provision',
         ERROR: {
-          selected: 'Error, no selected value',
-          invalid: 'Not a valid enterprise customer',
+          selected: 'Please select an enterprise customer.',
+          invalid: 'Please select a valid enterprise customer.',
         },
         DROPDOWN_DEFAULT: 'No matching enterprise',
       },
@@ -41,7 +41,7 @@ const PROVISIONING_PAGE_TEXT = {
         TITLE: 'Opportunity Product',
         ERROR: {
           validity: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
-          emptyField: 'Field cannot be left blank or incomplete.',
+          emptyField: 'Please enter a valid opportunity product.',
         },
       },
     },
@@ -53,7 +53,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       ERROR: {
         validity: 'Please choose an end date later than the start date',
-        emptyField: 'Fields cannot be left blank or incomplete.',
+        emptyField: 'Please select or enter a valid date range.',
       },
       TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
@@ -101,7 +101,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       ERROR: {
         incorrectDollarAmount: 'Please enter a whole dollar value',
-        emptyField: 'Field cannot be left blank.',
+        emptyField: 'Please enter a valid starting balance.',
       },
     },
     CATALOG: {
@@ -113,7 +113,7 @@ const PROVISIONING_PAGE_TEXT = {
         executiveEducation: 'Executive Education',
         custom: 'Custom',
       },
-      ERROR: 'Please select a Catalog',
+      ERROR: 'Please select a catalog.',
     },
     CUSTOM_CATALOG: {
       HEADER: {
@@ -156,12 +156,12 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         perLearnerSpendCap: {
           title: 'Per learner spend limit ($)',
-          subtitle: 'The maximum USD value a single learner may redeem from the budget.',
+          subtitle: 'The maximum USD value a single learner may redeem from the budget. This value should be less then the budget starting balance.',
         },
       },
       ERROR: {
         incorrectDollarAmount: 'Please enter a whole dollar value',
-        emptyField: 'Field cannot be left blank.',
+        emptyField: 'Please enter a valid value.',
       },
     },
     ALERTS: {
