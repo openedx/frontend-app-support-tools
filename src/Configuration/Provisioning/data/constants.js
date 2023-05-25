@@ -24,6 +24,7 @@ const PROVISIONING_PAGE_TEXT = {
     PLAN_TITLE: {
       HEADER: 'Title',
       TITLE: 'Plan title',
+      ERROR: 'Field cannot be left blank.',
     },
     CUSTOMER: {
       TITLE: 'Customer',
@@ -85,7 +86,7 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         openCourses: 'Open Courses budget',
         executiveEducation: 'Executive Education budget',
-        default: 'Balance',
+        default: 'Budget',
       },
     },
     ACCOUNT_DETAIL: {
@@ -180,7 +181,7 @@ const PROVISIONING_PAGE_TEXT = {
         ENTERPRISE_CUSTOMER_CATALOG: {
           400: 'The enterprise catalog could not be created.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
+          403: 'Authentication recognized but incorrect credentials enterprise customer catalog creation.',
           404: 'Enterprise Catalog failed to respond.',
           405: 'The enterprise catalog could not be created.',
           500: 'System failure',
@@ -188,7 +189,7 @@ const PROVISIONING_PAGE_TEXT = {
         SUBSIDY_CREATION: {
           400: 'The subsidy could not be created.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
+          403: 'Authentication recognized but incorrect credentials for subsidy creation.',
           404: 'Subsidy creation endpoint failed to respond',
           405: 'The subsidy could not be created.',
           500: 'System failure',
@@ -196,7 +197,7 @@ const PROVISIONING_PAGE_TEXT = {
         POLICY_CREATION: {
           400: 'The policy could not be created.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
+          403: 'Authentication recognized but incorrect credentials for subsidy access policy creation.',
           404: 'Policy creation endpoint failed to respond',
           405: 'The policy could not be created.',
           500: 'System failure',

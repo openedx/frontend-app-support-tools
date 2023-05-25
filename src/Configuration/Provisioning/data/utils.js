@@ -93,6 +93,7 @@ export async function determineInvalidFields(formData) {
     isValidEnterpriseUUID = filteredCustomer.length === 1 && formData.enterpriseUUID === filteredCustomer[0].id;
   }
   const invalidSubsidyData = {
+    subsidyTitle: !!formData.subsidyTitle,
     enterpriseUUID: !!formData.enterpriseUUID && isValidEnterpriseUUID,
     financialIdentifier: !!formData.financialIdentifier
     && isValidOpportunityProduct(formData.financialIdentifier)
@@ -212,7 +213,11 @@ export function extractDefinedCatalogTitle(policy) {
   if (policy.catalogQueryTitle.includes(splitStringBudget)) {
     return policy.catalogQueryTitle.split(splitStringBudget)[0];
   }
-  return null;
+  if (policy.catalogQueryMetadata.catalogQuery) {
+    return policy.catalogQueryMetadata.catalogQuery.title;
+  }
+  return '';
+  // return policy?.catalogQueryMetadata?.catalogQuery.title;
 }
 
 /**
@@ -400,7 +405,7 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     || subsidyCreationResponse.length === 0
   ) { return []; }
   const payloads = policies.map((policy, index) => ({
-    description: `This policy created for subsidy ${subsidyCreationResponse[0]?.uuid} with ${policies.length} associated policies`,
+    description: `Policy Title: ${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Policies associated with subsidy: ${policies.length}, Total Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
     enterpriseCustomerUuid: enterpriseUUID,
     catalogUuid: catalogCreationResponse[0][index].uuid,
     subsidyUuid: subsidyCreationResponse[0].uuid,
@@ -423,4 +428,15 @@ export function filterIndexOfCatalogQueryTitle(catalogQueries, filteredBy) {
     return camelCasedData.filter(({ title }) => title.indexOf(filteredBy) !== 0);
   }
   return camelCasedData;
+}
+
+/**
+ * Autogenerates the policy name based on the subsidy title and the catalog query title.
+ * @param {Object} formData - The formData object from context
+ * @param {Number} index - The index of the associated policy
+ * @returns - Returns a string that can be used as the policy name
+ */
+export function generatePolicyName(formData, index) {
+  const { subsidyTitle, policies } = formData;
+  return `${subsidyTitle} --- ${extractDefinedCatalogTitle(policies[index])}`;
 }
