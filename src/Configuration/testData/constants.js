@@ -229,4 +229,5 @@ export const sampleSingleEmptyData = {
   endDate: '2023-04-27',
   internalOnly: 'Yes',
   subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyTitle: 'Test Subsidy',
 };
