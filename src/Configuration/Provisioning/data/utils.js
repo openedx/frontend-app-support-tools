@@ -89,7 +89,7 @@ export async function determineInvalidFields(formData) {
   let isValidEnterpriseUUID;
   if (formData?.enterpriseUUID?.length > 0) {
     const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(formData.enterpriseUUD);
-    const filteredCustomer = data.filter(customer => customer.id === formData.enterpriseUUID);
+    const filteredCustomer = data?.filter(customer => customer.id === formData.enterpriseUUID);
     isValidEnterpriseUUID = filteredCustomer.length === 1 && formData.enterpriseUUID === filteredCustomer[0].id;
   }
   const invalidSubsidyData = {

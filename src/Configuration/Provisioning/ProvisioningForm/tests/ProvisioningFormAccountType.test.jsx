@@ -78,7 +78,7 @@ describe('ProvisioningFormAccountType', () => {
 
     expect(screen.getByTestId(ACCOUNT_CREATION.OPTIONS.single)).toBeTruthy();
   });
-  it('hydrates catalog query data', async () => {
+  it('hydrates catalog query data multiple', async () => {
     const value = {
       ...initialStateValue,
       catalogQueries: {
@@ -90,6 +90,53 @@ describe('ProvisioningFormAccountType', () => {
         subsidyTitle: 'test',
       },
     };
+
+    renderWithRouter(<ProvisioningFormAccountTypeWrapper value={value} />);
+
+    // sets input value to 'test'
+    const multipleTestId = screen.getByTestId(ACCOUNT_CREATION.OPTIONS.multiple);
+    fireEvent.click(multipleTestId);
+    await waitFor(() => expect(mockHydrateCatalogQueryData).toHaveBeenCalled());
+  });
+  it('hydrates catalog query data single', async () => {
+    const value = {
+      ...initialStateValue,
+      catalogQueries: {
+        data: [],
+        isLoading: false,
+      },
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'test',
+      },
+    };
+
+    renderWithRouter(<ProvisioningFormAccountTypeWrapper value={value} />);
+
+    // sets input value to 'test'
+    const singleTestId = screen.getByTestId(ACCOUNT_CREATION.OPTIONS.single);
+    fireEvent.click(singleTestId);
+    await waitFor(() => expect(mockHydrateCatalogQueryData).toHaveBeenCalled());
+  });
+  it('handles error of hydrating catalog query data', async () => {
+    const value = {
+      ...initialStateValue,
+      catalogQueries: {
+        data: [],
+        isLoading: false,
+      },
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'test',
+      },
+    };
+    const error = new Error('test');
+    error.customAttributes = {
+      httpErrorStatus: 500,
+    };
+    mockHydrateCatalogQueryData.mockImplementation(() => {
+      throw error;
+    });
 
     renderWithRouter(<ProvisioningFormAccountTypeWrapper value={value} />);
 

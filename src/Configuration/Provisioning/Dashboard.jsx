@@ -45,6 +45,7 @@ const Dashboard = () => {
     }
     hydrateEnterpriseSubsidies(25, editAction, editLearnerCreditPlan);
   }, [toastText.successfulPlanCreation, history, location, locationState]);
+
   return (
     <>
       <DashboardHeader />

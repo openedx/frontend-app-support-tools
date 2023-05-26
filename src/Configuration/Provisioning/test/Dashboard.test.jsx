@@ -4,12 +4,13 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { useHistory } from 'react-router';
 import Dashboard from '../Dashboard';
 import PROVISIONING_PAGE_TEXT, { toastText } from '../data/constants';
-import { DashboardContext } from '../../testData/DashboardContextWrapper';
+import { DashboardContext, initialStateValue } from '../../testData/DashboardContextWrapper';
 
 const { DASHBOARD } = PROVISIONING_PAGE_TEXT;
 
 const DashboardWrapper = ({
   successfulPlanCreation = false,
+  value = initialStateValue,
 }) => {
   const history = useHistory();
   const { location } = history;
@@ -17,7 +18,7 @@ const DashboardWrapper = ({
     history.push(location.pathname, { planSuccessfullyCreated: true });
   }
   return (
-    <DashboardContext locale="en">
+    <DashboardContext value={value}>
       <Dashboard />
     </DashboardContext>
   );

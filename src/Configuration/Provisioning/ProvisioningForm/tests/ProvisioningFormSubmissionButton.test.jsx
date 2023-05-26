@@ -2,12 +2,14 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Router } from 'react-router-dom';
+import { act } from 'react-test-renderer';
 import ProvisioningFormSubmissionButton from '../ProvisioningFormSubmissionButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext, initialStateValue } from '../../../testData';
 import ROUTES from '../../../../data/constants/routes';
 import {
   sampleMultiplePolicyFormData,
+  sampleSingleEmptyData,
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
@@ -31,6 +33,10 @@ jest.mock('../../data/utils', () => {
     createCatalogs: jest.fn(),
     createPolicy: jest.fn(),
     createSubsidy: jest.fn(),
+    determineInvalidFields: jest.fn().mockReturnValue([
+      [{ subsidyTitle: false }],
+      [{ accountName: false }],
+    ]),
   };
 });
 
@@ -107,7 +113,7 @@ describe('ProvisioningFormSubmissionButton', () => {
   it('confirming rejected catalog creation handles error via API', async () => {
     const error = new Error('Internal Server Error');
     error.customAttributes = {
-      httpStatusCode: 500,
+      httpErrorStatus: 500,
     };
     createCatalogs.mockRejectedValue(error);
     const value = {
@@ -124,7 +130,7 @@ describe('ProvisioningFormSubmissionButton', () => {
   it('confirming rejected subsidy creation handles error via API', async () => {
     const error = new Error('Internal Server Error');
     error.customAttributes = {
-      httpStatusCode: 500,
+      httpErrorStatus: 500,
     };
     createCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
     createSubsidy.mockRejectedValue(error);
@@ -142,7 +148,7 @@ describe('ProvisioningFormSubmissionButton', () => {
   it('confirming rejected policy creation handles error via API', async () => {
     const error = new Error('Internal Server Error');
     error.customAttributes = {
-      httpStatusCode: 500,
+      httpErrorStatus: 500,
     };
     createCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
     createSubsidy.mockResolvedValue({ uuid: 'test-subsidy-uuid' });
@@ -158,5 +164,16 @@ describe('ProvisioningFormSubmissionButton', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => expect(screen.getByText(BUTTON.error)).toBeTruthy());
+  });
+  it('failed data validation code path', async () => {
+    const value = {
+      ...initialStateValue,
+      formData: sampleSingleEmptyData,
+    };
+
+    renderWithRouter(<ProvisioningFormSubmissionButtonWrapper value={value} />);
+    const submitButton = screen.getByText(BUTTON.submit);
+    await waitFor(() => fireEvent.click(submitButton));
+    expect(screen.getByText(BUTTON.error)).toBeTruthy();
   });
 });

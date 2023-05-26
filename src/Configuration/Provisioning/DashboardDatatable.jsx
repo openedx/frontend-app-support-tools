@@ -2,6 +2,7 @@ import { DataTable, TextFilter } from '@edx/paragon';
 import React, { useEffect, useState } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { DashboardContext } from './DashboardContext';
+import { MAX_PAGE_SIZE } from './data/constants';
 
 const DashboardDatatable = () => {
   const data = useContextSelector(DashboardContext, v => v[0]);
@@ -15,7 +16,6 @@ const DashboardDatatable = () => {
 
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
-
   return (
     <section className="mt-5">
       <DataTable
@@ -24,11 +24,10 @@ const DashboardDatatable = () => {
         isFilterable
         defaultColumnValues={{ Filter: TextFilter }}
         initialState={{
-          pageSize: 12,
+          pageSize: MAX_PAGE_SIZE,
           pageIndex: 0,
         }}
         itemCount={learnerCreditCustomers?.length}
-        pageCount={12}
         data={learnerCreditCustomers}
         FilterStatusComponent={filterStatus}
         columns={[

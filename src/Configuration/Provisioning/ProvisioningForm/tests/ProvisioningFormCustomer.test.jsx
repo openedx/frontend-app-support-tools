@@ -43,4 +43,19 @@ describe('ProvisioningFormCustomer', () => {
     expect(screen.getByText(CUSTOMER.ENTERPRISE_UUID.TITLE)).toBeTruthy();
     expect(inputValue).toEqual(testFinancialLinkage);
   });
+  it('renders customer financial linkage with one additional character', () => {
+    renderWithRouter(<ProvisioningFormCustomerWrapper />);
+    const input = screen.getByTestId('customer-financial-identifier');
+    fireEvent.change(input, { target: { value: testFinancialLinkage } });
+    const inputValue = input.getAttribute('value');
+
+    expect(screen.getByText(CUSTOMER.ENTERPRISE_UUID.TITLE)).toBeTruthy();
+    expect(inputValue).toEqual(testFinancialLinkage);
+
+    const modifiedTestFinancialLinkage = `${testFinancialLinkage}1`;
+    fireEvent.change(input, { target: { value: modifiedTestFinancialLinkage } });
+    const updatedInputValue = input.getAttribute('value');
+
+    expect(updatedInputValue).toEqual(testFinancialLinkage);
+  });
 });

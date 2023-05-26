@@ -33,4 +33,15 @@ describe('ProvisioningFormCustomer', () => {
     expect(screen.getByText(PLAN_TITLE.TITLE)).toBeTruthy();
     expect(inputValue).toEqual('test-title');
   });
+  it('error logic', () => {
+    renderWithRouter(<ProvisioningFormCustomerWrapper />);
+
+    const input = screen.getByTestId('customer-plan-title');
+    fireEvent.change(input, { target: { value: 'test' } });
+    expect(screen.getByText(PLAN_TITLE.TITLE)).toBeTruthy();
+    fireEvent.change(input, { target: { value: '' } });
+    const updatedInput = input.value;
+
+    expect(updatedInput).toEqual('');
+  });
 });
