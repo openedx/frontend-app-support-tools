@@ -45,7 +45,7 @@ describe('ProvisioningFormPerLearnerCap', () => {
     for (let i = 0; i < learnerCapOptions.length; i++) {
       learnerCapButtons.push(screen.getByTestId(LEARNER_CAP.OPTIONS[learnerCapOptions[i]]));
     }
-    // // Clicks on each input element and checks if it is checked
+    // Clicks on each input element and checks if it is checked
     for (let i = 0; i < learnerCapButtons.length; i++) {
       fireEvent.click(learnerCapButtons[i]);
       expect(learnerCapButtons[i].checked).toBeTruthy();

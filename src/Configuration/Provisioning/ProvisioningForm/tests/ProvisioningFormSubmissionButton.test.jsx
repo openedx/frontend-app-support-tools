@@ -2,7 +2,6 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Router } from 'react-router-dom';
-import { act } from 'react-test-renderer';
 import ProvisioningFormSubmissionButton from '../ProvisioningFormSubmissionButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { ProvisioningContext, initialStateValue } from '../../../testData';

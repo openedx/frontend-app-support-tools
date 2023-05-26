@@ -91,7 +91,6 @@ const ProvisioningFormCatalog = ({ index }) => {
             )}
           </>
         )}
-
       </Form.Group>
     </article>
   );

@@ -217,7 +217,6 @@ export function extractDefinedCatalogTitle(policy) {
     return null;
   }
   return '';
-  // return policy?.catalogQueryMetadata?.catalogQuery.title;
 }
 
 /**
