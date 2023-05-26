@@ -12,6 +12,7 @@ import {
   createSubsidy,
   createPolicy,
   determineInvalidFields,
+  transformPolicyData,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -298,5 +299,12 @@ describe('determineInvalidFields', () => {
     };
     const output = await determineInvalidFields(emptyPolicyDataset);
     expect(output).toEqual(expectedFailedPolicyOutput);
+  });
+});
+
+describe('transformPolicyData', () => {
+  it('returns an empty array when no policies are passed', async () => {
+    const output = await transformPolicyData({ policies: [] }, [], []);
+    expect(output).toEqual([]);
   });
 });
