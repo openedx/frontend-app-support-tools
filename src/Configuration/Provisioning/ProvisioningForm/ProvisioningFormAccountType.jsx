@@ -41,6 +41,11 @@ const ProvisioningFormAccountType = () => {
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
+    if (!formData?.subsidyTitle) {
+      setInvalidSubsidyFields({ ...subsidy, subsidyTitle: false });
+      global.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     if (catalogQueries.data.length === 0) {
       try {
         handleSpinnerLoadingState(newTabValue);

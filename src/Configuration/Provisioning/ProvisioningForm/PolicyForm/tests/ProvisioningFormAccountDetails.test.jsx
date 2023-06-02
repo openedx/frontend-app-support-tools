@@ -96,4 +96,26 @@ describe('ProvisioningFormAccountDetails', () => {
     fireEvent.change(input, { target: { value: '100.50' } });
     expect(screen.getByText(ALERTS.incorrectDollarAmount)).toBeTruthy();
   });
+  it('autogenerates name from subsidyTitle', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      multipleFunds: false,
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'Test Subsidy Title',
+        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormAccountDetailsWrapper
+        value={updatedInitialState}
+        index={0}
+      />,
+    );
+
+    expect(screen.getByText(ACCOUNT_DETAIL.OPTIONS.displayName)).toBeTruthy();
+    const input = screen.getByTestId('account-name');
+
+    expect(input.getAttribute('value')).toEqual('Test Subsidy Title --- ');
+  });
 });

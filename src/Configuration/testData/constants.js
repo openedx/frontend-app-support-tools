@@ -135,7 +135,7 @@ export const sampleMultiplePolicyFormData = {
     },
   ],
   enterpriseUUID: uuidv4(),
-  financialIdentifier: 'abc123',
+  financialIdentifier: '0abc1230abc1234321',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
   internalOnly: 'Yes',
@@ -160,7 +160,7 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
     },
   ],
   enterpriseUUID: uuidv4(),
-  financialIdentifier: 'abc123',
+  financialIdentifier: '0abc1230abc1234321',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
   internalOnly: 'No',
@@ -192,9 +192,42 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
     },
   ],
   enterpriseUUID: 'abc',
-  financialIdentifier: 'abc',
+  financialIdentifier: '0abc1230abc1234321',
   startDate: '2023-04-06',
   endDate: '2023-04-27',
   internalOnly: 'Yes',
   subsidyRevReq: 'No (partner no rev prepay)',
+};
+
+export const sampleSingleEmptyData = {
+  policies: [
+    {
+      uuid: uuidv4(),
+      catalogQueryTitle: '',
+      catalogQueryMetadata: {
+        catalogQuery: {
+          id: 2,
+          contentFilter: {
+            contentType: 'courses',
+          },
+          created: '2023-02-22T19:30:19.611766Z',
+          modified: '2023-02-22T19:30:19.611766Z',
+          title: 'TestQ2',
+          uuid: uuidv4(),
+          includeExecEd2UCourses: false,
+        },
+      },
+      accountName: '',
+      customerCatalog: false,
+      accountValue: '',
+      perLearnerCap: false,
+    },
+  ],
+  enterpriseUUID: 'abc',
+  financialIdentifier: '0abc1230abc1234321',
+  startDate: '2023-04-06',
+  endDate: '2023-04-27',
+  internalOnly: 'Yes',
+  subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyTitle: 'Test Subsidy',
 };

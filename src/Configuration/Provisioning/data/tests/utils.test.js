@@ -11,6 +11,8 @@ import {
   filterIndexOfCatalogQueryTitle,
   createSubsidy,
   createPolicy,
+  determineInvalidFields,
+  transformPolicyData,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -92,10 +94,13 @@ describe('extractDefinedCatalogTitle', () => {
     expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests budget' })).toEqual('The Bestests');
   });
   it('returns null if policy does not container ` budget`', () => {
-    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual(null);
+    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual('');
   });
   it('returns null if no policy is passed', () => {
     expect(extractDefinedCatalogTitle({})).toEqual(null);
+  });
+  it('returns catalog query title', () => {
+    expect(extractDefinedCatalogTitle({ catalogQueryMetadata: { catalogQuery: { title: 'The Bestests' } } })).toEqual('The Bestests');
   });
 });
 
@@ -181,6 +186,13 @@ const sampleResponses = {
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: () => ({
+    get: () => Promise.resolve({
+      data: [{
+        id: '1',
+      }, {
+        id: '2',
+      }],
+    }),
     post: () => Promise.resolve(sampleResponses),
   }),
 }));
@@ -228,5 +240,71 @@ describe('createPolicies', () => {
       spend_limit: 1200,
     });
     expect(data.createPolicy).toEqual(sampleResponses.data.createPolicy);
+  });
+});
+
+const emptyDataSet = {
+  policies: [],
+  subsidyTitle: '',
+  enterpriseUUID: 'abc',
+  financialIdentifier: '',
+  startDate: '',
+  endDate: '',
+  subsidyRevReq: '',
+};
+describe('determineInvalidFields', () => {
+  it('returns false for all subsidy fields', async () => {
+    const expectedFailedSubsidyOutput = {
+      subsidyTitle: false,
+      enterpriseUUID: false,
+      financialIdentifier: false,
+      startDate: false,
+      endDate: false,
+      subsidyRevReq: false,
+      multipleFunds: false,
+    };
+    const output = await determineInvalidFields(emptyDataSet);
+    expect(output).toEqual([expectedFailedSubsidyOutput]);
+  });
+  it('returns false for all policy fields', async () => {
+    const expectedFailedPolicyOutput = [{
+      subsidyTitle: false,
+      enterpriseUUID: false,
+      financialIdentifier: false,
+      startDate: false,
+      endDate: false,
+      subsidyRevReq: false,
+      multipleFunds: true,
+    }, [{
+      accountName: false,
+      accountValue: false,
+      catalogQueryMetadata: false,
+      perLearnerCap: false,
+      perLearnerCapAmount: false,
+    }]];
+    const emptyPolicyDataset = {
+      ...emptyDataSet,
+      multipleFunds: true,
+      policies: [{
+        accountName: '',
+        accountValue: '',
+        catalogQueryMetadata: {
+          catakigQuery: {
+            id: '',
+          },
+        },
+        perLearnerCap: undefined,
+        perLearnerCapAmount: null,
+      }],
+    };
+    const output = await determineInvalidFields(emptyPolicyDataset);
+    expect(output).toEqual(expectedFailedPolicyOutput);
+  });
+});
+
+describe('transformPolicyData', () => {
+  it('returns an empty array when no policies are passed', async () => {
+    const output = await transformPolicyData({ policies: [] }, [], []);
+    expect(output).toEqual([]);
   });
 });

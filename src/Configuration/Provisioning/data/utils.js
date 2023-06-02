@@ -89,10 +89,11 @@ export async function determineInvalidFields(formData) {
   let isValidEnterpriseUUID;
   if (formData?.enterpriseUUID?.length > 0) {
     const { data } = await LmsApiService.fetchEnterpriseCustomersBasicList(formData.enterpriseUUD);
-    const filteredCustomer = data.filter(customer => customer.id === formData.enterpriseUUID);
+    const filteredCustomer = data?.filter(customer => customer.id === formData.enterpriseUUID);
     isValidEnterpriseUUID = filteredCustomer.length === 1 && formData.enterpriseUUID === filteredCustomer[0].id;
   }
   const invalidSubsidyData = {
+    subsidyTitle: !!formData.subsidyTitle,
     enterpriseUUID: !!formData.enterpriseUUID && isValidEnterpriseUUID,
     financialIdentifier: !!formData.financialIdentifier
     && isValidOpportunityProduct(formData.financialIdentifier)
@@ -142,7 +143,6 @@ export function hasValidPolicyAndSubidy(formData) {
   // Checks user defined values related to subsidy creation to determine validity
   const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
   && isDateRangeValid && isRevReqValid;
-
   // Check if there are any policies
   if (policies.length === 0) {
     return false;
@@ -207,13 +207,16 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
  * @returns {String} - The catalog title.
  */
 export function extractDefinedCatalogTitle(policy) {
+  if (policy?.catalogQueryMetadata?.catalogQuery) {
+    return policy?.catalogQueryMetadata?.catalogQuery.title;
+  }
+  if (policy?.catalogQueryTitle?.includes(splitStringBudget)) {
+    return policy.catalogQueryTitle.split(splitStringBudget)[0];
+  }
   if (!policy || !policy?.catalogQueryTitle) {
     return null;
   }
-  if (policy.catalogQueryTitle.includes(splitStringBudget)) {
-    return policy.catalogQueryTitle.split(splitStringBudget)[0];
-  }
-  return null;
+  return '';
 }
 
 /**
@@ -401,7 +404,7 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     || subsidyCreationResponse.length === 0
   ) { return []; }
   const payloads = policies.map((policy, index) => ({
-    description: `This policy created for subsidy ${subsidyCreationResponse[0]?.uuid} with ${policies.length} associated policies`,
+    description: `Policy Title: ${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Policies associated with subsidy: ${policies.length}, Total Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
     enterpriseCustomerUuid: enterpriseUUID,
     catalogUuid: catalogCreationResponse[0][index].uuid,
     subsidyUuid: subsidyCreationResponse[0].uuid,
@@ -424,4 +427,15 @@ export function filterIndexOfCatalogQueryTitle(catalogQueries, filteredBy) {
     return camelCasedData.filter(({ title }) => title.indexOf(filteredBy) !== 0);
   }
   return camelCasedData;
+}
+
+/**
+ * Autogenerates the policy name based on the subsidy title and the catalog query title.
+ * @param {Object} formData - The formData object from context
+ * @param {Number} index - The index of the associated policy
+ * @returns - Returns a string that can be used as the policy name
+ */
+export function generatePolicyName(formData, index) {
+  const { subsidyTitle, policies } = formData;
+  return `${subsidyTitle} --- ${extractDefinedCatalogTitle(policies[index])}`;
 }

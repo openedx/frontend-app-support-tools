@@ -21,7 +21,10 @@ const ProvisioningFormCustomer = () => {
     const { value, dataset } = newEvent;
     if (dataset.testid === 'customer-financial-identifier') {
       if (value !== '' && !isValidOpportunityProduct(value)) {
-        setIsOpportunityProduct(false);
+        if (value.length !== 19) {
+          setIsOpportunityProduct(false);
+          return;
+        }
         return;
       }
       setIsOpportunityProduct(true);
@@ -42,6 +45,7 @@ const ProvisioningFormCustomer = () => {
       <Form.Group
         className="mt-3.5"
         isInvalid={(!isOpportunityProduct || isOpportunityProductDefinedAndFalse)}
+        spellCheck="false"
       >
         <Form.Control
           floatingLabel={CUSTOMER.FINANCIAL_IDENTIFIER.TITLE}

@@ -24,6 +24,7 @@ const PROVISIONING_PAGE_TEXT = {
     PLAN_TITLE: {
       HEADER: 'Title',
       TITLE: 'Plan title',
+      ERROR: 'Please enter a plan title.',
     },
     CUSTOMER: {
       TITLE: 'Customer',
@@ -31,8 +32,8 @@ const PROVISIONING_PAGE_TEXT = {
         TITLE: 'Enterprise Customer / UUID',
         SUB_TITLE: 'Select an existing enterprise to provision',
         ERROR: {
-          selected: 'Error, no selected value',
-          invalid: 'Not a valid enterprise customer',
+          selected: 'Please select an enterprise customer.',
+          invalid: 'Please select a valid enterprise customer.',
         },
         DROPDOWN_DEFAULT: 'No matching enterprise',
       },
@@ -40,7 +41,7 @@ const PROVISIONING_PAGE_TEXT = {
         TITLE: 'Opportunity Product',
         ERROR: {
           validity: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
-          emptyField: 'Field cannot be left blank or incomplete.',
+          emptyField: 'Please enter a valid opportunity product.',
         },
       },
     },
@@ -52,7 +53,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       ERROR: {
         validity: 'Please choose an end date later than the start date',
-        emptyField: 'Fields cannot be left blank or incomplete.',
+        emptyField: 'Please select or enter a valid date range.',
       },
       TOOLTIP: 'Plan will activate and expire at 12:00AM local time baed on dates selected.',
     },
@@ -85,7 +86,7 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         openCourses: 'Open Courses budget',
         executiveEducation: 'Executive Education budget',
-        default: 'Balance',
+        default: 'Budget',
       },
     },
     ACCOUNT_DETAIL: {
@@ -100,7 +101,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
       ERROR: {
         incorrectDollarAmount: 'Please enter a whole dollar value',
-        emptyField: 'Field cannot be left blank.',
+        emptyField: 'Please enter a valid starting balance.',
       },
     },
     CATALOG: {
@@ -112,7 +113,7 @@ const PROVISIONING_PAGE_TEXT = {
         executiveEducation: 'Executive Education',
         custom: 'Custom',
       },
-      ERROR: 'Please select a Catalog',
+      ERROR: 'Please select a catalog.',
     },
     CUSTOM_CATALOG: {
       HEADER: {
@@ -155,12 +156,12 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         perLearnerSpendCap: {
           title: 'Per learner spend limit ($)',
-          subtitle: 'The maximum USD value a single learner may redeem from the budget.',
+          subtitle: 'The maximum USD value a single learner may redeem from the budget. This value should be less then the budget starting balance.',
         },
       },
       ERROR: {
         incorrectDollarAmount: 'Please enter a whole dollar value',
-        emptyField: 'Field cannot be left blank.',
+        emptyField: 'Please enter a valid value.',
       },
     },
     ALERTS: {
@@ -180,7 +181,7 @@ const PROVISIONING_PAGE_TEXT = {
         ENTERPRISE_CUSTOMER_CATALOG: {
           400: 'The enterprise catalog could not be created.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
+          403: 'Authentication recognized but incorrect credentials enterprise customer catalog creation.',
           404: 'Enterprise Catalog failed to respond.',
           405: 'The enterprise catalog could not be created.',
           500: 'System failure',
@@ -188,7 +189,7 @@ const PROVISIONING_PAGE_TEXT = {
         SUBSIDY_CREATION: {
           400: 'The subsidy could not be created.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
+          403: 'Authentication recognized but incorrect credentials for subsidy creation.',
           404: 'Subsidy creation endpoint failed to respond',
           405: 'The subsidy could not be created.',
           500: 'System failure',
@@ -196,7 +197,7 @@ const PROVISIONING_PAGE_TEXT = {
         POLICY_CREATION: {
           400: 'The policy could not be created.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
+          403: 'Authentication recognized but incorrect credentials for subsidy access policy creation.',
           404: 'Policy creation endpoint failed to respond',
           405: 'The policy could not be created.',
           500: 'System failure',
@@ -235,5 +236,7 @@ export const INITIAL_CATALOG_QUERIES = {
     },
   ],
 };
+
+export const MAX_PAGE_SIZE = 12;
 
 export default PROVISIONING_PAGE_TEXT;
