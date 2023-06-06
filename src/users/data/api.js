@@ -762,3 +762,22 @@ export async function getLearnerRecords(username) {
     };
   }
 }
+
+export async function getOrderHistory(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(`${AppUrls.getOrderHistoryUrl()}/?username=${username}`);
+    return data.results;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving order history for the user',
+          type: 'danger',
+          topic: 'orderHistory',
+        },
+      ],
+    };
+  }
+}
