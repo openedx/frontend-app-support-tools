@@ -404,7 +404,7 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     || subsidyCreationResponse.length === 0
   ) { return []; }
   const payloads = policies.map((policy, index) => ({
-    description: `Policy Title: ${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Policies associated with subsidy: ${policies.length}, Total Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
+    description: `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
     enterpriseCustomerUuid: enterpriseUUID,
     catalogUuid: catalogCreationResponse[0][index].uuid,
     subsidyUuid: subsidyCreationResponse[0].uuid,
