@@ -104,6 +104,11 @@ const PROVISIONING_PAGE_TEXT = {
         emptyField: 'Please enter a valid starting balance.',
       },
     },
+    ACCOUNT_DESCRIPTION: {
+      TITLE: 'Budget description',
+      SUB_TITLE: 'Provide a description for the budget product',
+      MAX_LENGTH: 255,
+    },
     CATALOG: {
       TITLE: 'Catalog',
       SUB_TITLE: 'Associated Catalog',

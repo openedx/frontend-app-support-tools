@@ -133,6 +133,8 @@ export default function useProvisioningContext() {
 
   const setAccountValue = (accountValue, index) => updateFormDataState(accountValue, true, index);
 
+  const setAccountDescription = (accountDescription, index) => updateFormDataState(accountDescription, true, index);
+
   const setCustomerCatalog = (customerCatalogBoolean, index) => updateFormDataState(
     customerCatalogBoolean,
     true,
@@ -203,6 +205,7 @@ export default function useProvisioningContext() {
     setInternalOnly,
     setAccountName,
     setAccountValue,
+    setAccountDescription,
     setCatalogQueryCategory,
     perLearnerCap,
     setPerLearnerCap,
