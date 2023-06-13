@@ -4,6 +4,14 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 class SubsidyApiService {
   static apiClient = getAuthenticatedHttpClient;
 
+  static getAllSubsidies = (paginatedURL) => {
+    const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
+    if (paginatedURL) {
+      return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}`);
+    }
+    return SubsidyApiService.apiClient().get(subsidiesURL);
+  };
+
   static postSubsidy = (
     financialIdentifier,
     title,

@@ -245,10 +245,10 @@ export function getCamelCasedConfigAttribute(attribute) {
  * @returns - The normalized data to be displayed in the table
  */
 export function normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL }) {
-  if (fetchedData.length === 0) {
+  if (fetchedData.count === 0) {
     return [];
   }
-  const normalizedData = fetchedData.map((item) => {
+  const normalizedData = fetchedData.results.map((item) => {
     const {
       uuid, activeDatetime, expirationDatetime, ...rest
     } = item;
@@ -261,7 +261,10 @@ export function normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirec
       actions: actionIcon(redirectUrl),
     };
   });
-  return normalizedData;
+  return {
+    ...fetchedData,
+    results: normalizedData,
+  };
 }
 /**
  * Creates a new subsidy for the specified valid enterprise customer.

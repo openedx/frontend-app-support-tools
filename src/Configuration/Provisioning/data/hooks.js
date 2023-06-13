@@ -2,22 +2,28 @@ import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, USES_LOCAL_TEST_DATA } from './constants';
+import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, MAX_PAGE_SIZE } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
 import {
   updatePolicies, getCamelCasedConfigAttribute, normalizeSubsidyDataTableData, filterIndexOfCatalogQueryTitle,
 } from './utils';
 import { DashboardContext } from '../DashboardContext';
-import { sampleDataTableData } from '../../testData/constants';
+import SubsidyApiService from '../../../data/services/SubsidyApiService';
 
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
-  const hydrateEnterpriseSubsidies = useCallback((count, actionIcon, redirectURL) => {
-    const fetchedData = camelCaseObject(sampleDataTableData(count, USES_LOCAL_TEST_DATA));
+  const hydrateEnterpriseSubsidies = useCallback(async (page, actionIcon, redirectURL) => {
+    const { data } = await SubsidyApiService.getAllSubsidies(page);
+    const pageCount = Math.ceil(data.count / MAX_PAGE_SIZE);
+    const fetchedData = camelCaseObject(data);
     const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
     setState(s => ({
       ...s,
-      enterpriseSubsidies: [normalizedData],
+      enterpriseSubsidies: {
+        ...normalizedData,
+        pageCount,
+        pageIndex: page,
+      },
     }));
   });
 

@@ -1,34 +1,70 @@
-import { DataTable, TextFilter } from '@edx/paragon';
-import React, { useEffect, useState } from 'react';
+import {
+  DataTable, TextFilter, IconButton, Icon,
+} from '@edx/paragon';
+import React, {
+  useCallback,
+  useEffect, useState,
+} from 'react';
 import { useContextSelector } from 'use-context-selector';
+import { useHistory } from 'react-router';
+import { EditOutline } from '@edx/paragon/icons';
 import { DashboardContext } from './DashboardContext';
 import { MAX_PAGE_SIZE } from './data/constants';
+import { useDashboardContext } from './data/hooks';
 
 const DashboardDatatable = () => {
   const data = useContextSelector(DashboardContext, v => v[0]);
-  const [learnerCreditCustomers, setLearnerCreditCustomers] = useState([]);
+  const { hydrateEnterpriseSubsidies } = useDashboardContext();
+  const history = useHistory();
 
-  useEffect(() => {
-    if (data.enterpriseSubsidies) {
-      setLearnerCreditCustomers(data.enterpriseSubsidies[0] || []);
-    }
-  }, [data.enterpriseSubsidies]);
+  const editLearnerCreditPlan = (uuid) => {
+    // TODO: Navigate to the edit page for the selected learner credit plan based on UUID
+    history.push(`/enterprise-configuration/learner-credit/${uuid}/edit`);
+  };
 
+  const editAction = (onIconInteraction) => (
+    <IconButton
+      src={EditOutline}
+      iconAs={Icon}
+      onClick={onIconInteraction}
+    />
+  );
+
+  const [learnerCreditCustomers, setLearnerCreditCustomers] = useState(data?.enterpriseSubsidies || []);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [stateChange, setStateChange] = useState(true);
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
+  const fetchData = useCallback((datableProps) => {
+    setStateChange(pageIndex !== datableProps.pageIndex);
+    if (stateChange) {
+      setPageIndex(datableProps.pageIndex);
+      hydrateEnterpriseSubsidies(pageIndex, editAction, editLearnerCreditPlan);
+    }
+  }, [stateChange]);
+  useEffect(() => {
+    if (data.enterpriseSubsidies) {
+      setLearnerCreditCustomers(data.enterpriseSubsidies);
+      setStateChange(false);
+    }
+  }, [data.enterpriseSubsidies]);
   return (
     <section className="mt-5">
       <DataTable
+        showFiltersInSidebar
         isPaginated
         isSortable
         isFilterable
         defaultColumnValues={{ Filter: TextFilter }}
+        pageCount={data.enterpriseSubsidies.pageCount}
         initialState={{
           pageSize: MAX_PAGE_SIZE,
-          pageIndex: 0,
+          pageIndex,
         }}
-        itemCount={learnerCreditCustomers?.length}
-        data={learnerCreditCustomers}
+        manualPagination
+        itemCount={learnerCreditCustomers?.count || 0}
+        data={learnerCreditCustomers?.results || []}
+        fetchData={fetchData}
         FilterStatusComponent={filterStatus}
         columns={[
           {
