@@ -28,8 +28,6 @@ class LmsApiService {
     title,
   });
 
-  // Did not include perLearnerEnrollmentLimit field because it is
-  // not used in the current implementation of the provisioning form
   static postSubsidyAccessPolicy = (
     description,
     enterpriseCustomerUuid,
@@ -39,6 +37,7 @@ class LmsApiService {
     spendLimit,
     accessMethod = 'direct',
     active = true,
+    perLearnerEnrollmentLimit = null,
     policyType = 'PerLearnerSpendCreditAccessPolicy',
   ) => LmsApiService.apiClient().post(
     `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/admin/policy/`,
@@ -51,6 +50,7 @@ class LmsApiService {
       subsidy_uuid: subsidyUuid,
       access_method: accessMethod,
       per_learner_spend_limit: perLearnerSpendLimit,
+      per_learner_enrollment_limit: perLearnerEnrollmentLimit,
       spend_limit: spendLimit,
     },
   );
