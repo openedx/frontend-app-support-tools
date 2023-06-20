@@ -35,6 +35,7 @@ describe('API', () => {
   const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
   const programRecordsUrl = urls.getLearnerRecordsUrl();
   const retirementApiUrl = urls.userRetirementUrl();
+  const orderHistoryApiUrl = urls.getOrderHistoryUrl();
 
   let mockAdapter;
 
@@ -1210,6 +1211,60 @@ describe('API', () => {
       mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(503, ''));
       const response = await api.postRetireUser('test_username');
       expect(response.errors[0].text).toEqual('Unable to connect to the service');
+    });
+  });
+
+  describe('getOrderHistory', () => {
+    it('should return order history data when successful', async () => {
+      const expectedData = {
+        results: [
+          {
+            status: 'completed',
+            number: '12345',
+            datePlaced: 'Jun 12, 2023 12:00 AM',
+            productTracking: 'tracking123',
+            lines: [
+              {
+                product: {
+                  url: 'https://example.com/product1',
+                  title: 'Product 1',
+                  expires: '2023-12-31',
+                  attributeValues: [
+                    { value: 'Type A' },
+                  ],
+                },
+                quantity: 1,
+                status: 'completed',
+              },
+            ],
+          },
+        ],
+      };
+
+      mockAdapter.onGet(`${orderHistoryApiUrl}/?username=${testUsername}`).reply(200, expectedData);
+
+      const result = await api.getOrderHistory(testUsername);
+
+      expect(result).toEqual(expectedData.results);
+    });
+
+    it('should return an empty array when an error occurs', async () => {
+      const expectedError = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'There was an error retrieving order history for the user',
+            type: 'danger',
+            topic: 'orderHistory',
+          },
+        ],
+      };
+      mockAdapter.onGet(`${orderHistoryApiUrl}/?username=${testUsername}`).reply(() => throwError(404, ''));
+
+      const result = await api.getOrderHistory(testUsername);
+
+      expect(result).toEqual(expectedError);
     });
   });
 });
