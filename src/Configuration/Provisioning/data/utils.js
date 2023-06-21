@@ -244,25 +244,26 @@ export function getCamelCasedConfigAttribute(attribute) {
  * @param {Function} redirectURL - The function to be called when the icon is clicked, redirects to passed UUID
  * @returns - The normalized data to be displayed in the table
  */
-export function normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL }) {
-  if (fetchedData.count === 0) {
+export function normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData }) {
+  if (fetchedSubsidyData.count === 0) {
     return [];
   }
-  const normalizedData = fetchedData.results.map((item) => {
+  const normalizedData = fetchedSubsidyData.results.map((item) => {
     const {
+      enterpriseCustomerUuid,
       uuid, activeDatetime, expirationDatetime, ...rest
     } = item;
-    const redirectUrl = () => redirectURL(uuid);
     return {
       ...rest,
       uuid,
       activeDatetime: new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-'),
       expirationDatetime: new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-'),
-      actions: actionIcon(redirectUrl),
+      actions: actionIcon(uuid),
+      enterpriseCustomerName: fetchedCustomerData.find(({ id }) => id === enterpriseCustomerUuid)?.name ?? '',
     };
   });
   return {
-    ...fetchedData,
+    ...fetchedSubsidyData,
     results: normalizedData,
   };
 }
