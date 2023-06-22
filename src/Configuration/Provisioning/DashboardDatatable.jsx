@@ -3,7 +3,7 @@ import {
 } from '@edx/paragon';
 import React, {
   useCallback,
-  useEffect, useState,
+  useEffect, useMemo, useState,
 } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useHistory } from 'react-router';
@@ -14,66 +14,63 @@ import { MAX_PAGE_SIZE } from './data/constants';
 import { useDashboardContext } from './data/hooks';
 import SvgDjango from './data/images/SvgDjango';
 
+const TableActions = (args) => {
+  const rowUuid = args.row.values.uuid;
+  const { DJANGO_ADMIN_SUBSIDY_BASE_URL } = getConfig();
+  const history = useHistory();
+
+  return [
+    <IconButton
+      key="edit-icon"
+      src={EditOutline}
+      iconAs={Icon}
+      onClick={() => history.push(`/enterprise-configuration/learner-credit/${rowUuid}/edit`)}
+    />,
+    <Hyperlink
+      key="django-icon"
+      destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}/admin/subsidy/subsidy/?uuid=${rowUuid}`}
+      target="_blank"
+      showLaunchIcon={false}
+    >
+      <IconButton
+        src={SvgDjango}
+        iconAs={Icon}
+      />
+    </Hyperlink>,
+  ];
+};
+
 const DashboardDatatable = () => {
   const data = useContextSelector(DashboardContext, v => v[0]);
   const { hydrateEnterpriseSubsidies } = useDashboardContext();
-  const history = useHistory();
-  const { DJANGO_ADMIN_SUBSIDY_BASE_URL } = getConfig();
 
-  const dashboardPageAction = (uuid) => (
-    [
-      <IconButton
-        src={EditOutline}
-        iconAs={Icon}
-        onClick={() => history.push(`/enterprise-configuration/learner-credit/${uuid}/edit`)}
-      />,
-      <Hyperlink
-        destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}/admin/subsidy/subsidy/?uuid=${uuid}`}
-        target="_blank"
-        showLaunchIcon={false}
-      >
-        <IconButton
-          src={SvgDjango}
-          iconAs={Icon}
-        />
-      </Hyperlink>,
-    ]
-  );
-
-  const [learnerCreditCustomers, setLearnerCreditCustomers] = useState(data?.enterpriseSubsidies || []);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [stateChange, setStateChange] = useState(true);
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
   const fetchData = useCallback((datableProps) => {
-    if (stateChange) {
-      setPageIndex(datableProps.pageIndex);
-      hydrateEnterpriseSubsidies(pageIndex, dashboardPageAction);
-    }
-  }, [stateChange]);
-  useEffect(() => {
-    if (data.enterpriseSubsidies) {
-      setLearnerCreditCustomers(data.enterpriseSubsidies);
-      setStateChange(false);
-    }
-  }, [data.enterpriseSubsidies]);
-  console.log(data.enterpriseSubsidies);
+    const fetch = async () => {
+      await hydrateEnterpriseSubsidies(datableProps.pageIndex + 1);
+    };
+    fetch();
+  }, [hydrateEnterpriseSubsidies]);
+
   return (
     <section className="mt-5">
       <DataTable
         isPaginated
+        manualPagination
         isSortable
+        manualSortBy
         isFilterable
+        manualFilters
         defaultColumnValues={{ Filter: TextFilter }}
-        pageCount={data.enterpriseSubsidies.pageCount}
+        pageCount={data.enterpriseSubsidies.pageCount || 0}
         initialState={{
           pageSize: MAX_PAGE_SIZE,
-          pageIndex,
+          pageIndex: 0,
         }}
-        manualPagination
-        itemCount={learnerCreditCustomers?.count || 0}
-        data={learnerCreditCustomers?.results || []}
+        itemCount={data.enterpriseSubsidies?.count || 0}
+        data={data.enterpriseSubsidies.results}
         fetchData={fetchData}
         FilterStatusComponent={filterStatus}
         columns={[
@@ -93,18 +90,17 @@ const DashboardDatatable = () => {
             Header: 'Start date',
             accessor: 'activeDatetime',
             disableFilters: true,
-
           },
           {
             Header: 'End date',
             accessor: 'expirationDatetime',
             disableFilters: true,
-
           },
           {
             Header: '',
             accessor: 'actions',
             disableFilters: true,
+            Cell: TableActions,
           },
         ]}
       />
