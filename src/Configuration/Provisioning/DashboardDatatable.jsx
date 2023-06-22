@@ -3,7 +3,7 @@ import {
 } from '@edx/paragon';
 import React, {
   useCallback,
-  useEffect, useState,
+  useEffect, useMemo, useState,
 } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useHistory } from 'react-router';
@@ -20,7 +20,7 @@ const DashboardDatatable = () => {
   const history = useHistory();
   const { DJANGO_ADMIN_SUBSIDY_BASE_URL } = getConfig();
 
-  const dashboardPageAction = (uuid) => (
+  const dashboardPageAction = useCallback((uuid) => (
     [
       <IconButton
         src={EditOutline}
@@ -38,42 +38,37 @@ const DashboardDatatable = () => {
         />
       </Hyperlink>,
     ]
-  );
+  ), [DJANGO_ADMIN_SUBSIDY_BASE_URL, history]);
 
-  const [learnerCreditCustomers, setLearnerCreditCustomers] = useState(data?.enterpriseSubsidies || []);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [stateChange, setStateChange] = useState(true);
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
   const fetchData = useCallback((datableProps) => {
-    if (stateChange) {
-      setPageIndex(datableProps.pageIndex);
-      hydrateEnterpriseSubsidies(pageIndex, dashboardPageAction);
-    }
-  }, [stateChange]);
-  useEffect(() => {
-    if (data.enterpriseSubsidies) {
-      setLearnerCreditCustomers(data.enterpriseSubsidies);
-      setStateChange(false);
-    }
-  }, [data.enterpriseSubsidies]);
-  console.log(data.enterpriseSubsidies);
+    const fetch = async () => {
+      await hydrateEnterpriseSubsidies(datableProps.pageIndex + 1, dashboardPageAction);
+    };
+    fetch();
+  }, [hydrateEnterpriseSubsidies, dashboardPageAction]);
+
   return (
     <section className="mt-5">
       <DataTable
+        showFiltersInSidebar
+        isLoading
         isPaginated
+        manualPagination
         isSortable
+        manualSortBy
         isFilterable
+        manualFilters
         defaultColumnValues={{ Filter: TextFilter }}
-        pageCount={data.enterpriseSubsidies.pageCount}
+        pageCount={data.enterpriseSubsidies.pageCount || 0}
         initialState={{
           pageSize: MAX_PAGE_SIZE,
-          pageIndex,
+          pageIndex: 0,
         }}
-        manualPagination
-        itemCount={learnerCreditCustomers?.count || 0}
-        data={learnerCreditCustomers?.results || []}
+        itemCount={data.enterpriseSubsidies?.count || 0}
+        data={data.enterpriseSubsidies.results}
         fetchData={fetchData}
         FilterStatusComponent={filterStatus}
         columns={[
@@ -99,7 +94,6 @@ const DashboardDatatable = () => {
             Header: 'End date',
             accessor: 'expirationDatetime',
             disableFilters: true,
-
           },
           {
             Header: '',

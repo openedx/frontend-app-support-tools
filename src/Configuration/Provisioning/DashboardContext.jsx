@@ -5,7 +5,7 @@ import { createContext } from 'use-context-selector';
 export const DashboardContext = createContext(null);
 const DashboardContextProvider = ({ children }) => {
   const contextValue = useState({
-    enterpriseSubsidies: [],
+    enterpriseSubsidies: { results: [] },
   });
 
   return (

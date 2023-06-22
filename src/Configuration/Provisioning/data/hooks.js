@@ -29,7 +29,7 @@ export function useDashboardContext() {
         pageIndex: page,
       },
     }));
-  });
+  }, [setState]);
 
   return {
     hydrateEnterpriseSubsidies,
