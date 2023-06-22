@@ -244,7 +244,7 @@ export function getCamelCasedConfigAttribute(attribute) {
  * @param {Function} redirectURL - The function to be called when the icon is clicked, redirects to passed UUID
  * @returns - The normalized data to be displayed in the table
  */
-export function normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData }) {
+export function normalizeSubsidyDataTableData({ fetchedSubsidyData, fetchedCustomerData }) {
   if (fetchedSubsidyData.count === 0) {
     return [];
   }
@@ -258,7 +258,6 @@ export function normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, 
       uuid,
       activeDatetime: new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-'),
       expirationDatetime: new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-'),
-      actions: actionIcon(uuid),
       enterpriseCustomerName: fetchedCustomerData.find(({ id }) => id === enterpriseCustomerUuid)?.name ?? '',
     };
   });
