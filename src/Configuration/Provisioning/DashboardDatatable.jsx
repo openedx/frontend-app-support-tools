@@ -1,18 +1,16 @@
 import {
-  DataTable, TextFilter, IconButton, Icon, Hyperlink,
+  DataTable, TextFilter, IconButton, Icon, Hyperlink, Badge,
 } from '@edx/paragon';
 import React, {
   useCallback,
-  useEffect, useMemo, useState,
 } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useHistory } from 'react-router';
-import { EditOutline } from '@edx/paragon/icons';
+import { EditOutline, DjangoShort } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { DashboardContext } from './DashboardContext';
 import { MAX_PAGE_SIZE } from './data/constants';
 import { useDashboardContext } from './data/hooks';
-import SvgDjango from './data/images/SvgDjango';
 
 const TableActions = (args) => {
   const rowUuid = args.row.values.uuid;
@@ -22,6 +20,7 @@ const TableActions = (args) => {
   return [
     <IconButton
       key="edit-icon"
+      size="sm"
       src={EditOutline}
       iconAs={Icon}
       onClick={() => history.push(`/enterprise-configuration/learner-credit/${rowUuid}/edit`)}
@@ -33,11 +32,23 @@ const TableActions = (args) => {
       showLaunchIcon={false}
     >
       <IconButton
-        src={SvgDjango}
+        size="sm"
+        src={DjangoShort}
         iconAs={Icon}
       />
     </Hyperlink>,
   ];
+};
+
+const TableBadges = (args) => {
+  const { isActive } = args.row.values;
+  return (
+    <Badge
+      variant={isActive ? 'success' : 'danger'}
+    >
+      {isActive ? 'Active' : 'Inactive'}
+    </Badge>
+  );
 };
 
 const DashboardDatatable = () => {
@@ -83,6 +94,11 @@ const DashboardDatatable = () => {
             accessor: 'title',
           },
           {
+            Header: 'Plan Status',
+            accessor: 'isActive',
+            Cell: TableBadges,
+          },
+          {
             Header: 'Customer name',
             accessor: 'enterpriseCustomerName',
           },
@@ -90,17 +106,26 @@ const DashboardDatatable = () => {
             Header: 'Start date',
             accessor: 'activeDatetime',
             disableFilters: true,
+            Cell: ({ row }) => {
+              const { activeDatetime } = row.values;
+              return new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-');
+            },
           },
           {
             Header: 'End date',
             accessor: 'expirationDatetime',
             disableFilters: true,
+            Cell: ({ row }) => {
+              const { expirationDatetime } = row.values;
+              return new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-');
+            },
           },
           {
             Header: '',
             accessor: 'actions',
             disableFilters: true,
             Cell: TableActions,
+            disableSortBy: true,
           },
         ]}
       />

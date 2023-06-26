@@ -12,6 +12,7 @@ import SubsidyApiService from '../../../data/services/SubsidyApiService';
 
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
+
   const hydrateEnterpriseSubsidies = useCallback(async (page, actionIcon) => {
     const subsidyData = await SubsidyApiService.getAllSubsidies(page);
     const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
@@ -24,6 +25,7 @@ export function useDashboardContext() {
     setState(s => ({
       ...s,
       enterpriseSubsidies: {
+        fetchedCustomerData,
         ...normalizedData,
         pageCount,
         pageIndex: page,
@@ -38,7 +40,6 @@ export function useDashboardContext() {
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
-
   const updateRootDataState = useCallback((newDataAttribute) => {
     setState((s) => ({
       ...s,

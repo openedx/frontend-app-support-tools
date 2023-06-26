@@ -29,10 +29,10 @@
     "url": "https://github.com/openedx/frontend-app-support-tools/issues"
   },
   "dependencies": {
-    "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
+    "@edx/brand": "npm:@edx/brand-openedx@1.2.0",
     "@edx/frontend-enterprise-utils": "2.2.1",
     "@edx/frontend-platform": "^2.5.0",
-    "@edx/paragon": "^20.26.0",
+    "@edx/paragon": "20.45.0",
     "@fortawesome/fontawesome-svg-core": "1.2.32",
     "@fortawesome/free-brands-svg-icons": "5.15.1",
     "@fortawesome/free-regular-svg-icons": "5.15.1",
