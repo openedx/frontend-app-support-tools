@@ -24,6 +24,8 @@ const TableActions = (args) => {
       src={EditOutline}
       iconAs={Icon}
       onClick={() => history.push(`/enterprise-configuration/learner-credit/${rowUuid}/edit`)}
+      alt="Edit Subsidy Icon Button"
+
     />,
     <Hyperlink
       key="django-icon"
@@ -35,6 +37,7 @@ const TableActions = (args) => {
         size="sm"
         src={DjangoShort}
         iconAs={Icon}
+        alt="Django Admin Icon Button"
       />
     </Hyperlink>,
   ];

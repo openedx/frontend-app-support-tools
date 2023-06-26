@@ -131,7 +131,10 @@ describe('normalizeSubsidyDataTableData', () => {
     }));
     const actionIcon = jest.fn();
     const emptySubsidy = normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData });
-    expect(emptySubsidy).toEqual([]);
+    expect(emptySubsidy).toEqual({
+      count: 0,
+      results: [],
+    });
   });
 });
 

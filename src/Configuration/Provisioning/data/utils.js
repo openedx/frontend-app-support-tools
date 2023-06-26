@@ -246,7 +246,10 @@ export function getCamelCasedConfigAttribute(attribute) {
  */
 export function normalizeSubsidyDataTableData({ fetchedSubsidyData, fetchedCustomerData }) {
   if (fetchedSubsidyData.count === 0) {
-    return [];
+    return {
+      ...fetchedSubsidyData,
+      results: [],
+    };
   }
   const normalizedData = fetchedSubsidyData.results.map((item) => {
     const {
