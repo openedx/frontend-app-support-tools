@@ -29,7 +29,7 @@
     "url": "https://github.com/openedx/frontend-app-support-tools/issues"
   },
   "dependencies": {
-    "@edx/brand": "npm:@edx/brand-edx.org@^1.4.2",
+    "@edx/brand": "npm:@edx/brand-edx.org@^2.0.0",
     "@edx/frontend-enterprise-utils": "^3.0.0",
     "@edx/frontend-platform": "^4.2.0",
     "@edx/paragon": "^20.26.0",
