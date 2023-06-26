@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import ProvisioningFormSubsidy from '../ProvisioningFormSubsidy';
-import { ProvisioningContext, initialStateValue } from '../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 
 const { SUBSIDY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;

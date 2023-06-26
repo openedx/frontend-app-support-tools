@@ -90,7 +90,10 @@ export const sampleDataTableData = (count, testing = true) => {
       expiration_datetime: '2021-12-31T16:31:57.251750Z',
     });
   }
-  return data;
+  return {
+    count: data.length,
+    results: data,
+  };
 };
 
 export function getSampleCustomers(count = 10) {

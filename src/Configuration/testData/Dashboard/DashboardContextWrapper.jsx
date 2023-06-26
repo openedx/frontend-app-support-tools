@@ -1,10 +1,10 @@
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { DashboardContext as NextedDashboardContext } from '../Provisioning/DashboardContext';
+import { DashboardContext as NextedDashboardContext } from '../../Provisioning/DashboardContext';
 
 export const initialStateValue = {
-  enterpriseSubsidies: [],
+  enterpriseSubsidies: { results: [] },
 };
 
 export const DashboardContext = ({

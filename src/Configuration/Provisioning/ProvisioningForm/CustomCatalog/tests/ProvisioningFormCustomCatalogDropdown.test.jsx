@@ -2,7 +2,8 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import ProvisioningFormCustomCatalogDropdown from '../ProvisioningFormCustomCatalogDropdown';
-import { ProvisioningContext, initialStateValue, sampleCatalogQueries } from '../../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
+import { sampleCatalogQueries } from '../../../../testData';
 import PROVISIONING_PAGE_TEXT from '../../../data/constants';
 
 const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;

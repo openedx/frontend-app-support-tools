@@ -4,7 +4,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Router } from 'react-router-dom';
 import ProvisioningFormSubmissionButton from '../ProvisioningFormSubmissionButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { ProvisioningContext, initialStateValue } from '../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import ROUTES from '../../../../data/constants/routes';
 import {
   sampleMultiplePolicyFormData,

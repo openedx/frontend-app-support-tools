@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { screen } from '@testing-library/react';
 import ROUTES from '../../../../data/constants/routes';
-import { ProvisioningContext, initialStateValue } from '../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormContainer from '../ProvisioningFormContainer';
 

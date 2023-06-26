@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import ProvisioningFormCatalog from '../ProvisioningFormCatalog';
-import { ProvisioningContext, initialStateValue } from '../../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, splitStringBudget } from '../../../data/constants';
 
 const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;

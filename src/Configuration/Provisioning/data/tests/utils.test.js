@@ -105,18 +105,33 @@ describe('extractDefinedCatalogTitle', () => {
 });
 
 describe('normalizeSubsidyDataTableData', () => {
-  const fetchedData = camelCaseObject(sampleDataTableData(10));
-  const redirectURL = jest.fn();
-  const actionIcon = jest.fn();
   it('returns the correct data', () => {
-    const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
-    fetchedData.forEach((item, index) => {
-      expect(normalizedData[index].enterpriseCustomerUuid).toEqual(item.enterpriseCustomerUuid);
-      const convertedActiveDateTime = new Date(item.activeDatetime).toLocaleDateString().replace(/\//g, '-');
-      const convertedExpirationDateTime = new Date(item.expirationDatetime).toLocaleDateString().replace(/\//g, '-');
-      expect(normalizedData[index].activeDatetime).toEqual(convertedActiveDateTime);
-      expect(normalizedData[index].expirationDatetime).toEqual(convertedExpirationDateTime);
+    const fetchedSubsidyData = camelCaseObject(sampleDataTableData(10));
+    const fetchedCustomerData = fetchedSubsidyData.results.map((item) => ({
+      id: item.enterpriseCustomerUuid,
+      name: item.customerName,
+    }));
+    const actionIcon = jest.fn();
+    const normalizedData = normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData });
+    fetchedSubsidyData.results.forEach((item, index) => {
+      expect(normalizedData.results[index].uuid).toEqual(item.uuid);
+      expect(normalizedData.results[index].activeDatetime).toEqual(item.activeDatetime);
+      expect(normalizedData.results[index].expirationDatetime).toEqual(item.expirationDatetime);
     });
+  });
+  it('returns empty array in testing flag false', () => {
+    const emptySubsidy = sampleDataTableData(5, false);
+    expect(emptySubsidy).toEqual([]);
+  });
+  it('returns empty array in testing flag false and count is zero', () => {
+    const fetchedSubsidyData = camelCaseObject(sampleDataTableData(0));
+    const fetchedCustomerData = fetchedSubsidyData.results.map((item) => ({
+      id: item.enterpriseCustomerUuid,
+      name: item.customerName,
+    }));
+    const actionIcon = jest.fn();
+    const emptySubsidy = normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData });
+    expect(emptySubsidy).toEqual([]);
   });
 });
 

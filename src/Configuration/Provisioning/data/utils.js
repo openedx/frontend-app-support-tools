@@ -251,13 +251,10 @@ export function normalizeSubsidyDataTableData({ fetchedSubsidyData, fetchedCusto
   const normalizedData = fetchedSubsidyData.results.map((item) => {
     const {
       enterpriseCustomerUuid,
-      uuid, activeDatetime, expirationDatetime, ...rest
+      ...rest
     } = item;
     return {
       ...rest,
-      uuid,
-      activeDatetime: new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-'),
-      expirationDatetime: new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-'),
       enterpriseCustomerName: fetchedCustomerData.find(({ id }) => id === enterpriseCustomerUuid)?.name ?? '',
     };
   });
