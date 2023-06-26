@@ -14,9 +14,8 @@ export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
 
   const hydrateEnterpriseSubsidies = useCallback(async (page, actionIcon) => {
-    const subsidyData = await SubsidyApiService.getAllSubsidies(page);
+    const subsidyData = await SubsidyApiService.getAllSubsidies({ paginatedURL: page, pageSize: MAX_PAGE_SIZE });
     const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
-    const pageCount = Math.ceil(subsidyData.data.count / MAX_PAGE_SIZE);
     const fetchedSubsidyData = camelCaseObject(subsidyData.data);
     const fetchedCustomerData = camelCaseObject(customerData.data);
     const normalizedData = normalizeSubsidyDataTableData({
@@ -27,7 +26,6 @@ export function useDashboardContext() {
       enterpriseSubsidies: {
         fetchedCustomerData,
         ...normalizedData,
-        pageCount,
         pageIndex: page,
       },
     }));

@@ -64,7 +64,6 @@ const DashboardDatatable = () => {
     };
     fetch();
   }, [hydrateEnterpriseSubsidies]);
-
   return (
     <section className="mt-5">
       <DataTable

@@ -242,6 +242,6 @@ export const INITIAL_CATALOG_QUERIES = {
   ],
 };
 
-export const MAX_PAGE_SIZE = 10;
+export const MAX_PAGE_SIZE = 12;
 
 export default PROVISIONING_PAGE_TEXT;

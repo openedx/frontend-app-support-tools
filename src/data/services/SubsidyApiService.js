@@ -4,10 +4,10 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 class SubsidyApiService {
   static apiClient = getAuthenticatedHttpClient;
 
-  static getAllSubsidies = (paginatedURL) => {
+  static getAllSubsidies = ({ paginatedURL, pageSize }) => {
     const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
     if (paginatedURL) {
-      return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}`);
+      return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}&page_size=${pageSize}`);
     }
     return SubsidyApiService.apiClient().get(subsidiesURL);
   };
