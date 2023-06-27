@@ -24,8 +24,10 @@ export function useDashboardContext() {
     if (filterBy.enterpriseCustomerName) {
       const enterpriseUUID = fetchedCustomerData.filter(
         customer => customer.name.toLowerCase().includes(filterBy.enterpriseCustomerName.toLowerCase()),
-      )[0].id;
-      filteredData.enterpriseCustomerUuid = enterpriseUUID;
+      )[0]?.id;
+      if (enterpriseUUID) {
+        filteredData.enterpriseCustomerUuid = enterpriseUUID;
+      }
       delete filteredData.enterpriseCustomerName;
     }
 

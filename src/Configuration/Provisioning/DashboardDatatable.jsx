@@ -2,12 +2,13 @@ import {
   DataTable, TextFilter, IconButton, Icon, Hyperlink, Badge,
 } from '@edx/paragon';
 import React, {
-  useCallback, useEffect,
+  useCallback, useMemo,
 } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useHistory } from 'react-router';
 import { EditOutline, DjangoShort } from '@edx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
+import debounce from 'lodash.debounce';
 import { DashboardContext } from './DashboardContext';
 import { MAX_PAGE_SIZE } from './data/constants';
 import { useDashboardContext } from './data/hooks';
@@ -93,6 +94,10 @@ const DashboardDatatable = () => {
     });
   }, [hydrateEnterpriseSubsidies]);
 
+  const debouncedFetchData = useMemo(() => debounce(fetchData, 250, {
+    leading: false,
+  }), [fetchData]);
+
   return (
     <section className="mt-5">
       <DataTable
@@ -110,7 +115,7 @@ const DashboardDatatable = () => {
         }}
         itemCount={data.enterpriseSubsidies?.count || 0}
         data={data.enterpriseSubsidies.results}
-        fetchData={fetchData}
+        fetchData={debouncedFetchData}
         FilterStatusComponent={filterStatus}
         columns={[
           {
