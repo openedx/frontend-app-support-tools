@@ -6,7 +6,7 @@ import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormCustomer from '../ProvisioningFormCustomer';
 
 const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
-const testFinancialLinkage = '0000abc12a332c1444';
+const testFinancialLinkage = '00k0abc12a332c1444';
 const ProvisioningFormCustomerWrapper = ({
   value = initialStateValue,
 }) => (

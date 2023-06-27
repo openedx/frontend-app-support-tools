@@ -40,7 +40,7 @@ const PROVISIONING_PAGE_TEXT = {
       FINANCIAL_IDENTIFIER: {
         TITLE: 'Opportunity Product',
         ERROR: {
-          validity: 'Invalid format. Must be 18 characters long, alphanumeric and start with a number.',
+          validity: 'Invalid format. Must be 18 characters long, alphanumeric and start with \'00k\'.',
           emptyField: 'Please enter a valid opportunity product.',
         },
       },
