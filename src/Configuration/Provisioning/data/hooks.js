@@ -13,20 +13,24 @@ import SubsidyApiService from '../../../data/services/SubsidyApiService';
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
 
-  const hydrateEnterpriseSubsidies = useCallback(async (page, actionIcon) => {
-    const subsidyData = await SubsidyApiService.getAllSubsidies({ paginatedURL: page, pageSize: MAX_PAGE_SIZE });
+  const hydrateEnterpriseSubsidies = useCallback(async ({ pageIndex, sortBy }) => {
+    const subsidyData = await SubsidyApiService.getAllSubsidies({
+      paginatedURL: pageIndex,
+      pageSize: MAX_PAGE_SIZE,
+      sortBy,
+    });
     const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
     const fetchedSubsidyData = camelCaseObject(subsidyData.data);
     const fetchedCustomerData = camelCaseObject(customerData.data);
     const normalizedData = normalizeSubsidyDataTableData({
-      fetchedSubsidyData, actionIcon, fetchedCustomerData,
+      fetchedSubsidyData, fetchedCustomerData,
     });
     setState(s => ({
       ...s,
       enterpriseSubsidies: {
         fetchedCustomerData,
         ...normalizedData,
-        pageIndex: page,
+        pageIndex,
       },
     }));
   }, [setState]);

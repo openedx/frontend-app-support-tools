@@ -61,11 +61,23 @@ const DashboardDatatable = () => {
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
-  const fetchData = useCallback((datableProps) => {
-    const fetch = async () => {
-      await hydrateEnterpriseSubsidies(datableProps.pageIndex + 1);
+  const fetchData = useCallback((datatableProps) => {
+    const sort = () => {
+      if (datatableProps.sortBy[0]?.id) {
+        if (datatableProps.sortBy[0].id === 'isActive') {
+          return datatableProps.sortBy[0].desc ? '-expirationDatetime' : 'expirationDatetime';
+        }
+        return datatableProps.sortBy[0].desc ? datatableProps.sortBy[0].id : `-${datatableProps.sortBy[0].id}`;
+      }
+      return null;
     };
-    fetch();
+    const fetch = async ({ sortBy }) => {
+      await hydrateEnterpriseSubsidies({
+        pageIndex: datatableProps.pageIndex + 1,
+        sortBy,
+      });
+    };
+    fetch({ sortBy: sort() });
   }, [hydrateEnterpriseSubsidies]);
   return (
     <section className="mt-5">
@@ -103,6 +115,8 @@ const DashboardDatatable = () => {
           {
             Header: 'Customer name',
             accessor: 'enterpriseCustomerName',
+            disableFilters: true,
+            disableSortBy: true,
           },
           {
             Header: 'Start date',

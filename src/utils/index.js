@@ -62,6 +62,11 @@ export function titleCase(str) {
   return str.toLowerCase().replace(/_/g, ' ').replace(/\b(\w)/g, s => s.toUpperCase());
 }
 
+export function snakeCaseWord(word) {
+  const result = word.replace(/([A-Z])/g, ' $1');
+  return result.split(' ').join('_').toLowerCase();
+}
+
 /**  Compare dates function for array.sort() */
 export function sortedCompareDates(x, y, asc) {
   const a = new Date(x);

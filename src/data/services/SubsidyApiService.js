@@ -1,13 +1,18 @@
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import { snakeCaseWord } from '../../utils';
 
 class SubsidyApiService {
   static apiClient = getAuthenticatedHttpClient;
 
-  static getAllSubsidies = ({ paginatedURL, pageSize }) => {
+  static getAllSubsidies = ({ paginatedURL, pageSize, sortBy }) => {
     const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
-    if (paginatedURL) {
-      return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}&page_size=${pageSize}`);
+
+    let optionalUrlParams = '';
+    optionalUrlParams = sortBy ? `&sortBy=${snakeCaseWord(sortBy)}` : '';
+
+    if (paginatedURL && pageSize) {
+      return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}&page_size=${pageSize}${optionalUrlParams}`);
     }
     return SubsidyApiService.apiClient().get(subsidiesURL);
   };
