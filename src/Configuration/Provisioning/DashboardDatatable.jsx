@@ -2,7 +2,7 @@ import {
   DataTable, TextFilter, IconButton, Icon, Hyperlink, Badge,
 } from '@edx/paragon';
 import React, {
-  useCallback,
+  useCallback, useEffect,
 } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useHistory } from 'react-router';
@@ -62,6 +62,15 @@ const DashboardDatatable = () => {
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
   const fetchData = useCallback((datatableProps) => {
+    const filter = () => {
+      const filterObj = {};
+      if (datatableProps.filters.length > 0) {
+        datatableProps.filters.forEach((filterItem) => {
+          filterObj[filterItem.id] = filterItem.value;
+        });
+      }
+      return filterObj;
+    };
     const sort = () => {
       if (datatableProps.sortBy[0]?.id) {
         if (datatableProps.sortBy[0].id === 'isActive') {
@@ -71,14 +80,19 @@ const DashboardDatatable = () => {
       }
       return null;
     };
-    const fetch = async ({ sortBy }) => {
+    const fetch = async ({ sortBy, filterBy }) => {
       await hydrateEnterpriseSubsidies({
         pageIndex: datatableProps.pageIndex + 1,
         sortBy,
+        filterBy,
       });
     };
-    fetch({ sortBy: sort() });
+    fetch({
+      sortBy: sort(),
+      filterBy: filter(),
+    });
   }, [hydrateEnterpriseSubsidies]);
+
   return (
     <section className="mt-5">
       <DataTable
@@ -111,11 +125,11 @@ const DashboardDatatable = () => {
             Header: 'Plan Status',
             accessor: 'isActive',
             Cell: TableBadges,
+            disableFilters: true,
           },
           {
             Header: 'Customer name',
             accessor: 'enterpriseCustomerName',
-            disableFilters: true,
             disableSortBy: true,
           },
           {

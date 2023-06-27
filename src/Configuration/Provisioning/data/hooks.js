@@ -13,18 +13,38 @@ import SubsidyApiService from '../../../data/services/SubsidyApiService';
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
 
-  const hydrateEnterpriseSubsidies = useCallback(async ({ pageIndex, sortBy }) => {
+  const hydrateEnterpriseSubsidies = useCallback(async ({ pageIndex, sortBy, filterBy }) => {
+    const filteredData = filterBy;
+
+    // Retrieve Basic List
+    const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
+    const fetchedCustomerData = camelCaseObject(customerData.data);
+
+    // Filter by enterpriseCustomerName for enterpriseCustomerUuid
+    if (filterBy.enterpriseCustomerName) {
+      const enterpriseUUID = fetchedCustomerData.filter(
+        customer => customer.name.toLowerCase().includes(filterBy.enterpriseCustomerName.toLowerCase()),
+      )[0].id;
+      filteredData.enterpriseCustomerUuid = enterpriseUUID;
+      delete filteredData.enterpriseCustomerName;
+    }
+
+    // Retrieve Subsidy Data with sorted and filtered data
     const subsidyData = await SubsidyApiService.getAllSubsidies({
       paginatedURL: pageIndex,
       pageSize: MAX_PAGE_SIZE,
       sortBy,
+      filteredData,
     });
-    const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
     const fetchedSubsidyData = camelCaseObject(subsidyData.data);
-    const fetchedCustomerData = camelCaseObject(customerData.data);
+
+    // Normalize data for table
     const normalizedData = normalizeSubsidyDataTableData({
-      fetchedSubsidyData, fetchedCustomerData,
+      fetchedSubsidyData,
+      fetchedCustomerData,
     });
+
+    // Set state
     setState(s => ({
       ...s,
       enterpriseSubsidies: {
