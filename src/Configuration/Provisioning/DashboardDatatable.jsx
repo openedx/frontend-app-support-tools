@@ -17,17 +17,17 @@ const TableActions = (args) => {
   const rowUuid = args.row.values.uuid;
   const { DJANGO_ADMIN_SUBSIDY_BASE_URL } = getConfig();
   const history = useHistory();
-
   return [
-    <IconButton
-      key="edit-icon"
-      size="sm"
-      src={EditOutline}
-      iconAs={Icon}
-      onClick={() => history.push(`/enterprise-configuration/learner-credit/${rowUuid}/edit`)}
-      alt="Edit Subsidy Icon Button"
-
-    />,
+    getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION && (
+      <IconButton
+        key="edit-icon"
+        size="sm"
+        src={EditOutline}
+        iconAs={Icon}
+        onClick={() => history.push(`/enterprise-configuration/learner-credit/${rowUuid}/edit`)}
+        alt="Edit Subsidy Icon Button"
+      />
+    ),
     <Hyperlink
       key="django-icon"
       destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}/admin/subsidy/subsidy/?uuid=${rowUuid}`}
