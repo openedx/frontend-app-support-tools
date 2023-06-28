@@ -444,3 +444,47 @@ export function generatePolicyName(formData, index) {
   const { subsidyTitle, policies } = formData;
   return `${subsidyTitle} --- ${extractDefinedCatalogTitle(policies[index])}`;
 }
+
+// Start of Datatable functions
+
+/**
+ * Takes a date string and returns a date string in the format of MM-DD-YYYY
+ * @param {String} date - The date string to be transformed
+ * @returns - Returns a date string in the format of MM-DD-YYYY
+ */
+export function transformDatatableDate(date) {
+  if (date) {
+    return new Date(date).toLocaleDateString().replace(/\//g, '-');
+  }
+  return null;
+}
+
+/**
+ * Takes the filter object from the datatable and returns an object that can be used to filter the API response
+ * @param {Object} filters - The filter object from the datatable
+ * @returns - Returns an object that can be used to filter the API response
+ */
+export function filterDatatableData({ filters }) {
+  const filterObj = {};
+  if (filters.length > 0) {
+    filters.forEach((filterItem) => {
+      filterObj[filterItem.id] = filterItem.value;
+    });
+  }
+  return filterObj;
+}
+
+/**
+ * Takes the sort object from the datatable and returns a string that can be used to sort the API response
+ * @param {Object} sortBy - The sort object from the datatable
+ * @returns - Returns a string that can be used to sort the API response
+ */
+export function sortDatatableData({ sortBy }) {
+  if (sortBy[0]?.id) {
+    if (sortBy[0].id === 'isActive') {
+      return sortBy[0].desc ? 'expirationDatetime' : '-expirationDatetime';
+    }
+    return sortBy[0].desc ? sortBy[0].id : `-${sortBy[0].id}`;
+  }
+  return null;
+}

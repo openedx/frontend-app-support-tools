@@ -3,9 +3,8 @@ import { useHistory } from 'react-router';
 import { v4 as uuidv4 } from 'uuid';
 
 import DashboardHeader from './DashboardHeader';
-import DashboardDatatable from './DashboardDatatable';
 import DashboardToast from './DashboardToast';
-
+import DashboardDatatable from './DashboardDatatable';
 import { toastText } from './data/constants';
 
 // TODO: Create a new item header, search box and datatable
