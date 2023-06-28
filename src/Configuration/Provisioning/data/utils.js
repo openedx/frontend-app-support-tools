@@ -488,3 +488,25 @@ export function sortDatatableData({ sortBy }) {
   }
   return null;
 }
+
+/**
+ * Filters the enterpriseCustomerName from the fetchedCustomerData and returns the enterpriseCustomerUuid
+ * @param {Object} fetchedCustomerData - The fetchedCustomerData from the API
+ * @param {Object} filterBy - The filter object from the datatable
+ * @returns - Returns the enterpriseCustomerUuid
+ */
+export function filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy }) {
+  const filteredData = filterBy;
+  if (filterBy.enterpriseCustomerName) {
+    const enterpriseUUID = fetchedCustomerData.filter(
+      customer => customer.name.toLowerCase().includes(filterBy.enterpriseCustomerName.toLowerCase()),
+    )[0]?.id;
+    if (enterpriseUUID) {
+      filteredData.enterpriseCustomerUuid = enterpriseUUID;
+    }
+    delete filteredData.enterpriseCustomerName;
+  }
+  return filteredData;
+}
+
+// End of Datatable functions

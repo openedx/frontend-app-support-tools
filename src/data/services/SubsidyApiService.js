@@ -6,21 +6,20 @@ class SubsidyApiService {
   static apiClient = getAuthenticatedHttpClient;
 
   static getAllSubsidies = ({
-    paginatedURL, pageSize, sortBy, filteredData,
+    paginatedURL,
+    pageSize,
+    sortBy,
+    filteredData,
   }) => {
     const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
-
     let optionalUrlParams = '';
+
     optionalUrlParams += pageSize ? `&page_size=${pageSize}` : '';
-    optionalUrlParams += sortBy ? `&sortBy=${snakeCaseWord(sortBy)}` : '';
+    optionalUrlParams += sortBy ? `&sort_by=${snakeCaseWord(sortBy)}` : '';
     Object.keys(filteredData).forEach((key) => {
       optionalUrlParams += `&${snakeCaseWord(key)}=${filteredData[key]}`;
     });
-    if (paginatedURL) {
-      return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}${optionalUrlParams}`);
-    }
-    // If no page size is provided, by default, 10 items are returned.
-    return SubsidyApiService.apiClient().get(subsidiesURL);
+    return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}${optionalUrlParams}`);
   };
 
   static postSubsidy = (

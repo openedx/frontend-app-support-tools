@@ -16,6 +16,7 @@ import {
   transformDatatableDate,
   filterDatatableData,
   sortDatatableData,
+  filterByEnterpriseCustomerName,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -377,50 +378,71 @@ describe('sortDatatableData', () => {
     const output = 'expirationDatetime';
 
     // desc is true
-    expect(sortDatatableData(
-      {
-        sortBy:
+    expect(sortDatatableData({
+      sortBy:
         [{
           id: 'isActive',
           desc: true,
         }],
-      },
-    )).toEqual(`-${output}`);
+    })).toEqual(`-${output}`);
 
     // desc is false
-    expect(sortDatatableData(
-      {
-        sortBy:
+    expect(sortDatatableData({
+      sortBy:
         [{
           id: 'isActive',
           desc: false,
         }],
-      },
-    )).toEqual(output);
+    })).toEqual(output);
   });
   it('returns a sort by title if title is passed as the id', () => {
     const output = 'title';
 
     // desc is true
-    expect(sortDatatableData(
-      {
-        sortBy:
+    expect(sortDatatableData({
+      sortBy:
         [{
           id: 'title',
           desc: true,
         }],
-      },
-    )).toEqual(`-${output}`);
+    })).toEqual(`-${output}`);
 
     // desc is false
-    expect(sortDatatableData(
-      {
-        sortBy:
+    expect(sortDatatableData({
+      sortBy:
         [{
           id: 'title',
           desc: false,
         }],
-      },
-    )).toEqual(output);
+    })).toEqual(output);
+  });
+});
+
+describe('filterByEnterpriseCustomerName', () => {
+  const truefilterBy = {
+    enterpriseCustomerName: 'Test Enterprise',
+  };
+  const falseFilterBy = {
+    enterpriseCustomerName: 'Pikachu',
+  };
+  const fetchedCustomerData = [
+    {
+      id: 'a929e999-2487-4a53-9741-92e0d2022598',
+      name: 'Test Enterprise',
+    },
+    {
+      id: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0',
+      name: 'You can do better',
+    },
+  ];
+  it('returns the correct data', () => {
+    const output = {
+      enterpriseCustomerUuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+    };
+    expect(filterByEnterpriseCustomerName({ filterBy: truefilterBy, fetchedCustomerData })).toEqual(output);
+  });
+  it('returns an empty object if no customer name matches', () => {
+    const output = {};
+    expect(filterByEnterpriseCustomerName({ filterBy: falseFilterBy, fetchedCustomerData })).toEqual(output);
   });
 });

@@ -269,7 +269,9 @@ describe('isValidOpportunityProduct', () => {
     expect(isValidOpportunityProduct('oo')).toEqual(false);
     expect(isValidOpportunityProduct('OO')).toEqual(false);
     expect(isValidOpportunityProduct('00p')).toEqual(false);
+    expect(isValidOpportunityProduct('00K')).toEqual(false);
     expect(isValidOpportunityProduct('abk0000000000000000')).toEqual(false);
+    expect(isValidOpportunityProduct('abK0000000000000000')).toEqual(false);
     expect(isValidOpportunityProduct('00k00000000000000000000000000000')).toEqual(false);
     expect(isValidOpportunityProduct()).toEqual(false);
   });

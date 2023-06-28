@@ -5,7 +5,11 @@ import LmsApiService from '../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, MAX_PAGE_SIZE } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
 import {
-  updatePolicies, getCamelCasedConfigAttribute, normalizeSubsidyDataTableData, filterIndexOfCatalogQueryTitle,
+  updatePolicies,
+  getCamelCasedConfigAttribute,
+  normalizeSubsidyDataTableData,
+  filterIndexOfCatalogQueryTitle,
+  filterByEnterpriseCustomerName,
 } from './utils';
 import { DashboardContext } from '../DashboardContext';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
@@ -14,22 +18,12 @@ export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
 
   const hydrateEnterpriseSubsidies = useCallback(async ({ pageIndex, sortBy, filterBy }) => {
-    const filteredData = filterBy;
-
     // Retrieve Basic List
     const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
     const fetchedCustomerData = camelCaseObject(customerData.data);
 
-    // Filter by enterpriseCustomerName for enterpriseCustomerUuid
-    if (filterBy.enterpriseCustomerName) {
-      const enterpriseUUID = fetchedCustomerData.filter(
-        customer => customer.name.toLowerCase().includes(filterBy.enterpriseCustomerName.toLowerCase()),
-      )[0]?.id;
-      if (enterpriseUUID) {
-        filteredData.enterpriseCustomerUuid = enterpriseUUID;
-      }
-      delete filteredData.enterpriseCustomerName;
-    }
+    // Filter by enterprise customer uuid for the enterprise customer uuid
+    const filteredData = filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy });
 
     // Retrieve Subsidy Data with sorted and filtered data
     const subsidyData = await SubsidyApiService.getAllSubsidies({
@@ -38,6 +32,7 @@ export function useDashboardContext() {
       sortBy,
       filteredData,
     });
+
     const fetchedSubsidyData = camelCaseObject(subsidyData.data);
 
     // Normalize data for table
