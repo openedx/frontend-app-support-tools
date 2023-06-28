@@ -13,6 +13,8 @@ import {
   extractParams,
   isValidDateString,
   isWholeDollarAmount,
+  isValidOpportunityProduct,
+  snakeCaseWord,
 } from './index';
 
 describe('Test Utils', () => {
@@ -248,5 +250,34 @@ describe('isWholeDollarAmount', () => {
     expect(isWholeDollarAmount(null)).toEqual(false);
     expect(isWholeDollarAmount('123ab')).toEqual(false);
     expect(isWholeDollarAmount('ab233')).toEqual(false);
+  });
+});
+
+describe('isValidOpportunityProduct', () => {
+  it('returns true for valid opportunity product', () => {
+    expect(isValidOpportunityProduct('00')).toEqual(true);
+    expect(isValidOpportunityProduct('00k')).toEqual(true);
+    expect(isValidOpportunityProduct('00k0')).toEqual(true);
+    expect(isValidOpportunityProduct('00k000000000000000')).toEqual(true);
+  });
+  it('returns false for invalid opportunity product', () => {
+    expect(isValidOpportunityProduct('')).toEqual(false);
+    expect(isValidOpportunityProduct('1')).toEqual(false);
+    expect(isValidOpportunityProduct('c')).toEqual(false);
+    expect(isValidOpportunityProduct('0k')).toEqual(false);
+    expect(isValidOpportunityProduct('01')).toEqual(false);
+    expect(isValidOpportunityProduct('oo')).toEqual(false);
+    expect(isValidOpportunityProduct('OO')).toEqual(false);
+    expect(isValidOpportunityProduct('00p')).toEqual(false);
+    expect(isValidOpportunityProduct('abk0000000000000000')).toEqual(false);
+    expect(isValidOpportunityProduct('00k00000000000000000000000000000')).toEqual(false);
+    expect(isValidOpportunityProduct()).toEqual(false);
+  });
+});
+describe('snakeCaseWord', () => {
+  it('returns snake case word', () => {
+    const camelCasedWord = 'helloWorld';
+    const snakeCasedWord = 'hello_world';
+    expect(snakeCaseWord(camelCasedWord)).toEqual(snakeCasedWord);
   });
 });

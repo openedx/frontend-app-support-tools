@@ -47,10 +47,10 @@ export const isValidOpportunityProduct = value => {
   if (value?.length <= 2) {
     return Boolean(value && value.match(/^[0]{1,2}$/));
   }
-  if (value.length === 3) {
+  if (value?.length === 3) {
     return Boolean(value && value.match(/^[0]{2}k$/));
   }
-  if (value.length > 3 || value.length < 19) {
+  if (value?.length > 3 || value?.length < 19) {
     return Boolean(value && value.match(/^[0]{2}k([0-9A-Za-z]{1,15})$/));
   }
   return false;
@@ -73,6 +73,11 @@ export function titleCase(str) {
   return str.toLowerCase().replace(/_/g, ' ').replace(/\b(\w)/g, s => s.toUpperCase());
 }
 
+/**
+ * Convert a string containing camelCase into snake_case.
+ * @param {String} word - word to be converted to snake_case
+ * @returns - snake_case word
+ */
 export function snakeCaseWord(word) {
   const result = word.replace(/([A-Z])/g, ' $1');
   return result.split(' ').join('_').toLowerCase();
