@@ -3,10 +3,11 @@ import {
   TextFilter,
 } from '@edx/paragon';
 import React, {
-  useCallback, useMemo,
+  useCallback, useMemo, useState,
 } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import debounce from 'lodash.debounce';
+import { logError } from '@edx/frontend-platform/logging';
 import { DashboardContext } from '../DashboardContext';
 import { MAX_PAGE_SIZE } from '../data/constants';
 import { useDashboardContext } from '../data/hooks';
@@ -17,16 +18,24 @@ import { filterDatatableData, sortDatatableData, transformDatatableDate } from '
 const DashboardDatatable = () => {
   const { enterpriseSubsidies } = useContextSelector(DashboardContext, v => v[0]);
   const { hydrateEnterpriseSubsidies } = useDashboardContext();
+  const [isLoading, setIsLoading] = useState(true);
 
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
   const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
   const fetchData = useCallback(async (datatableProps) => {
-    await hydrateEnterpriseSubsidies({
-      pageIndex: datatableProps.pageIndex + 1,
-      sortBy: sortDatatableData(datatableProps),
-      filterBy: filterDatatableData(datatableProps),
-    });
+    setIsLoading(true);
+    try {
+      await hydrateEnterpriseSubsidies({
+        pageIndex: datatableProps.pageIndex + 1,
+        sortBy: sortDatatableData(datatableProps),
+        filterBy: filterDatatableData(datatableProps),
+      });
+    } catch (e) {
+      logError(e);
+    } finally {
+      setIsLoading(false);
+    }
   }, [hydrateEnterpriseSubsidies]);
 
   const debouncedFetchData = useMemo(() => debounce(
@@ -40,6 +49,7 @@ const DashboardDatatable = () => {
   return (
     <section className="mt-5">
       <DataTable
+        isLoading={isLoading}
         isPaginated
         manualPagination
         isSortable
