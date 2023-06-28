@@ -482,9 +482,9 @@ export function filterDatatableData({ filters }) {
 export function sortDatatableData({ sortBy }) {
   if (sortBy[0]?.id) {
     if (sortBy[0].id === 'isActive') {
-      return sortBy[0].desc ? 'expirationDatetime' : '-expirationDatetime';
+      return sortBy[0].desc ? '-expirationDatetime' : 'expirationDatetime';
     }
-    return sortBy[0].desc ? sortBy[0].id : `-${sortBy[0].id}`;
+    return sortBy[0].desc ? `-${sortBy[0].id}` : sortBy[0].id;
   }
   return null;
 }

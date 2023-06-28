@@ -13,6 +13,9 @@ import {
   createPolicy,
   determineInvalidFields,
   transformPolicyData,
+  transformDatatableDate,
+  filterDatatableData,
+  sortDatatableData,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -324,5 +327,100 @@ describe('transformPolicyData', () => {
   it('returns an empty array when no policies are passed', async () => {
     const output = await transformPolicyData({ policies: [] }, [], []);
     expect(output).toEqual([]);
+  });
+});
+
+describe('transformDatatableDate', () => {
+  it('returns the correct date', () => {
+    const dateStrings = '2023-06-28T18:03:09.898Z';
+    const output = '6-28-2023';
+    expect(transformDatatableDate(dateStrings)).toEqual(output);
+  });
+  it('returns null if no date is passed', () => {
+    const output = null;
+    expect(transformDatatableDate()).toEqual(output);
+  });
+});
+
+describe('filterDatatableData', () => {
+  it('returns empty object if no data is passed', () => {
+    const output = {};
+    expect(filterDatatableData({ filters: {} })).toEqual(output);
+  });
+  it('returns empty object if no filters are passed', () => {
+    const output = {
+      enterpriseCustomerName: 'testName',
+      enterpriseCustomerUuid: 'testUUID',
+    };
+    expect(filterDatatableData(
+      {
+        filters: [{
+          id: 'enterpriseCustomerName',
+          value: 'testName',
+        },
+        {
+          id: 'enterpriseCustomerUuid',
+          value: 'testUUID',
+        },
+        ],
+      },
+    )).toEqual(output);
+  });
+});
+
+describe('sortDatatableData', () => {
+  it('returns null if no data is passed', () => {
+    const output = null;
+    expect(sortDatatableData({ sortBy: {} })).toEqual(output);
+  });
+  it('returns a sort by expirationDateTime if isActive is passed as the id', () => {
+    const output = 'expirationDatetime';
+
+    // desc is true
+    expect(sortDatatableData(
+      {
+        sortBy:
+        [{
+          id: 'isActive',
+          desc: true,
+        }],
+      },
+    )).toEqual(`-${output}`);
+
+    // desc is false
+    expect(sortDatatableData(
+      {
+        sortBy:
+        [{
+          id: 'isActive',
+          desc: false,
+        }],
+      },
+    )).toEqual(output);
+  });
+  it('returns a sort by title if title is passed as the id', () => {
+    const output = 'title';
+
+    // desc is true
+    expect(sortDatatableData(
+      {
+        sortBy:
+        [{
+          id: 'title',
+          desc: true,
+        }],
+      },
+    )).toEqual(`-${output}`);
+
+    // desc is false
+    expect(sortDatatableData(
+      {
+        sortBy:
+        [{
+          id: 'title',
+          desc: false,
+        }],
+      },
+    )).toEqual(output);
   });
 });
