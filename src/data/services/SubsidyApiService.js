@@ -1,25 +1,23 @@
-import { getConfig } from '@edx/frontend-platform';
+import { getConfig, snakeCaseObject } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
-import { snakeCaseWord } from '../../utils';
+import snakeCase from 'lodash.snakecase';
 
 class SubsidyApiService {
   static apiClient = getAuthenticatedHttpClient;
 
   static getAllSubsidies = ({
-    paginatedURL,
+    pageIndex,
     pageSize,
     sortBy,
     filteredData,
   }) => {
     const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
-    let optionalUrlParams = '';
-
-    optionalUrlParams += pageSize ? `&page_size=${pageSize}` : '';
-    optionalUrlParams += sortBy ? `&sort_by=${snakeCaseWord(sortBy)}` : '';
-    Object.keys(filteredData).forEach((key) => {
-      optionalUrlParams += `&${snakeCaseWord(key)}=${filteredData[key]}`;
-    });
-    return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${paginatedURL}${optionalUrlParams}`);
+    const optionalUrlParams = new URLSearchParams(snakeCaseObject({
+      pageSize,
+      sortBy: sortBy ? snakeCase(sortBy) : 'uuid',
+      ...filteredData,
+    })).toString();
+    return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${pageIndex}&${optionalUrlParams}`);
   };
 
   static postSubsidy = (

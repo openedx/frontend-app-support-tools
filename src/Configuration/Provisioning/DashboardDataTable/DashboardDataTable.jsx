@@ -1,10 +1,5 @@
-import {
-  DataTable,
-  TextFilter,
-} from '@edx/paragon';
-import React, {
-  useCallback, useMemo, useState,
-} from 'react';
+import { DataTable, TextFilter } from '@edx/paragon';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import debounce from 'lodash.debounce';
 import { logError } from '@edx/frontend-platform/logging';
@@ -13,9 +8,9 @@ import { MAX_PAGE_SIZE } from '../data/constants';
 import { useDashboardContext } from '../data/hooks';
 import DashboardTableActions from './DashboardTableActions';
 import DashboardTableBadges from './DashboardTableBadges';
-import { filterDatatableData, sortDatatableData, transformDatatableDate } from '../data/utils';
+import { filterDatatableData, sortDataTableData, transformDatatableDate } from '../data/utils';
 
-const DashboardDatatable = () => {
+const DashboardDataTable = () => {
   const { enterpriseSubsidies } = useContextSelector(DashboardContext, v => v[0]);
   const { hydrateEnterpriseSubsidies } = useDashboardContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +23,7 @@ const DashboardDatatable = () => {
     try {
       await hydrateEnterpriseSubsidies({
         pageIndex: datatableProps.pageIndex + 1,
-        sortBy: sortDatatableData(datatableProps),
+        sortBy: sortDataTableData(datatableProps),
         filterBy: filterDatatableData(datatableProps),
       });
     } catch (e) {
@@ -111,4 +106,4 @@ const DashboardDatatable = () => {
   );
 };
 
-export default DashboardDatatable;
+export default DashboardDataTable;

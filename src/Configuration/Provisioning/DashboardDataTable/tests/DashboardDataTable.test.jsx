@@ -3,7 +3,7 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { screen, waitFor } from '@testing-library/react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { DashboardContext, initialStateValue } from '../../../testData/Dashboard';
-import DashboardDatatable from '../DashboardDatatable';
+import DashboardDataTable from '../DashboardDataTable';
 import { sampleDataTableData } from '../../../testData/constants';
 
 // Mock the debounce function
@@ -32,7 +32,7 @@ const DashboardDatatableWrapper = ({
   value = initialStateValue,
 }) => (
   <DashboardContext value={value}>
-    <DashboardDatatable />
+    <DashboardDataTable />
   </DashboardContext>
 );
 

@@ -1,20 +1,19 @@
 import {
-  isEmail,
-  isValidUsername,
-  isValidLMSUserID,
+  extractMessageTuple,
+  extractParams,
   formatBoolean,
   formatDate,
   formatUnixTimestamp,
-  sort,
-  titleCase,
-  sortedCompareDates,
+  isEmail,
   isValidCourseID,
-  extractMessageTuple,
-  extractParams,
   isValidDateString,
-  isWholeDollarAmount,
+  isValidLMSUserID,
   isValidOpportunityProduct,
-  snakeCaseWord,
+  isValidUsername,
+  isWholeDollarAmount,
+  sort,
+  sortedCompareDates,
+  titleCase,
 } from './index';
 
 describe('Test Utils', () => {
@@ -274,12 +273,5 @@ describe('isValidOpportunityProduct', () => {
     expect(isValidOpportunityProduct('abK0000000000000000')).toEqual(false);
     expect(isValidOpportunityProduct('00k00000000000000000000000000000')).toEqual(false);
     expect(isValidOpportunityProduct()).toEqual(false);
-  });
-});
-describe('snakeCaseWord', () => {
-  it('returns snake case word', () => {
-    const camelCasedWord = 'helloWorld';
-    const snakeCasedWord = 'hello_world';
-    expect(snakeCaseWord(camelCasedWord)).toEqual(snakeCasedWord);
   });
 });

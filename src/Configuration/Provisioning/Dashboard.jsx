@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import DashboardHeader from './DashboardHeader';
 import DashboardToast from './DashboardToast';
-import DashboardDatatable from './DashboardDatatable';
+import DashboardDataTable from './DashboardDataTable';
 import { toastText } from './data/constants';
 
 // TODO: Create a new item header, search box and datatable
@@ -29,7 +29,7 @@ const Dashboard = () => {
   return (
     <>
       <DashboardHeader />
-      <DashboardDatatable />
+      <DashboardDataTable />
       {toasts.map(({ text, uuid }) => (<DashboardToast toastText={text} key={uuid} />))}
     </>
   );

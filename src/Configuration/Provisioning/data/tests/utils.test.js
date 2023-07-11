@@ -1,22 +1,22 @@
 import { camelCaseObject } from '@edx/frontend-platform';
 import {
   createCatalogs,
-  lmsCustomerCatalog,
-  selectProvisioningContext,
-  sortedCatalogQueries,
-  hasValidPolicyAndSubidy,
-  getCamelCasedConfigAttribute,
-  extractDefinedCatalogTitle,
-  normalizeSubsidyDataTableData,
-  filterIndexOfCatalogQueryTitle,
-  createSubsidy,
   createPolicy,
+  createSubsidy,
   determineInvalidFields,
-  transformPolicyData,
-  transformDatatableDate,
-  filterDatatableData,
-  sortDatatableData,
+  extractDefinedCatalogTitle,
   filterByEnterpriseCustomerName,
+  filterDatatableData,
+  filterIndexOfCatalogQueryTitle,
+  getCamelCasedConfigAttribute,
+  hasValidPolicyAndSubidy,
+  lmsCustomerCatalog,
+  normalizeSubsidyDataTableData,
+  selectProvisioningContext,
+  sortDataTableData,
+  sortedCatalogQueries,
+  transformDatatableDate,
+  transformPolicyData,
 } from '../utils';
 import {
   sampleCatalogQueries,
@@ -372,13 +372,13 @@ describe('filterDatatableData', () => {
 describe('sortDatatableData', () => {
   it('returns null if no data is passed', () => {
     const output = null;
-    expect(sortDatatableData({ sortBy: {} })).toEqual(output);
+    expect(sortDataTableData({ sortBy: {} })).toEqual(output);
   });
   it('returns a sort by expirationDateTime if isActive is passed as the id', () => {
     const output = 'expirationDatetime';
 
     // desc is true
-    expect(sortDatatableData({
+    expect(sortDataTableData({
       sortBy:
         [{
           id: 'isActive',
@@ -387,7 +387,7 @@ describe('sortDatatableData', () => {
     })).toEqual(`-${output}`);
 
     // desc is false
-    expect(sortDatatableData({
+    expect(sortDataTableData({
       sortBy:
         [{
           id: 'isActive',
@@ -399,7 +399,7 @@ describe('sortDatatableData', () => {
     const output = 'title';
 
     // desc is true
-    expect(sortDatatableData({
+    expect(sortDataTableData({
       sortBy:
         [{
           id: 'title',
@@ -408,7 +408,7 @@ describe('sortDatatableData', () => {
     })).toEqual(`-${output}`);
 
     // desc is false
-    expect(sortDatatableData({
+    expect(sortDataTableData({
       sortBy:
         [{
           id: 'title',

@@ -17,8 +17,8 @@ const DashboardTableActions = ({ row }) => {
   const { DJANGO_ADMIN_SUBSIDY_BASE_URL } = getConfig();
   const history = useHistory();
   const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-  return [
-    getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION && (
+  const enabledActionArray = [{
+    action: (
       <IconButton
         key="edit-icon"
         size="sm"
@@ -29,22 +29,28 @@ const DashboardTableActions = ({ row }) => {
         data-testid={`Edit-${rowUuid}`}
       />
     ),
-    <Hyperlink
-      key="django-icon"
-      destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}/admin/subsidy/subsidy/?uuid=${rowUuid}`}
-      target="_blank"
-      showLaunchIcon={false}
-      data-testid="django-admin-link"
-    >
-      <IconButton
-        size="sm"
-        src={DjangoShort}
-        iconAs={Icon}
-        alt="Django Admin Icon Button"
-        data-testid={`Django-Admin-Page-${rowUuid}`}
-      />
-    </Hyperlink>,
-  ];
+    enabled: getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION,
+  }, {
+    action: (
+      <Hyperlink
+        key="django-icon"
+        destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}/admin/subsidy/subsidy/?uuid=${rowUuid}`}
+        target="_blank"
+        showLaunchIcon={false}
+        data-testid="django-admin-link"
+      >
+        <IconButton
+          size="sm"
+          src={DjangoShort}
+          iconAs={Icon}
+          alt="Django Admin Icon Button"
+          data-testid={`Django-Admin-Page-${rowUuid}`}
+        />
+      </Hyperlink>),
+    enabled: true,
+  }].filter(interaction => interaction.enabled);
+
+  return enabledActionArray.map(interaction => interaction.action);
 };
 
 DashboardTableActions.propTypes = {

@@ -27,7 +27,7 @@ export function useDashboardContext() {
 
     // Retrieve Subsidy Data with sorted and filtered data
     const subsidyData = await SubsidyApiService.getAllSubsidies({
-      paginatedURL: pageIndex,
+      pageIndex,
       pageSize: MAX_PAGE_SIZE,
       sortBy,
       filteredData,

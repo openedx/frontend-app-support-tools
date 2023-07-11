@@ -44,16 +44,16 @@ export const isWholeDollarAmount = (value) => Boolean(value && value.match(DIGIT
 
 // Opportunity Product must begin with 00k and be 18 alphanumeric characters long
 export const isValidOpportunityProduct = value => {
+  if (!value) {
+    return false;
+  }
   if (value?.length <= 2) {
     return Boolean(value && value.match(/^0{1,2}$/));
   }
   if (value?.length === 3) {
     return Boolean(value && value.match(/^0{2}k$/));
   }
-  if (value?.length > 3 || value?.length < 19) {
-    return Boolean(value && value.match(/^0{2}k([0-9A-Za-z]{1,15})$/));
-  }
-  return false;
+  return Boolean(value && value.match(/^0{2}k([0-9A-Za-z]{1,15})$/));
 };
 
 export function sort(firstElement, secondElement, key, direction) {
@@ -71,16 +71,6 @@ export function sort(firstElement, secondElement, key, direction) {
 /** Convert a string containing space and/or underscore (snake_case) into titleCase. e.g. hello_world -> Hello World */
 export function titleCase(str) {
   return str.toLowerCase().replace(/_/g, ' ').replace(/\b(\w)/g, s => s.toUpperCase());
-}
-
-/**
- * Convert a string containing camelCase into snake_case.
- * @param {String} word - word to be converted to snake_case
- * @returns - snake_case word
- */
-export function snakeCaseWord(word) {
-  const result = word.replace(/([A-Z])/g, ' $1');
-  return result.split(' ').join('_').toLowerCase();
 }
 
 /**  Compare dates function for array.sort() */

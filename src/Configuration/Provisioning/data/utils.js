@@ -246,10 +246,7 @@ export function getCamelCasedConfigAttribute(attribute) {
  */
 export function normalizeSubsidyDataTableData({ fetchedSubsidyData, fetchedCustomerData }) {
   if (fetchedSubsidyData.count === 0) {
-    return {
-      ...fetchedSubsidyData,
-      results: [],
-    };
+    return fetchedSubsidyData;
   }
   const normalizedData = fetchedSubsidyData.results.map((item) => {
     const {
@@ -453,10 +450,10 @@ export function generatePolicyName(formData, index) {
  * @returns - Returns a date string in the format of MM-DD-YYYY
  */
 export function transformDatatableDate(date) {
-  if (date) {
-    return new Date(date).toLocaleDateString().replace(/\//g, '-');
+  if (!date) {
+    return null;
   }
-  return null;
+  return new Date(date).toLocaleDateString().replace(/\//g, '-');
 }
 
 /**
@@ -479,14 +476,15 @@ export function filterDatatableData({ filters }) {
  * @param {Object} sortBy - The sort object from the datatable
  * @returns - Returns a string that can be used to sort the API response
  */
-export function sortDatatableData({ sortBy }) {
-  if (sortBy[0]?.id) {
-    if (sortBy[0].id === 'isActive') {
-      return sortBy[0].desc ? '-expirationDatetime' : 'expirationDatetime';
-    }
-    return sortBy[0].desc ? `-${sortBy[0].id}` : sortBy[0].id;
+export function sortDataTableData({ sortBy }) {
+  const sortByObject = sortBy[0];
+  if (!sortByObject) {
+    return null;
   }
-  return null;
+  if (sortByObject.id === 'isActive') {
+    return sortByObject.desc ? '-expirationDatetime' : 'expirationDatetime';
+  }
+  return sortByObject.desc ? `-${sortByObject.id}` : sortByObject.id;
 }
 
 /**

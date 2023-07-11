@@ -54,9 +54,9 @@ const ProvisioningFormCustomer = () => {
           data-testid="customer-financial-identifier"
         />
         {isOpportunityProduct && (
-        <Form.Control.Feedback>
-          {financialIdentifier.length}/{CUSTOMER.FINANCIAL_IDENTIFIER.MAX_LENGTH}
-        </Form.Control.Feedback>
+          <Form.Control.Feedback>
+            {financialIdentifier.length}/{CUSTOMER.FINANCIAL_IDENTIFIER.MAX_LENGTH}
+          </Form.Control.Feedback>
         )}
         {!isOpportunityProduct && (
           <Form.Control.Feedback
