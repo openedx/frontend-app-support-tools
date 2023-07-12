@@ -43,7 +43,7 @@ describe('DashboardTableBadges', () => {
     expect(screen.getByTestId(`Edit-${row.values.uuid}`)).toBeTruthy();
     expect(screen.getByTestId(`Django-Admin-Page-${row.values.uuid}`)).toBeTruthy();
   });
-  it('useHistory is called on click, Edit', async () => {
+  it('links to subsidy edit route', async () => {
     const row = {
       values: {
         uuid: 'Pikachu',
@@ -53,5 +53,6 @@ describe('DashboardTableBadges', () => {
     const editButton = screen.getByTestId(`Edit-${row.values.uuid}`);
     fireEvent.click(editButton);
     expect(useHistoryPush).toHaveBeenCalledWith(`${HOME}/${row.values.uuid}/edit`);
+    expect(useHistoryPush).toHaveBeenCalledTimes(1);
   });
 });

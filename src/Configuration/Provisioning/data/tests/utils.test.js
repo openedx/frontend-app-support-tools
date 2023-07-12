@@ -6,7 +6,6 @@ import {
   determineInvalidFields,
   extractDefinedCatalogTitle,
   filterByEnterpriseCustomerName,
-  filterDatatableData,
   filterIndexOfCatalogQueryTitle,
   getCamelCasedConfigAttribute,
   hasValidPolicyAndSubidy,
@@ -15,6 +14,7 @@ import {
   selectProvisioningContext,
   sortDataTableData,
   sortedCatalogQueries,
+  transformDataTableData,
   transformDatatableDate,
   transformPolicyData,
 } from '../utils';
@@ -346,14 +346,14 @@ describe('transformDatatableDate', () => {
 describe('filterDatatableData', () => {
   it('returns empty object if no data is passed', () => {
     const output = {};
-    expect(filterDatatableData({ filters: {} })).toEqual(output);
+    expect(transformDataTableData({ filters: {} })).toEqual(output);
   });
   it('returns empty object if no filters are passed', () => {
     const output = {
       enterpriseCustomerName: 'testName',
       enterpriseCustomerUuid: 'testUUID',
     };
-    expect(filterDatatableData(
+    expect(transformDataTableData(
       {
         filters: [{
           id: 'enterpriseCustomerName',

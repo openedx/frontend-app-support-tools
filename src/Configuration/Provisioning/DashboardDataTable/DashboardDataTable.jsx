@@ -8,7 +8,9 @@ import { MAX_PAGE_SIZE } from '../data/constants';
 import { useDashboardContext } from '../data/hooks';
 import DashboardTableActions from './DashboardTableActions';
 import DashboardTableBadges from './DashboardTableBadges';
-import { filterDatatableData, sortDataTableData, transformDatatableDate } from '../data/utils';
+import { sortDataTableData, transformDataTableData, transformDatatableDate } from '../data/utils';
+
+const FilterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
 const DashboardDataTable = () => {
   const { enterpriseSubsidies } = useContextSelector(DashboardContext, v => v[0]);
@@ -16,7 +18,6 @@ const DashboardDataTable = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
-  const filterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
   const fetchData = useCallback(async (datatableProps) => {
     setIsLoading(true);
@@ -24,7 +25,7 @@ const DashboardDataTable = () => {
       await hydrateEnterpriseSubsidies({
         pageIndex: datatableProps.pageIndex + 1,
         sortBy: sortDataTableData(datatableProps),
-        filterBy: filterDatatableData(datatableProps),
+        filterBy: transformDataTableData(datatableProps),
       });
     } catch (e) {
       logError(e);
@@ -36,9 +37,6 @@ const DashboardDataTable = () => {
   const debouncedFetchData = useMemo(() => debounce(
     fetchData,
     300,
-    {
-      leading: false,
-    },
   ), [fetchData]);
 
   return (
@@ -60,7 +58,7 @@ const DashboardDataTable = () => {
         itemCount={enterpriseSubsidies?.count || 0}
         data={enterpriseSubsidies.results}
         fetchData={debouncedFetchData}
-        FilterStatusComponent={filterStatus}
+        FilterStatusComponent={FilterStatus}
         columns={[
           {
             Header: 'Plan ID',

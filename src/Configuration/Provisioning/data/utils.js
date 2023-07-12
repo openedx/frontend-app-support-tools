@@ -457,11 +457,12 @@ export function transformDatatableDate(date) {
 }
 
 /**
- * Takes the filter object from the datatable and returns an object that can be used to filter the API response
+ * Destructures `filters` from datatable context prop that builds and returns an
+ * object used to build the URLSearchParams for subsidies
  * @param {Object} filters - The filter object from the datatable
  * @returns - Returns an object that can be used to filter the API response
  */
-export function filterDatatableData({ filters }) {
+export function transformDataTableData({ filters }) {
   const filterObj = {};
   if (filters.length > 0) {
     filters.forEach((filterItem) => {
@@ -472,7 +473,8 @@ export function filterDatatableData({ filters }) {
 }
 
 /**
- * Takes the sort object from the datatable and returns a string that can be used to sort the API response
+ * Destructures `sortBy` from datatable context prop and returns
+ * a string used to build the URLSearchParams for subsidies
  * @param {Object} sortBy - The sort object from the datatable
  * @returns - Returns a string that can be used to sort the API response
  */
