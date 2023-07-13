@@ -11,8 +11,8 @@ import { sampleDataTableData } from '../../testData/constants';
 
 const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING } } } = ROUTES;
 
-const useHistoryPush = jest.fn();
-const historyMock = { push: useHistoryPush, location: {}, listen: jest.fn() };
+const mockHistoryPush = jest.fn();
+const historyMock = { push: mockHistoryPush, location: {}, listen: jest.fn() };
 
 // Mock the subsidy list
 const mockGetAllSubsidiesData = sampleDataTableData(10);
@@ -56,6 +56,6 @@ describe('ProvisioningPage', () => {
     renderWithRouter(<ProvisioningPageWrapper />);
     const newButton = screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.BUTTON.new);
     fireEvent.click(newButton);
-    expect(useHistoryPush).toHaveBeenCalledWith(`${PROVISIONING.SUB_DIRECTORY.NEW}`);
+    expect(mockHistoryPush).toHaveBeenCalledWith(`${PROVISIONING.SUB_DIRECTORY.NEW}`);
   });
 });

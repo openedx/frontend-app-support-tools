@@ -7,9 +7,9 @@ import ROUTES from '../../../../data/constants/routes';
 
 const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
 
-const useHistoryPush = jest.fn();
+const mockHistoryPush = jest.fn();
 const historyMock = {
-  push: useHistoryPush,
+  push: mockHistoryPush,
   location: jest.fn(),
   listen: jest.fn(),
   replace: jest.fn(),
@@ -52,7 +52,7 @@ describe('DashboardTableBadges', () => {
     renderWithRouter(<DashboardTableActionsWrapper row={row} />);
     const editButton = screen.getByTestId(`Edit-${row.values.uuid}`);
     fireEvent.click(editButton);
-    expect(useHistoryPush).toHaveBeenCalledWith(`${HOME}/${row.values.uuid}/edit`);
-    expect(useHistoryPush).toHaveBeenCalledTimes(1);
+    expect(mockHistoryPush).toHaveBeenCalledWith(`${HOME}/${row.values.uuid}/edit`);
+    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
   });
 });

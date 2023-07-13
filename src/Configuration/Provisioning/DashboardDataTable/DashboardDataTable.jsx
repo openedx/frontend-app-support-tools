@@ -10,14 +10,14 @@ import DashboardTableActions from './DashboardTableActions';
 import DashboardTableBadges from './DashboardTableBadges';
 import { sortDataTableData, transformDataTableData, transformDatatableDate } from '../data/utils';
 
+// Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
+
 const FilterStatus = (rest) => <DataTable.FilterStatus showFilteredFields={false} {...rest} />;
 
 const DashboardDataTable = () => {
   const { enterpriseSubsidies } = useContextSelector(DashboardContext, v => v[0]);
   const { hydrateEnterpriseSubsidies } = useDashboardContext();
   const [isLoading, setIsLoading] = useState(true);
-
-  // Implementation due to filterText value displaying accessor value customerName as opposed to Customer Name
 
   const fetchData = useCallback(async (datatableProps) => {
     setIsLoading(true);
