@@ -1,17 +1,21 @@
 import { camelCaseObject } from '@edx/frontend-platform';
 import {
   createCatalogs,
-  lmsCustomerCatalog,
-  selectProvisioningContext,
-  sortedCatalogQueries,
-  hasValidPolicyAndSubidy,
-  getCamelCasedConfigAttribute,
-  extractDefinedCatalogTitle,
-  normalizeSubsidyDataTableData,
-  filterIndexOfCatalogQueryTitle,
-  createSubsidy,
   createPolicy,
+  createSubsidy,
   determineInvalidFields,
+  extractDefinedCatalogTitle,
+  filterByEnterpriseCustomerName,
+  filterIndexOfCatalogQueryTitle,
+  getCamelCasedConfigAttribute,
+  hasValidPolicyAndSubidy,
+  lmsCustomerCatalog,
+  normalizeSubsidyDataTableData,
+  selectProvisioningContext,
+  sortDataTableData,
+  sortedCatalogQueries,
+  transformDataTableData,
+  transformDatatableDate,
   transformPolicyData,
 } from '../utils';
 import {
@@ -105,17 +109,35 @@ describe('extractDefinedCatalogTitle', () => {
 });
 
 describe('normalizeSubsidyDataTableData', () => {
-  const fetchedData = camelCaseObject(sampleDataTableData(10));
-  const redirectURL = jest.fn();
-  const actionIcon = jest.fn();
   it('returns the correct data', () => {
-    const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
-    fetchedData.forEach((item, index) => {
-      expect(normalizedData[index].enterpriseCustomerUuid).toEqual(item.enterpriseCustomerUuid);
-      const convertedActiveDateTime = new Date(item.activeDatetime).toLocaleDateString().replace(/\//g, '-');
-      const convertedExpirationDateTime = new Date(item.expirationDatetime).toLocaleDateString().replace(/\//g, '-');
-      expect(normalizedData[index].activeDatetime).toEqual(convertedActiveDateTime);
-      expect(normalizedData[index].expirationDatetime).toEqual(convertedExpirationDateTime);
+    const fetchedSubsidyData = camelCaseObject(sampleDataTableData(10));
+    const fetchedCustomerData = fetchedSubsidyData.results.map((item) => ({
+      id: item.enterpriseCustomerUuid,
+      name: item.customerName,
+    }));
+    const actionIcon = jest.fn();
+    const normalizedData = normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData });
+    fetchedSubsidyData.results.forEach((item, index) => {
+      expect(normalizedData.results[index].uuid).toEqual(item.uuid);
+      expect(normalizedData.results[index].activeDatetime).toEqual(item.activeDatetime);
+      expect(normalizedData.results[index].expirationDatetime).toEqual(item.expirationDatetime);
+    });
+  });
+  it('returns empty array in testing flag false', () => {
+    const emptySubsidy = sampleDataTableData(5, false);
+    expect(emptySubsidy).toEqual([]);
+  });
+  it('returns empty array in testing flag false and count is zero', () => {
+    const fetchedSubsidyData = camelCaseObject(sampleDataTableData(0));
+    const fetchedCustomerData = fetchedSubsidyData.results.map((item) => ({
+      id: item.enterpriseCustomerUuid,
+      name: item.customerName,
+    }));
+    const actionIcon = jest.fn();
+    const emptySubsidy = normalizeSubsidyDataTableData({ fetchedSubsidyData, actionIcon, fetchedCustomerData });
+    expect(emptySubsidy).toEqual({
+      count: 0,
+      results: [],
     });
   });
 });
@@ -306,5 +328,121 @@ describe('transformPolicyData', () => {
   it('returns an empty array when no policies are passed', async () => {
     const output = await transformPolicyData({ policies: [] }, [], []);
     expect(output).toEqual([]);
+  });
+});
+
+describe('transformDatatableDate', () => {
+  it('returns the correct date', () => {
+    const dateStrings = '2023-06-28T18:03:09.898Z';
+    const output = '6-28-2023';
+    expect(transformDatatableDate(dateStrings)).toEqual(output);
+  });
+  it('returns null if no date is passed', () => {
+    const output = null;
+    expect(transformDatatableDate()).toEqual(output);
+  });
+});
+
+describe('filterDatatableData', () => {
+  it('returns empty object if no data is passed', () => {
+    const output = {};
+    expect(transformDataTableData({ filters: {} })).toEqual(output);
+  });
+  it('returns empty object if no filters are passed', () => {
+    const output = {
+      enterpriseCustomerName: 'testName',
+      enterpriseCustomerUuid: 'testUUID',
+    };
+    expect(transformDataTableData(
+      {
+        filters: [{
+          id: 'enterpriseCustomerName',
+          value: 'testName',
+        },
+        {
+          id: 'enterpriseCustomerUuid',
+          value: 'testUUID',
+        },
+        ],
+      },
+    )).toEqual(output);
+  });
+});
+
+describe('sortDatatableData', () => {
+  it('returns null if no data is passed', () => {
+    const output = null;
+    expect(sortDataTableData({ sortBy: {} })).toEqual(output);
+  });
+  it('returns a sort by expirationDateTime if isActive is passed as the id', () => {
+    const output = 'expirationDatetime';
+
+    // desc is true
+    expect(sortDataTableData({
+      sortBy:
+        [{
+          id: 'isActive',
+          desc: true,
+        }],
+    })).toEqual(`-${output}`);
+
+    // desc is false
+    expect(sortDataTableData({
+      sortBy:
+        [{
+          id: 'isActive',
+          desc: false,
+        }],
+    })).toEqual(output);
+  });
+  it('returns a sort by title if title is passed as the id', () => {
+    const output = 'title';
+
+    // desc is true
+    expect(sortDataTableData({
+      sortBy:
+        [{
+          id: 'title',
+          desc: true,
+        }],
+    })).toEqual(`-${output}`);
+
+    // desc is false
+    expect(sortDataTableData({
+      sortBy:
+        [{
+          id: 'title',
+          desc: false,
+        }],
+    })).toEqual(output);
+  });
+});
+
+describe('filterByEnterpriseCustomerName', () => {
+  const truefilterBy = {
+    enterpriseCustomerName: 'Test Enterprise',
+  };
+  const falseFilterBy = {
+    enterpriseCustomerName: 'Pikachu',
+  };
+  const fetchedCustomerData = [
+    {
+      id: 'a929e999-2487-4a53-9741-92e0d2022598',
+      name: 'Test Enterprise',
+    },
+    {
+      id: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0',
+      name: 'You can do better',
+    },
+  ];
+  it('returns the correct data', () => {
+    const output = {
+      enterpriseCustomerUuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+    };
+    expect(filterByEnterpriseCustomerName({ filterBy: truefilterBy, fetchedCustomerData })).toEqual(output);
+  });
+  it('returns an empty object if no customer name matches', () => {
+    const output = {};
+    expect(filterByEnterpriseCustomerName({ filterBy: falseFilterBy, fetchedCustomerData })).toEqual(output);
   });
 });

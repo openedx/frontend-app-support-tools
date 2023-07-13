@@ -244,24 +244,24 @@ export function getCamelCasedConfigAttribute(attribute) {
  * @param {Function} redirectURL - The function to be called when the icon is clicked, redirects to passed UUID
  * @returns - The normalized data to be displayed in the table
  */
-export function normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL }) {
-  if (fetchedData.length === 0) {
-    return [];
+export function normalizeSubsidyDataTableData({ fetchedSubsidyData, fetchedCustomerData }) {
+  if (fetchedSubsidyData.count === 0) {
+    return fetchedSubsidyData;
   }
-  const normalizedData = fetchedData.map((item) => {
+  const normalizedData = fetchedSubsidyData.results.map((item) => {
     const {
-      uuid, activeDatetime, expirationDatetime, ...rest
+      enterpriseCustomerUuid,
+      ...rest
     } = item;
-    const redirectUrl = () => redirectURL(uuid);
     return {
       ...rest,
-      uuid,
-      activeDatetime: new Date(activeDatetime).toLocaleDateString().replace(/\//g, '-'),
-      expirationDatetime: new Date(expirationDatetime).toLocaleDateString().replace(/\//g, '-'),
-      actions: actionIcon(redirectUrl),
+      enterpriseCustomerName: fetchedCustomerData.find(({ id }) => id === enterpriseCustomerUuid)?.name ?? '',
     };
   });
-  return normalizedData;
+  return {
+    ...fetchedSubsidyData,
+    results: normalizedData,
+  };
 }
 /**
  * Creates a new subsidy for the specified valid enterprise customer.
@@ -441,3 +441,72 @@ export function generatePolicyName(formData, index) {
   const { subsidyTitle, policies } = formData;
   return `${subsidyTitle} --- ${extractDefinedCatalogTitle(policies[index])}`;
 }
+
+// Start of Datatable functions
+
+/**
+ * Takes a date string and returns a date string in the format of MM-DD-YYYY
+ * @param {String} date - The date string to be transformed
+ * @returns - Returns a date string in the format of MM-DD-YYYY
+ */
+export function transformDatatableDate(date) {
+  if (!date) {
+    return null;
+  }
+  return new Date(date).toLocaleDateString().replace(/\//g, '-');
+}
+
+/**
+ * Destructures `filters` from datatable context prop that builds and returns an
+ * object used to build the URLSearchParams for subsidies
+ * @param {Object} filters - The filter object from the datatable
+ * @returns - Returns an object that can be used to filter the API response
+ */
+export function transformDataTableData({ filters }) {
+  const filterObj = {};
+  if (filters.length > 0) {
+    filters.forEach((filterItem) => {
+      filterObj[filterItem.id] = filterItem.value;
+    });
+  }
+  return filterObj;
+}
+
+/**
+ * Destructures `sortBy` from datatable context prop and returns
+ * a string used to build the URLSearchParams for subsidies
+ * @param {Object} sortBy - The sort object from the datatable
+ * @returns - Returns a string that can be used to sort the API response
+ */
+export function sortDataTableData({ sortBy }) {
+  const sortByObject = sortBy[0];
+  if (!sortByObject) {
+    return null;
+  }
+  if (sortByObject.id === 'isActive') {
+    return sortByObject.desc ? '-expirationDatetime' : 'expirationDatetime';
+  }
+  return sortByObject.desc ? `-${sortByObject.id}` : sortByObject.id;
+}
+
+/**
+ * Filters the enterpriseCustomerName from the fetchedCustomerData and returns the enterpriseCustomerUuid
+ * @param {Object} fetchedCustomerData - The fetchedCustomerData from the API
+ * @param {Object} filterBy - The filter object from the datatable
+ * @returns - Returns the enterpriseCustomerUuid
+ */
+export function filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy }) {
+  const filteredData = filterBy;
+  if (filterBy.enterpriseCustomerName) {
+    const enterpriseUUID = fetchedCustomerData.filter(
+      customer => customer.name.toLowerCase().includes(filterBy.enterpriseCustomerName.toLowerCase()),
+    )[0]?.id;
+    if (enterpriseUUID) {
+      filteredData.enterpriseCustomerUuid = enterpriseUUID;
+    }
+    delete filteredData.enterpriseCustomerName;
+  }
+  return filteredData;
+}
+
+// End of Datatable functions

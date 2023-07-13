@@ -4,9 +4,16 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { useHistory } from 'react-router';
 import Dashboard from '../Dashboard';
 import PROVISIONING_PAGE_TEXT, { toastText } from '../data/constants';
-import { DashboardContext, initialStateValue } from '../../testData/DashboardContextWrapper';
+import { DashboardContext, initialStateValue } from '../../testData/Dashboard';
 
 const { DASHBOARD } = PROVISIONING_PAGE_TEXT;
+
+jest.mock('../data/hooks', () => ({
+  ...jest.requireActual('../data/hooks'),
+  useDashboardContext: () => ({
+    hydrateEnterpriseSubsidies: jest.fn(),
+  }),
+}));
 
 const DashboardWrapper = ({
   successfulPlanCreation = false,

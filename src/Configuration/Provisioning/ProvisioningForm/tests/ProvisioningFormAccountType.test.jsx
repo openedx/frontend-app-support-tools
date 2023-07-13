@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { ProvisioningContext, initialStateValue } from '../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import ProvisioningFormAccountType from '../ProvisioningFormAccountType';

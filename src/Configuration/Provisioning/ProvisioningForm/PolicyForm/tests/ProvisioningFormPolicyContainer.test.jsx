@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { screen } from '@testing-library/react';
 import ProvisioningFormPolicyContainer from '../ProvisioningFormPolicyContainer';
-import { ProvisioningContext, initialStateValue } from '../../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
 
 const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;

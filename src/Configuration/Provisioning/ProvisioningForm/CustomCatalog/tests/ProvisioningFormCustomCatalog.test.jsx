@@ -3,8 +3,13 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import ProvisioningFormCustomCatalog from '../ProvisioningFormCustomCatalog';
 import {
-  ProvisioningContext, initialStateValue, sampleCatalogQueries, singlePolicy,
+  sampleCatalogQueries,
+  singlePolicy,
 } from '../../../../testData';
+import {
+  ProvisioningContext,
+  initialStateValue,
+} from '../../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../../data/constants';
 
 const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;

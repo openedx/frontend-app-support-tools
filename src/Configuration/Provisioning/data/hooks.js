@@ -2,24 +2,55 @@ import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject } from '@edx/frontend-platform';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, USES_LOCAL_TEST_DATA } from './constants';
+import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, MAX_PAGE_SIZE } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
 import {
-  updatePolicies, getCamelCasedConfigAttribute, normalizeSubsidyDataTableData, filterIndexOfCatalogQueryTitle,
+  updatePolicies,
+  getCamelCasedConfigAttribute,
+  normalizeSubsidyDataTableData,
+  filterIndexOfCatalogQueryTitle,
+  filterByEnterpriseCustomerName,
 } from './utils';
 import { DashboardContext } from '../DashboardContext';
-import { sampleDataTableData } from '../../testData/constants';
+import SubsidyApiService from '../../../data/services/SubsidyApiService';
 
 export function useDashboardContext() {
   const setState = useContextSelector(DashboardContext, v => v[1]);
-  const hydrateEnterpriseSubsidies = useCallback((count, actionIcon, redirectURL) => {
-    const fetchedData = camelCaseObject(sampleDataTableData(count, USES_LOCAL_TEST_DATA));
-    const normalizedData = normalizeSubsidyDataTableData({ fetchedData, actionIcon, redirectURL });
+
+  const hydrateEnterpriseSubsidies = useCallback(async ({ pageIndex, sortBy, filterBy }) => {
+    // Retrieve Basic List
+    const customerData = await LmsApiService.fetchEnterpriseCustomersBasicList();
+    const fetchedCustomerData = camelCaseObject(customerData.data);
+
+    // Filter by enterprise customer uuid for the enterprise customer uuid
+    const filteredData = filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy });
+
+    // Retrieve Subsidy Data with sorted and filtered data
+    const subsidyData = await SubsidyApiService.getAllSubsidies({
+      pageIndex,
+      pageSize: MAX_PAGE_SIZE,
+      sortBy,
+      filteredData,
+    });
+
+    const fetchedSubsidyData = camelCaseObject(subsidyData.data);
+
+    // Normalize data for table
+    const normalizedData = normalizeSubsidyDataTableData({
+      fetchedSubsidyData,
+      fetchedCustomerData,
+    });
+
+    // Set state
     setState(s => ({
       ...s,
-      enterpriseSubsidies: [normalizedData],
+      enterpriseSubsidies: {
+        fetchedCustomerData,
+        ...normalizedData,
+        pageIndex,
+      },
     }));
-  });
+  }, [setState]);
 
   return {
     hydrateEnterpriseSubsidies,
@@ -28,7 +59,6 @@ export function useDashboardContext() {
 
 export default function useProvisioningContext() {
   const setState = useContextSelector(ProvisioningContext, (v) => v[1]);
-
   const updateRootDataState = useCallback((newDataAttribute) => {
     setState((s) => ({
       ...s,

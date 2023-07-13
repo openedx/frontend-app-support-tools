@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
-import { ProvisioningContext, initialStateValue } from '../../../testData';
+import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormCustomer from '../ProvisioningFormCustomer';
 
 const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
-const testFinancialLinkage = '0000abc12a332c1444';
+const testFinancialLinkage = '00k0abc12a332c1444';
 const ProvisioningFormCustomerWrapper = ({
   value = initialStateValue,
 }) => (

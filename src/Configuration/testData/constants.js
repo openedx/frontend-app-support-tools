@@ -90,7 +90,10 @@ export const sampleDataTableData = (count, testing = true) => {
       expiration_datetime: '2021-12-31T16:31:57.251750Z',
     });
   }
-  return data;
+  return {
+    count: data.length,
+    results: data,
+  };
 };
 
 export function getSampleCustomers(count = 10) {
@@ -135,7 +138,7 @@ export const sampleMultiplePolicyFormData = {
     },
   ],
   enterpriseUUID: uuidv4(),
-  financialIdentifier: '0abc1230abc1234321',
+  financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
   internalOnly: 'Yes',
@@ -160,7 +163,7 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
     },
   ],
   enterpriseUUID: uuidv4(),
-  financialIdentifier: '0abc1230abc1234321',
+  financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
   internalOnly: 'No',
@@ -192,7 +195,7 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
     },
   ],
   enterpriseUUID: 'abc',
-  financialIdentifier: '0abc1230abc1234321',
+  financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-06',
   endDate: '2023-04-27',
   internalOnly: 'Yes',
@@ -224,7 +227,7 @@ export const sampleSingleEmptyData = {
     },
   ],
   enterpriseUUID: 'abc',
-  financialIdentifier: '0abc1230abc1234321',
+  financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-06',
   endDate: '2023-04-27',
   internalOnly: 'Yes',

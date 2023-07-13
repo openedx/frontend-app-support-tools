@@ -1,8 +1,24 @@
-import { getConfig } from '@edx/frontend-platform';
+import { getConfig, snakeCaseObject } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import snakeCase from 'lodash.snakecase';
 
 class SubsidyApiService {
   static apiClient = getAuthenticatedHttpClient;
+
+  static getAllSubsidies = ({
+    pageIndex,
+    pageSize,
+    sortBy,
+    filteredData,
+  }) => {
+    const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
+    const optionalUrlParams = new URLSearchParams(snakeCaseObject({
+      pageSize,
+      sortBy: sortBy ? snakeCase(sortBy) : 'uuid',
+      ...filteredData,
+    })).toString();
+    return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${pageIndex}&${optionalUrlParams}`);
+  };
 
   static postSubsidy = (
     financialIdentifier,
