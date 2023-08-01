@@ -27,9 +27,9 @@ describe('Enrollment Create form', () => {
   it('Default form rendering', () => {
     let createFormModal = wrapper.find('ModalDialog#create-enrollment');
     expect(createFormModal.prop('isOpen')).toEqual(true);
-    const modeSelectionDropdown = wrapper.find('select#mode');
-    const modeChangeReasonDropdown = wrapper.find('select#reason');
-    const commentsTextarea = wrapper.find('textarea#comments');
+    const modeSelectionDropdown = wrapper.find('#mode');
+    const modeChangeReasonDropdown = wrapper.find('#reason');
+    const commentsTextarea = wrapper.find('#comments');
     expect(modeSelectionDropdown.find('option')).toHaveLength(9);
     expect(modeChangeReasonDropdown.find('option')).toHaveLength(5);
     expect(commentsTextarea.text()).toEqual('');
@@ -43,14 +43,14 @@ describe('Enrollment Create form', () => {
     it('Successful form submission', async () => {
       const apiMock = jest.spyOn(api, 'postEnrollment').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
-
-      wrapper.find('input#courseID').simulate('change', { target: { value: 'course-v1:testX+test123+2030' } });
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test create enrollment' } });
+      wrapper.find('input.form-control').simulate('change', { target: { value: 'course-v1:testX+test123+2030' } });
+      wrapper.find('select.form-control').at(0).simulate('change', { target: { value: 'Other' } });
+      wrapper.find('select.form-control').at(1).simulate('change', { target: { value: 'verified' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'test create enrollment' } });
       expect(wrapper.find('div.spinner-border').length).toEqual(0);
       wrapper.find('button.btn-primary').simulate('click');
       expect(wrapper.find('div.spinner-border').length).toEqual(1);
+
       expect(apiMock).toHaveBeenCalledTimes(1);
 
       await waitForComponentToPaint(wrapper);
@@ -72,14 +72,13 @@ describe('Enrollment Create form', () => {
         ],
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
-      wrapper.find('input#courseID').simulate('change', { target: { value: 'course-v1:testX+test123+2030' } });
+      wrapper.find('input.form-control').simulate('change', { target: { value: 'course-v1:testX+test123+2030' } });
 
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test create enrollment' } });
+      wrapper.find('select.form-control').at(0).simulate('change', { target: { value: 'Other' } });
+      wrapper.find('select.form-control').at(1).simulate('change', { target: { value: 'verified' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'test create enrollment' } });
       wrapper.find('button.btn-primary').simulate('click');
       await waitForComponentToPaint(wrapper);
-
       expect(apiMock).toHaveBeenCalledTimes(1);
       expect(wrapper.find('.alert').text()).toEqual('Error creating enrollment');
     });

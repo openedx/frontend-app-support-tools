@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, InputSelect, ModalDialog,
+  Button, ModalDialog, Form,
 } from '@edx/paragon';
 import AlertList from '../../userMessages/AlertList';
 import { patchEnrollment } from '../data/api';
@@ -28,9 +28,18 @@ export default function ChangeEnrollmentForm({
 
   const getModes = () => {
     const modeList = [];
-    modeList.push({ label: 'New Mode', value: '', disabled: true });
+
+    modeList.push(
+      <option value="" disabled="true" selected="true">
+        New Mode
+      </option>,
+    );
     enrollment.courseModes.map(enrollmentMode => (
-      !(enrollmentMode.slug === enrollment.mode) && modeList.push(enrollmentMode.slug)
+      !(enrollmentMode.slug === enrollment.mode) && modeList.push(
+        <option key={enrollmentMode.slug}>
+          {enrollmentMode.slug}
+        </option>,
+      )
     ));
     return modeList;
   };
@@ -98,37 +107,52 @@ export default function ChangeEnrollmentForm({
           </div>
         </div>
         <hr />
+        <Form.Group>
+          <Form.Control
+            as="select"
+            id="mode"
+            name="mode"
+            disabled={hideOnSubmit}
+            onChange={(event) => setMode(event.target.value)}
+          >
+            {getModes()}
 
-        <InputSelect
-          className="mb-n3"
-          type="select"
-          options={getModes()}
-          value=""
-          id="mode"
-          name="mode"
-          onChange={(event) => setMode(event)}
-          disabled={hideOnSubmit}
-        />
-        <InputSelect
-          className="mb-4"
-          type="select"
-          options={reasons}
-          id="reason"
-          name="reason"
-          value=""
-          onChange={(event) => setReason(event)}
-          disabled={hideOnSubmit}
-        />
-        <Input
-          placeholder="Explanation"
-          type="textarea"
-          id="comments"
-          name="comments"
-          defaultValue=""
-          onChange={(event) => setComments(event.target.value)}
-          disabled={hideOnSubmit}
-          ref={forwardedRef}
-        />
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Control
+            className="mb-4"
+            as="select"
+            id="reason"
+            value=""
+            name="reason"
+            disabled={hideOnSubmit}
+            onChange={(event) => setReason(event.target.value)}
+          >
+            {reasons.map(item => (
+              <option
+                value={item.value}
+                key={item.value}
+                disabled={item.disabled}
+              >
+                {item.label}
+              </option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Control
+            placeholder="Explanation"
+            as="textarea"
+            autoResize
+            id="comments"
+            name="comments"
+            defaultValue=""
+            disabled={hideOnSubmit}
+            ref={forwardedRef}
+            onChange={(event) => setComments(event.target.value)}
+          />
+        </Form.Group>
       </div>
     </form>
   );
@@ -172,7 +196,7 @@ export default function ChangeEnrollmentForm({
               >
                 Submit
               </Button>
-            )},
+            )}
         </ActionRow>
       </ModalDialog.Footer>
     </ModalDialog>

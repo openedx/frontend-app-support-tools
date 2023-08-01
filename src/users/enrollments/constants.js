@@ -2,7 +2,9 @@ export const CHANGE = 'change';
 export const CREATE = 'create';
 
 export const modes = [
-  { label: 'Mode', value: '', disabled: true },
+  {
+    label: 'Mode', value: '', disabled: true, selected: 'true',
+  },
   { label: 'Honor', value: 'honor' },
   { label: 'Professional', value: 'professional' },
   { label: 'Verified', value: 'verified' },
@@ -14,7 +16,9 @@ export const modes = [
 ];
 
 export const reasons = [
-  { label: 'Reason', value: '', disabled: true },
+  {
+    label: 'Reason', value: '', disabled: true, selected: 'true',
+  },
   { label: 'Financial Assistance', value: 'Financial Assistance' },
   { label: 'Upset Learner', value: 'Upset Learner' },
   { label: 'Teaching Assistant', value: 'Teaching Assistant' },
