@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, ModalDialog,
+  Button, ModalDialog, Form,
 } from '@edx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -56,7 +56,7 @@ export default function ExpireEntitlementForm({
   });
 
   const expireEntitlementForm = (
-    <form>
+    <Form>
       <AlertList topic="expireEntitlement" className="mb-3" />
       <div className="row small">
         <div className="col-sm-6">
@@ -77,17 +77,20 @@ export default function ExpireEntitlementForm({
         </div>
       </div>
       <hr />
-      <Input
-        type="textarea"
-        id="comments"
-        name="comments"
-        placeholder="Explanation"
-        defaultValue=""
-        onChange={(event) => setComments(event.target.value)}
-        disabled={hideSubmit}
-        ref={forwardedRef}
-      />
-    </form>
+
+      <Form.Group>
+        <Form.Control
+          as="textarea"
+          id="comments"
+          name="comments"
+          placeholder="Explanation"
+          defaultValue=""
+          onChange={(event) => setComments(event.target.value)}
+          disabled={hideSubmit}
+          ref={forwardedRef}
+        />
+      </Form.Group>
+    </Form>
   );
 
   return (
@@ -117,7 +120,7 @@ export default function ExpireEntitlementForm({
           >
             Close
           </ModalDialog.CloseButton>
-          { showLoader
+          {showLoader
             ? (<div className="spinner-border text-primary" role="status" />)
             : (
               <Button

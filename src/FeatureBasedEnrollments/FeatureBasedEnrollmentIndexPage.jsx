@@ -8,7 +8,7 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Button } from '@edx/paragon';
+import { Button, Form } from '@edx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
 import AlertList from '../userMessages/AlertList';
@@ -82,8 +82,8 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
   // To change the url with appropriate query param if query param info is not present in URL
   useLayoutEffect(() => {
     if (searchValue
-        && location.pathname.indexOf(TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]) !== -1
-        && !params.get('course_id')) {
+      && location.pathname.indexOf(TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]) !== -1
+      && !params.get('course_id')) {
       pushHistoryIfChanged(`${TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]}/?course_id=${searchValue}`);
     }
   });
@@ -94,11 +94,21 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
       <AlertList topic="featureBasedEnrollmentGeneral" className="mb-3" />
 
       <section className="mb-3">
-        <form className="form-inline">
-          <label htmlFor="courseId">Course ID</label>
-          <Input ref={searchRef} className="mr-1 ml-1 col-sm-4" name="courseId" type="text" defaultValue={searchValue} />
-          <Button type="submit" onClick={submit} className="ml-1 col-sm-1" variant="primary">Search</Button>
-        </form>
+        <Form className="m-0">
+          <Form.Group>
+            <Form.Row>
+              <Form.Label className="mt-2" htmlFor="courseId">Course ID</Form.Label>
+              <Form.Control
+                ref={searchRef}
+                className="ml-1 mr-2 col-sm-4"
+                name="courseId"
+                defaultValue={searchValue}
+              />
+
+              <Button type="submit" onClick={submit} className="col-sm-1" variant="primary">Search</Button>
+            </Form.Row>
+          </Form.Group>
+        </Form>
       </section>
 
       {searchValue && <FeatureBasedEnrollment courseId={searchValue} apiFetchSignal={apiFetchSignal} />}

@@ -1,4 +1,4 @@
-import { Input, Button } from '@edx/paragon';
+import { Button, Form } from '@edx/paragon';
 import React, { useState, useCallback } from 'react';
 import getLinkProgramEnrollmentDetails from './data/api';
 import LinkProgramEnrollmentsTable from './LinkProgramEnrollmentsTable';
@@ -45,33 +45,38 @@ export default function LinkProgramEnrollments() {
     <>
       <h3>Link Program Enrollments</h3>
       <section className="my-3">
-        <form>
+        <Form>
           <div className="my-2">
-            <label htmlFor="programUUID">Program UUID</label>
-            <Input
-              className="mr-1 col-sm-12"
-              name="programUUID"
-              type="text"
-              defaultValue={programID}
-              onChange={onProgramChange}
-            />
+            <Form.Group>
+              <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
+
+              <Form.Control
+                name="programUUID"
+                defaultValue={programID}
+                type="text"
+                onChange={onProgramChange}
+              />
+            </Form.Group>
           </div>
           <div className="my-4">
-            <label
-              className="d-flex align-items-start"
-              htmlFor="usernamePairText"
-            >
-              List of External key and username pairings (one per line)
-            </label>
-            <Input
-              className="mr-1 col-sm-12"
-              name="usernamePairText"
-              type="textarea"
-              rows="10"
-              onChange={onUserTextChange}
-              defaultValue={usernamePairText}
-              placeholder="external_user_key,lms_username"
-            />
+
+            <Form.Group>
+              <Form.Label
+                className="d-flex align-items-start"
+                htmlFor="usernamePairText"
+              >
+                List of External key and username pairings (one per line)
+              </Form.Label>
+              <Form.Control
+                name="usernamePairText"
+                as="textarea"
+                autoResize
+                rows="10"
+                onChange={onUserTextChange}
+                defaultValue={usernamePairText}
+                placeholder="external_user_key,lms_username"
+              />
+            </Form.Group>
           </div>
           <Button
             type="submit"
@@ -80,15 +85,15 @@ export default function LinkProgramEnrollments() {
           >
             Submit
           </Button>
-        </form>
+        </Form>
       </section>
       {((errorMessage && errorMessage.length > 0)
-      || (successMessage && successMessage.length > 0)) && (
-        <LinkProgramEnrollmentsTable
-          successMessage={successMessage}
-          errorMessage={errorMessage}
-          usernamePairText={usernamePairText}
-        />
+        || (successMessage && successMessage.length > 0)) && (
+          <LinkProgramEnrollmentsTable
+            successMessage={successMessage}
+            errorMessage={errorMessage}
+            usernamePairText={usernamePairText}
+          />
       )}
     </>
   );

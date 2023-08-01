@@ -27,7 +27,7 @@ describe('Expire Entitlement Form', () => {
   it('Default form render', () => {
     let expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
     expect(expireFormModal.prop('isOpen')).toEqual(true);
-    const commentsTextArea = wrapper.find('textarea#comments');
+    const commentsTextArea = wrapper.find('#comments');
     expect(commentsTextArea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
@@ -44,7 +44,7 @@ describe('Expire Entitlement Form', () => {
       const apiMock = jest.spyOn(api, 'patchEntitlement').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'expiring entitlement' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'expiring entitlement' } });
       let submitButton = wrapper.find('button.btn-primary');
       expect(submitButton.prop('disabled')).toBeFalsy();
       expect(wrapper.find('div.spinner-border').length).toEqual(0);
@@ -75,7 +75,7 @@ describe('Expire Entitlement Form', () => {
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'expiring entitlement' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'expiring entitlement' } });
       wrapper.find('button.btn-primary').simulate('click');
       await waitForComponentToPaint(wrapper);
 

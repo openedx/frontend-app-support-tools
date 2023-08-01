@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, ModalDialog,
+  Button, ModalDialog, Form,
 } from '@edx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -24,6 +24,15 @@ export default function CreateEntitlementForm({
   const [modalIsOpen, setModalIsOpen] = useState(true);
   const [showLoader, setShowLoader] = useState(false);
   const { add, clear } = useContext(UserMessagesContext);
+
+  const modeOptions = [
+    {
+      label: 'Mode', value: '', disabled: true, selected: 'true',
+    },
+    { label: 'Verified', value: 'verified' },
+    { label: 'Professional', value: 'professional' },
+    { label: 'No ID Professional', value: 'no-id-professional' },
+  ];
 
   const submit = useCallback(() => {
     clear('createEntitlement');
@@ -58,41 +67,53 @@ export default function CreateEntitlementForm({
   });
 
   const createEntitlementForm = (
-    <form>
+    <Form>
       <AlertList topic="createEntitlement" className="mb-3" />
-      <Input
-        className="mb-4"
-        type="text"
-        id="courseUuid"
-        name="courseUuid"
-        placeholder="Course UUID"
-        value={courseUuid}
-        onChange={(event) => setCourseUuid(event.target.value)}
-        ref={forwardedRef}
-      />
-      <Input
-        className="mb-4"
-        type="select"
-        id="mode"
-        name="mode"
-        defaultValue=""
-        options={[
-          { label: 'Mode', value: '', disabled: true },
-          { label: 'Verified', value: 'verified' },
-          { label: 'Professional', value: 'professional' },
-          { label: 'No ID Professional', value: 'no-id-professional' },
-        ]}
-        onChange={(event) => setMode(event.target.value)}
-      />
-      <Input
-        placeholder="Explanation"
-        type="textarea"
-        id="comments"
-        name="comments"
-        defaultValue=""
-        onChange={(event) => setComments(event.target.value)}
-      />
-    </form>
+      <Form.Group>
+        <Form.Control
+          className="mb-4"
+          id="courseUuid"
+          name="courseUuid"
+          placeholder="Course UUID"
+          value={courseUuid}
+          onChange={(event) => setCourseUuid(event.target.value)}
+          ref={forwardedRef}
+        />
+      </Form.Group>
+
+      <Form.Group>
+        <Form.Control
+          className="mb-4"
+          as="select"
+          id="mode"
+          name="mode"
+          defaultValue=""
+          onChange={(event) => setMode(event.target.value)}
+        >
+          {modeOptions.map(item => (
+            <option
+              value={item.value}
+              disabled={item.disabled}
+              selected={item.selected}
+              key={item.value}
+            >
+              {item.label}
+            </option>
+          ))}
+        </Form.Control>
+      </Form.Group>
+      <Form.Group>
+        <Form.Control
+          placeholder="Explanation"
+          as="textarea"
+          autoResize
+          id="comments"
+          name="comments"
+          defaultValue=""
+          onChange={(event) => setComments(event.target.value)}
+        />
+      </Form.Group>
+    </Form>
   );
 
   return (
@@ -113,7 +134,7 @@ export default function CreateEntitlementForm({
         </ModalDialog.Title>
       </ModalDialog.Header>
       <ModalDialog.Body>
-        { createEntitlementForm}
+        {createEntitlementForm}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <ActionRow>
@@ -122,7 +143,7 @@ export default function CreateEntitlementForm({
           >
             Close
           </ModalDialog.CloseButton>
-          { showLoader
+          {showLoader
             ? (<div className="spinner-border text-primary" role="status" />)
             : (
               <Button

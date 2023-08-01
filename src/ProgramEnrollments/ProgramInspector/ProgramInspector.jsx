@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Alert, Col, Row, Button, Input,
+  Alert, Col, Row, Button, Form,
 } from '@edx/paragon';
 import { history } from '@edx/frontend-platform';
 import { getSsoRecords } from '../../users/data/api';
@@ -26,12 +26,12 @@ export default function ProgramInspector({ location }) {
   const [clickEventCall, setClickEventCall] = useState(false);
 
   const getOrgKeyList = () => (orgKeyList
-    ? orgKeyList.map((data) => ({
-      value: data,
-      label: data,
-    }))
+    ? orgKeyList.map((data) => ((
+      <option key={data} value={data}>
+        {data}
+      </option>
+    )))
     : orgKeyList);
-
   const handleSubmit = () => {
     if (!username && !externalUserKey) {
       setUsername(undefined);
@@ -40,8 +40,7 @@ export default function ProgramInspector({ location }) {
       setSsoRecords([]);
       history.push('/programs');
     } else {
-      const newLink = `/programs?edx_user=${
-        username || ''
+      const newLink = `/programs?edx_user=${username || ''
       }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
       if (newLink === location.pathname + location.search) {
         setClickEventCall(!clickEventCall);
@@ -113,50 +112,55 @@ export default function ProgramInspector({ location }) {
       )}
       <h3>Program Enrollments Inspector</h3>
       <section className="my-3">
-        <form>
+        <Form>
           <div className="d-flex">
             <div className="col-sm-4 pl-0">
-              <label htmlFor="username">edX username or email</label>
-              <Input
-                className="col-sm-12"
-                name="username"
-                type="text"
-                defaultValue={username}
-                onChange={(e) => (e.target.value
-                  ? setUsername(e.target.value)
-                  : setUsername(undefined))}
-                placeholder="edx@example.com"
-              />
+              <Form.Group>
+                <Form.Label htmlFor="username"> edX username or email</Form.Label>
+                <Form.Control
+                  name="username"
+                  defaultValue={username}
+                  onChange={(e) => (e.target.value
+                    ? setUsername(e.target.value)
+                    : setUsername(undefined))}
+                  placeholder="edx@example.com"
+                />
+              </Form.Group>
             </div>
             <div className="col-sm-4">
-              <label htmlFor="orgKey">Identity-providing institution</label>
-              <Input
-                className="col-sm-12"
-                name="orgKey"
-                type="select"
-                defaultValue={activeOrgKey}
-                options={getOrgKeyList()}
-                onChange={(e) => setActiveOrgKey(e.target.value)}
-              />
+
+              <Form.Group>
+                <Form.Label htmlFor="orgKey">Identity-providing institution</Form.Label>
+
+                <Form.Control
+                  name="orgKey"
+                  as="select"
+                  defaultValue={activeOrgKey}
+                  onChange={(e) => setActiveOrgKey(e.target.value)}
+                >
+                  {getOrgKeyList()}
+                </Form.Control>
+              </Form.Group>
             </div>
             <div className="col-sm-4 pr-0">
-              <label htmlFor="externalKey">Institution user key</label>
-              <Input
-                className="col-sm-12"
-                name="externalKey"
-                type="text"
-                defaultValue={externalUserKey}
-                onChange={(e) => (e.target.value
-                  ? setExternalUserKey(e.target.value)
-                  : setExternalUserKey(undefined))}
-                placeholder="ex. GTPersonDirectoryID for GT Students"
-              />
+              <Form.Group>
+                <Form.Label htmlFor="externalKey">Institution user key</Form.Label>
+
+                <Form.Control
+                  name="externalKey"
+                  defaultValue={externalUserKey}
+                  onChange={(e) => (e.target.value
+                    ? setExternalUserKey(e.target.value)
+                    : setExternalUserKey(undefined))}
+                  placeholder="ex. GTPersonDirectoryID for GT Students"
+                />
+              </Form.Group>
             </div>
           </div>
           <Button type="submit" className="mt-4" onClick={submit}>
             Search Program Records
           </Button>
-        </form>
+        </Form>
       </section>
 
       {learnerProgramEnrollment && learnerProgramEnrollment.user && (
