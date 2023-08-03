@@ -41,7 +41,7 @@ class LmsApiService {
     active = true,
     policyType = 'PerLearnerSpendCreditAccessPolicy',
   ) => LmsApiService.apiClient().post(
-    `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/admin/policy/`,
+    `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/subsidy-access-policies/`,
     {
       policy_type: policyType,
       description,
