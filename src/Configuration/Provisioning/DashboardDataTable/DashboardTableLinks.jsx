@@ -6,8 +6,7 @@ import ROUTES from '../../../data/constants/routes';
 
 const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
 
-export const PlanIdHyperlink = ({ row }) => {
-  const planRowUuid = row.values.uuid;
+const dashboardLink = (planRowUuid, title) => {
   if (getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION) {
     return (
       <Hyperlink
@@ -15,51 +14,18 @@ export const PlanIdHyperlink = ({ row }) => {
         key={`edit-${planRowUuid}`}
         variant="muted"
       >
-        {planRowUuid}
+        {title}
       </Hyperlink>
     );
   }
-
-  return planRowUuid;
+  return title;
 };
 
-export const PlanTitleHyperlink = ({ row }) => {
-  const planTitle = row.values.title;
-  const planRowUuid = row.values.uuid;
+export const PlanIdHyperlink = ({ row }) => dashboardLink(row.values.uuid, row.values.uuid);
 
-  if (getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION) {
-    return (
-      <Hyperlink
-        destination={`${HOME}/${planRowUuid}/view`}
-        key={`edit-${planRowUuid}`}
-        variant="muted"
-      >
-        {planTitle}
-      </Hyperlink>
-    );
-  }
+export const PlanTitleHyperlink = ({ row }) => dashboardLink(row.values.uuid, row.values.title);
 
-  return planTitle;
-};
-
-export const CustomerNameHyperlink = ({ row }) => {
-  const customerName = row.values.enterpriseCustomerName;
-  const planRowUuid = row.values.uuid;
-
-  if (getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION) {
-    return (
-      <Hyperlink
-        destination={`${HOME}/${planRowUuid}/view`}
-        key={`edit-${planRowUuid}`}
-        variant="muted"
-      >
-        {customerName}
-      </Hyperlink>
-    );
-  }
-
-  return customerName;
-};
+export const CustomerNameHyperlink = ({ row }) => dashboardLink(row.values.uuid, row.values.enterpriseCustomerName);
 
 export const DjangoIconHyperlink = ({ row }) => {
   const rowUuid = row.values.uuid;
