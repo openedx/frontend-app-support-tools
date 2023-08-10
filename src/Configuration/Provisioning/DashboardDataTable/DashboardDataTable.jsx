@@ -6,7 +6,12 @@ import { logError } from '@edx/frontend-platform/logging';
 import { DashboardContext } from '../DashboardContext';
 import { MAX_PAGE_SIZE } from '../data/constants';
 import { useDashboardContext } from '../data/hooks';
-import DashboardTableActions from './DashboardTableActions';
+import {
+  CustomerNameHyperlink,
+  DjangoIconHyperlink,
+  PlanIdHyperlink,
+  PlanTitleHyperlink,
+} from './DashboardTableLinks';
 import DashboardTableBadges from './DashboardTableBadges';
 import { sortDataTableData, transformDataTableData, transformDatatableDate } from '../data/utils';
 
@@ -63,10 +68,12 @@ const DashboardDataTable = () => {
           {
             Header: 'Plan ID',
             accessor: 'uuid',
+            Cell: PlanIdHyperlink,
           },
           {
             Header: 'Plan name',
             accessor: 'title',
+            Cell: PlanTitleHyperlink,
           },
           {
             Header: 'Plan Status',
@@ -78,6 +85,7 @@ const DashboardDataTable = () => {
             Header: 'Customer name',
             accessor: 'enterpriseCustomerName',
             disableSortBy: true,
+            Cell: CustomerNameHyperlink,
           },
           {
             Header: 'Start date',
@@ -96,7 +104,7 @@ const DashboardDataTable = () => {
             accessor: 'actions',
             disableFilters: true,
             disableSortBy: true,
-            Cell: DashboardTableActions,
+            Cell: DjangoIconHyperlink,
           },
         ]}
       />
