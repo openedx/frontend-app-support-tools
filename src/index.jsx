@@ -38,6 +38,11 @@ subscribe(APP_READY, () => {
   const configurationRoutes = [
     <Route
       key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.VIEW}
+      component={ProvisioningFormContainer}
+    />,
+    <Route
+      key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT}
       component={ProvisioningFormContainer}
     />,
