@@ -42,7 +42,7 @@ describe('DashboardTableLinks', () => {
     });
   });
 
-  describe('PlanIdHyperlink', () => {
+  describe('PlanTitleHyperlink', () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
