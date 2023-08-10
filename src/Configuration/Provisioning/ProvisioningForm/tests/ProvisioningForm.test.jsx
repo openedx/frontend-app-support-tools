@@ -36,13 +36,13 @@ describe('ProvisioningForm', () => {
     />);
     expect(screen.getByText(FORM.SUB_TITLE)).toBeTruthy();
   });
-  it('should render policy container given a sample catalog query', () => {
+  it('should render policy container given a sample catalog query', async () => {
     const updatedStateValue = {
       ...initialStateValue,
       alertMessage: '',
       multipleFunds: true,
     };
     renderWithRouter(<ProvisioningFormWrapper value={updatedStateValue} />);
-    waitFor(() => expect(screen.queryByText(FORM.ALERTS.unselectedAccountType)).toBeFalsy());
+    await waitFor(() => expect(screen.queryByText(FORM.ALERTS.unselectedAccountType)).toBeFalsy());
   });
 });

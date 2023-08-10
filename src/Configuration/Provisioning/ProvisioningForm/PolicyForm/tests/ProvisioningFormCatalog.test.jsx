@@ -75,7 +75,7 @@ describe('ProvisioningFormCatalog', () => {
       INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle.split(splitStringBudget)[0],
     )).toBeTruthy();
   });
-  it('sets context state', () => {
+  it('sets context state', async () => {
     const updatedInitialState = {
       ...initialStateValue,
       multipleFunds: false,
@@ -91,6 +91,6 @@ describe('ProvisioningFormCatalog', () => {
 
     const customOption = screen.getByTestId(CATALOG.OPTIONS.custom);
     fireEvent.click(customOption);
-    waitFor(() => expect(customOption.checked).toBeTruthy());
+    await waitFor(() => expect(customOption.checked).toBeTruthy());
   });
 });
