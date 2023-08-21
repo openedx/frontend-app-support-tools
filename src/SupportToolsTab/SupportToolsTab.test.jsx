@@ -3,10 +3,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
-import { history } from '@edx/frontend-platform';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import SupportToolsTab from './SupportToolsTab';
 import { TAB_PATH_MAP } from './constants';
+
+const mockedNavigator = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigator,
+}));
 
 const SupportToolsTabWrapper = ({ pathName }) => (
   <IntlProvider locale="en">
@@ -33,6 +39,10 @@ describe('Support Tools Main tab', () => {
     wrapper.unmount();
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('default page render', () => {
     wrapper = mount(<SupportToolsTabWrapper />);
 
@@ -48,7 +58,6 @@ describe('Support Tools Main tab', () => {
   });
 
   it('Path changes on Tab switch', () => {
-    history.replace = jest.fn();
     wrapper = mount(<SupportToolsTabWrapper />);
 
     let tabs = wrapper.find('nav.nav-tabs a');
@@ -56,7 +65,7 @@ describe('Support Tools Main tab', () => {
     tabs.at(1).simulate('click');
     tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
     const fbeTab = wrapper.find('div.tab-content div#support-tools-tab-tabpane-feature-based-enrollment');
-    expect(history.replace).toHaveBeenCalledWith(TAB_PATH_MAP['feature-based-enrollment']);
+    expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP['feature-based-enrollment'], { replace: true });
     expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
@@ -66,7 +75,7 @@ describe('Support Tools Main tab', () => {
     tabs.at(0).simulate('click');
     tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
     const learnerTab = wrapper.find('div.tab-content div#support-tools-tab-tabpane-learner-information');
-    expect(history.replace).toHaveBeenCalledWith(TAB_PATH_MAP['learner-information']);
+    expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP['learner-information'], { replace: true });
     expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
@@ -75,12 +84,10 @@ describe('Support Tools Main tab', () => {
 
     tabs.at(2).simulate('click');
     tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    expect(history.replace).toHaveBeenCalledWith(TAB_PATH_MAP.programs);
+    expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP.programs, { replace: true });
     expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
     expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
-
-    history.replace.mockReset();
   });
 
   it('default tab changes based on feature-based-enrollment pathname', () => {

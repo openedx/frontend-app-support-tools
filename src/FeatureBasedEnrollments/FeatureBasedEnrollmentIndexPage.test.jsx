@@ -2,13 +2,19 @@ import { mount } from 'enzyme';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
-import { history } from '@edx/frontend-platform';
 import { waitForComponentToPaint } from '../setupTest';
 import FeatureBasedEnrollmentIndexPage from './FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
 
 import * as api from './data/api';
+
+const mockedNavigator = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigator,
+}));
 
 const FeatureBasedEnrollmentIndexPageWrapper = ({ searchQuery }) => (
   <MemoryRouter initialEntries={[`/feature_based_enrollments${searchQuery}`]}>
@@ -35,6 +41,11 @@ describe('Feature Based Enrollment Index Page', () => {
       apiMock.mockReset();
     }
   });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('default page render', async () => {
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
@@ -59,7 +70,6 @@ describe('Feature Based Enrollment Index Page', () => {
 
   it('valid search value', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-    history.push = jest.fn();
 
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
@@ -69,14 +79,11 @@ describe('Feature Based Enrollment Index Page', () => {
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
     expect(wrapper.find('Card')).toHaveLength(2);
-    expect(history.push).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
-
-    history.push.mockReset();
+    expect(mockedNavigator).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
   });
 
   it('api call made on each click', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementation(() => Promise.resolve(fbeEnabledResponse));
-    history.push = jest.fn();
 
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
@@ -89,13 +96,10 @@ describe('Feature Based Enrollment Index Page', () => {
     wrapper.find('button.btn-primary').simulate('click');
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(2);
-
-    history.push.mockReset();
   });
 
   it('empty search value does not yield anything', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-    history.replace = jest.fn();
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     wrapper.find('input[name="courseId"]').instance().value = '';
@@ -104,14 +108,11 @@ describe('Feature Based Enrollment Index Page', () => {
     await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
-    expect(history.replace).toHaveBeenCalledWith('/feature_based_enrollments');
-
-    history.replace.mockReset();
+    expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', { replace: true });
   });
 
   it('Invalid search value', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-    history.replace = jest.fn();
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
 
     wrapper.find('input[name="courseId"]').instance().value = 'invalid-value';
@@ -121,8 +122,6 @@ describe('Feature Based Enrollment Index Page', () => {
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
     expect(wrapper.find('.alert').text()).toEqual('Supplied course ID "invalid-value" is either invalid or incorrect.');
-    expect(history.replace).toHaveBeenCalledWith('/feature_based_enrollments');
-
-    history.replace.mockReset();
+    expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', { replace: true });
   });
 });

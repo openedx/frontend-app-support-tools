@@ -1,4 +1,3 @@
-import { history } from '@edx/frontend-platform';
 import React, {
   useRef,
   useEffect,
@@ -7,7 +6,7 @@ import React, {
   useState,
   useLayoutEffect,
 } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Input, Button } from '@edx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
@@ -18,6 +17,7 @@ import { FEATURE_BASED_ENROLLMENT_TAB, TAB_PATH_MAP } from '../SupportToolsTab/c
 
 export default function FeatureBasedEnrollmentIndexPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = extractParams(location.search);
 
   const searchRef = useRef();
@@ -32,7 +32,7 @@ export default function FeatureBasedEnrollmentIndexPage() {
 
   function pushHistoryIfChanged(nextUrl) {
     if (nextUrl !== location.pathname + location.search) {
-      history.push(nextUrl);
+      navigate(nextUrl);
     }
   }
 
@@ -45,7 +45,7 @@ export default function FeatureBasedEnrollmentIndexPage() {
         type: 'error',
         topic: 'featureBasedEnrollmentGeneral',
       });
-      history.replace('/feature_based_enrollments');
+      navigate('/feature_based_enrollments', { replace: true });
       return false;
     }
     return true;
@@ -61,7 +61,7 @@ export default function FeatureBasedEnrollmentIndexPage() {
       setApiFetchSignal(!apiFetchSignal);
       pushHistoryIfChanged(`/feature_based_enrollments/?course_id=${inputValue}`);
     } else if (inputValue === '') {
-      history.replace('/feature_based_enrollments');
+      navigate('/feature_based_enrollments', { replace: true });
     }
   });
 

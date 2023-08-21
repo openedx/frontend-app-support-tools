@@ -50,7 +50,7 @@ subscribe(APP_READY, () => {
           {/* Start: Configuration Dropdown Routes */}
           {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes.map((route) => route)}
           {/* End: Configuration Dropdown Routes */}
-          <Route path={SUPPORT_TOOLS_TABS.HOME} element={<SupportToolsTab />} />
+          <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
           <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
           <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} element={<FBEIndexPage />} />
           <Route

@@ -1,8 +1,8 @@
-import { camelCaseObject, history } from '@edx/frontend-platform';
+import { camelCaseObject } from '@edx/frontend-platform';
 import React, {
   useCallback, useContext, useEffect, useState, useLayoutEffect,
 } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PageLoading from '../components/common/PageLoading';
 import AlertList from '../userMessages/AlertList';
 import { USER_IDENTIFIER_INVALID_ERROR } from '../userMessages/messages';
@@ -17,6 +17,7 @@ import CancelRetirement from './account-actions/CancelRetirement';
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2=value2}
   const params = new Map(
     location.search
@@ -40,7 +41,7 @@ export default function UserPage() {
 
   function pushHistoryIfChanged(nextUrl) {
     if (nextUrl !== location.pathname + location.search) {
-      history.push(nextUrl);
+      navigate(nextUrl);
     }
   }
 
@@ -65,7 +66,7 @@ export default function UserPage() {
       if (result.retirementStatus?.canCancelRetirement) {
         setData(result.retirementStatus);
       }
-      history.replace(`${TAB_PATH_MAP['learner-information']}`);
+      navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       document.title = 'Support Tools | edX';
     } else {
       pushHistoryIfChanged(getUpdatedURL(searchValue));
@@ -86,7 +87,7 @@ export default function UserPage() {
         type: 'error',
         topic: 'general',
       });
-      history.replace(`${TAB_PATH_MAP['learner-information']}`);
+      navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       return false;
     }
     return true;
@@ -107,7 +108,7 @@ export default function UserPage() {
       // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
-      history.replace(`${TAB_PATH_MAP['learner-information']}`);
+      navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       setLoading(false);
       setSearching(false);
     }

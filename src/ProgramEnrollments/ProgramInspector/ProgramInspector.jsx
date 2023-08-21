@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Alert, Col, Row, Button, Input,
 } from '@edx/paragon';
-import { history } from '@edx/frontend-platform';
 import { getSsoRecords } from '../../users/data/api';
 import EnrollmentDetails from './EnrollmentDetails';
 import SingleSignOnRecordCard from '../../users/SingleSignOnRecordCard';
@@ -16,6 +15,7 @@ import { extractParams } from '../../utils';
 
 export default function ProgramInspector() {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = extractParams(location.search);
   const [ssoRecords, setSsoRecords] = useState([]);
   const [error, setError] = useState(undefined);
@@ -39,7 +39,7 @@ export default function ProgramInspector() {
       setExternalUserKey(undefined);
       setLearnerProgramEnrollment(undefined);
       setSsoRecords([]);
-      history.push('/programs');
+      navigate('/programs');
     } else {
       const newLink = `/programs?edx_user=${
         username || ''
@@ -47,7 +47,7 @@ export default function ProgramInspector() {
       if (newLink === location.pathname + location.search) {
         setClickEventCall(!clickEventCall);
       } else {
-        history.push(newLink);
+        navigate(newLink);
       }
     }
   };

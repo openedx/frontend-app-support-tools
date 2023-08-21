@@ -1,7 +1,6 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, Tab } from '@edx/paragon';
-import { history } from '@edx/frontend-platform';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import {
   FEATURE_BASED_ENROLLMENT_TAB,
@@ -15,6 +14,8 @@ import ProgramEnrollmentsIndexPage from '../ProgramEnrollments/ProgramEnrollment
 
 export default function SupportToolsTab() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   let tabKey = LEARNER_INFO_TAB;
   switch (location.pathname) {
     case TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]:
@@ -48,7 +49,7 @@ export default function SupportToolsTab() {
           id="support-tools-tab"
           onSelect={(key) => {
             if (key in TAB_PATH_MAP) {
-              history.replace(TAB_PATH_MAP[key]);
+              navigate(TAB_PATH_MAP[key], { replace: true });
             }
           }}
           defaultActiveKey={tabKey}
