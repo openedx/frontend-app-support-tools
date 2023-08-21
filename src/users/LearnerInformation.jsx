@@ -7,6 +7,7 @@ import Licenses from './licenses/Licenses';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
 import LearnerCredentials from './LearnerCredentials';
 import LearnerRecords from './LearnerRecords';
+import LearnerPurchases from './LearnerPurchases';
 
 export default function LearnerInformation({
   user, changeHandler,
@@ -29,6 +30,11 @@ export default function LearnerInformation({
         <Tab eventKey="enrollments-entitlements" title="Enrollments/Entitlements">
           <br />
           <EntitlementsAndEnrollmentsContainer user={user.username} />
+        </Tab>
+
+        <Tab eventKey="learner-purchases" title="Learner Purchases">
+          <br />
+          <LearnerPurchases user={user.username} />
         </Tab>
 
         <Tab eventKey="sso" title="SSO/License Info">

@@ -4,6 +4,7 @@ const COURSE_ID_REGEX = '[^/+]+(/|\\+)[^/+]+(/|\\+)[^/?]+';
 const EMAIL_REGEX = '^[a-zA-Z0-9\'!#$&*._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$';
 const USERNAME_REGEX = '^[\\w.@_+-]+$';
 const LMS_USER_ID_REGEX = '^(?!0)[0-9]+$';
+const DIGITS_ONLY_REGEX = /^(?!0\d)[1-9]\d*(?<!\.)$/;
 
 export const formatDate = (date) => {
   if (date) {
@@ -38,6 +39,22 @@ export const isValidUsername = (searchValue) => Boolean(searchValue && searchVal
 export const isValidLMSUserID = (searchValue) => Boolean(searchValue && searchValue.match(LMS_USER_ID_REGEX));
 
 export const isValidCourseID = (value) => Boolean(value && value.match(COURSE_ID_REGEX));
+
+export const isWholeDollarAmount = (value) => Boolean(value && value.match(DIGITS_ONLY_REGEX));
+
+// Opportunity Product must begin with 00k and be 18 alphanumeric characters long
+export const isValidOpportunityProduct = value => {
+  if (!value) {
+    return false;
+  }
+  if (value?.length <= 2) {
+    return Boolean(value && value.match(/^0{1,2}$/));
+  }
+  if (value?.length === 3) {
+    return Boolean(value && value.match(/^0{2}k$/));
+  }
+  return Boolean(value && value.match(/^0{2}k([0-9A-Za-z]{1,15})$/));
+};
 
 export function sort(firstElement, secondElement, key, direction) {
   const directionIsAsc = direction === 'asc';
@@ -96,3 +113,5 @@ export function extractParams(searchParams) {
       .map(queryParams => queryParams.split('=')),
   );
 }
+
+export const isValidDateString = (dateString) => moment(dateString, 'YYYY-MM-DD', true).isValid();

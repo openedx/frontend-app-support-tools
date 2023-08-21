@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { act } from 'react-dom/test-utils';
 import { initialize, mergeConfig } from '@edx/frontend-platform';
 import { MockAuthService } from '@edx/frontend-platform/auth';
@@ -9,6 +9,11 @@ Enzyme.configure({ adapter: new Adapter() });
 
 mergeConfig({
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
+  PREDEFINED_CATALOG_QUERIES: {
+    everything: 1,
+    open_courses: 2,
+    executive_education: 3,
+  },
 });
 
 initialize({

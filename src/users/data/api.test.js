@@ -34,6 +34,8 @@ describe('API', () => {
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
   const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
   const programRecordsUrl = urls.getLearnerRecordsUrl();
+  const retirementApiUrl = urls.userRetirementUrl();
+  const orderHistoryApiUrl = urls.getOrderHistoryUrl();
 
   let mockAdapter;
 
@@ -1163,6 +1165,106 @@ describe('API', () => {
       mockAdapter.onGet(`${programRecordsUrl}/${expectedRecord.uuid}/?username=${testUsername}`).reply(400, expectedRecord);
       const response = await api.getLearnerRecords(testUsername);
       expect(response).toEqual(expectedError);
+    });
+  });
+
+  describe('User Retirement', () => {
+    it('Successful Retirement Call', async () => {
+      const expectedSuccessResponse = {
+        failed_user_retirements: [],
+        successsful_user_retirements: ['test_username'],
+      };
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(200, expectedSuccessResponse);
+      const response = await api.postRetireUser('test_username');
+      expect(response).toEqual(expectedSuccessResponse);
+    });
+
+    it('Unsuccessful call when backend error', async () => {
+      const backendFailureResponse = {
+        failed_user_retirements: ['test_username'],
+        successsful_user_retirements: [],
+      };
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(200, backendFailureResponse);
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Server Error. The backend service(lms) failed to retire the user');
+    });
+
+    it('Unsuccessful call when user does not have appropriate permissions', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(403, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Forbidden. You do not have permissions to retire this user');
+    });
+
+    it('Unsuccessful call when user is not authenticated', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(401, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Authentication Failed');
+    });
+
+    it('Unsuccessful call with 404', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(404, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Not Found');
+    });
+
+    it('Unsuccessful call with unexpected error', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(503, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Unable to connect to the service');
+    });
+  });
+
+  describe('getOrderHistory', () => {
+    it('should return order history data when successful', async () => {
+      const expectedData = {
+        results: [
+          {
+            status: 'completed',
+            number: '12345',
+            datePlaced: 'Jun 12, 2023 12:00 AM',
+            productTracking: 'tracking123',
+            lines: [
+              {
+                product: {
+                  url: 'https://example.com/product1',
+                  title: 'Product 1',
+                  expires: '2023-12-31',
+                  attributeValues: [
+                    { value: 'Type A' },
+                  ],
+                },
+                quantity: 1,
+                status: 'completed',
+              },
+            ],
+          },
+        ],
+      };
+
+      mockAdapter.onGet(`${orderHistoryApiUrl}/?username=${testUsername}`).reply(200, expectedData);
+
+      const result = await api.getOrderHistory(testUsername);
+
+      expect(result).toEqual(expectedData.results);
+    });
+
+    it('should return an empty array when an error occurs', async () => {
+      const expectedError = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'There was an error retrieving order history for the user',
+            type: 'danger',
+            topic: 'orderHistory',
+          },
+        ],
+      };
+      mockAdapter.onGet(`${orderHistoryApiUrl}/?username=${testUsername}`).reply(() => throwError(404, ''));
+
+      const result = await api.getOrderHistory(testUsername);
+
+      expect(result).toEqual(expectedError);
     });
   });
 });

@@ -16,3 +16,7 @@ temp/babel-plugin-react-intl
 *~
 /temp
 /.vscode
+
+### Local dev related ###
+.env.private
+module.config.js

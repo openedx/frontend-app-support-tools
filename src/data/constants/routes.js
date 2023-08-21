@@ -11,7 +11,15 @@ const ROUTES = {
   CONFIGURATION: {
     HOME: '/enterprise-configuration',
     SUB_DIRECTORY: {
-      PROVISIONING: '/enterprise-configuration/learner-credit',
+      PROVISIONING: {
+        HOME: '/enterprise-configuration/learner-credit',
+        SUB_DIRECTORY: {
+          NEW: '/enterprise-configuration/learner-credit/new',
+          VIEW: '/enterprise-configuration/learner-credit/:id/view',
+          EDIT: '/enterprise-configuration/learner-credit/:id/edit',
+          ERROR: '/enterprise-configuration/learner-credit/error',
+        },
+      },
     },
   },
 };
