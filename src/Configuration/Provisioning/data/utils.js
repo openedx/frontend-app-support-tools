@@ -509,4 +509,20 @@ export function filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy }
   return filteredData;
 }
 
+/**
+ * Converts the amount from usd cents to dollars
+ * @param {Number} currency - The amount (e.g. 6000)
+ * @returns - Returns the converted amount (e.g. $60)
+ */
+export const formatCurrency = (currency) => {
+  const centsToDollarConversion = currency / 100;
+  const currencyUS = Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  });
+
+  return currencyUS.format(centsToDollarConversion);
+};
+
 // End of Datatable functions

@@ -14,6 +14,8 @@ class LmsApiService {
 
   static enterpriseCustomersBasicListUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/basic_list/`;
 
+  static enterpriseCatalogsUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_catalogs/`;
+
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
 
   static fetchEnterpriseCustomersBasicList = (enterpriseNameOrUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomersBasicListUrl}${enterpriseNameOrUuid !== undefined ? `?name_or_uuid=${enterpriseNameOrUuid}` : ''}`);
@@ -27,6 +29,8 @@ class LmsApiService {
     enterprise_catalog_query: catalogQueryUUID,
     title,
   });
+
+  static fetchEnterpriseCustomerCatalogs = (catalogUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCatalogsUrl}?uuid=${catalogUuid}`);
 
   // Did not include perLearnerEnrollmentLimit field because it is
   // not used in the current implementation of the provisioning form
@@ -53,6 +57,10 @@ class LmsApiService {
       per_learner_spend_limit: perLearnerSpendLimit,
       spend_limit: spendLimit,
     },
+  );
+
+  static fetchSubsidyAccessPolicies = async (enterpriseCustomerUuid) => LmsApiService.apiClient().get(
+    `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/subsidy-access-policies/?enterprise_customer_uuid=${enterpriseCustomerUuid}`,
   );
 }
 

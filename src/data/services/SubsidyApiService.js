@@ -20,6 +20,11 @@ class SubsidyApiService {
     return SubsidyApiService.apiClient().get(`${subsidiesURL}?page=${pageIndex}&${optionalUrlParams}`);
   };
 
+  static fetchSingleSubsidy = (uuid) => {
+    const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
+    return SubsidyApiService.apiClient().get(`${subsidiesURL}?uuid=${uuid}`);
+  };
+
   static postSubsidy = (
     financialIdentifier,
     title,
