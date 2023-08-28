@@ -10,9 +10,9 @@ const { FORM: { CUSTOM_CATALOG } } = PROVISIONING_PAGE_TEXT;
 
 function getCustomCatalogTitle(catalogTitle) {
   let customCatalogTitle;
-  let separator = ' - '; 
+  const separator = ' - ';
   if (catalogTitle.includes(separator)) {
-    customCatalogTitle = catalogTitle.split(separator)[1];
+    [, customCatalogTitle] = catalogTitle.split(separator);
   }
   return customCatalogTitle;
 }
