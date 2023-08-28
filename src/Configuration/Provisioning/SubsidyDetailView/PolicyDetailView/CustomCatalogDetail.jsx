@@ -9,12 +9,12 @@ import ROUTES from '../../../../data/constants/routes';
 const { FORM: { CUSTOM_CATALOG } } = PROVISIONING_PAGE_TEXT;
 
 function getCustomCatalogTitle(catalogTitle) {
-  let index;
-  if (catalogTitle.includes(' - ')) {
-    index = catalogTitle.indexOf(' - ');
-    return catalogTitle.slice(index + 3);
+  let customCatalogTitle;
+  let separator = ' - '; 
+  if (catalogTitle.includes(separator)) {
+    customCatalogTitle = catalogTitle.split(separator)[1];
   }
-  return catalogTitle;
+  return customCatalogTitle;
 }
 
 async function getCatalogQueries() {

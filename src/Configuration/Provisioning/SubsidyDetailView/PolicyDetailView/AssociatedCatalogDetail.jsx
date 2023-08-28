@@ -34,7 +34,7 @@ const AssociatedCatalogDetail = ({ associatedCatalog }) => {
         <p className="small">
           {catalogType}
         </p>
-        {(catalogType === 'Custom') && <CustomCatalogDetail catalogTitle={associatedCatalog} />}
+        {(catalogType === CATALOG.OPTIONS.custom) && <CustomCatalogDetail catalogTitle={associatedCatalog} />}
       </div>
     </div>
   );
