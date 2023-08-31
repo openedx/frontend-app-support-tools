@@ -45,7 +45,9 @@ const ProvisioningFormSubmissionButton = () => {
     if (submitButtonState === 'complete') {
       // Second parameter of push triggers the toast notification on dashboard
       navigate(HOME, {
-        planSuccessfullyCreated: true,
+        state: {
+          planSuccessfullyCreated: true,
+        },
       });
       return;
     }
@@ -54,7 +56,9 @@ const ProvisioningFormSubmissionButton = () => {
 
   const redirectOnError = (statusCode, message) => {
     navigate(ERROR, {
-      errorMessage: `Error ${statusCode}: ${message}`,
+      state: {
+        errorMessage: `Error ${statusCode}: ${message}`,
+      },
     });
   };
 
