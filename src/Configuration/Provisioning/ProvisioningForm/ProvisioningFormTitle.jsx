@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Form,
 } from '@edx/paragon';
@@ -8,7 +9,14 @@ import { selectProvisioningContext } from '../data/utils';
 const ProvisioningFormTitle = () => {
   const { setSubsidyTitle } = useProvisioningContext();
   const { FORM: { PLAN_TITLE } } = PROVISIONING_PAGE_TEXT;
-  const [showInvalidField] = selectProvisioningContext('showInvalidField');
+  const [formData, showInvalidField, isEditMode] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode');
+
+  let submittedFormSubsidyTitle;
+  if (isEditMode) {
+    submittedFormSubsidyTitle = formData.subsidyTitle;
+  }
+
+  const [value, setValue] = useState(submittedFormSubsidyTitle || '');
   const { setInvalidSubsidyFields } = useProvisioningContext();
   const { subsidy } = showInvalidField;
   const isSubsidyTitleDefinedAndFalse = subsidy?.subsidyTitle === false;
@@ -18,8 +26,10 @@ const ProvisioningFormTitle = () => {
     if (e.target.value === '') {
       setInvalidSubsidyFields({ ...subsidy, subsidyTitle: false });
       setSubsidyTitle('');
+      setValue(e.target.value);
       return;
     }
+    setValue(e.target.value);
     setSubsidyTitle(newEventValue);
     setInvalidSubsidyFields({ ...subsidy, subsidyTitle: true });
   };
@@ -36,6 +46,7 @@ const ProvisioningFormTitle = () => {
           floatingLabel={PLAN_TITLE.TITLE}
           onChange={handleChange}
           data-testid="customer-plan-title"
+          value={value}
         />
         {isSubsidyTitleDefinedAndFalse && (
           <Form.Control.Feedback type="invalid">

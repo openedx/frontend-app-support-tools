@@ -73,4 +73,27 @@ describe('ProvisioningFormPerLearnerCapAmount', () => {
     fireEvent.change(input, { target: { value: '100.50' } });
     expect(screen.getByText(ALERTS.incorrectDollarAmount)).toBeTruthy();
   });
+
+  it('renders hydrated perLearnerCapValue if isEditMode is true', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      isEditMode: true,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [{
+          perLearnerCap: true,
+          perLearnerCapValue: 4000,
+        }],
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormPerLearnerCapAmountWrapper
+        value={updatedInitialState}
+        index={0}
+      />,
+    );
+    expect(screen.getByRole('textbox', {
+      name: 'Per learner spend limit ($)',
+    }).value).toBe('4000');
+  });
 });

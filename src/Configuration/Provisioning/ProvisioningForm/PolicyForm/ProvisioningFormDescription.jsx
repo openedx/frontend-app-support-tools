@@ -3,14 +3,24 @@ import {
 } from '@edx/paragon';
 import { useState } from 'react';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { indexOnlyPropType } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 import useProvisioningContext from '../../data/hooks';
 
 const ProvisioningFormDescription = ({ index }) => {
   const { ACCOUNT_DESCRIPTION } = PROVISIONING_PAGE_TEXT.FORM;
+  const [formData, isEditMode] = selectProvisioningContext('formData', 'isEditMode');
   const { setAccountDescription } = useProvisioningContext();
-  const [accountDescriptionLength, setAccountDescriptionLength] = useState(0);
-  const [localAccountDescription, setLocalAccountDescription] = useState('');
+
+  let submittedFormAccountDescription;
+  if (isEditMode) {
+    submittedFormAccountDescription = formData.policies[index].accountDescription;
+  }
+
+  const [accountDescriptionLength, setAccountDescriptionLength] = useState(
+    submittedFormAccountDescription?.length || 0,
+  );
+
+  const [localAccountDescription, setLocalAccountDescription] = useState(submittedFormAccountDescription || '');
 
   const handleChange = (e) => {
     const newEvent = e.target;

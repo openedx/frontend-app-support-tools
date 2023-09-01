@@ -508,6 +508,7 @@ export function filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy }
   }
   return filteredData;
 }
+// End of Datatable functions
 
 /**
  * Converts the amount from usd cents to dollars
@@ -525,4 +526,38 @@ export const formatCurrency = (currency) => {
   return currencyUS.format(centsToDollarConversion);
 };
 
-// End of Datatable functions
+export async function getSubsidy(subsidyUuid) {
+  const response = await SubsidyApiService.fetchSingleSubsidy(subsidyUuid);
+  return response;
+}
+
+export async function getCustomer(customerUuid) {
+  const response = await LmsApiService.fetchEnterpriseCustomersBasicList(customerUuid);
+  return response;
+}
+
+export async function getPolicies(customerUuid) {
+  const response = await LmsApiService.fetchSubsidyAccessPolicies(customerUuid);
+  return response;
+}
+
+export async function getCatalogs(catalogUuid) {
+  const response = await LmsApiService.fetchEnterpriseCustomerCatalogs(catalogUuid);
+  return response;
+}
+
+/**
+ * gets the catalog uuid that matches subsidy id of the policies
+ */
+export function getCatalogUuid(policies, subsidyUuid) {
+  const foundPolicies = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid);
+  if (foundPolicies.length) {
+    return foundPolicies.map(policy => policy.catalog_uuid);
+  }
+  return undefined;
+}
+
+export async function getCatalogQueries() {
+  const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+  return data;
+}

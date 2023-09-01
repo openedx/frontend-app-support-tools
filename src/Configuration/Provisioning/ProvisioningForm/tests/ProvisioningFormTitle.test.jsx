@@ -44,4 +44,18 @@ describe('ProvisioningFormCustomer', () => {
 
     expect(updatedInput).toEqual('');
   });
+  it('renders hydrated title data if isEditMode is true', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      isEditMode: true,
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'testing test',
+      },
+    };
+    renderWithRouter(<ProvisioningFormCustomerWrapper value={updatedInitialState} />);
+
+    const input = screen.getByTestId('customer-plan-title');
+    expect(input.value).toEqual('testing test');
+  });
 });

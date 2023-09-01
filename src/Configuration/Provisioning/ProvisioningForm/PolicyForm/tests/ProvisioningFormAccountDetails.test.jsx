@@ -96,7 +96,7 @@ describe('ProvisioningFormAccountDetails', () => {
     fireEvent.change(input, { target: { value: '100.50' } });
     expect(screen.getByText(ALERTS.incorrectDollarAmount)).toBeTruthy();
   });
-  it('autogenerates name from subsidyTitle', () => {
+  it('autogenerates name from subsidyTitle', async () => {
     const updatedInitialState = {
       ...initialStateValue,
       multipleFunds: false,
@@ -115,7 +115,37 @@ describe('ProvisioningFormAccountDetails', () => {
 
     expect(screen.getByText(ACCOUNT_DETAIL.OPTIONS.displayName)).toBeTruthy();
     const input = screen.getByTestId('account-name');
-
     expect(input.getAttribute('value')).toEqual('Test Subsidy Title --- ');
+  });
+  it('renders hydrated subsidy display value and amount if isEditMode is true', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      isEditMode: true,
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'Test Subsidy Title',
+        policies: [{
+          accountValue: '4000',
+          accountName: 'Test Subsidy Title - Budget',
+          catalogQueryMetadata: {
+            catalogQuery: {
+              title: 'Budget',
+              uuid: '4ev3r',
+            },
+          },
+        }],
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormAccountDetailsWrapper
+        value={updatedInitialState}
+        index={0}
+      />,
+    );
+
+    expect(screen.getByRole('textbox', {
+      name: 'Display name',
+    }).value).toBe('Test Subsidy Title --- Budget');
+    expect(screen.getByText('$40')).toBeTruthy();
   });
 });

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -6,11 +6,21 @@ import useProvisioningContext from '../../data/hooks';
 import { selectProvisioningContext, sortedCatalogQueries } from '../../data/utils';
 
 const ProvisioningFormCustomCatalogDropdown = () => {
-  const [selected, setSelected] = useState({ title: '' });
-  const [catalogQueries, showInvalidField] = selectProvisioningContext('catalogQueries', 'showInvalidField');
+  const [catalogQueries, showInvalidField, isEditMode, customCatalog, formData] = selectProvisioningContext('catalogQueries', 'showInvalidField', 'isEditMode', 'customCatalog', 'formData');
+  const { hydrateCatalogQueryData, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
+
+  let submittedFormCustomCatalogTitle;
+  if (isEditMode && customCatalog) {
+    submittedFormCustomCatalogTitle = `${formData.policies[0].catalogQueryMetadata.catalogQuery.title} --- ${formData.policies[0].catalogQueryMetadata.catalogQuery.uuid}`;
+  }
+
+  useEffect(() => {
+    hydrateCatalogQueryData();
+  }, []);
+
+  const [selected, setSelected] = useState({ title: submittedFormCustomCatalogTitle || '' });
   const { policies } = showInvalidField;
   const isCatalogQueryMetadataDefinedAndFalse = policies[0]?.catalogQueryMetadata === false;
-  const { hydrateCatalogQueryData, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const generateAutosuggestOptions = useCallback(() => {
     const defaultDropdown = (

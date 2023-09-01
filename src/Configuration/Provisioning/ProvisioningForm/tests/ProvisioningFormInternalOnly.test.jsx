@@ -44,4 +44,17 @@ describe('ProvisioningFormSubsidy', () => {
     fireEvent.click(checkbox);
     expect(checkbox.checked).toBeFalsy();
   });
+  it('renders hydrated internalOnly selection if isEditMode is true', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      isEditMode: true,
+      formData: {
+        ...initialStateValue.formData,
+        internalOnly: true,
+      },
+    };
+    renderWithRouter(<ProvisioningFormInternalOnlyWrapper value={updatedInitialState} />);
+    const checkbox = screen.getByTestId('internal-only-checkbox');
+    expect(checkbox.checked).toBeTruthy();
+  });
 });

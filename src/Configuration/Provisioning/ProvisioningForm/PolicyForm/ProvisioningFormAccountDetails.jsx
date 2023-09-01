@@ -3,14 +3,14 @@ import { Form } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import {
-  extractDefinedCatalogTitle, generatePolicyName, indexOnlyPropType, selectProvisioningContext,
+  extractDefinedCatalogTitle, formatCurrency, generatePolicyName, indexOnlyPropType, selectProvisioningContext,
 } from '../../data/utils';
 import { isWholeDollarAmount } from '../../../../utils';
 
 const ProvisioningFormAccountDetails = ({ index }) => {
   const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
   const { setAccountName, setAccountValue, setInvalidPolicyFields } = useProvisioningContext();
-  const [multipleFunds, formData, showInvalidField] = selectProvisioningContext('multipleFunds', 'formData', 'showInvalidField');
+  const [multipleFunds, formData, showInvalidField, isEditMode] = selectProvisioningContext('multipleFunds', 'formData', 'showInvalidField', 'isEditMode');
 
   const { policies } = showInvalidField;
   const isAccountNameDefinedAndFalse = policies[index]?.accountName === false;
@@ -20,8 +20,14 @@ const ProvisioningFormAccountDetails = ({ index }) => {
     ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(extractDefinedCatalogTitle(formData.policies[index]))
     : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;
 
-  const [accountValueState, setAccountValueState] = useState('');
-  const [accountNameState, setAccountNameState] = useState('');
+  let submittedFormAccountValue;
+  let submittedFormAccountName;
+  if (isEditMode) {
+    submittedFormAccountValue = formData.policies[index].accountValue;
+    submittedFormAccountName = formData.policies[index].accountName;
+  }
+  const [accountValueState, setAccountValueState] = useState(submittedFormAccountValue || '');
+  const [accountNameState, setAccountNameState] = useState(submittedFormAccountName || '');
   const [isWholeDollar, setIsWholeDollar] = useState(true);
 
   const handleChange = useCallback((e) => {
@@ -77,34 +83,43 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           </Form.Control.Feedback>
         )}
       </Form.Group>
-      <Form.Group
-        className="mt-3.5"
-      >
-        <Form.Control
-          floatingLabel={ACCOUNT_DETAIL.OPTIONS.totalAccountValue.title}
-          value={accountValueState}
-          onChange={handleChange}
-          data-testid="account-value"
-          isInvalid={isAccountValueDefinedAndFalse || !isWholeDollar}
-        />
-        <Form.Control.Feedback>
-          {formFeedbackText}
-        </Form.Control.Feedback>
-        {!isWholeDollar && (
-          <Form.Control.Feedback
-            type="invalid"
-          >
-            {ACCOUNT_DETAIL.ERROR.incorrectDollarAmount}
+      {isEditMode ? (
+        <div className="mt-4.5">
+          <h3>{ACCOUNT_DETAIL.OPTIONS.totalAccountValue.title}</h3>
+          <p className="small">
+            {formatCurrency(formData.policies[index].accountValue)}
+          </p>
+        </div>
+      ) : (
+        <Form.Group
+          className="mt-3.5"
+        >
+          <Form.Control
+            floatingLabel={ACCOUNT_DETAIL.OPTIONS.totalAccountValue.title}
+            value={accountValueState}
+            onChange={handleChange}
+            data-testid="account-value"
+            isInvalid={isAccountValueDefinedAndFalse || !isWholeDollar}
+          />
+          <Form.Control.Feedback>
+            {formFeedbackText}
           </Form.Control.Feedback>
-        )}
-        {isAccountValueDefinedAndFalse && (
-          <Form.Control.Feedback
-            type="invalid"
-          >
-            {ACCOUNT_DETAIL.ERROR.emptyField}
-          </Form.Control.Feedback>
-        )}
-      </Form.Group>
+          {!isWholeDollar && (
+            <Form.Control.Feedback
+              type="invalid"
+            >
+              {ACCOUNT_DETAIL.ERROR.incorrectDollarAmount}
+            </Form.Control.Feedback>
+          )}
+          {isAccountValueDefinedAndFalse && (
+            <Form.Control.Feedback
+              type="invalid"
+            >
+              {ACCOUNT_DETAIL.ERROR.emptyField}
+            </Form.Control.Feedback>
+          )}
+        </Form.Group>
+      )}
     </article>
   );
 };
