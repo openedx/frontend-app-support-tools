@@ -82,7 +82,7 @@ describe('ProvisioningFormPerLearnerCapAmount', () => {
         ...initialStateValue.formData,
         policies: [{
           perLearnerCap: true,
-          perLearnerCapValue: 4000,
+          perLearnerCapAmount: 4000,
         }],
       },
     };

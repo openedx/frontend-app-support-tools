@@ -15,7 +15,6 @@ const SubsidyEditViewWrapper = ({
   </ProvisioningContext>
 );
 
-// TODO: Integration Tests
 describe('SubsidyEditView', () => {
   beforeEach(() => {
     jest.resetAllMocks();

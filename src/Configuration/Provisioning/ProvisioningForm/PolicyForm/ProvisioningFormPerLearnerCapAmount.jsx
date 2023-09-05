@@ -15,12 +15,12 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
   const isPerLearnerCapAmountDefinedAndFalse = policies[index]?.perLearnerCapAmount === false;
   const [isWholeDollar, setIsWholeDollar] = useState(true);
 
-  let submittedFormPerLearnerCapValue;
+  let submittedFormPerLearnerCapAmount;
   if (isEditMode) {
-    submittedFormPerLearnerCapValue = formData.policies[index]?.perLearnerCapValue;
+    submittedFormPerLearnerCapAmount = formData.policies[index]?.perLearnerCapAmount;
   }
 
-  const [perLearnerCapValue, setPerLearnerCapValue] = useState(submittedFormPerLearnerCapValue || '');
+  const [perLearnerCapValue, setPerLearnerCapValue] = useState(submittedFormPerLearnerCapAmount || '');
   const handleChange = (e) => {
     const newEventValue = e.target.value;
     if (newEventValue !== '' && !isWholeDollarAmount(newEventValue)) {

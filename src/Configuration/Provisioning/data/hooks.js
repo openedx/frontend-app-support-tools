@@ -272,7 +272,7 @@ export default function useProvisioningContext() {
             uuid: policy.uuid,
             catalogQueryTitle: isMultipleFunds ? catalogCategoryTitle : 'Budget',
             // Need to divide by 100 to convert amount in cents to dollar
-            perLearnerCapValue: policy.per_learner_spend_limit / 100,
+            perLearnerCapAmount: policy.per_learner_spend_limit / 100,
             perLearnerCap: !!policy.per_learner_spend_limit,
             catalogQueryMetadata: {
               catalogQuery,
