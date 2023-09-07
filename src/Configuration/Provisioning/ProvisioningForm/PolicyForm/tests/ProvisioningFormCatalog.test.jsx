@@ -75,13 +75,48 @@ describe('ProvisioningFormCatalog', () => {
       INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle.split(splitStringBudget)[0],
     )).toBeTruthy();
   });
-  it('sets context state', async () => {
+  it('sets context state with multipleFunds to be false', async () => {
     const updatedInitialState = {
       ...initialStateValue,
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: [{
+          catalogCategory: 'Everything',
+          catalogQueryMetadata: {
+            catalogQuery: {
+              title: 'Everything Budget',
+              id: 29,
+            },
+          },
+        }],
+      },
+    };
+    renderWithRouter(<ProvisioningFormCatalogWrapper
+      value={updatedInitialState}
+      index={0}
+    />);
+
+    const everythingOption = screen.getByTestId(CATALOG.OPTIONS.everything);
+    fireEvent.click(everythingOption);
+    await waitFor(() => expect(everythingOption.checked).toBeTruthy());
+  });
+  it('sets context state with custom catalog', async () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      multipleFunds: false,
+      customCatalog: true,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [{
+          catalogCategory: 'Custom',
+          catalogQueryMetadata: {
+            catalogQuery: {
+              title: 'custom title',
+              id: 31,
+            },
+          },
+        }],
       },
     };
     renderWithRouter(<ProvisioningFormCatalogWrapper
