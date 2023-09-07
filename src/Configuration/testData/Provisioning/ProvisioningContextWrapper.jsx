@@ -1,7 +1,6 @@
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import PROVISIONING_PAGE_TEXT from '../../Provisioning/data/constants';
 import { ProvisioningContext as NestedProvisioningContext } from '../../Provisioning/ProvisioningContext';
 
@@ -26,7 +25,7 @@ export const initialStateValue = {
   },
 };
 
-const customerUuid = uuidv4();
+const customerUuid = '3d9b73dc-590a-48b3-81e2-fd270618b80e';
 export const hydratedInitialState = {
   customers: [],
   multipleFunds: true,
@@ -38,7 +37,7 @@ export const hydratedInitialState = {
     isLoading: true,
   },
   formData: {
-    subsidyUuid: uuidv4(),
+    subsidyUuid: '0196e5c3-ba08-4798-8bf1-019d747c27bf',
     subsidyTitle: 'Paper company',
     customerName: 'Dunder mifflin',
     customerUuid,
@@ -48,7 +47,21 @@ export const hydratedInitialState = {
     subsidyRevReq: 'Yes (bulk enrollment prepay)',
     startDate: '2023-10-01',
     endDate: '2023-11-01',
-    policies: [],
+    policies: [
+      {
+        accountValue: '4000',
+        perLearnerCap: true,
+        perLearnerCapAmount: '99',
+        description: 'blahblah',
+        accountName: 'Test Subsidy Title - Open Courses Budget',
+        catalogQueryMetadata: {
+          catalogQuery: {
+            title: 'Open Courses',
+            uuid: '4ev3r',
+          },
+        },
+      },
+    ],
   },
   showInvalidField: {
     subsidy: [],

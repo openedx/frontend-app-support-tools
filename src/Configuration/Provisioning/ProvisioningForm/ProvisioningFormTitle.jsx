@@ -23,13 +23,13 @@ const ProvisioningFormTitle = () => {
 
   const handleChange = (e) => {
     const newEventValue = e.target.value;
-    if (e.target.value === '') {
+    if (newEventValue === '') {
       setInvalidSubsidyFields({ ...subsidy, subsidyTitle: false });
       setSubsidyTitle('');
-      setValue(e.target.value);
+      setValue(newEventValue);
       return;
     }
-    setValue(e.target.value);
+    setValue(newEventValue);
     setSubsidyTitle(newEventValue);
     setInvalidSubsidyFields({ ...subsidy, subsidyTitle: true });
   };

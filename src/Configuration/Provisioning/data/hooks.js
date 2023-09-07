@@ -215,10 +215,12 @@ export default function useProvisioningContext() {
       'bulk-enrollment-prepay': SUBSIDY_TYPE.OPTIONS.yes,
     };
     const subsidyResponse = await getSubsidy(subsidyUuid);
+    const subsidyData = subsidyResponse.data.results[0];
     const subsidyCustomerId = subsidyResponse.data.results[0].enterprise_customer_uuid;
     const [customer, policies] = await Promise.all([
       getCustomer(subsidyCustomerId), getPolicies(subsidyCustomerId),
     ]);
+    const customerData = customer.data[0];
     const catalogUuids = getCatalogUuid(policies, subsidyUuid);
     const isMultipleFunds = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid).length > 1;
 
@@ -288,26 +290,26 @@ export default function useProvisioningContext() {
       formData: {
         ...s.formData,
         subsidyUuid,
-        subsidyTitle: subsidyResponse.data.results[0]?.title,
-        customerName: customer.data[0]?.name,
-        customerUuid: customer.data[0]?.id,
-        enterpriseUUID: `${customer.data[0]?.name} --- ${customer.data[0]?.id}`,
-        internalOnly: subsidyResponse.data.results[0]?.internal_only,
-        financialIdentifier: subsidyResponse.data.results[0]?.reference_id,
-        subsidyRevReq: selections[subsidyResponse.data.results[0]?.revenue_category],
-        startDate: dayjs(subsidyResponse.data.results[0]?.active_datetime).format('YYYY-MM-DD'),
-        endDate: dayjs(subsidyResponse.data.results[0]?.expiration_datetime).format('YYYY-MM-DD'),
+        subsidyTitle: subsidyData?.title,
+        customerName: customerData?.name,
+        customerUuid: customerData?.id,
+        enterpriseUUID: `${customerData?.name} --- ${customerData?.id}`,
+        internalOnly: subsidyData?.internal_only,
+        financialIdentifier: subsidyData?.reference_id,
+        subsidyRevReq: selections[subsidyData?.revenue_category],
+        startDate: dayjs(subsidyData?.active_datetime).format('YYYY-MM-DD'),
+        endDate: dayjs(subsidyData?.expiration_datetime).format('YYYY-MM-DD'),
         policies: policiesData,
         catalogs,
       },
       isEditMode: getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION === 'true',
       showInvalidField: {
         ...s.showInvalidField,
-        endDate: !!subsidyResponse.data.results[0]?.active_datetime,
-        financialIdentifier: !!subsidyResponse.data.results[0]?.reference_id,
+        endDate: !!subsidyData?.active_datetime,
+        financialIdentifier: !!subsidyData?.reference_id,
         multipleFunds: isMultipleFunds,
-        startDate: !!subsidyResponse.data.results[0]?.expiration_datetime,
-        subsidyTitle: !!subsidyResponse.data.results[0]?.title,
+        startDate: !!subsidyData?.expiration_datetime,
+        subsidyTitle: !!subsidyData?.title,
       },
       multipleFunds: isMultipleFunds,
       customCatalog,
