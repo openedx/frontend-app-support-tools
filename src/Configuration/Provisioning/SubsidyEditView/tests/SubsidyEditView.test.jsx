@@ -2,7 +2,6 @@
 import Router from 'react-router-dom';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { ProvisioningContext, hydratedInitialState } from '../../../testData/Provisioning/ProvisioningContextWrapper';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import SubsidyEditView from '../SubsidyEditView';
