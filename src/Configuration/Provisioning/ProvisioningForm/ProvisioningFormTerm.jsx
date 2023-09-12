@@ -13,7 +13,12 @@ import { isValidDateString } from '../../../utils';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, showInvalidField, isEditMode, hasEdits] = selectProvisioningContext('formData', 'showInvalidField', 'hasEdits');
+  const [
+    formData,
+    showInvalidField,
+    isEditMode,
+    hasEdits,
+  ] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode', 'hasEdits');
   const { subsidy } = showInvalidField;
   const areDatesDefinedAndFalse = subsidy?.startDate === false || subsidy?.endDate === false;
   const {
