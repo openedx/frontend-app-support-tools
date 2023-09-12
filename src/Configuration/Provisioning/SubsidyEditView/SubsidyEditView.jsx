@@ -15,24 +15,19 @@ import CancelButton from './CancelButton';
 import CustomerDetail from '../SubsidyDetailView/CustomerDetail';
 import ProvisioningFormTerm from '../ProvisioningForm/ProvisioningFormTerm';
 import ProvisioningFormInternalOnly from '../ProvisioningForm/ProvisioningFormInternalOnly';
-import { selectProvisioningContext } from '../data/utils';
 import ProvisioningFormSubsidy from '../ProvisioningForm/ProvisioningFormSubsidy';
 import ProvisioningFormPolicyContainer from '../ProvisioningForm/PolicyForm';
 import SaveEditsButton from './SaveEditsButton';
 
 const SubsidyEditView = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
-  const [multipleFunds, formData] = selectProvisioningContext(
-    'multipleFunds',
-    'formData',
-  );
-
   const params = useParams();
   const subsidyUuid = params.id;
   const history = useHistory();
   const { SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
 
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
+  const { formData, isLoading, multipleFunds } = contextData;
   const { hydrateEnterpriseSubsidiesData } = useProvisioningContext();
   const redirectOnError = (statusCode, message) => {
     history.push(ERROR, {
@@ -51,7 +46,7 @@ const SubsidyEditView = () => {
   }, [subsidyUuid]);
 
   return (
-    !contextData.isLoading ? (
+    !isLoading ? (
       <div className="m-0 p-0 mb-6 mt-5">
         <div className="mt-4.5">
           <h2>{FORM.SUB_TITLE}</h2>

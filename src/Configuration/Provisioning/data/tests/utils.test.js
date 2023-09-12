@@ -8,6 +8,8 @@ import {
   filterByEnterpriseCustomerName,
   filterIndexOfCatalogQueryTitle,
   getCamelCasedConfigAttribute,
+  getCatalogUuid,
+  getCatalogQueries,
   hasValidPolicyAndSubidy,
   lmsCustomerCatalog,
   normalizeSubsidyDataTableData,
@@ -22,6 +24,7 @@ import {
   sampleCatalogQueries,
   sampleDataTableData,
   sampleMultiplePolicyFormData,
+  samplePolicyResponse,
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
@@ -165,6 +168,32 @@ describe('filterIndexOfCatalogQuery', () => {
   });
   it('returns the original array if no filter is passed', () => {
     expect(filterIndexOfCatalogQueryTitle(sampleCatalogQueries.data)).toEqual(sampleCatalogQueries.data);
+  });
+});
+
+describe('getCatalogUuid', () => {
+  it('returns a catalog uuid', () => {
+    const subsidyUuid = '0196e5c3-ba08-4798-8bf1-019d747c27bf';
+    const catalogUuid = '69035754-fa48-4519-92d8-a723ae0f6e58';
+    expect(getCatalogUuid(samplePolicyResponse, subsidyUuid)).toEqual([catalogUuid]);
+  });
+  it('returns undefined when no matching subsidy uuid is found', () => {
+    const subsidyUuid = '1234';
+    expect(getCatalogUuid(samplePolicyResponse, subsidyUuid)).toEqual(undefined);
+  });
+});
+
+describe('getCatalogQueries', () => {
+  it('returns data', async () => {
+    const data = await getCatalogQueries();
+    expect(data).toEqual([
+      {
+        id: '1',
+      },
+      {
+        id: '2',
+      },
+    ]);
   });
 });
 
