@@ -22,7 +22,7 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
 
   const [perLearnerCapValue, setPerLearnerCapValue] = useState(submittedFormPerLearnerCapAmount || '');
   const handleChange = (e) => {
-    if (isEditMode && hasEdits) {
+    if (isEditMode && !hasEdits) {
       setHasEdits(true);
     }
     const newEventValue = e.target.value;
