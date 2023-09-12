@@ -216,7 +216,7 @@ export default function useProvisioningContext() {
     };
     const subsidyResponse = await getSubsidy(subsidyUuid);
     const subsidyData = subsidyResponse.data.results[0];
-    const subsidyCustomerId = subsidyResponse.data.results[0].enterprise_customer_uuid;
+    const subsidyCustomerId = subsidyData.enterprise_customer_uuid;
     const [customer, policies] = await Promise.all([
       getCustomer(subsidyCustomerId), getPolicies(subsidyCustomerId),
     ]);
