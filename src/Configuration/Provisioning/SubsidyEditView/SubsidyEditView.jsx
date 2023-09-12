@@ -36,6 +36,19 @@ const SubsidyEditView = () => {
   };
 
   useEffect(() => {
+    const handleTabClose = (event) => {
+      event.preventDefault();
+      const copyEvent = event;
+      copyEvent.returnValue = true;
+      return copyEvent.returnValue;
+    };
+    window.addEventListener('beforeunload', handleTabClose);
+    return () => {
+      window.removeEventListener('beforeunload', handleTabClose);
+    };
+  }, []);
+
+  useEffect(() => {
     try {
       hydrateEnterpriseSubsidiesData(subsidyUuid);
     } catch (error) {
@@ -71,7 +84,7 @@ const SubsidyEditView = () => {
             />
           ))}
         </div>
-        <div className="mt-5">
+        <div className="d-flex mt-5">
           <SaveEditsButton />
           <CancelButton />
         </div>

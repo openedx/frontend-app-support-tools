@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import {
@@ -10,7 +9,6 @@ import {
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import { selectProvisioningContext } from '../data/utils';
 
-// TODO: Implementation of button in ticket ENT-7506
 const CancelButton = () => {
   const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
   const [isOpen, open, close] = useToggle(false);
@@ -21,27 +19,16 @@ const CancelButton = () => {
   const viewRoute = `/enterprise-configuration/learner-credit/${subsidyUuid}/view`;
 
   const handleOnClick = () => {
-    if (hasEdits) {
+    if (!hasEdits) {
       history.push(viewRoute);
     }
     return open();
   };
 
-  useEffect(() => {
-    const handleTabClose = (event) => {
-      event.preventDefault();
-      return (event.returnValue = true);
-    };
-    window.addEventListener('beforeunload', handleTabClose);
-    return () => {
-      window.removeEventListener('beforeunload', handleTabClose);
-    };
-  }, []);
-
   return (
     <div>
       <Button variant="outline-primary" onClick={handleOnClick}>
-        Cancel
+        { CANCEL.description }
       </Button>
       <ModalDialog
         closeLabel="Cancel"
@@ -65,7 +52,7 @@ const CancelButton = () => {
 
         <ModalDialog.Footer>
           <ActionRow>
-            <Button variant="tertiary">{CANCEL.MODAL.FOOTER.options.leave}</Button>
+            <Button onClick={() => history.push(viewRoute)} variant="tertiary">{CANCEL.MODAL.FOOTER.options.leave}</Button>
             <ModalDialog.CloseButton>
               {CANCEL.MODAL.FOOTER.options.stay}
             </ModalDialog.CloseButton>

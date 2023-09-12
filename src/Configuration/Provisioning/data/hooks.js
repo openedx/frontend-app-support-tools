@@ -191,6 +191,8 @@ export default function useProvisioningContext() {
 
   const setPerLearnerCap = (perLearnerCapAmount, index) => updateFormDataState(perLearnerCapAmount, true, index);
 
+  const setHasEdits = (hasEditsBoolean) => updateRootDataState({ hasEdits: hasEditsBoolean });
+
   const hydrateCatalogQueryData = useCallback(async () => {
     const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
     const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
@@ -369,5 +371,6 @@ export default function useProvisioningContext() {
     setInvalidSubsidyFields,
     setInvalidPolicyFields,
     resetInvalidFields,
+    setHasEdits,
   };
 }

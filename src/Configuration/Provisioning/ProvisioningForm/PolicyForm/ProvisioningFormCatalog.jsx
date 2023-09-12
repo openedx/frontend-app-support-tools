@@ -11,7 +11,12 @@ import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
-  const { setCustomCatalog, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
+  const {
+    setCustomCatalog,
+    setCatalogQueryCategory,
+    setInvalidPolicyFields,
+    setHasEdits,
+  } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
   const {
@@ -20,6 +25,7 @@ const ProvisioningFormCatalog = ({ index }) => {
     multipleFunds,
     formData,
     showInvalidField: { policies },
+    hasEdits,
   } = contextData;
   const isCatalogQueryMetadataDefinedAndFalse = policies[index]?.catalogQueryMetadata === false;
   const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
@@ -42,6 +48,9 @@ const ProvisioningFormCatalog = ({ index }) => {
   const handleChange = (e) => {
     const newTabValue = e.target.value;
     const newCatalogQuery = e.target.dataset.catalogqueryid;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (newTabValue === CATALOG.OPTIONS.custom) {
       setCustomCatalog(true);
       setCatalogQueryCategory({
