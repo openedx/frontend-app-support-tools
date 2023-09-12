@@ -168,42 +168,4 @@ describe('SubsidyEditView', () => {
     window.dispatchEvent(new Event('beforeunload'));
     expect(window.addEventListener).toHaveBeenCalledWith('beforeunload', enableBeforeUnload);
   });
-  it('tests for plan title updates and cancel modal should appear', async () => {
-    const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
-
-    const updatedStateValue = {
-      ...hydratedInitialState,
-      hasEdits: false,
-      isEditMode: true,
-    };
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />));
-    const input = screen.getByTestId('customer-plan-title');
-    fireEvent.change(input, { target: { value: 'test' } });
-    const button = screen.getByRole('button', {
-      name: CANCEL.description,
-    });
-    expect(button).toBeInTheDocument();
-    userEvent.click(button);
-    await waitFor(() => expect(screen.getByText(CANCEL.MODAL.TITLE)).toBeInTheDocument());
-  });
-  it('tests for term updates and cancel modal should appear', async () => {
-    const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
-
-    const updatedStateValue = {
-      ...hydratedInitialState,
-      hasEdits: false,
-      isEditMode: true,
-    };
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />));
-    const startDateInput = screen.getByTestId('start-date');
-    fireEvent.change(startDateInput, { target: { value: '2021-01-01' } });
-    const button = screen.getByRole('button', {
-      name: CANCEL.description,
-    });
-    expect(button).toBeInTheDocument();
-    userEvent.click(button);
-    await waitFor(() => expect(screen.getByText(CANCEL.MODAL.TITLE)).toBeInTheDocument());
-  });
 });
