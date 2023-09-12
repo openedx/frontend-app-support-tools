@@ -150,4 +150,16 @@ describe('SubsidyEditView', () => {
     expect(screen.getByText('Save Edits')).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
+  it('should call beforeunload of window and show alert to user', async () => {
+    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
+    jest.spyOn(window, 'addEventListener');
+    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={{ ...hydratedInitialState }} />));
+    const enableBeforeUnload = jest.fn();
+    function setupEventListener() {
+      window.addEventListener('beforeunload', enableBeforeUnload);
+    }
+    setupEventListener();
+    window.dispatchEvent(new Event('beforeunload'));
+    expect(window.addEventListener).toHaveBeenCalledWith('beforeunload', enableBeforeUnload);
+  });
 });
