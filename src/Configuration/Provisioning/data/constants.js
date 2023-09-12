@@ -212,6 +212,9 @@ const PROVISIONING_PAGE_TEXT = {
       },
       incorrectDollarAmount: 'Please enter a whole dollar value',
     },
+    EDIT_BUTTON: {
+      description: 'Edit plan',
+    },
   },
 };
 
@@ -241,6 +244,21 @@ export const INITIAL_CATALOG_QUERIES = {
       catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.default,
     },
   ],
+};
+
+export const CATALOG_QUERIES = {
+  Everything: {
+    id: 28,
+    catalogQueryTitle: 'Everything',
+  },
+  'Executive Education budget': {
+    id: 29,
+    catalogQueryTitle: 'Executive Education budget',
+  },
+  'Open Courses budget': {
+    id: 30,
+    catalogQueryTitle: 'Open Courses budget',
+  },
 };
 
 export const MAX_PAGE_SIZE = 12;

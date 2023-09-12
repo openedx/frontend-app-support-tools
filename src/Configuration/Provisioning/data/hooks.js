@@ -1,12 +1,24 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { camelCaseObject } from '@edx/frontend-platform';
+import { camelCaseObject, getConfig } from '@edx/frontend-platform';
+import dayjs from 'dayjs';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, MAX_PAGE_SIZE } from './constants';
+import PROVISIONING_PAGE_TEXT, {
+  INITIAL_CATALOG_QUERIES,
+  MAX_PAGE_SIZE,
+  CATALOG_QUERIES,
+  splitStringBudget,
+} from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
 import {
   updatePolicies,
   getCamelCasedConfigAttribute,
+  getCatalogs,
+  getCatalogUuid,
+  getCatalogQueries,
+  getCustomer,
+  getPolicies,
+  getSubsidy,
   normalizeSubsidyDataTableData,
   filterIndexOfCatalogQueryTitle,
   filterByEnterpriseCustomerName,
@@ -194,6 +206,117 @@ export default function useProvisioningContext() {
     }));
   });
 
+  // Retrieve subsidy data
+  const hydrateEnterpriseSubsidiesData = useCallback(async (subsidyUuid) => {
+    const { FORM: { SUBSIDY_TYPE } } = PROVISIONING_PAGE_TEXT;
+
+    const selections = {
+      'partner-no-rev-prepay': SUBSIDY_TYPE.OPTIONS.no,
+      'bulk-enrollment-prepay': SUBSIDY_TYPE.OPTIONS.yes,
+    };
+    const subsidyResponse = await getSubsidy(subsidyUuid);
+    const subsidyData = subsidyResponse.data.results[0];
+    const subsidyCustomerId = subsidyData.enterprise_customer_uuid;
+    const [customer, policies] = await Promise.all([
+      getCustomer(subsidyCustomerId), getPolicies(subsidyCustomerId),
+    ]);
+    const customerData = customer.data[0];
+    const catalogUuids = getCatalogUuid(policies, subsidyUuid);
+    const isMultipleFunds = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid).length > 1;
+
+    let catalogs;
+    if (catalogUuids !== undefined) {
+      catalogs = await Promise.all(catalogUuids.map(async (catalogUuid) => {
+        const catalog = await getCatalogs(catalogUuid);
+        return Object.assign({}, ...catalog.data.results);
+      }));
+    }
+    const catalogQueries = await getCatalogQueries();
+
+    let customCatalog;
+    const policiesData = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid).map(policy => {
+      let catalogCategoryTitle;
+      const formattedPolicies = [];
+
+      catalogs.forEach(catalog => {
+        if (catalog.uuid === policy.catalog_uuid) {
+          [, catalogCategoryTitle] = catalog.title.split(' - ');
+          let catalogQuery;
+          // this check is to identify subsidies that either have:
+          // 1) multiple plans
+          // 2) single plan
+          // 3) single plan with custom catalog
+          if (isMultipleFunds) {
+            catalogQuery = {
+              id: CATALOG_QUERIES[catalogCategoryTitle].id,
+              title: catalogCategoryTitle,
+              catalogUuid: catalog.uuid,
+            };
+          } else if (catalogCategoryTitle.includes('budget')) {
+            catalogQuery = {
+              id: CATALOG_QUERIES[`${catalogCategoryTitle} budget`]?.id,
+              title: catalogCategoryTitle.split(splitStringBudget)[0],
+              catalogUuid: catalog.uuid,
+            };
+          } else {
+            catalogQuery = Object.assign(
+              {},
+              ...camelCaseObject(
+                catalogQueries.results.filter(query => catalogCategoryTitle === query.title),
+              ),
+            );
+            customCatalog = true;
+          }
+
+          formattedPolicies.push({
+            accountDescription: policy.description,
+            accountValue: policy.spend_limit,
+            uuid: policy.uuid,
+            catalogQueryTitle: isMultipleFunds ? catalogCategoryTitle : 'Budget',
+            // Need to divide by 100 to convert amount in cents to dollar
+            perLearnerCapAmount: policy.per_learner_spend_limit / 100,
+            perLearnerCap: !!policy.per_learner_spend_limit,
+            catalogQueryMetadata: {
+              catalogQuery,
+            },
+          });
+        }
+      });
+      return Object.assign({}, ...formattedPolicies);
+    });
+
+    setState(s => ({
+      ...s,
+      formData: {
+        ...s.formData,
+        subsidyUuid,
+        subsidyTitle: subsidyData?.title,
+        customerName: customerData?.name,
+        customerUuid: customerData?.id,
+        enterpriseUUID: `${customerData?.name} --- ${customerData?.id}`,
+        internalOnly: subsidyData?.internal_only,
+        financialIdentifier: subsidyData?.reference_id,
+        subsidyRevReq: selections[subsidyData?.revenue_category],
+        startDate: dayjs(subsidyData?.active_datetime).format('YYYY-MM-DD'),
+        endDate: dayjs(subsidyData?.expiration_datetime).format('YYYY-MM-DD'),
+        policies: policiesData,
+        catalogs,
+      },
+      isEditMode: getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION === 'true',
+      showInvalidField: {
+        ...s.showInvalidField,
+        endDate: !!subsidyData?.active_datetime,
+        financialIdentifier: !!subsidyData?.reference_id,
+        multipleFunds: isMultipleFunds,
+        startDate: !!subsidyData?.expiration_datetime,
+        subsidyTitle: !!subsidyData?.title,
+      },
+      multipleFunds: isMultipleFunds,
+      customCatalog,
+      isLoading: false,
+    }));
+  }, [setState]);
+
   const resetFormData = useCallback(() => {
     setState(() => ({
       multipleFunds: undefined,
@@ -221,6 +344,7 @@ export default function useProvisioningContext() {
   return {
     setMultipleFunds,
     hydrateCatalogQueryData,
+    hydrateEnterpriseSubsidiesData,
     setCustomCatalog,
     setSubsidyTitle,
     setCustomerCatalog,

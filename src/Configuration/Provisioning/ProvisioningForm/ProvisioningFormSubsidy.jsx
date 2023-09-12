@@ -10,10 +10,15 @@ import { selectProvisioningContext } from '../data/utils';
 const ProvisioningFormSubsidy = () => {
   const { setSubsidyRevReq, setInvalidSubsidyFields } = useProvisioningContext();
   const { SUBSIDY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const [isEditMode, formData, showInvalidField] = selectProvisioningContext('isEditMode', 'formData', 'showInvalidField');
   const { subsidy } = showInvalidField;
   const isSubsidyRevReqDefinedAndFalse = subsidy?.subsidyRevReq === false;
-  const [value, setValue] = useState(null);
+
+  let submittedFormSubsidyRevReq;
+  if (isEditMode) {
+    submittedFormSubsidyRevReq = formData.subsidyRevReq;
+  }
+  const [value, setValue] = useState(submittedFormSubsidyRevReq || null);
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;

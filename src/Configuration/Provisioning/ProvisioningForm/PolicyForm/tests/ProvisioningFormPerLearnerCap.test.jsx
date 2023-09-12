@@ -51,4 +51,24 @@ describe('ProvisioningFormPerLearnerCap', () => {
       expect(learnerCapButtons[i].checked).toBeTruthy();
     }
   });
+  it('renders perLearnerCap yes option is checked if isEditMode is true', () => {
+    const mockValue = {
+      ...initialStateValue,
+      isEditMode: true,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [{
+          perLearnerCap: true,
+        }],
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormPerLearnerCapWrapper
+        index={0}
+        value={mockValue}
+      />,
+    );
+    expect(screen.getByTestId(LEARNER_CAP.OPTIONS.yes).checked).toBeTruthy();
+    expect(screen.getByTestId(LEARNER_CAP.OPTIONS.no).checked).toBeFalsy();
+  });
 });

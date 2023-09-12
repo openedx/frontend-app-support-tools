@@ -27,6 +27,7 @@ import ConfigurationPage from './Configuration/ConfigurationPage';
 import ProvisioningFormContainer from './Configuration/Provisioning/ProvisioningForm';
 import SubsidyDetailViewContainer from './Configuration/Provisioning/SubsidyDetailView/SubsidyDetailViewContainer';
 import ErrorPageContainer from './Configuration/Provisioning/ErrorPage';
+import SubsidyEditViewContainer from './Configuration/Provisioning/SubsidyEditView/SubsidyEditViewContainer';
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 
@@ -45,7 +46,7 @@ subscribe(APP_READY, () => {
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT}
-      component={ProvisioningFormContainer}
+      component={SubsidyEditViewContainer}
     />,
     <Route
       key={uuidv4()}

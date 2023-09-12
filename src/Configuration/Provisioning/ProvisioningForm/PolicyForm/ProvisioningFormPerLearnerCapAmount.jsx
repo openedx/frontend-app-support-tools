@@ -10,12 +10,17 @@ import { isWholeDollarAmount } from '../../../../utils';
 const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
   const { LEARNER_CAP_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
   const { setPerLearnerCap, setInvalidPolicyFields } = useProvisioningContext();
-  const [showInvalidField] = selectProvisioningContext('showInvalidField');
+  const [formData, showInvalidField, isEditMode] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode');
   const { policies } = showInvalidField;
   const isPerLearnerCapAmountDefinedAndFalse = policies[index]?.perLearnerCapAmount === false;
   const [isWholeDollar, setIsWholeDollar] = useState(true);
-  const [perLearnerCapValue, setPerLearnerCapValue] = useState('');
 
+  let submittedFormPerLearnerCapAmount;
+  if (isEditMode) {
+    submittedFormPerLearnerCapAmount = formData.policies[index]?.perLearnerCapAmount;
+  }
+
+  const [perLearnerCapValue, setPerLearnerCapValue] = useState(submittedFormPerLearnerCapAmount || '');
   const handleChange = (e) => {
     const newEventValue = e.target.value;
     if (newEventValue !== '' && !isWholeDollarAmount(newEventValue)) {

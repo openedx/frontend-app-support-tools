@@ -14,10 +14,26 @@ const ProvisioningFormCatalog = ({ index }) => {
   const { setCustomCatalog, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
-  const { multipleFunds, formData, showInvalidField: { policies } } = contextData;
+  const {
+    customCatalog,
+    isEditMode,
+    multipleFunds,
+    formData,
+    showInvalidField: { policies },
+  } = contextData;
   const isCatalogQueryMetadataDefinedAndFalse = policies[index]?.catalogQueryMetadata === false;
   const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
-  const [value, setValue] = useState(null);
+
+  let submittedFormAssociatedCatalog;
+  if (isEditMode && !multipleFunds) {
+    if (customCatalog) {
+      submittedFormAssociatedCatalog = CATALOG.OPTIONS.custom;
+    } else {
+      submittedFormAssociatedCatalog = formData.policies[index].catalogQueryMetadata.catalogQuery.title;
+    }
+  }
+
+  const [value, setValue] = useState(submittedFormAssociatedCatalog || null);
   const customCatalogSelected = value === CATALOG.OPTIONS.custom;
   if (multipleFunds === undefined) {
     return null;

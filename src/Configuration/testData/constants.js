@@ -234,3 +234,24 @@ export const sampleSingleEmptyData = {
   subsidyRevReq: 'No (partner no rev prepay)',
   subsidyTitle: 'Test Subsidy',
 };
+
+export const samplePolicyResponse = {
+  data: {
+    results: [{
+      uuid: '1fedab07-8872-4795-8f8c-e4035b1f41b7',
+      policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      description: 'Mariana-Test --- Executive Education budget, Initial Policy Value: $5000, Initial Subsidy Value: $9000',
+      active: true,
+      enterprise_customer_uuid: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de',
+      catalog_uuid: '69035754-fa48-4519-92d8-a723ae0f6e58',
+      subsidy_uuid: '0196e5c3-ba08-4798-8bf1-019d747c27bf',
+      access_method: 'direct',
+      per_learner_enrollment_limit: null,
+      per_learner_spend_limit: 5000,
+      spend_limit: 500000,
+      subsidy_active_datetime: '2023-06-20T00:00:00Z',
+      subsidy_expiration_datetime: '2023-06-22T00:00:00Z',
+      is_subsidy_active: false,
+    }],
+  },
+};
