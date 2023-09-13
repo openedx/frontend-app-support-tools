@@ -38,6 +38,9 @@ const SubsidyEditView = () => {
   useEffect(() => {
     const handleTabClose = (event) => {
       event.preventDefault();
+      // Creating a copy to bypass lint rule: no-param-reassign when setting a property on a DOM object.
+      // TODO: Investigate why event.preventDefault does. not open dialog.
+      // refer to docs: https://developer.mozilla.org/en-US/docs/Web/API/BeforeUnloadEvent
       const copyEvent = event;
       copyEvent.returnValue = true;
       return copyEvent.returnValue;
