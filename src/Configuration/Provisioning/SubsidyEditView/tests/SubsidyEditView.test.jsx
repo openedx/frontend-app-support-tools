@@ -15,6 +15,20 @@ import '@testing-library/jest-dom/extend-expect';
 
 const { FORM } = PROVISIONING_PAGE_TEXT;
 
+const mockConfig = () => ({
+  FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: 'true',
+  PREDEFINED_CATALOG_QUERIES: {
+    everything: 1,
+    open_courses: 2,
+    executive_education: 3,
+  },
+});
+
+jest.mock('@edx/frontend-platform', () => ({
+  ...jest.requireActual('@edx/frontend-platform'),
+  getConfig: () => mockConfig(),
+}));
+
 const mockData = {
   data: {
     results: [
@@ -114,6 +128,13 @@ const SubsidyEditViewWrapper = ({
 );
 
 describe('SubsidyEditView', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it('renders on true multiple funds', async () => {
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
     await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={{ ...hydratedInitialState }} />));
@@ -168,44 +189,59 @@ describe('SubsidyEditView', () => {
     window.dispatchEvent(new Event('beforeunload'));
     expect(window.addEventListener).toHaveBeenCalledWith('beforeunload', enableBeforeUnload);
   });
-  it('tests for plan title updates and cancel modal should appear', async () => {
-    const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
 
-    const updatedStateValue = {
-      ...hydratedInitialState,
-      hasEdits: false,
-      isEditMode: true,
-    };
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />));
-    const input = screen.getByTestId('customer-plan-title');
-    fireEvent.change(input, { target: { value: 'test' } });
-    const button = screen.getByRole('button', {
-      name: CANCEL.description,
+  describe('updating form', () => {
+    beforeEach(() => {
+      const updatedStateValue = {
+        ...hydratedInitialState,
+        isEditMode: true,
+      };
+      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
+      renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />);
     });
-    expect(button).toBeInTheDocument();
-    userEvent.click(button);
-    await waitFor(() => expect(screen.getByText(CANCEL.MODAL.TITLE)).toBeInTheDocument());
-  });
-  it('tests for term updates and cancel modal should appear', async () => {
-    const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
-
-    const updatedStateValue = {
-      ...hydratedInitialState,
-      isEditMode: true,
-      hasEdits: false,
+    const checksForCancelConfirmation = async () => {
+      const button = screen.getByRole('button', {
+        name: FORM.CANCEL.description,
+      });
+      expect(button).toBeInTheDocument();
+      userEvent.click(button);
+      await waitFor(() => expect(screen.getByText(FORM.CANCEL.MODAL.TITLE)).toBeInTheDocument());
     };
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />));
-    const startDateInput = screen.getByTestId('start-date');
-    expect(startDateInput.value).toBe('2023-06-20');
-    fireEvent.change(startDateInput, { target: { value: '2021-01-01' } });
-    expect(startDateInput.value).toBe('2021-01-01');
-    const button = screen.getByRole('button', {
-      name: CANCEL.description,
+    it('shows confirmation modal when there are edits to date input', async () => {
+      const startDateInput = screen.getByTestId('start-date');
+      expect(startDateInput.value).toBe('2023-10-01');
+      fireEvent.change(startDateInput, { target: { value: '2021-01-01' } });
+      expect(startDateInput.value).toBe('2021-01-01');
+      await checksForCancelConfirmation();
     });
-    expect(button).toBeInTheDocument();
-    userEvent.click(button);
-    await waitFor(() => expect(screen.getByText(CANCEL.MODAL.TITLE)).toBeInTheDocument());
+    it('shows confirmation modal when there are edits subsidy type selection', async () => {
+      const yesButton = screen.getByTestId(FORM.SUBSIDY_TYPE.OPTIONS.yes);
+      expect(yesButton.checked).toBeTruthy();
+      const noButton = screen.getByTestId(FORM.SUBSIDY_TYPE.OPTIONS.no);
+      fireEvent.click(noButton);
+      await checksForCancelConfirmation();
+    });
+    it('shows confirmation modal when there are edits to the description', async () => {
+      const input = screen.getByTestId('account-description');
+      fireEvent.change(input, { target: { value: 'test' } });
+      await checksForCancelConfirmation();
+    });
+    it('shows confirmation modal when there are edits to the learner cap selection', async () => {
+      const yesButton = screen.getByTestId(FORM.LEARNER_CAP.OPTIONS.yes);
+      expect(yesButton.checked).toBeTruthy();
+      const noButton = screen.getByTestId(FORM.LEARNER_CAP.OPTIONS.no);
+      fireEvent.click(noButton);
+      await checksForCancelConfirmation();
+    });
+    it('shows confirmation modal when there are edits to learner cap amount', async () => {
+      const input = screen.getByTestId('per-learner-spend-cap-amount');
+      fireEvent.change(input, { target: { value: '100.50' } });
+      await checksForCancelConfirmation();
+    });
+    it('shows confirmation modal when there are edits checkbox is selected/unselected', async () => {
+      const checkbox = screen.getByTestId('internal-only-checkbox');
+      fireEvent.click(checkbox);
+      await checksForCancelConfirmation();
+    });
   });
 });
