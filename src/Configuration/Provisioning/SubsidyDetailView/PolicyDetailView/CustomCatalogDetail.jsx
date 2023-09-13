@@ -44,7 +44,7 @@ const CustomCatalogDetail = ({ catalogTitle }) => {
         const findCatalogQuery = catalogQueries.results.filter(
           catalogQuery => formatCatalogTitle === catalogQuery.title,
         );
-        setCatalogQueryContentFilter(JSON.stringify(findCatalogQuery[0].content_filter, null, 2));
+        setCatalogQueryContentFilter(JSON.stringify(findCatalogQuery[0]?.content_filter, null, 2));
         setIsLoading(false);
       } catch (error) {
         const { customAttributes } = error;

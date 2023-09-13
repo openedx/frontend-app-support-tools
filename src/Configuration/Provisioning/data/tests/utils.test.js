@@ -10,7 +10,7 @@ import {
   getCamelCasedConfigAttribute,
   getCatalogUuid,
   getCatalogQueries,
-  hasValidPolicyAndSubidy,
+  hasValidPolicyAndSubsidy,
   lmsCustomerCatalog,
   normalizeSubsidyDataTableData,
   selectProvisioningContext,
@@ -66,7 +66,7 @@ describe('lmsCustomerCatalog', () => {
   });
 });
 
-describe('hasValidPolicyAndSubidy', () => {
+describe('hasValidPolicyAndSubsidy', () => {
   const formDataUseCases = [
     sampleMultiplePolicyFormData,
     sampleSinglePolicyCustomCatalogQueryFormData,
@@ -74,7 +74,7 @@ describe('hasValidPolicyAndSubidy', () => {
   ];
   it('returns true if all required fields are filled out', () => {
     formDataUseCases.forEach((formData) => {
-      expect(hasValidPolicyAndSubidy(formData)).toBeTruthy();
+      expect(hasValidPolicyAndSubsidy(formData)).toBeTruthy();
     });
   });
 });

@@ -14,7 +14,7 @@ import useProvisioningContext from '../data/hooks';
 import {
   createCatalogs,
   selectProvisioningContext,
-  hasValidPolicyAndSubidy,
+  hasValidPolicyAndSubsidy,
   createSubsidy,
   transformSubsidyData,
   transformPolicyData,
@@ -35,7 +35,7 @@ const ProvisioningFormSubmissionButton = () => {
   const { BUTTON, ALERTS: { API_ERROR_MESSAGES } } = PROVISIONING_PAGE_TEXT.FORM;
   const { HOME, SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
   const { policies } = formData;
-  const canCreatePolicyAndSubsidy = useMemo(() => hasValidPolicyAndSubidy(formData), [formData]);
+  const canCreatePolicyAndSubsidy = useMemo(() => hasValidPolicyAndSubsidy(formData), [formData]);
 
   const [submitButtonState, setSubmitButtonState] = useState('default');
 
