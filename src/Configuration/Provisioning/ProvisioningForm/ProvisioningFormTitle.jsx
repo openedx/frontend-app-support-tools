@@ -7,9 +7,9 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormTitle = () => {
-  const { setSubsidyTitle } = useProvisioningContext();
+  const { setSubsidyTitle, setHasEdits } = useProvisioningContext();
   const { FORM: { PLAN_TITLE } } = PROVISIONING_PAGE_TEXT;
-  const [formData, showInvalidField, isEditMode] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode');
+  const [formData, showInvalidField, isEditMode, hasEdits] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode', 'hasEdits');
 
   let submittedFormSubsidyTitle;
   if (isEditMode) {
@@ -23,6 +23,9 @@ const ProvisioningFormTitle = () => {
 
   const handleChange = (e) => {
     const newEventValue = e.target.value;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (newEventValue === '') {
       setInvalidSubsidyFields({ ...subsidy, subsidyTitle: false });
       setSubsidyTitle('');

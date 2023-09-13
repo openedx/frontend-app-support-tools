@@ -215,6 +215,19 @@ const PROVISIONING_PAGE_TEXT = {
     EDIT_BUTTON: {
       description: 'Edit plan',
     },
+    CANCEL: {
+      description: 'Cancel',
+      MODAL: {
+        TITLE: 'Leave page without saving?',
+        BODY: 'The edits you made will not be saved.',
+        FOOTER: {
+          options: {
+            leave: 'Leave without saving',
+            stay: 'Keep editing',
+          },
+        },
+      },
+    },
   },
 };
 

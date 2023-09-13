@@ -7,9 +7,9 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormInternalOnly = () => {
-  const { setInternalOnly } = useProvisioningContext();
+  const { setInternalOnly, setHasEdits } = useProvisioningContext();
   const { INTERNAL_ONLY } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, isEditMode] = selectProvisioningContext('formData', 'isEditMode');
+  const [formData, isEditMode, hasEdits] = selectProvisioningContext('formData', 'isEditMode', 'hasEdits');
 
   let submittedFormInternalOnly;
   if (isEditMode) {
@@ -19,6 +19,9 @@ const ProvisioningFormInternalOnly = () => {
 
   const handleChange = async (e) => {
     const checkedState = e.target.checked;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     setInternalOnly(checkedState);
     setValue(checkedState);
   };

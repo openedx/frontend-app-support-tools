@@ -67,6 +67,7 @@ export const hydratedInitialState = {
     subsidy: [],
     policies: [],
   },
+  hasEdits: false,
 };
 
 export const ProvisioningContext = ({

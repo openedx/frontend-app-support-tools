@@ -13,14 +13,27 @@ import { isValidDateString } from '../../../utils';
 
 const ProvisioningFormTerm = () => {
   const { TERM } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const [
+    formData,
+    showInvalidField,
+    isEditMode,
+    hasEdits,
+  ] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode', 'hasEdits');
   const { subsidy } = showInvalidField;
   const areDatesDefinedAndFalse = subsidy?.startDate === false || subsidy?.endDate === false;
-  const { setStartDate, setEndDate, setInvalidSubsidyFields } = useProvisioningContext();
+  const {
+    setStartDate,
+    setEndDate,
+    setInvalidSubsidyFields,
+    setHasEdits,
+  } = useProvisioningContext();
   const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
   const handleDateChange = (e) => {
     const eventTarget = e.target;
     const isStartDate = eventTarget.dataset.testid.includes('start');
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (isValidDateString(eventTarget.value)) {
       setInvalidSubsidyFields(isStartDate ? { ...subsidy, startDate: true } : { ...subsidy, endDate: true });
       if (isStartDate) {
