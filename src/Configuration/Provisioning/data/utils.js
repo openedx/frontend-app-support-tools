@@ -517,12 +517,12 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
 }
 
 /**
- * Takes the response of catalog creation and the formData object from context
+ * Takes the response of updated catalog and the formData object from context
  * to create an array of policy data objects that can be used to update the policies.
  *
  * @param {Object} formData - The formData object from context
- * @param {Object} catalogCreationResponse - The response from the catalog creation API
- * @returns - Returns an array of policy data objects that can be used to create new policies
+ * @param {Object} catalogCreationResponse - The response from the catalog patched API
+ * @returns - Returns an array of policy data objects that can be used to update policies
  */
 export function transformPatchPolicyPayload(formData, catalogCreationResponse) {
   const { subsidyUuid, policies } = formData;

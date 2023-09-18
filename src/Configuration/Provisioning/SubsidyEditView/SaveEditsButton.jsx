@@ -148,7 +148,7 @@ const SaveEditsButton = () => {
       }
     }
 
-    // transforms formData, catalogSavedResponse and subsidySavedResponse into the correct shape for the API
+    // transforms formData and catalogSavedResponse into the correct shape for the API
     const policyPayloads = transformPatchPolicyPayload(formData, catalogSavedResponse);
 
     // updates subsidy access policy for each policy in the form
