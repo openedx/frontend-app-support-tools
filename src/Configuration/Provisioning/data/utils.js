@@ -1,6 +1,8 @@
 import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
@@ -199,6 +201,30 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
 }
 
 /**
+ * Updates an existing catalog for the specified valid enterprise customer.
+ *
+ * @param {{
+* catalogQueryUUID: Number,
+* catalogUUID: Number,
+* title: String
+* }} - The updated catalog data.
+* @returns {{
+* uuid: String,
+* title: String,
+* catalogQueryUUID: Number,
+* enterpriseCustomerUUID: String
+* }}
+*/
+export async function patchCatalogs({ catalogQueryUUID, catalogUuid, title }) {
+  const { data } = await LmsApiService.patchEnterpriseCustomerCatalog(
+    catalogQueryUUID,
+    catalogUuid,
+    title,
+  );
+  return { data };
+}
+
+/**
  * Extracts the catalog title from the catalogQueryTitle field of a policy.
  * Splitting on ' budget' for the case with multiple catalog queries, where the title
  * of each individual 'Policy' form data is `${title} account`
@@ -314,6 +340,52 @@ export async function createSubsidy({
 }
 
 /**
+ * Updates an existing subsidy for the specified valid enterprise customer.
+ *
+ * @param {{
+* title: String,
+* startDate: String,
+* endDate: String,
+* revenueCategory: String,
+* internalOnly: Boolean,
+* }} 
+* @returns {
+* data: {
+* uuid: String,
+* title: String,
+* enterprise_customer_uuid: String,
+* active_datetime: String,
+* expiration_datetime: String,
+* unit: String,
+* reference_type: String,
+* current_balance: Number,
+* starting_balance: Number,
+* internal_only: Boolean,
+* revenue_category: String,
+* },
+* status: Number - status code,
+* }
+*/
+export async function patchSubsidy({
+  subsidyUuid,
+  title,
+  startDate,
+  endDate,
+  revenueCategory,
+  internalOnly,
+}) {
+  const response = await SubsidyApiService.patchSubsidy(
+    subsidyUuid,
+    title,
+    startDate,
+    endDate,
+    revenueCategory,
+    internalOnly,
+  );
+  return response;
+}
+
+/**
  * Takes in the formData object from context, and transforms it into an object
  * that can be used to create a new subsidy.
  *
@@ -388,6 +460,34 @@ export async function createPolicy({
 }
 
 /**
+ * Updates an existing policy for the specified valid enterprise customer, 
+ * subsidy and catalog uuid.
+ *
+ * @param {{
+* description: String,
+* catalogUuid: String,
+* subsidyUuid: String,
+* perLearnerSpendLimit: Number,
+* spendLimit: Number
+* }}
+* @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
+*/
+export async function patchPolicy({
+  uuid,
+  description,
+  catalogUuid,
+  perLearnerSpendLimit,
+}) {
+  const data = LmsApiService.patchSubsidyAccessPolicy(
+    uuid,
+    description,
+    catalogUuid,
+    perLearnerSpendLimit,
+  );
+  return data;
+}
+
+/**
  * Takes the response of catalog creation, the response of subsidy creation and the formData object from context
  * to create an array of policy data objects that can be used to create new policies.
  *
@@ -412,6 +512,34 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     subsidyUuid: subsidyCreationResponse[0].uuid,
     perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
     spendLimit: parseInt(policy.accountValue, 10) * 100,
+  }));
+  return payloads;
+}
+
+/**
+ * Takes the response of catalog creation and the formData object from context
+ * to create an array of policy data objects that can be used to update the policies.
+ *
+ * @param {Object} formData - The formData object from context
+ * @param {Object} catalogCreationResponse - The response from the catalog creation API
+ * @returns - Returns an array of policy data objects that can be used to create new policies
+ */
+export function transformPatchPolicyPayload(formData, catalogCreationResponse) {
+  const { subsidyUuid, policies } = formData;
+  if (
+    policies.length === 0
+    || catalogCreationResponse.length === 0
+    || !subsidyUuid
+  ) { return []; }
+  const payloads = policies.map((policy) => ({
+    description: policy.accountDescription?.length > 0
+      ? policy.accountDescription
+      : `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
+    catalogUuid: policy.catalogQueryMetadata.catalogQuery.catalogUuid,
+    subsidyUuid,
+    perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
+    spendLimit: policy.accountValue,
+    uuid: policy.uuid,
   }));
   return payloads;
 }
@@ -453,7 +581,8 @@ export function transformDatatableDate(date) {
   if (!date) {
     return null;
   }
-  return new Date(date).toLocaleDateString().replace(/\//g, '-');
+  dayjs.extend(utc);
+  return dayjs(date).utc().format('M-DD-YYYY');
 }
 
 /**

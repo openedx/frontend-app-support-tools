@@ -54,7 +54,7 @@ const SubsidyEditView = () => {
           <CustomerDetail
             enterpriseCustomer={formData.customerName}
             financialIdentifier={formData.financialIdentifier}
-            uuid={formData.customerUuid}
+            uuid={formData.enterpriseUUID}
           />
           <ProvisioningFormTerm />
           <ProvisioningFormInternalOnly />

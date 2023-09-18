@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import PropTypes from 'prop-types';
 import {
   Icon,
@@ -10,6 +11,7 @@ import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const TermDetail = ({ startDate, endDate }) => {
   const { FORM: { TERM } } = PROVISIONING_PAGE_TEXT;
+  dayjs.extend(utc);
   return (
     <article className="mt-4.5">
       <div className="mb-1">
@@ -30,13 +32,13 @@ const TermDetail = ({ startDate, endDate }) => {
       <div className="mb-1 ml-3 mt-3">
         <h4>{TERM.OPTIONS.startDate}</h4>
         <p className="small">
-          {dayjs(startDate).format('MMMM D, YYYY')}
+          {dayjs(startDate).utc().format('MMMM D, YYYY')}
         </p>
       </div>
       <div className="mb-1 ml-3 mt-3">
         <h4>{TERM.OPTIONS.endDate}</h4>
         <p className="small">
-          {dayjs(endDate).format('MMMM D, YYYY')}
+          {dayjs(endDate).utc().format('MMMM D, YYYY')}
         </p>
       </div>
     </article>
