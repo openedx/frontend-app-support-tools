@@ -143,6 +143,7 @@ export const sampleMultiplePolicyFormData = {
   endDate: '2023-04-21',
   internalOnly: 'Yes',
   subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyUuid: '123testSubsidyUuid',
 };
 
 export const sampleSinglePolicyPredefinedCatalogQueryFormData = {

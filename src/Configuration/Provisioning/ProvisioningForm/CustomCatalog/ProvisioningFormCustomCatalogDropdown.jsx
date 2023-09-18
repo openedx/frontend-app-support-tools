@@ -8,10 +8,15 @@ import { selectProvisioningContext, sortedCatalogQueries } from '../../data/util
 const ProvisioningFormCustomCatalogDropdown = () => {
   const [catalogQueries, showInvalidField, isEditMode, customCatalog, formData] = selectProvisioningContext('catalogQueries', 'showInvalidField', 'isEditMode', 'customCatalog', 'formData');
   const { hydrateCatalogQueryData, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
-
+  const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   let submittedFormCustomCatalogTitle;
   if (isEditMode && customCatalog) {
-    submittedFormCustomCatalogTitle = `${formData.policies[0].catalogQueryMetadata.catalogQuery.title} --- ${formData.policies[0].catalogQueryMetadata.catalogQuery.uuid}`;
+    const catalogTitle = formData.policies[0].catalogQueryMetadata.catalogQuery.title;
+    const catalogUuid = formData.policies[0].catalogQueryMetadata.catalogQuery.uuid;
+    submittedFormCustomCatalogTitle = `${catalogTitle} --- ${catalogUuid}`;
+    if (!catalogTitle && !catalogUuid) {
+      submittedFormCustomCatalogTitle = CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title;
+    }
   }
 
   useEffect(() => {
@@ -21,7 +26,6 @@ const ProvisioningFormCustomCatalogDropdown = () => {
   const [selected, setSelected] = useState({ title: submittedFormCustomCatalogTitle || '' });
   const { policies } = showInvalidField;
   const isCatalogQueryMetadataDefinedAndFalse = policies[0]?.catalogQueryMetadata === false;
-  const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const generateAutosuggestOptions = useCallback(() => {
     const defaultDropdown = (
       <Form.AutosuggestOption key={uuidv4()}>

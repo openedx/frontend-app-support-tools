@@ -138,7 +138,7 @@ describe('Save edits button', () => {
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    patchCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
+    patchCatalogs.mockResolvedValue({ data: { uuid: 'test-catalog-uuid' } });
     patchSubsidy.mockResolvedValue({ uuid: 'test-subsidy-uuid' });
     patchPolicy.mockRejectedValue(error);
 
