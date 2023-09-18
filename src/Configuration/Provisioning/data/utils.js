@@ -348,7 +348,7 @@ export async function createSubsidy({
 * endDate: String,
 * revenueCategory: String,
 * internalOnly: Boolean,
-* }} 
+* }}
 * @returns {
 * data: {
 * uuid: String,
@@ -460,7 +460,7 @@ export async function createPolicy({
 }
 
 /**
- * Updates an existing policy for the specified valid enterprise customer, 
+ * Updates an existing policy for the specified valid enterprise customer,
  * subsidy and catalog uuid.
  *
  * @param {{
