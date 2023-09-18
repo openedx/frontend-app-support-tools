@@ -8,9 +8,9 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormSubsidy = () => {
-  const { setSubsidyRevReq, setInvalidSubsidyFields } = useProvisioningContext();
+  const { setSubsidyRevReq, setInvalidSubsidyFields, setHasEdits } = useProvisioningContext();
   const { SUBSIDY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
-  const [isEditMode, formData, showInvalidField] = selectProvisioningContext('isEditMode', 'formData', 'showInvalidField');
+  const [isEditMode, formData, showInvalidField, hasEdits] = selectProvisioningContext('isEditMode', 'formData', 'showInvalidField', 'hasEdits');
   const { subsidy } = showInvalidField;
   const isSubsidyRevReqDefinedAndFalse = subsidy?.subsidyRevReq === false;
 
@@ -22,6 +22,9 @@ const ProvisioningFormSubsidy = () => {
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     setSubsidyRevReq(newTabValue);
     setValue(newTabValue);
     setInvalidSubsidyFields({ ...subsidy, subsidyRevReq: true });

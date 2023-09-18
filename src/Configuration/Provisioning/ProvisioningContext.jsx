@@ -22,6 +22,7 @@ const ProvisioningContextProvider = ({ children }) => {
     },
     isEditMode: false,
     isLoading: true,
+    hasEdits: false,
   });
 
   return (

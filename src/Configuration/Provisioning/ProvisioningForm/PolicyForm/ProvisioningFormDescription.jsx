@@ -8,8 +8,8 @@ import useProvisioningContext from '../../data/hooks';
 
 const ProvisioningFormDescription = ({ index }) => {
   const { ACCOUNT_DESCRIPTION } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, isEditMode] = selectProvisioningContext('formData', 'isEditMode');
-  const { setAccountDescription } = useProvisioningContext();
+  const [formData, isEditMode, hasEdits] = selectProvisioningContext('formData', 'isEditMode', 'hasEdits');
+  const { setAccountDescription, setHasEdits } = useProvisioningContext();
 
   let submittedFormAccountDescription;
   if (isEditMode) {
@@ -25,6 +25,9 @@ const ProvisioningFormDescription = ({ index }) => {
   const handleChange = (e) => {
     const newEvent = e.target;
     const { value } = newEvent;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (value.length > ACCOUNT_DESCRIPTION.MAX_LENGTH) {
       return;
     }
