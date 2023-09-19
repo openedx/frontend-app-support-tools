@@ -252,7 +252,7 @@ export default function useProvisioningContext() {
           // 3) single plan with custom catalog
           if (isMultipleFunds) {
             catalogQuery = {
-              id: catalog?.id,
+              id: catalog?.enterprise_catalog_query,
               title: catalogCategoryTitle,
               catalogUuid: catalog.uuid,
             };

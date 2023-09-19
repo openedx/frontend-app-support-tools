@@ -91,7 +91,7 @@ const SaveEditsButton = () => {
     try {
       const catalogResponses = await Promise.all(policies.map(async (policy) => {
         const payload = {
-          catalogQueryUUID: policy.catalogQueryMetadata.catalogQuery.id,
+          catalogQueryUUID: +policy.catalogQueryMetadata.catalogQuery.id,
           catalogUuid: policy.catalogUuid,
           title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
         };
