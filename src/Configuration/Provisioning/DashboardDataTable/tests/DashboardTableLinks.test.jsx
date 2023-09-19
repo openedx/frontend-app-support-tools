@@ -29,7 +29,7 @@ describe('DashboardTableLinks', () => {
 
     it('renders hyperlink if FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION is true', () => {
       getConfig.mockImplementation(() => ({
-        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: true,
+        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: 'true',
       }));
       render(<PlanIdHyperlink row={row} />);
       expect(screen.getByRole('link', { name: '123456789' })).toHaveAttribute('href', '/enterprise-configuration/learner-credit/123456789/view');
@@ -49,7 +49,7 @@ describe('DashboardTableLinks', () => {
 
     it('renders hyperlink if FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION is true', () => {
       getConfig.mockImplementation(() => ({
-        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: true,
+        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: 'true',
       }));
       render(<PlanTitleHyperlink row={row} />);
       expect(screen.getByRole('link', { name: 'Pikachu' })).toHaveAttribute('href', '/enterprise-configuration/learner-credit/123456789/view');
@@ -69,7 +69,7 @@ describe('DashboardTableLinks', () => {
 
     it('renders hyperlink if FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION is true', () => {
       getConfig.mockImplementation(() => ({
-        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: true,
+        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: 'true',
       }));
       render(<CustomerNameHyperlink row={row} />);
       expect(screen.getByRole('link', { name: 'Ash Ketchum' })).toHaveAttribute('href', '/enterprise-configuration/learner-credit/123456789/view');
