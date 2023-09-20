@@ -58,7 +58,7 @@ const SaveEditsButton = () => {
     setSubmitButtonState('pending');
     setAlertMessage(false);
     // Checks validity before performing any API calls
-    if (policies.length === 0 || !canSavePolicyAndSubsidy) {
+    if (policies.length === 0 || !canSavePolicyAndSubsidy || !formData.subsidyTitle) {
       setSubmitButtonState('error');
       resetInvalidFields();
 
