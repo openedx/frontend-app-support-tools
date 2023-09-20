@@ -60,14 +60,26 @@ const ProvisioningFormCatalog = ({ index }) => {
       }, index);
     } else if (newTabValue !== CATALOG.OPTIONS.custom) {
       setCustomCatalog(false);
-      setCatalogQueryCategory({
-        catalogQueryMetadata: {
-          catalogQuery: {
-            id: newCatalogQuery,
-            title: newTabValue,
+      if (isEditMode) {
+        setCatalogQueryCategory({
+          catalogQueryMetadata: {
+            catalogQuery: {
+              id: newCatalogQuery,
+              title: newTabValue,
+              catalogUuid: formData.policies[index].catalogQueryMetadata.catalogQuery.catalogUuid,
+            },
           },
-        },
-      }, index);
+        }, index);
+      } else {
+        setCatalogQueryCategory({
+          catalogQueryMetadata: {
+            catalogQuery: {
+              id: newCatalogQuery,
+              title: newTabValue,
+            },
+          },
+        }, index);
+      }
     }
     setValue(newTabValue);
     setInvalidPolicyFields({ catalogQueryMetadata: true }, index);

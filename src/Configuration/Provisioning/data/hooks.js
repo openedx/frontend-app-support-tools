@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
-import dayjs from 'dayjs';
+import dayjs from './dayjs';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT, {
   INITIAL_CATALOG_QUERIES,
@@ -250,13 +250,16 @@ export default function useProvisioningContext() {
           // 3) single plan with custom catalog
           if (isMultipleFunds) {
             catalogQuery = {
-              id: CATALOG_QUERIES[catalogCategoryTitle].id,
+              id: catalog?.enterprise_catalog_query,
               title: catalogCategoryTitle,
               catalogUuid: catalog.uuid,
             };
-          } else if (catalogCategoryTitle.includes('budget')) {
+          } else if (catalog.enterprise_catalog_query === CATALOG_QUERIES['Open Courses budget'].id
+            || catalog.enterprise_catalog_query === CATALOG_QUERIES.Everything.id
+            || catalog.enterprise_catalog_query === CATALOG_QUERIES['Executive Education budget'].id
+          ) {
             catalogQuery = {
-              id: CATALOG_QUERIES[`${catalogCategoryTitle} budget`]?.id,
+              id: catalog?.enterprise_catalog_query,
               title: catalogCategoryTitle.split(splitStringBudget)[0],
               catalogUuid: catalog.uuid,
             };
@@ -275,6 +278,7 @@ export default function useProvisioningContext() {
             accountValue: policy.spend_limit,
             uuid: policy.uuid,
             catalogQueryTitle: isMultipleFunds ? catalogCategoryTitle : 'Budget',
+            catalogUuid: policy.catalog_uuid,
             // Need to divide by 100 to convert amount in cents to dollar
             perLearnerCapAmount: policy.per_learner_spend_limit / 100,
             perLearnerCap: !!policy.per_learner_spend_limit,
@@ -294,13 +298,12 @@ export default function useProvisioningContext() {
         subsidyUuid,
         subsidyTitle: subsidyData?.title,
         customerName: customerData?.name,
-        customerUuid: customerData?.id,
-        enterpriseUUID: `${customerData?.name} --- ${customerData?.id}`,
+        enterpriseUUID: customerData?.id,
         internalOnly: subsidyData?.internal_only,
         financialIdentifier: subsidyData?.reference_id,
         subsidyRevReq: selections[subsidyData?.revenue_category],
-        startDate: dayjs(subsidyData?.active_datetime).format('YYYY-MM-DD'),
-        endDate: dayjs(subsidyData?.expiration_datetime).format('YYYY-MM-DD'),
+        startDate: dayjs(subsidyData?.active_datetime).utc().format('YYYY-MM-DD'),
+        endDate: dayjs(subsidyData?.expiration_datetime).utc().format('YYYY-MM-DD'),
         policies: policiesData,
         catalogs,
       },

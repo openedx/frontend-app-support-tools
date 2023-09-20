@@ -17,12 +17,16 @@ jest.mock('../data/hooks', () => ({
 
 const DashboardWrapper = ({
   successfulPlanCreation = false,
+  planSuccessfullySaved = false,
   value = initialStateValue,
 }) => {
   const history = useHistory();
   const { location } = history;
   if (successfulPlanCreation) {
     history.push(location.pathname, { planSuccessfullyCreated: true });
+  }
+  if (planSuccessfullySaved) {
+    history.push(location.pathname, { planSuccessfullySaved: true });
   }
   return (
     <DashboardContext value={value}>
@@ -40,6 +44,10 @@ describe('<DashboardWrapper>', () => {
   it('Displays the toast plan creation', () => {
     renderWithRouter(<DashboardWrapper successfulPlanCreation />);
     expect(screen.getByText(toastText.successfulPlanCreation)).toBeTruthy();
+  });
+  it('Displays the toast plan saved', () => {
+    renderWithRouter(<DashboardWrapper planSuccessfullySaved />);
+    expect(screen.getByText(toastText.successfulPlanSaved)).toBeTruthy();
   });
   it('Closes the toast on button click', async () => {
     renderWithRouter(<DashboardWrapper successfulPlanCreation />);

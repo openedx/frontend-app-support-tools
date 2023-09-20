@@ -30,6 +30,16 @@ class LmsApiService {
     title,
   });
 
+  static patchEnterpriseCustomerCatalog = (
+    catalogQueryUUID,
+    catalogUuid,
+    title,
+  ) => LmsApiService.apiClient().patch(LmsApiService.enterpriseCustomerCatalogsUrl, {
+    enterprise_catalog_query: catalogQueryUUID,
+    uuid: catalogUuid,
+    title,
+  });
+
   static fetchEnterpriseCustomerCatalogs = (catalogUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCatalogsUrl}?uuid=${catalogUuid}`);
 
   // Did not include perLearnerEnrollmentLimit field because it is
@@ -56,6 +66,24 @@ class LmsApiService {
       access_method: accessMethod,
       per_learner_spend_limit: perLearnerSpendLimit,
       spend_limit: spendLimit,
+    },
+  );
+
+  static patchSubsidyAccessPolicy = (
+    uuid,
+    description,
+    catalogUuid,
+    perLearnerSpendLimit,
+    accessMethod = 'direct',
+    active = true,
+  ) => LmsApiService.apiClient().patch(
+    `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/subsidy-access-policies/${uuid}/`,
+    {
+      description,
+      active,
+      catalog_uuid: catalogUuid,
+      access_method: accessMethod,
+      per_learner_spend_limit: perLearnerSpendLimit,
     },
   );
 

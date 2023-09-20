@@ -56,6 +56,7 @@ const mocks = {
         enterprise_customer: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de',
         title: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de - Open Courses budget',
         uuid: '69035754-fa48-4519-92d8-a723ae0f6e58',
+        enterprise_catalog_query: 29,
       }],
     },
   },

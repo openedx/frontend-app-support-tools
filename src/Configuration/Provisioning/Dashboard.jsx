@@ -15,16 +15,21 @@ const Dashboard = () => {
   const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
-    if (locationState?.planSuccessfullyCreated) {
+    if (locationState?.planSuccessfullyCreated || locationState?.planSuccessfullySaved) {
       setToasts((prevState) => [...prevState, {
-        text: toastText.successfulPlanCreation,
-        uuid: uuidv4(),
+        text: locationState?.planSuccessfullyCreated ? toastText.successfulPlanCreation : toastText.successfulPlanSaved,
+        uuid: locationState?.planSuccessfullyCreated ? uuidv4() : null,
       }]);
       const newState = { ...locationState };
-      delete newState.planSuccessfullyCreated;
+      if (locationState?.planSuccessfullyCreated) {
+        delete newState.planSuccessfullyCreated;
+      }
+      if (locationState?.planSuccessfullySaved) {
+        delete newState.planSuccessfullySaved;
+      }
       history.replace({ ...location, state: newState });
     }
-  }, [toastText.successfulPlanCreation, history, location, locationState]);
+  }, [toastText.successfulPlanCreation, toastText.successfulPlanSaved, history, location, locationState]);
 
   return (
     <>

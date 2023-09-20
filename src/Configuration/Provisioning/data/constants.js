@@ -215,6 +215,13 @@ const PROVISIONING_PAGE_TEXT = {
     EDIT_BUTTON: {
       description: 'Edit plan',
     },
+    SAVE_BUTTON: {
+      submit: 'Save Edits',
+      pending: 'Updating...',
+      success: 'Plan successfully updated',
+      error: 'Failed to update plan. Please try again.',
+      cancel: 'Cancel',
+    },
     CANCEL: {
       description: 'Cancel',
       MODAL: {
@@ -235,6 +242,7 @@ export const splitStringBudget = ' budget';
 
 export const toastText = {
   successfulPlanCreation: 'Plan successfully created',
+  successfulPlanSaved: 'Plan successfully saved',
 };
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';

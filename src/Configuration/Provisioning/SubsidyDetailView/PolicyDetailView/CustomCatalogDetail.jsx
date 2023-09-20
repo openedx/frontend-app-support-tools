@@ -44,7 +44,7 @@ const CustomCatalogDetail = ({ catalogTitle }) => {
         const findCatalogQuery = catalogQueries.results.filter(
           catalogQuery => formatCatalogTitle === catalogQuery.title,
         );
-        setCatalogQueryContentFilter(JSON.stringify(findCatalogQuery[0].content_filter, null, 2));
+        setCatalogQueryContentFilter(JSON.stringify(findCatalogQuery[0]?.content_filter, null, 2));
         setIsLoading(false);
       } catch (error) {
         const { customAttributes } = error;
@@ -69,8 +69,10 @@ const CustomCatalogDetail = ({ catalogTitle }) => {
             {getCustomCatalogTitle(catalogTitle)}
           </p>
           <h5>{CUSTOM_CATALOG.OPTIONS.contentFilter}</h5>
-          <pre data-testid="content-filter" className="x-small text-gray-500">
-            {catalogQueryContentFilter}
+          <pre data-testid="content-filter" style={{ font: 'inherit' }} className="text-gray-500">
+            <span className="small">
+              {catalogQueryContentFilter}
+            </span>
           </pre>
         </div>
       </div>
