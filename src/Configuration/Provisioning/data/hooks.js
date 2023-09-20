@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
-import dayjs from '../data/dayjs'
+import dayjs from './dayjs';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT, {
   INITIAL_CATALOG_QUERIES,
