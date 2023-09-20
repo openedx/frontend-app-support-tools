@@ -64,7 +64,7 @@ const ProvisioningFormCatalog = ({ index }) => {
         setCatalogQueryCategory({
           catalogQueryMetadata: {
             catalogQuery: {
-              id: +newCatalogQuery,
+              id: newCatalogQuery,
               title: newTabValue,
               catalogUuid: formData.policies[index].catalogQueryMetadata.catalogQuery.catalogUuid,
             },

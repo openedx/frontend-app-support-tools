@@ -153,14 +153,11 @@ const SaveEditsButton = () => {
 
     // updates subsidy access policy for each policy in the form
     try {
-      const policyResponses = await Promise.all(policyPayloads.map(async (payload) => {
+      await Promise.all(policyPayloads.map(async (payload) => {
         const policyPatchResponse = await patchPolicy(payload);
         return policyPatchResponse;
       }));
-      // checks if all policies were saved/updated successfully before proceeding
-      if (policyResponses) {
-        setSubmitButtonState('complete');
-      }
+      setSubmitButtonState('complete');
     } catch (error) {
       setSubmitButtonState('error');
       const { customAttributes } = error;

@@ -69,8 +69,10 @@ const CustomCatalogDetail = ({ catalogTitle }) => {
             {getCustomCatalogTitle(catalogTitle)}
           </p>
           <h5>{CUSTOM_CATALOG.OPTIONS.contentFilter}</h5>
-          <pre data-testid="content-filter" className="x-small text-gray-500">
-            {catalogQueryContentFilter}
+          <pre data-testid="content-filter" style={{ font: 'inherit' }} className="text-gray-500">
+            <span className="small">
+              {catalogQueryContentFilter}
+            </span>
           </pre>
         </div>
       </div>
