@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+import dayjs from '../data/dayjs'
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT, {
   INITIAL_CATALOG_QUERIES,
@@ -212,7 +211,6 @@ export default function useProvisioningContext() {
   // Retrieve subsidy data
   const hydrateEnterpriseSubsidiesData = useCallback(async (subsidyUuid) => {
     const { FORM: { SUBSIDY_TYPE } } = PROVISIONING_PAGE_TEXT;
-    dayjs.extend(utc);
 
     const selections = {
       'partner-no-rev-prepay': SUBSIDY_TYPE.OPTIONS.no,

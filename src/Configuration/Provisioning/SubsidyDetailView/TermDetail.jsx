@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import PropTypes from 'prop-types';
 import {
   Icon,
@@ -8,10 +6,10 @@ import {
 } from '@edx/paragon';
 import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
+import dayjs from '../data/dayjs';
 
 const TermDetail = ({ startDate, endDate }) => {
   const { FORM: { TERM } } = PROVISIONING_PAGE_TEXT;
-  dayjs.extend(utc);
   return (
     <article className="mt-4.5">
       <div className="mb-1">

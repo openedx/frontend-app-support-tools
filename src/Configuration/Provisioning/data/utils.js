@@ -1,8 +1,7 @@
 import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+import dayjs from './dayjs';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
@@ -581,7 +580,6 @@ export function transformDatatableDate(date) {
   if (!date) {
     return null;
   }
-  dayjs.extend(utc);
   return dayjs(date).utc().format('M-DD-YYYY');
 }
 
