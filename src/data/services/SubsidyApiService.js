@@ -53,6 +53,27 @@ class SubsidyApiService {
       },
     );
   };
+
+  static patchSubsidy = (
+    subsidyUuid,
+    title,
+    startDate,
+    endDate,
+    revenueCategory,
+    internalOnly,
+  ) => {
+    const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/${subsidyUuid}/`;
+    return SubsidyApiService.apiClient().patch(
+      subsidiesURL,
+      {
+        title,
+        active_datetime: startDate,
+        expiration_datetime: endDate,
+        revenue_category: revenueCategory,
+        internal_only: internalOnly,
+      },
+    );
+  };
 }
 
 export default SubsidyApiService;

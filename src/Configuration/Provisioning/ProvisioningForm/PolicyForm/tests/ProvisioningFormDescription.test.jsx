@@ -67,4 +67,23 @@ describe('ProvisioningFormDescription', () => {
     expect(input.value).toBe(oversizedString.slice(0, -1));
     expect(screen.getByText(`255/${ACCOUNT_DESCRIPTION.MAX_LENGTH}`)).toBeTruthy();
   });
+  it('renders hydrated subsidy description data if isEditMode is true', () => {
+    const mockValue = {
+      isEditMode: true,
+      formData: {
+        policies: [{
+          accountValue: '4000',
+          accountName: 'Test Subsidy Title - Budget',
+          accountDescription: 'Testing 123',
+        }],
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormDescriptionWrapper
+        index={0}
+        value={mockValue}
+      />,
+    );
+    expect(screen.getByText('Testing 123')).toBeTruthy();
+  });
 });

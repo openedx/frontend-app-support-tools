@@ -8,15 +8,23 @@ import useProvisioningContext from '../../data/hooks';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormPerLearnerCap = ({ index }) => {
-  const { perLearnerCap, setInvalidPolicyFields } = useProvisioningContext();
+  const { perLearnerCap, setInvalidPolicyFields, setHasEdits } = useProvisioningContext();
   const { LEARNER_CAP } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const [formData, showInvalidField, isEditMode, hasEdits] = selectProvisioningContext('formData', 'showInvalidField', 'isEditMode', 'hasEdits');
   const { policies } = showInvalidField;
   const isPerLearnerCapDefinedAndFalse = policies[index]?.perLearnerCap === false;
-  const [value, setValue] = useState(null);
+
+  let learnerCapSelection;
+  if (isEditMode) {
+    learnerCapSelection = formData.policies[index].perLearnerCap ? LEARNER_CAP.OPTIONS.yes : LEARNER_CAP.OPTIONS.no;
+  }
+  const [value, setValue] = useState(learnerCapSelection || null);
 
   const handleChange = (e) => {
     const newTabValue = e.target.value;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (newTabValue === LEARNER_CAP.OPTIONS.yes) {
       perLearnerCap({
         perLearnerCap: true,

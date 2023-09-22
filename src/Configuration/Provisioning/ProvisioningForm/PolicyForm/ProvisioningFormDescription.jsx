@@ -3,18 +3,31 @@ import {
 } from '@edx/paragon';
 import { useState } from 'react';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { indexOnlyPropType } from '../../data/utils';
+import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 import useProvisioningContext from '../../data/hooks';
 
 const ProvisioningFormDescription = ({ index }) => {
   const { ACCOUNT_DESCRIPTION } = PROVISIONING_PAGE_TEXT.FORM;
-  const { setAccountDescription } = useProvisioningContext();
-  const [accountDescriptionLength, setAccountDescriptionLength] = useState(0);
-  const [localAccountDescription, setLocalAccountDescription] = useState('');
+  const [formData, isEditMode, hasEdits] = selectProvisioningContext('formData', 'isEditMode', 'hasEdits');
+  const { setAccountDescription, setHasEdits } = useProvisioningContext();
+
+  let submittedFormAccountDescription;
+  if (isEditMode) {
+    submittedFormAccountDescription = formData.policies[index].accountDescription;
+  }
+
+  const [accountDescriptionLength, setAccountDescriptionLength] = useState(
+    submittedFormAccountDescription?.length || 0,
+  );
+
+  const [localAccountDescription, setLocalAccountDescription] = useState(submittedFormAccountDescription || '');
 
   const handleChange = (e) => {
     const newEvent = e.target;
     const { value } = newEvent;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (value.length > ACCOUNT_DESCRIPTION.MAX_LENGTH) {
       return;
     }

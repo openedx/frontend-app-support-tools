@@ -52,6 +52,16 @@ describe('<DashboardWrapper>', () => {
     renderWithRouter(<DashboardWrapper />);
     expect(screen.getByText(toastText.successfulPlanCreation)).toBeTruthy();
   });
+  it('Displays the toast plan saved', () => {
+    useLocation.mockReturnValue({
+      pathname: '/',
+      state: {
+        planSuccessfullySaved: true,
+      },
+    });
+    renderWithRouter(<DashboardWrapper />);
+    expect(screen.getByText(toastText.successfulPlanSaved)).toBeTruthy();
+  });
   it('Closes the toast on button click', async () => {
     useLocation.mockReturnValue({
       pathname: '/',

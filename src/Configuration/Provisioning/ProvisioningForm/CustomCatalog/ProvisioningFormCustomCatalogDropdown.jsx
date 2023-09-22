@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Button } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -6,12 +6,26 @@ import useProvisioningContext from '../../data/hooks';
 import { selectProvisioningContext, sortedCatalogQueries } from '../../data/utils';
 
 const ProvisioningFormCustomCatalogDropdown = () => {
-  const [selected, setSelected] = useState({ title: '' });
-  const [catalogQueries, showInvalidField] = selectProvisioningContext('catalogQueries', 'showInvalidField');
-  const { policies } = showInvalidField;
-  const isCatalogQueryMetadataDefinedAndFalse = policies[0]?.catalogQueryMetadata === false;
+  const [catalogQueries, showInvalidField, isEditMode, customCatalog, formData] = selectProvisioningContext('catalogQueries', 'showInvalidField', 'isEditMode', 'customCatalog', 'formData');
   const { hydrateCatalogQueryData, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
   const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
+  let submittedFormCustomCatalogTitle;
+  if (isEditMode && customCatalog) {
+    const catalogTitle = formData.policies[0].catalogQueryMetadata.catalogQuery.title;
+    const catalogUuid = formData.policies[0].catalogQueryMetadata.catalogQuery.uuid;
+    submittedFormCustomCatalogTitle = `${catalogTitle} --- ${catalogUuid}`;
+    if (!catalogTitle && !catalogUuid) {
+      submittedFormCustomCatalogTitle = CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title;
+    }
+  }
+
+  useEffect(() => {
+    hydrateCatalogQueryData();
+  }, []);
+
+  const [selected, setSelected] = useState({ title: submittedFormCustomCatalogTitle || '' });
+  const { policies } = showInvalidField;
+  const isCatalogQueryMetadataDefinedAndFalse = policies[0]?.catalogQueryMetadata === false;
   const generateAutosuggestOptions = useCallback(() => {
     const defaultDropdown = (
       <Form.AutosuggestOption key={uuidv4()}>

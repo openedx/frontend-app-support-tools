@@ -11,13 +11,35 @@ import { ProvisioningContext } from '../../ProvisioningContext';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
-  const { setCustomCatalog, setCatalogQueryCategory, setInvalidPolicyFields } = useProvisioningContext();
+  const {
+    setCustomCatalog,
+    setCatalogQueryCategory,
+    setInvalidPolicyFields,
+    setHasEdits,
+  } = useProvisioningContext();
   const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
-  const { multipleFunds, formData, showInvalidField: { policies } } = contextData;
+  const {
+    customCatalog,
+    isEditMode,
+    multipleFunds,
+    formData,
+    showInvalidField: { policies },
+    hasEdits,
+  } = contextData;
   const isCatalogQueryMetadataDefinedAndFalse = policies[index]?.catalogQueryMetadata === false;
   const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
-  const [value, setValue] = useState(null);
+
+  let submittedFormAssociatedCatalog;
+  if (isEditMode && !multipleFunds) {
+    if (customCatalog) {
+      submittedFormAssociatedCatalog = CATALOG.OPTIONS.custom;
+    } else {
+      submittedFormAssociatedCatalog = formData.policies[index].catalogQueryMetadata.catalogQuery.title;
+    }
+  }
+
+  const [value, setValue] = useState(submittedFormAssociatedCatalog || null);
   const customCatalogSelected = value === CATALOG.OPTIONS.custom;
   if (multipleFunds === undefined) {
     return null;
@@ -26,6 +48,9 @@ const ProvisioningFormCatalog = ({ index }) => {
   const handleChange = (e) => {
     const newTabValue = e.target.value;
     const newCatalogQuery = e.target.dataset.catalogqueryid;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     if (newTabValue === CATALOG.OPTIONS.custom) {
       setCustomCatalog(true);
       setCatalogQueryCategory({
@@ -35,14 +60,26 @@ const ProvisioningFormCatalog = ({ index }) => {
       }, index);
     } else if (newTabValue !== CATALOG.OPTIONS.custom) {
       setCustomCatalog(false);
-      setCatalogQueryCategory({
-        catalogQueryMetadata: {
-          catalogQuery: {
-            id: newCatalogQuery,
-            title: newTabValue,
+      if (isEditMode) {
+        setCatalogQueryCategory({
+          catalogQueryMetadata: {
+            catalogQuery: {
+              id: newCatalogQuery,
+              title: newTabValue,
+              catalogUuid: formData.policies[index].catalogQueryMetadata.catalogQuery.catalogUuid,
+            },
           },
-        },
-      }, index);
+        }, index);
+      } else {
+        setCatalogQueryCategory({
+          catalogQueryMetadata: {
+            catalogQuery: {
+              id: newCatalogQuery,
+              title: newTabValue,
+            },
+          },
+        }, index);
+      }
     }
     setValue(newTabValue);
     setInvalidPolicyFields({ catalogQueryMetadata: true }, index);

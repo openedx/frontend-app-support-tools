@@ -8,20 +8,27 @@ import {
   filterByEnterpriseCustomerName,
   filterIndexOfCatalogQueryTitle,
   getCamelCasedConfigAttribute,
-  hasValidPolicyAndSubidy,
+  getCatalogUuid,
+  getCatalogQueries,
+  hasValidPolicyAndSubsidy,
   lmsCustomerCatalog,
   normalizeSubsidyDataTableData,
+  patchCatalogs,
+  patchPolicy,
+  patchSubsidy,
   selectProvisioningContext,
   sortDataTableData,
   sortedCatalogQueries,
   transformDataTableData,
   transformDatatableDate,
+  transformPatchPolicyPayload,
   transformPolicyData,
 } from '../utils';
 import {
   sampleCatalogQueries,
   sampleDataTableData,
   sampleMultiplePolicyFormData,
+  samplePolicyResponse,
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
@@ -63,7 +70,7 @@ describe('lmsCustomerCatalog', () => {
   });
 });
 
-describe('hasValidPolicyAndSubidy', () => {
+describe('hasValidPolicyAndSubsidy', () => {
   const formDataUseCases = [
     sampleMultiplePolicyFormData,
     sampleSinglePolicyCustomCatalogQueryFormData,
@@ -71,7 +78,7 @@ describe('hasValidPolicyAndSubidy', () => {
   ];
   it('returns true if all required fields are filled out', () => {
     formDataUseCases.forEach((formData) => {
-      expect(hasValidPolicyAndSubidy(formData)).toBeTruthy();
+      expect(hasValidPolicyAndSubsidy(formData)).toBeTruthy();
     });
   });
 });
@@ -168,6 +175,32 @@ describe('filterIndexOfCatalogQuery', () => {
   });
 });
 
+describe('getCatalogUuid', () => {
+  it('returns a catalog uuid', () => {
+    const subsidyUuid = '0196e5c3-ba08-4798-8bf1-019d747c27bf';
+    const catalogUuid = '69035754-fa48-4519-92d8-a723ae0f6e58';
+    expect(getCatalogUuid(samplePolicyResponse, subsidyUuid)).toEqual([catalogUuid]);
+  });
+  it('returns undefined when no matching subsidy uuid is found', () => {
+    const subsidyUuid = '1234';
+    expect(getCatalogUuid(samplePolicyResponse, subsidyUuid)).toEqual(undefined);
+  });
+});
+
+describe('getCatalogQueries', () => {
+  it('returns data', async () => {
+    const data = await getCatalogQueries();
+    expect(data).toEqual([
+      {
+        id: '1',
+      },
+      {
+        id: '2',
+      },
+    ]);
+  });
+});
+
 const sampleResponses = {
   data: {
     createCatalog: {
@@ -206,6 +239,44 @@ const sampleResponses = {
   },
 };
 
+const samplePatchResponses = {
+  data: {
+    patchCatalog: {
+      uuid: 'abcdefghijklmnopqrstuvwxyz',
+      title: 'Awesome title',
+      enterprise_customer: 'awesome-enterpri53-cu573m3r',
+      enterprise_catalog_query: 24,
+    },
+    patchSubsidy: {
+      uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      title: 'awesome subsidy title',
+      enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+      active_datetime: '2023-05-09T00:00:00Z',
+      expiration_datetime: '2023-06-02T00:00:00Z',
+      unit: 'usd_cents',
+      reference_id: '112211',
+      reference_type: 'salesforce_opportunity_line_item',
+      current_balance: 1200,
+      starting_balance: 1200,
+      internal_only: true,
+      revenue_category: 'partner-no-rev-prepay',
+    },
+    patchPolicy: {
+      uuid: '7a5e4882-16a6-4a5f-bfe1-eda91014aff4',
+      policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      description: 'awesome description',
+      active: true,
+      enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
+      catalog_uuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
+      subsidy_uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      access_method: 'direct',
+      per_learner_enrollment_limit: null,
+      per_learner_spend_limit: 12,
+      spend_limit: 1200,
+    },
+  },
+};
+
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: () => ({
     get: () => Promise.resolve({
@@ -216,6 +287,7 @@ jest.mock('@edx/frontend-platform/auth', () => ({
       }],
     }),
     post: () => Promise.resolve(sampleResponses),
+    patch: () => Promise.resolve(samplePatchResponses),
   }),
 }));
 
@@ -227,6 +299,17 @@ describe('createCatalogs', () => {
       'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
     ]);
     expect(data.createCatalog).toEqual(sampleResponses.data.createCatalog);
+  });
+});
+
+describe('patchCatalogs', () => {
+  it('returns the correct data', async () => {
+    const data = await patchCatalogs([
+      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
+      10,
+      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
+    ]);
+    expect(data.patchCatalog).toEqual(samplePatchResponses.data.patchCatalogCatalog);
   });
 });
 
@@ -247,6 +330,20 @@ describe('createSubsidy', () => {
   });
 });
 
+describe('patchSubsidy', () => {
+  it('returns the correct data', async () => {
+    const { data } = await patchSubsidy({
+      uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      title: 'awesome subsidy title',
+      active_datetime: '2023-05-09T00:00:00Z',
+      expiration_datetime: '2023-06-02T00:00:00Z',
+      internal_only: true,
+      revenue_category: 'partner-no-rev-prepay',
+    });
+    expect(data.patchSubsidy).toEqual(samplePatchResponses.data.patchSubsidy);
+  });
+});
+
 describe('createPolicies', () => {
   it('returns the correct data', async () => {
     const { data } = await createPolicy({
@@ -262,6 +359,19 @@ describe('createPolicies', () => {
       spend_limit: 1200,
     });
     expect(data.createPolicy).toEqual(sampleResponses.data.createPolicy);
+  });
+});
+
+describe('patchPolicy', () => {
+  it('returns the correct data', async () => {
+    const { data } = await patchPolicy({
+      uuid: '7a5e4882-16a6-4a5f-bfe1-eda91014aff4',
+      description: 'awesome description',
+      catalog_uuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
+      per_learner_spend_limit: 12,
+      spend_limit: 1200,
+    });
+    expect(data.patchPolicy).toEqual(samplePatchResponses.data.patchPolicy);
   });
 });
 
@@ -328,6 +438,40 @@ describe('transformPolicyData', () => {
   it('returns an empty array when no policies are passed', async () => {
     const output = await transformPolicyData({ policies: [] }, [], []);
     expect(output).toEqual([]);
+  });
+});
+
+describe('transformPatchPolicyData', () => {
+  it('returns an empty array when no policies are passed', async () => {
+    const output = await transformPatchPolicyPayload({ policies: [] }, [], []);
+    expect(output).toEqual([]);
+  });
+  it('returns the correct data', async () => {
+    const mockFormData = {
+      policies: [{
+        policy_type: 'PerLearnerSpendCreditAccessPolicy',
+        accountDescription: 'awesome policy description',
+        catalogQueryMetadata: {
+          catalogQuery: {
+            catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
+          },
+        },
+        perLearnerCap: true,
+        perLearnerCapAmount: 2000,
+        uuid: '12324232',
+        accountValue: 1200,
+      }],
+      subsidyUuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+    };
+    const output = await transformPatchPolicyPayload(mockFormData, [samplePatchResponses.createCatalog]);
+    expect(output).toEqual([{
+      description: 'awesome policy description',
+      catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
+      subsidyUuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
+      perLearnerSpendLimit: 200000,
+      spendLimit: 1200,
+      uuid: '12324232',
+    }]);
   });
 });
 

@@ -11,6 +11,7 @@ export const initialStateValue = {
   multipleFunds: undefined,
   customCatalog: false,
   alertMessage: ALERTS.unselectedAccountType,
+  isEditMode: false,
   catalogQueries: {
     data: [],
     isLoading: true,
@@ -22,6 +23,51 @@ export const initialStateValue = {
     subsidy: [],
     policies: [],
   },
+};
+
+const customerUuid = '3d9b73dc-590a-48b3-81e2-fd270618b80e';
+export const hydratedInitialState = {
+  customers: [],
+  multipleFunds: true,
+  customCatalog: false,
+  alertMessage: ALERTS.unselectedAccountType,
+  isEditMode: true,
+  catalogQueries: {
+    data: [],
+    isLoading: true,
+  },
+  formData: {
+    subsidyUuid: '0196e5c3-ba08-4798-8bf1-019d747c27bf',
+    subsidyTitle: 'Paper company',
+    customerName: 'Dunder mifflin',
+    customerUuid,
+    enterpriseUUID: `Dunder mifflin --- ${customerUuid}`,
+    internalOnly: true,
+    financialIdentifier: '00k12sdf4',
+    subsidyRevReq: 'Yes (bulk enrollment prepay)',
+    startDate: '2023-10-01',
+    endDate: '2023-11-01',
+    policies: [
+      {
+        accountValue: '4000',
+        perLearnerCap: true,
+        perLearnerCapAmount: '99',
+        description: 'blahblah',
+        accountName: 'Test Subsidy Title - Open Courses Budget',
+        catalogQueryMetadata: {
+          catalogQuery: {
+            title: 'Open Courses',
+            uuid: '4ev3r',
+          },
+        },
+      },
+    ],
+  },
+  showInvalidField: {
+    subsidy: [],
+    policies: [],
+  },
+  hasEdits: false,
 };
 
 export const ProvisioningContext = ({

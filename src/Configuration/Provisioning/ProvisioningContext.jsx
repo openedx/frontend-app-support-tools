@@ -20,6 +20,9 @@ const ProvisioningContextProvider = ({ children }) => {
       subsidy: [],
       policies: [],
     },
+    isEditMode: false,
+    isLoading: true,
+    hasEdits: false,
   });
 
   return (

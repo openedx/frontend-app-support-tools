@@ -1,6 +1,7 @@
 import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
+import dayjs from './dayjs';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
@@ -78,7 +79,7 @@ export function updatePolicies(data, newDataAttribute, index) {
 }
 
 /**
- * Takes values from formData on submission after preliminary failure of hasValidPolicyAndSubidy function
+ * Takes values from formData on submission after preliminary failure of hasValidPolicyAndSubsidy function
  * and determines which fields are not valid, and sets an object in the context for setting the isInvalid UI states
  * @param {Object} formData - values from formData state on submission
  * @returns {Array}  An array of subsidy and policy boolean value objects
@@ -129,7 +130,7 @@ export async function determineInvalidFields(formData) {
  * @param {Object} formData - The form data object.
  * @returns {Boolean} - Returns true if all form data is valid, false otherwise.
  */
-export function hasValidPolicyAndSubidy(formData) {
+export function hasValidPolicyAndSubsidy(formData) {
   const { policies } = formData;
 
   // Check subsidy specific data
@@ -196,6 +197,30 @@ export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID,
     title,
   );
   return data;
+}
+
+/**
+ * Updates an existing catalog for the specified valid enterprise customer.
+ *
+ * @param {{
+* catalogQueryUUID: Number,
+* catalogUUID: Number,
+* title: String
+* }} - The updated catalog data.
+* @returns {{
+* uuid: String,
+* title: String,
+* catalogQueryUUID: Number,
+* enterpriseCustomerUUID: String
+* }}
+*/
+export async function patchCatalogs({ catalogQueryUUID, catalogUuid, title }) {
+  const { data } = await LmsApiService.patchEnterpriseCustomerCatalog(
+    catalogQueryUUID,
+    catalogUuid,
+    title,
+  );
+  return { data };
 }
 
 /**
@@ -314,6 +339,52 @@ export async function createSubsidy({
 }
 
 /**
+ * Updates an existing subsidy for the specified valid enterprise customer.
+ *
+ * @param {{
+* title: String,
+* startDate: String,
+* endDate: String,
+* revenueCategory: String,
+* internalOnly: Boolean,
+* }}
+* @returns {
+* data: {
+* uuid: String,
+* title: String,
+* enterprise_customer_uuid: String,
+* active_datetime: String,
+* expiration_datetime: String,
+* unit: String,
+* reference_type: String,
+* current_balance: Number,
+* starting_balance: Number,
+* internal_only: Boolean,
+* revenue_category: String,
+* },
+* status: Number - status code,
+* }
+*/
+export async function patchSubsidy({
+  subsidyUuid,
+  title,
+  startDate,
+  endDate,
+  revenueCategory,
+  internalOnly,
+}) {
+  const response = await SubsidyApiService.patchSubsidy(
+    subsidyUuid,
+    title,
+    startDate,
+    endDate,
+    revenueCategory,
+    internalOnly,
+  );
+  return response;
+}
+
+/**
  * Takes in the formData object from context, and transforms it into an object
  * that can be used to create a new subsidy.
  *
@@ -388,6 +459,34 @@ export async function createPolicy({
 }
 
 /**
+ * Updates an existing policy for the specified valid enterprise customer,
+ * subsidy and catalog uuid.
+ *
+ * @param {{
+* description: String,
+* catalogUuid: String,
+* subsidyUuid: String,
+* perLearnerSpendLimit: Number,
+* spendLimit: Number
+* }}
+* @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
+*/
+export async function patchPolicy({
+  uuid,
+  description,
+  catalogUuid,
+  perLearnerSpendLimit,
+}) {
+  const data = LmsApiService.patchSubsidyAccessPolicy(
+    uuid,
+    description,
+    catalogUuid,
+    perLearnerSpendLimit,
+  );
+  return data;
+}
+
+/**
  * Takes the response of catalog creation, the response of subsidy creation and the formData object from context
  * to create an array of policy data objects that can be used to create new policies.
  *
@@ -412,6 +511,34 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     subsidyUuid: subsidyCreationResponse[0].uuid,
     perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
     spendLimit: parseInt(policy.accountValue, 10) * 100,
+  }));
+  return payloads;
+}
+
+/**
+ * Takes the response of updated catalog and the formData object from context
+ * to create an array of policy data objects that can be used to update the policies.
+ *
+ * @param {Object} formData - The formData object from context
+ * @param {Object} catalogCreationResponse - The response from the catalog patched API
+ * @returns - Returns an array of policy data objects that can be used to update policies
+ */
+export function transformPatchPolicyPayload(formData, catalogSavedResponse) {
+  const { subsidyUuid, policies } = formData;
+  if (
+    policies.length === 0
+    || catalogSavedResponse.length === 0
+    || !subsidyUuid
+  ) { return []; }
+  const payloads = policies.map((policy) => ({
+    description: policy.accountDescription?.length > 0
+      ? policy.accountDescription
+      : `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
+    catalogUuid: policy.catalogQueryMetadata.catalogQuery.catalogUuid,
+    subsidyUuid,
+    perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
+    spendLimit: policy.accountValue,
+    uuid: policy.uuid,
   }));
   return payloads;
 }
@@ -453,7 +580,7 @@ export function transformDatatableDate(date) {
   if (!date) {
     return null;
   }
-  return new Date(date).toLocaleDateString().replace(/\//g, '-');
+  return dayjs(date).utc().format('M-DD-YYYY');
 }
 
 /**
@@ -508,6 +635,7 @@ export function filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy }
   }
   return filteredData;
 }
+// End of Datatable functions
 
 /**
  * Converts the amount from usd cents to dollars
@@ -525,4 +653,38 @@ export const formatCurrency = (currency) => {
   return currencyUS.format(centsToDollarConversion);
 };
 
-// End of Datatable functions
+export async function getSubsidy(subsidyUuid) {
+  const response = await SubsidyApiService.fetchSingleSubsidy(subsidyUuid);
+  return response;
+}
+
+export async function getCustomer(customerUuid) {
+  const response = await LmsApiService.fetchEnterpriseCustomersBasicList(customerUuid);
+  return response;
+}
+
+export async function getPolicies(customerUuid) {
+  const response = await LmsApiService.fetchSubsidyAccessPolicies(customerUuid);
+  return response;
+}
+
+export async function getCatalogs(catalogUuid) {
+  const response = await LmsApiService.fetchEnterpriseCustomerCatalogs(catalogUuid);
+  return response;
+}
+
+/**
+ * gets the catalog uuid that matches subsidy id of the policies
+ */
+export function getCatalogUuid(policies, subsidyUuid) {
+  const foundPolicies = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid);
+  if (foundPolicies.length) {
+    return foundPolicies.map(policy => policy.catalog_uuid);
+  }
+  return undefined;
+}
+
+export async function getCatalogQueries() {
+  const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
+  return data;
+}

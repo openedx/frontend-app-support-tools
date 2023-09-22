@@ -45,4 +45,17 @@ describe('ProvisioningFormSubsidy', () => {
       expect(subsidyButtons[i].checked).toBeTruthy();
     }
   });
+  it('renders hydrated subsidyReqRev selection if isEditMode is true', () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      isEditMode: true,
+      formData: {
+        ...initialStateValue.formData,
+        subsidyRevReq: SUBSIDY_TYPE.OPTIONS.yes,
+      },
+    };
+    renderWithRouter(<ProvisioningFormSubsidyWrapper value={updatedInitialState} />);
+    const subsidyButton = screen.getByTestId(SUBSIDY_TYPE.OPTIONS.yes);
+    expect(subsidyButton.checked).toBeTruthy();
+  });
 });

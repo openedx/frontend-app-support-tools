@@ -4,14 +4,24 @@ import {
 } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
+import { selectProvisioningContext } from '../data/utils';
 
 const ProvisioningFormInternalOnly = () => {
-  const { setInternalOnly } = useProvisioningContext();
+  const { setInternalOnly, setHasEdits } = useProvisioningContext();
   const { INTERNAL_ONLY } = PROVISIONING_PAGE_TEXT.FORM;
-  const [value, setValue] = useState(false);
+  const [formData, isEditMode, hasEdits] = selectProvisioningContext('formData', 'isEditMode', 'hasEdits');
+
+  let submittedFormInternalOnly;
+  if (isEditMode) {
+    submittedFormInternalOnly = formData.internalOnly;
+  }
+  const [value, setValue] = useState(submittedFormInternalOnly || false);
 
   const handleChange = async (e) => {
     const checkedState = e.target.checked;
+    if (isEditMode && !hasEdits) {
+      setHasEdits(true);
+    }
     setInternalOnly(checkedState);
     setValue(checkedState);
   };

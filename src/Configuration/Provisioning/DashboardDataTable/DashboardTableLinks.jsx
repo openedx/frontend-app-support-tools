@@ -5,9 +5,8 @@ import PropTypes from 'prop-types';
 import ROUTES from '../../../data/constants/routes';
 
 const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-
 const dashboardLink = (planRowUuid, title) => {
-  if (getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION) {
+  if (getConfig().FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION === 'true') {
     return (
       <Hyperlink
         destination={`${HOME}/${planRowUuid}/view`}

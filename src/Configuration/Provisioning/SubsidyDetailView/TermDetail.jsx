@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import {
   Icon,
@@ -7,6 +6,7 @@ import {
 } from '@edx/paragon';
 import { InfoOutline } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
+import dayjs from '../data/dayjs';
 
 const TermDetail = ({ startDate, endDate }) => {
   const { FORM: { TERM } } = PROVISIONING_PAGE_TEXT;
@@ -30,13 +30,13 @@ const TermDetail = ({ startDate, endDate }) => {
       <div className="mb-1 ml-3 mt-3">
         <h4>{TERM.OPTIONS.startDate}</h4>
         <p className="small">
-          {dayjs(startDate).format('MMMM D, YYYY')}
+          {dayjs(startDate).utc().format('MMMM D, YYYY')}
         </p>
       </div>
       <div className="mb-1 ml-3 mt-3">
         <h4>{TERM.OPTIONS.endDate}</h4>
         <p className="small">
-          {dayjs(endDate).format('MMMM D, YYYY')}
+          {dayjs(endDate).utc().format('MMMM D, YYYY')}
         </p>
       </div>
     </article>

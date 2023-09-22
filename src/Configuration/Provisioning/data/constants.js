@@ -212,6 +212,29 @@ const PROVISIONING_PAGE_TEXT = {
       },
       incorrectDollarAmount: 'Please enter a whole dollar value',
     },
+    EDIT_BUTTON: {
+      description: 'Edit plan',
+    },
+    SAVE_BUTTON: {
+      submit: 'Save Edits',
+      pending: 'Updating...',
+      success: 'Plan successfully updated',
+      error: 'Failed to update plan. Please try again.',
+      cancel: 'Cancel',
+    },
+    CANCEL: {
+      description: 'Cancel',
+      MODAL: {
+        TITLE: 'Leave page without saving?',
+        BODY: 'The edits you made will not be saved.',
+        FOOTER: {
+          options: {
+            leave: 'Leave without saving',
+            stay: 'Keep editing',
+          },
+        },
+      },
+    },
   },
 };
 
@@ -219,6 +242,7 @@ export const splitStringBudget = ' budget';
 
 export const toastText = {
   successfulPlanCreation: 'Plan successfully created',
+  successfulPlanSaved: 'Plan successfully saved',
 };
 
 export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
@@ -241,6 +265,21 @@ export const INITIAL_CATALOG_QUERIES = {
       catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.default,
     },
   ],
+};
+
+export const CATALOG_QUERIES = {
+  Everything: {
+    id: 28,
+    catalogQueryTitle: 'Everything',
+  },
+  'Executive Education budget': {
+    id: 29,
+    catalogQueryTitle: 'Executive Education budget',
+  },
+  'Open Courses budget': {
+    id: 30,
+    catalogQueryTitle: 'Open Courses budget',
+  },
 };
 
 export const MAX_PAGE_SIZE = 12;
