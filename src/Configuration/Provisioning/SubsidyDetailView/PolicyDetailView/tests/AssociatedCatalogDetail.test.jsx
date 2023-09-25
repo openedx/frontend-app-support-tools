@@ -13,7 +13,7 @@ describe('AssociatedCatalog', () => {
   it('renders the component with only the catalog type and does not include uuid or budget word', () => {
     render(<AssociatedCatalogDetail associatedCatalog={mockCatalogs[CATALOG.OPTIONS.openCourses]} />);
     expect(screen.getByText('Catalog')).toBeInTheDocument();
-    expect(screen.getByText('Associated Catalog')).toBeInTheDocument();
+    expect(screen.getByText('Associated catalog')).toBeInTheDocument();
     expect(screen.getByText('Open Courses')).toBeInTheDocument();
     expect(screen.queryByText('1234567890')).toBeNull();
     expect(screen.queryByText('Budget')).toBeNull();

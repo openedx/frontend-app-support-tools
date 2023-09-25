@@ -13,6 +13,7 @@ import ROUTES from '../../../data/constants/routes';
 import AccountTypeDetail from '../SubsidyDetailView/AccountTypeDetail';
 import CancelButton from './CancelButton';
 import CustomerDetail from '../SubsidyDetailView/CustomerDetail';
+import PageLoading from '../../../components/common/PageLoading';
 import ProvisioningFormAlert from '../ProvisioningForm/ProvisioningFormAlert';
 import ProvisioningFormTerm from '../ProvisioningForm/ProvisioningFormTerm';
 import ProvisioningFormInternalOnly from '../ProvisioningForm/ProvisioningFormInternalOnly';
@@ -99,7 +100,7 @@ const SubsidyEditView = () => {
           <CancelButton />
         </div>
       </div>
-    ) : null
+    ) : <PageLoading srMessage="Loading" />
   );
 };
 
