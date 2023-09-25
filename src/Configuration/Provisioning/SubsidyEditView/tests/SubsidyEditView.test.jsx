@@ -173,7 +173,7 @@ describe('SubsidyEditView', () => {
     expect(screen.getByText('No, create one Learner Credit budget')).toBeInTheDocument();
     expect(screen.getByTestId('account-name').value).toBe('Paper company --- Open Courses');
     expect(screen.getByText(
-      'The maximum USD value a single learner may redeem from the budget. This value should be less then the budget starting balance.',
+      'The maximum USD value a single learner may redeem from the budget. This value should be less than the budget starting balance.',
     )).toBeInTheDocument();
     expect(screen.getByText('Save Edits')).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();

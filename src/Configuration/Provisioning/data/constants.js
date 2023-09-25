@@ -66,7 +66,7 @@ const PROVISIONING_PAGE_TEXT = {
       },
     },
     SUBSIDY_TYPE: {
-      TITLE: 'Subsidy Type',
+      TITLE: 'Subsidy type',
       SUB_TITLE: 'Rev req through standard commercial process?',
       OPTIONS: {
         yes: 'Yes (bulk enrollment prepay)',
@@ -112,7 +112,7 @@ const PROVISIONING_PAGE_TEXT = {
     },
     CATALOG: {
       TITLE: 'Catalog',
-      SUB_TITLE: 'Associated Catalog',
+      SUB_TITLE: 'Associated catalog',
       OPTIONS: {
         everything: 'Everything',
         openCourses: 'Open Courses',
@@ -162,7 +162,7 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         perLearnerSpendCap: {
           title: 'Per learner spend limit ($)',
-          subtitle: 'The maximum USD value a single learner may redeem from the budget. This value should be less then the budget starting balance.',
+          subtitle: 'The maximum USD value a single learner may redeem from the budget. This value should be less than the budget starting balance.',
         },
       },
       ERROR: {

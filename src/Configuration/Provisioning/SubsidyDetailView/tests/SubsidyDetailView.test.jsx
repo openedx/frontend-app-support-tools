@@ -105,7 +105,7 @@ describe('SubsidyDetailView', () => {
     expect(screen.getByText('June 22, 2023')).toBeInTheDocument();
     expect(screen.getByText('Internal only')).toBeInTheDocument();
     expect(screen.getByText('Test Plan')).toBeInTheDocument();
-    expect(screen.getByText('Subsidy Type')).toBeInTheDocument();
+    expect(screen.getByText('Subsidy type')).toBeInTheDocument();
     expect(screen.getByText('Rev req through standard commercial process?')).toBeInTheDocument();
     expect(screen.getByText('No (partner no rev prepay)')).toBeInTheDocument();
     expect(screen.getByText('Budget by product')).toBeInTheDocument();
