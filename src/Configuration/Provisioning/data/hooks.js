@@ -254,10 +254,11 @@ export default function useProvisioningContext() {
               title: catalogCategoryTitle,
               catalogUuid: catalog.uuid,
             };
-          } else if (catalog.enterprise_catalog_query === predefinedQueries.everything
-            || catalog.enterprise_catalog_query === predefinedQueries.executiveEducation
-            || catalog.enterprise_catalog_query === predefinedQueries.openCourses
-          ) {
+          } else if ([
+            predefinedQueries.everything,
+            predefinedQueries.executiveEducation,
+            predefinedQueries.openCourses,
+          ].includes(catalog.enterprise_catalog_query)) {
             catalogQuery = {
               id: catalog?.enterprise_catalog_query,
               title: catalogCategoryTitle.split(splitStringBudget)[0],
