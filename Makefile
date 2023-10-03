@@ -1,5 +1,5 @@
 transifex_resource = frontend-app-support
-transifex_langs = "ar,fr,es_419,zh_CN"
+transifex_langs = "ar,fr,es_419,zh_CN,fr_CA,it_IT,pt_PT,de_DE,uk,ru,hi"
 
 intl_imports = ./node_modules/.bin/intl-imports.js
 transifex_utils = ./node_modules/.bin/transifex-utils.js
