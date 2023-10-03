@@ -6,7 +6,6 @@ import LmsApiService from '../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT, {
   INITIAL_CATALOG_QUERIES,
   MAX_PAGE_SIZE,
-  CATALOG_QUERIES,
   splitStringBudget,
 } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
@@ -239,6 +238,7 @@ export default function useProvisioningContext() {
     const policiesData = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid).map(policy => {
       let catalogCategoryTitle;
       const formattedPolicies = [];
+      const predefinedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
 
       catalogs.forEach(catalog => {
         if (catalog.uuid === policy.catalog_uuid) {
@@ -254,10 +254,11 @@ export default function useProvisioningContext() {
               title: catalogCategoryTitle,
               catalogUuid: catalog.uuid,
             };
-          } else if (catalog.enterprise_catalog_query === CATALOG_QUERIES['Open Courses budget'].id
-            || catalog.enterprise_catalog_query === CATALOG_QUERIES.Everything.id
-            || catalog.enterprise_catalog_query === CATALOG_QUERIES['Executive Education budget'].id
-          ) {
+          } else if ([
+            predefinedQueries.everything,
+            predefinedQueries.executiveEducation,
+            predefinedQueries.openCourses,
+          ].includes(catalog.enterprise_catalog_query)) {
             catalogQuery = {
               id: catalog?.enterprise_catalog_query,
               title: catalogCategoryTitle.split(splitStringBudget)[0],

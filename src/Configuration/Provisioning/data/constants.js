@@ -267,21 +267,6 @@ export const INITIAL_CATALOG_QUERIES = {
   ],
 };
 
-export const CATALOG_QUERIES = {
-  Everything: {
-    id: 28,
-    catalogQueryTitle: 'Everything',
-  },
-  'Executive Education budget': {
-    id: 29,
-    catalogQueryTitle: 'Executive Education budget',
-  },
-  'Open Courses budget': {
-    id: 30,
-    catalogQueryTitle: 'Open Courses budget',
-  },
-};
-
 export const MAX_PAGE_SIZE = 12;
 
 export default PROVISIONING_PAGE_TEXT;
