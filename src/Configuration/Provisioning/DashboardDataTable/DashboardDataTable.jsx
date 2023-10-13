@@ -66,9 +66,10 @@ const DashboardDataTable = () => {
         FilterStatusComponent={FilterStatus}
         columns={[
           {
-            Header: 'Plan ID',
-            accessor: 'uuid',
-            Cell: PlanIdHyperlink,
+            Header: 'Customer name',
+            accessor: 'enterpriseCustomerName',
+            disableSortBy: true,
+            Cell: CustomerNameHyperlink,
           },
           {
             Header: 'Plan name',
@@ -76,16 +77,15 @@ const DashboardDataTable = () => {
             Cell: PlanTitleHyperlink,
           },
           {
+            Header: 'Plan ID',
+            accessor: 'uuid',
+            Cell: PlanIdHyperlink,
+          },
+          {
             Header: 'Plan Status',
             accessor: 'isActive',
             disableFilters: true,
             Cell: DashboardTableBadges,
-          },
-          {
-            Header: 'Customer name',
-            accessor: 'enterpriseCustomerName',
-            disableSortBy: true,
-            Cell: CustomerNameHyperlink,
           },
           {
             Header: 'Start date',
