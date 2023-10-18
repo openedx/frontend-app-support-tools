@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { Router } from 'react-router-dom';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import SaveEditsButton from '../SaveEditsButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -16,13 +15,11 @@ import {
 
 const { SAVE_BUTTON } = PROVISIONING_PAGE_TEXT.FORM;
 
-const mockHistoryPush = jest.fn();
-const historyMock = {
-  push: mockHistoryPush,
-  location: jest.fn(),
-  listen: jest.fn(),
-  replace: jest.fn(),
-};
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 jest.mock('../../data/utils', () => {
   const originalModule = jest.requireActual('../../data/utils');
@@ -51,11 +48,9 @@ jest.mock('@edx/frontend-platform/auth', () => ({
 const SaveEditsButtonWrapper = ({
   value = hydratedInitialState,
 }) => (
-  <Router history={historyMock}>
-    <ProvisioningContext value={value}>
-      <SaveEditsButton />
-    </ProvisioningContext>
-  </Router>
+  <ProvisioningContext value={value}>
+    <SaveEditsButton />
+  </ProvisioningContext>
 );
 
 global.scrollTo = jest.fn();

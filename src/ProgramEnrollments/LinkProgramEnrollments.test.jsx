@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { history } from '@edx/frontend-platform';
 import { waitForComponentToPaint } from '../setupTest';
 import LinkProgramEnrollments from './LinkProgramEnrollments';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
@@ -54,7 +53,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeSuccessResponse));
-    history.push = jest.fn();
 
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
@@ -70,7 +68,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementation(() => Promise.resolve(lpeSuccessResponse));
-    history.push = jest.fn();
 
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
@@ -90,7 +87,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseEmptyValues));
-    history.replace = jest.fn();
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
     wrapper.find('input[name="programUUID"]').instance().value = '';
@@ -107,7 +103,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidUUID));
-    history.replace = jest.fn();
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
     wrapper.find('input[name="programUUID"]').instance().value = data.programID;
@@ -124,7 +119,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidUsername));
-    history.replace = jest.fn();
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
     wrapper.find('input[name="programUUID"]').instance().value = data.programID;
@@ -141,7 +135,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidExternalKey));
-    history.replace = jest.fn();
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
     wrapper.find('input[name="programUUID"]').instance().value = data.programID;
@@ -158,7 +151,6 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseAlreadyLinked));
-    history.replace = jest.fn();
     wrapper = mount(<LinkProgramEnrollmentsWrapper />);
 
     wrapper.find('input[name="programUUID"]').instance().value = data.programID;

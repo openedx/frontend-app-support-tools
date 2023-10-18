@@ -1,4 +1,3 @@
-import { history } from '@edx/frontend-platform';
 import React, {
   useRef,
   useEffect,
@@ -7,7 +6,7 @@ import React, {
   useState,
   useLayoutEffect,
 } from 'react';
-import PropTypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Input, Button } from '@edx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
@@ -16,7 +15,9 @@ import { extractParams, isValidCourseID } from '../utils';
 import FeatureBasedEnrollment from './FeatureBasedEnrollment';
 import { FEATURE_BASED_ENROLLMENT_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
 
-export default function FeatureBasedEnrollmentIndexPage({ location }) {
+export default function FeatureBasedEnrollmentIndexPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const params = extractParams(location.search);
 
   const searchRef = useRef();
@@ -31,7 +32,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
 
   function pushHistoryIfChanged(nextUrl) {
     if (nextUrl !== location.pathname + location.search) {
-      history.push(nextUrl);
+      navigate(nextUrl);
     }
   }
 
@@ -44,7 +45,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
         type: 'error',
         topic: 'featureBasedEnrollmentGeneral',
       });
-      history.replace('/feature_based_enrollments');
+      navigate('/feature_based_enrollments', { replace: true });
       return false;
     }
     return true;
@@ -60,7 +61,7 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
       setApiFetchSignal(!apiFetchSignal);
       pushHistoryIfChanged(`/feature_based_enrollments/?course_id=${inputValue}`);
     } else if (inputValue === '') {
-      history.replace('/feature_based_enrollments');
+      navigate('/feature_based_enrollments', { replace: true });
     }
   });
 
@@ -105,10 +106,3 @@ export default function FeatureBasedEnrollmentIndexPage({ location }) {
     </main>
   );
 }
-
-FeatureBasedEnrollmentIndexPage.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

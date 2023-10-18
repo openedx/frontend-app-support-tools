@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { useHistory } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import Dashboard from '../Dashboard';
 import PROVISIONING_PAGE_TEXT, { toastText } from '../data/constants';
 import { DashboardContext, initialStateValue } from '../../testData/Dashboard';
@@ -15,42 +15,62 @@ jest.mock('../data/hooks', () => ({
   }),
 }));
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+  useNavigate: () => jest.fn(),
+}));
+
 const DashboardWrapper = ({
-  successfulPlanCreation = false,
-  planSuccessfullySaved = false,
   value = initialStateValue,
-}) => {
-  const history = useHistory();
-  const { location } = history;
-  if (successfulPlanCreation) {
-    history.push(location.pathname, { planSuccessfullyCreated: true });
-  }
-  if (planSuccessfullySaved) {
-    history.push(location.pathname, { planSuccessfullySaved: true });
-  }
-  return (
-    <DashboardContext value={value}>
-      <Dashboard />
-    </DashboardContext>
-  );
-};
+}) => (
+  <DashboardContext value={value}>
+    <Dashboard />
+  </DashboardContext>
+);
 
 describe('<DashboardWrapper>', () => {
   it('Displays the header', () => {
+    useLocation.mockReturnValue({
+      pathname: '/',
+      state: {
+        planSuccessfullyCreated: false,
+      },
+    });
+
     renderWithRouter(<DashboardWrapper />);
     expect(screen.getByText(DASHBOARD.TITLE)).toBeTruthy();
     expect(screen.getByText(DASHBOARD.BUTTON.new)).toBeTruthy();
   });
   it('Displays the toast plan creation', () => {
-    renderWithRouter(<DashboardWrapper successfulPlanCreation />);
+    useLocation.mockReturnValue({
+      pathname: '/',
+      state: {
+        planSuccessfullyCreated: true,
+      },
+    });
+    renderWithRouter(<DashboardWrapper />);
     expect(screen.getByText(toastText.successfulPlanCreation)).toBeTruthy();
   });
   it('Displays the toast plan saved', () => {
-    renderWithRouter(<DashboardWrapper planSuccessfullySaved />);
+    useLocation.mockReturnValue({
+      pathname: '/',
+      state: {
+        planSuccessfullySaved: true,
+      },
+    });
+    renderWithRouter(<DashboardWrapper />);
     expect(screen.getByText(toastText.successfulPlanSaved)).toBeTruthy();
   });
   it('Closes the toast on button click', async () => {
-    renderWithRouter(<DashboardWrapper successfulPlanCreation />);
+    useLocation.mockReturnValue({
+      pathname: '/',
+      state: {
+        planSuccessfullyCreated: true,
+      },
+    });
+
+    renderWithRouter(<DashboardWrapper />);
     const toastCloseButton = screen.getAllByRole('button').map((button) => {
       if (button.getAttribute('aria-label') === 'Close') {
         return button;

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { useHistory } from 'react-router';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useContextSelector } from 'use-context-selector';
 
 import { logError } from '@edx/frontend-platform/logging';
@@ -25,7 +24,7 @@ const SubsidyEditView = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
   const params = useParams();
   const subsidyUuid = params.id;
-  const history = useHistory();
+  const navigate = useNavigate();
   const { SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
 
   const contextData = useContextSelector(ProvisioningContext, v => v[0]);
@@ -37,8 +36,10 @@ const SubsidyEditView = () => {
   } = contextData;
   const { hydrateEnterpriseSubsidiesData } = useProvisioningContext();
   const redirectOnError = (statusCode, message) => {
-    history.push(ERROR, {
-      errorMessage: `Error ${statusCode}: ${message}`,
+    navigate(ERROR, {
+      state: {
+        errorMessage: `Error ${statusCode}: ${message}`,
+      },
     });
   };
 

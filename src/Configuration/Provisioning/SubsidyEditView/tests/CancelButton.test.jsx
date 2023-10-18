@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import PropTypes from 'prop-types';
 import { act, screen, waitFor } from '@testing-library/react';
-import Router, { Router as BrowserRouter } from 'react-router-dom';
+import Router from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import CancelButton from '../CancelButton';
@@ -13,22 +13,18 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn(),
 }));
 
-const mockHistoryPush = jest.fn();
-const historyMock = {
-  push: mockHistoryPush,
-  location: jest.fn(),
-  listen: jest.fn(),
-  replace: jest.fn(),
-};
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const CancelButtonWrapper = ({
   value = hydratedInitialState,
 }) => (
-  <BrowserRouter history={historyMock}>
-    <ProvisioningContext value={value}>
-      <CancelButton />
-    </ProvisioningContext>
-  </BrowserRouter>
+  <ProvisioningContext value={value}>
+    <CancelButton />
+  </ProvisioningContext>
 );
 
 describe('Cancel button', () => {
@@ -63,8 +59,8 @@ describe('Cancel button', () => {
     });
     expect(button).toBeInTheDocument();
     userEvent.click(button);
-    await waitFor(() => expect(mockHistoryPush).toBeCalledTimes(1));
-    expect(mockHistoryPush).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/0196e5c3-ba08-4798-8bf1-019d747c27bf/view');
+    await waitFor(() => expect(mockNavigate).toBeCalledTimes(1));
+    expect(mockNavigate).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/0196e5c3-ba08-4798-8bf1-019d747c27bf/view');
   });
 });
 

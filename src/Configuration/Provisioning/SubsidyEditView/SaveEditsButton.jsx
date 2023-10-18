@@ -1,7 +1,7 @@
 import {
   StatefulButton,
 } from '@edx/paragon';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import {
   useEffect, useMemo, useState,
 } from 'react';
@@ -21,7 +21,7 @@ import {
 } from '../data/utils';
 
 const SaveEditsButton = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     resetFormData,
     setInvalidSubsidyFields,
@@ -40,17 +40,21 @@ const SaveEditsButton = () => {
     resetFormData();
     if (submitButtonState === 'complete') {
       // Second parameter of push triggers the toast notification on dashboard
-      history.push(HOME, {
-        planSuccessfullySaved: true,
+      navigate(HOME, {
+        state: {
+          planSuccessfullySaved: true,
+        },
       });
       return;
     }
-    history.push(HOME);
+    navigate(HOME);
   };
 
   const redirectOnError = (statusCode, message) => {
-    history.push(ERROR, {
-      errorMessage: `Error ${statusCode}: ${message}`,
+    navigate(ERROR, {
+      state: {
+        errorMessage: `Error ${statusCode}: ${message}`,
+      },
     });
   };
 

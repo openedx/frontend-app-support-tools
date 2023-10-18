@@ -1,7 +1,6 @@
 import { Container } from '@edx/paragon';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ErrorPage from './data/images/ErrorPage.svg';
 import ErrorPageImage from './ErrorPageImage';
@@ -10,8 +9,8 @@ import ErrorPageButton from './ErrorPageButton';
 import { ERROR_PAGE_TEXT } from './data/constants';
 
 const ErrorPageContainer = ({ to }) => {
-  const history = useHistory();
-  const { location } = history;
+  const navigate = useNavigate();
+  const location = useLocation();
   const { state: locationState } = location;
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -21,7 +20,7 @@ const ErrorPageContainer = ({ to }) => {
     }
     const newState = { ...locationState };
     delete newState.errorMessage;
-    history.replace({ ...location, state: newState });
+    navigate({ ...location, state: newState, replace: true });
   }, [locationState?.errorMessage]);
 
   return (

@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { fireEvent, screen } from '@testing-library/react';
-import { Router } from 'react-router-dom';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { camelCaseObject } from '@edx/frontend-platform';
 import ROUTES from '../../../data/constants/routes';
@@ -11,8 +10,12 @@ import { sampleDataTableData } from '../../testData/constants';
 
 const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING } } } = ROUTES;
 
-const mockHistoryPush = jest.fn();
-const historyMock = { push: mockHistoryPush, location: {}, listen: jest.fn() };
+const mockedNavigator = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigator,
+}));
 
 // Mock the subsidy list
 const mockGetAllSubsidiesData = sampleDataTableData(10);
@@ -36,11 +39,9 @@ jest.mock('../../../data/services/EnterpriseApiService', () => ({
 const ProvisioningPageWrapper = ({
   value = initialStateValue,
 }) => (
-  <Router history={historyMock}>
-    <DashboardContext value={value}>
-      <ProvisioningPage />
-    </DashboardContext>
-  </Router>
+  <DashboardContext value={value}>
+    <ProvisioningPage />
+  </DashboardContext>
 );
 
 describe('ProvisioningPage', () => {
@@ -56,6 +57,6 @@ describe('ProvisioningPage', () => {
     renderWithRouter(<ProvisioningPageWrapper />);
     const newButton = screen.getByText(PROVISIONING_PAGE_TEXT.DASHBOARD.BUTTON.new);
     fireEvent.click(newButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(`${PROVISIONING.SUB_DIRECTORY.NEW}`);
+    expect(mockedNavigator).toHaveBeenCalledWith(`${PROVISIONING.SUB_DIRECTORY.NEW}`);
   });
 });

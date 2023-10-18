@@ -7,7 +7,7 @@ import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -41,32 +41,32 @@ subscribe(APP_READY, () => {
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.VIEW}
-      component={SubsidyDetailViewContainer}
+      element={<SubsidyDetailViewContainer />}
     />,
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.EDIT}
-      component={SubsidyEditViewContainer}
+      element={<SubsidyEditViewContainer />}
     />,
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.NEW}
-      component={ProvisioningFormContainer}
+      element={<ProvisioningFormContainer />}
     />,
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.ERROR}
-      component={() => ErrorPageContainer({ to: CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME })}
+      element={<ErrorPageContainer to={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME} />}
     />,
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}
-      component={ProvisioningPage}
+      element={<ProvisioningPage />}
     />,
     <Route
       key={uuidv4()}
       path={CONFIGURATION.HOME}
-      component={ConfigurationPage}
+      element={<ConfigurationPage />}
     />,
   ];
   ReactDOM.render(
@@ -74,15 +74,18 @@ subscribe(APP_READY, () => {
       <UserMessagesProvider>
         <Head />
         <Header />
-        <Switch>
+        <Routes>
           {/* Start: Configuration Dropdown Routes */}
           {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
           {/* End: Configuration Dropdown Routes */}
-          <Route path={SUPPORT_TOOLS_TABS.HOME} component={SupportToolsTab} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} component={UserPage} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} component={FBEIndexPage} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS} component={ProgramEnrollmentsIndexPage} />
-        </Switch>
+          <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
+          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
+          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} element={<FBEIndexPage />} />
+          <Route
+            path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS}
+            element={<ProgramEnrollmentsIndexPage />}
+          />
+        </Routes>
       </UserMessagesProvider>
     </AppProvider>,
     document.getElementById('root'),

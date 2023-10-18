@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { logError } from '@edx/frontend-platform/logging';
 import AccountTypeDetail from './AccountTypeDetail';
@@ -19,7 +18,7 @@ import {
 } from '../data/utils';
 
 const SubsidyDetailView = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { FORM } = PROVISIONING_PAGE_TEXT;
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,8 +30,10 @@ const SubsidyDetailView = () => {
   const [enterpriseSubsidiesData, setEnterpriseSubsidiesData] = useState({});
 
   const redirectOnError = (statusCode, message) => {
-    history.push(ERROR, {
-      errorMessage: `Error ${statusCode}: ${message}`,
+    navigate(ERROR, {
+      state: {
+        errorMessage: `Error ${statusCode}: ${message}`,
+      },
     });
   };
 

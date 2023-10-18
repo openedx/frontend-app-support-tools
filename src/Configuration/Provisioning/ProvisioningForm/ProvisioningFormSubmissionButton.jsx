@@ -3,11 +3,12 @@ import {
   ActionRow,
   StatefulButton,
 } from '@edx/paragon';
-import { useHistory } from 'react-router';
 import {
   useEffect, useMemo, useState,
 } from 'react';
 import { logError } from '@edx/frontend-platform/logging';
+import { useNavigate } from 'react-router-dom';
+
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
@@ -23,7 +24,7 @@ import {
 } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     resetFormData,
     setInvalidSubsidyFields,
@@ -43,17 +44,21 @@ const ProvisioningFormSubmissionButton = () => {
     resetFormData();
     if (submitButtonState === 'complete') {
       // Second parameter of push triggers the toast notification on dashboard
-      history.push(HOME, {
-        planSuccessfullyCreated: true,
+      navigate(HOME, {
+        state: {
+          planSuccessfullyCreated: true,
+        },
       });
       return;
     }
-    history.push(HOME);
+    navigate(HOME);
   };
 
   const redirectOnError = (statusCode, message) => {
-    history.push(ERROR, {
-      errorMessage: `Error ${statusCode}: ${message}`,
+    navigate(ERROR, {
+      state: {
+        errorMessage: `Error ${statusCode}: ${message}`,
+      },
     });
   };
 

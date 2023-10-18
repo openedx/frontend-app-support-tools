@@ -1,5 +1,4 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
 import { screen, act } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import '@testing-library/jest-dom/extend-expect';
@@ -26,14 +25,12 @@ const mockData = {
   catalogTitle: '5c0ced09-db71-438f-bfb5-fac49644e26d - TestTest',
 };
 
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 
-const historyMock = {
-  push: mockHistoryPush,
-  location: jest.fn(),
-  listen: jest.fn(),
-  replace: jest.fn(),
-};
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 jest.mock('../../../../../data/services/EnterpriseApiService', () => ({
   fetchEnterpriseCatalogQueries: jest.fn(() => Promise.resolve(mockData)),
@@ -56,12 +53,8 @@ describe('CustomCatalogDetail', () => {
   it('redirects to error page if API call fails', async () => {
     LmsApiService.fetchEnterpriseCatalogQueries.mockImplementation(() => Promise.reject(new Error('API error')));
 
-    await act(async () => renderWithRouter(
-      <Router history={historyMock}>
-        <CustomCatalogDetail catalogTitle={mockData.catalogTitle} />,
-      </Router>,
-    ));
+    await act(async () => renderWithRouter(<CustomCatalogDetail catalogTitle={mockData.catalogTitle} />));
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/error', { errorMessage: 'Error undefined: Error: API error' });
+    expect(mockNavigate).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/error', { state: { errorMessage: 'Error undefined: Error: API error' } });
   });
 });

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import ROUTES from '../../../../data/constants/routes';
 import { ProvisioningContext, hydratedInitialState } from '../../../testData/Provisioning/ProvisioningContextWrapper';
 
@@ -20,9 +20,10 @@ const SubsidyEditViewContainerWrapper = ({
 
 describe('SubsidyEditViewContainer', () => {
   it('renders', () => {
-    renderWithRouter(
-      <SubsidyEditViewContainerWrapper value={hydratedInitialState} />,
-      { route: `${PROVISIONING.SUB_DIRECTORY.EDIT}` },
+    render(
+      <MemoryRouter initialEntries={[`${PROVISIONING.SUB_DIRECTORY.EDIT}`]}>
+        <SubsidyEditViewContainerWrapper value={hydratedInitialState} />,
+      </MemoryRouter>,
     );
     expect(screen.getByText(FORM.TITLE(PROVISIONING.SUB_DIRECTORY.EDIT))).toBeTruthy();
   });

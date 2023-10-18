@@ -1,5 +1,5 @@
 import React from 'react';
-import Router, { Router as BrowserRouter } from 'react-router-dom';
+import BrowserRouter from 'react-router-dom';
 import { screen, act } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import '@testing-library/jest-dom/extend-expect';
@@ -60,14 +60,7 @@ const mocks = {
   },
 };
 
-const mockHistoryPush = jest.fn();
-
-const historyMock = {
-  push: mockHistoryPush,
-  location: jest.fn(),
-  listen: jest.fn(),
-  replace: jest.fn(),
-};
+const mockNavigate = jest.fn();
 
 jest.mock('../../../../data/services/EnterpriseApiService', () => ({
   fetchEnterpriseCustomerCatalogs: jest.fn(() => Promise.resolve(mocks.enterpriseCustomerCatalogsMock)),
@@ -82,11 +75,12 @@ jest.mock('../../../../data/services/SubsidyApiService', () => ({
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
+  useNavigate: () => mockNavigate,
 }));
 
 describe('SubsidyDetailView', () => {
   it('renders the component with content when loading is true', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
+    jest.spyOn(BrowserRouter, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
     await act(async () => renderWithRouter(
       <SubsidyDetailView />,
     ));
@@ -128,11 +122,7 @@ describe('SubsidyDetailView', () => {
 
   it('redirects to error page if at least one API call fails', async () => {
     LmsApiService.fetchEnterpriseCustomerCatalogs.mockImplementation(() => Promise.reject(new Error('API error')));
-    await act(async () => renderWithRouter(
-      <BrowserRouter history={historyMock}>
-        <SubsidyDetailView />
-      </BrowserRouter>,
-    ));
-    expect(mockHistoryPush).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/error', { errorMessage: 'Error undefined: Error: API error' });
+    await act(async () => renderWithRouter(<SubsidyDetailView />));
+    expect(mockNavigate).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/error', { state: { errorMessage: 'Error undefined: Error: API error' } });
   });
 });

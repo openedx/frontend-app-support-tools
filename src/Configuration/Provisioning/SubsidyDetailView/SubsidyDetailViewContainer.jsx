@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { ActionRow, Container } from '@edx/paragon';
 import EditButton from './EditButton';
 import SubsidyDetailView from './SubsidyDetailView';

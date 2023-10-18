@@ -1,16 +1,16 @@
-import { useHistory, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const EditButton = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const editRoute = `/enterprise-configuration/learner-credit/${id}/edit`;
   const { FORM: { EDIT_BUTTON } } = PROVISIONING_PAGE_TEXT;
 
   const handleOnClick = () => {
-    history.push(editRoute);
+    navigate(editRoute);
   };
 
   return (

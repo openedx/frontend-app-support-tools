@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { logError } from '@edx/frontend-platform/logging';
 import LmsApiService from '../../../../data/services/EnterpriseApiService';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -23,15 +23,17 @@ async function getCatalogQueries() {
 }
 
 const CustomCatalogDetail = ({ catalogTitle }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
 
   const [catalogQueryContentFilter, setCatalogQueryContentFilter] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const redirectOnError = (statusCode, message) => {
-    history.push(ERROR, {
-      errorMessage: `Error ${statusCode}: ${message}`,
+    navigate(ERROR, {
+      state: {
+        errorMessage: `Error ${statusCode}: ${message}`,
+      },
     });
   };
 

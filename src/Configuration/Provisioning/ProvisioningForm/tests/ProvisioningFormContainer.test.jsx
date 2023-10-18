@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import ROUTES from '../../../../data/constants/routes';
 import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -19,9 +19,10 @@ const ProvisioningFormContainerWrapper = ({
 
 describe('ProvisioningFormContainer', () => {
   it('renders', () => {
-    renderWithRouter(
-      <ProvisioningFormContainerWrapper value={initialStateValue} />,
-      { route: `${PROVISIONING.SUB_DIRECTORY.NEW}` },
+    render(
+      <MemoryRouter initialEntries={[`${PROVISIONING.SUB_DIRECTORY.NEW}`]}>
+        <ProvisioningFormContainerWrapper value={initialStateValue} />,
+      </MemoryRouter>,
     );
     expect(screen.getByText(FORM.TITLE(PROVISIONING.SUB_DIRECTORY.NEW))).toBeTruthy();
   });

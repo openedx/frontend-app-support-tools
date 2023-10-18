@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import DashboardHeader from './DashboardHeader';
@@ -9,8 +9,8 @@ import { toastText } from './data/constants';
 
 // TODO: Create a new item header, search box and datatable
 const Dashboard = () => {
-  const history = useHistory();
-  const { location } = history;
+  const location = useLocation();
+  const navigate = useNavigate();
   const { state: locationState } = location;
   const [toasts, setToasts] = useState([]);
 
@@ -27,9 +27,9 @@ const Dashboard = () => {
       if (locationState?.planSuccessfullySaved) {
         delete newState.planSuccessfullySaved;
       }
-      history.replace({ ...location, state: newState });
+      navigate({ ...location, state: newState, replace: true });
     }
-  }, [toastText.successfulPlanCreation, toastText.successfulPlanSaved, history, location, locationState]);
+  }, [toastText.successfulPlanCreation, toastText.successfulPlanSaved, location, locationState]);
 
   return (
     <>

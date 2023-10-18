@@ -1,5 +1,4 @@
-import { useParams } from 'react-router-dom';
-import { useHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   ActionRow,
   Button,
@@ -14,13 +13,13 @@ const CancelButton = () => {
   const [isOpen, open, close] = useToggle(false);
   const [hasEdits] = selectProvisioningContext('hasEdits');
   const params = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const subsidyUuid = params.id;
   const viewRoute = `/enterprise-configuration/learner-credit/${subsidyUuid}/view`;
 
   const handleOnClick = () => {
     if (!hasEdits) {
-      history.push(viewRoute);
+      navigate(viewRoute);
     }
     return open();
   };
@@ -52,7 +51,7 @@ const CancelButton = () => {
 
         <ModalDialog.Footer>
           <ActionRow>
-            <Button onClick={() => history.push(viewRoute)} variant="tertiary">{CANCEL.MODAL.FOOTER.options.leave}</Button>
+            <Button onClick={() => navigate(viewRoute)} variant="tertiary">{CANCEL.MODAL.FOOTER.options.leave}</Button>
             <ModalDialog.CloseButton>
               {CANCEL.MODAL.FOOTER.options.stay}
             </ModalDialog.CloseButton>
