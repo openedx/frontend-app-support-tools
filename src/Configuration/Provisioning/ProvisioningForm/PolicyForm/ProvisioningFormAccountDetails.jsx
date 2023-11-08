@@ -3,7 +3,7 @@ import { Form } from '@edx/paragon';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import {
-  extractDefinedCatalogTitle, formatCurrency, generatePolicyName, indexOnlyPropType, selectProvisioningContext,
+  generateBudgetDisplayName, formatCurrency, generatePolicyName, indexOnlyPropType, selectProvisioningContext,
 } from '../../data/utils';
 import { isWholeDollarAmount } from '../../../../utils';
 
@@ -17,15 +17,18 @@ const ProvisioningFormAccountDetails = ({ index }) => {
   const isAccountValueDefinedAndFalse = policies[index]?.accountValue === false;
 
   const formFeedbackText = multipleFunds
-    ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(extractDefinedCatalogTitle(formData.policies[index]))
+    ? ACCOUNT_DETAIL.OPTIONS.totalAccountValue.dynamicSubtitle(generateBudgetDisplayName(formData.policies[index]))
     : ACCOUNT_DETAIL.OPTIONS.totalAccountValue.subtitle;
 
   let submittedFormAccountValue;
   let submittedFormAccountName;
   if (isEditMode) {
-    submittedFormAccountValue = formData.policies[index].accountValue;
+    // Currency in formData is ALWAYS in cents, so we must convert to dollars to use for component-local state.
+    submittedFormAccountValue = formData.policies[index].accountValue / 100;
     submittedFormAccountName = formData.policies[index].accountName;
   }
+
+  // Currency in component-local state is ALWAYS in dollars.
   const [accountValueState, setAccountValueState] = useState(submittedFormAccountValue || '');
   const [accountNameState, setAccountNameState] = useState(submittedFormAccountName || '');
   const [isWholeDollar, setIsWholeDollar] = useState(true);
@@ -45,8 +48,10 @@ const ProvisioningFormAccountDetails = ({ index }) => {
         return;
       }
       setIsWholeDollar(true);
-      setAccountValue({ accountValue: value }, index);
+      // Currency in formData is ALWAYS in cents.
+      setAccountValue({ accountValue: parseInt(value, 10) * 100 }, index);
       setInvalidPolicyFields({ accountValue: true }, index);
+      // Currency in component-local state is ALWAYS in dollars.
       setAccountValueState(value);
     }
   }, [index, formData]);
@@ -56,7 +61,13 @@ const ProvisioningFormAccountDetails = ({ index }) => {
       setAccountName({ accountName: generatePolicyName(formData, index) }, index);
       setAccountNameState(generatePolicyName(formData, index));
     }
-  }, [formData.subsidyTitle, formData.policies[index]?.catalogQueryMetadata, index]);
+  }, [
+    formData.subsidyTitle,
+    formData.policies[index]?.customCatalog,
+    formData.policies[index]?.predefinedQueryType,
+    formData.policies[index]?.catalogUuid,
+    index,
+  ]);
 
   return (
     <article className="mt-4.5">

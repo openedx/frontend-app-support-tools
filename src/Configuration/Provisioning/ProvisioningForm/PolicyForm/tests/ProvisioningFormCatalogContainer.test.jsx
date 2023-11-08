@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { screen } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
 import ProvisioningFormCatalogContainer from '../ProvisioningFormCatalogContainer';
 import PROVISIONING_PAGE_TEXT from '../../../data/constants';
 
@@ -23,23 +23,16 @@ describe('ProvisioningFormCatalogContainer', () => {
   it('renders', () => {
     const updatedInitialState = {
       ...initialStateValue,
-      customCatalog: true,
       formData: {
         ...initialStateValue.formData,
         policies: [{
-          catalogQueryMetadata: {
-            catalogQuery: {
-              title: 'test title',
-              contentFilter: {},
-              includeExecEd2UCourses: true,
-            },
-          },
+          customCatalog: true,
         }],
       },
     };
     renderWithRouter(<ProvisioningFormCatalogContainerWrapper
       value={updatedInitialState}
     />);
-    expect(screen.queryByText(CUSTOM_CATALOG.HEADER.DEFINE.TITLE)).toBeTruthy();
+    expect(screen.queryByText(CUSTOM_CATALOG.HEADER.TITLE)).toBeTruthy();
   });
 });

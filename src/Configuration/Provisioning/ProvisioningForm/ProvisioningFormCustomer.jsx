@@ -10,7 +10,7 @@ import ProvisioningFormCustomerDropdown from './ProvisioningFormCustomerDropdown
 
 const ProvisioningFormCustomer = () => {
   const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, showInvalidField] = selectProvisioningContext('formData', 'showInvalidField');
+  const [showInvalidField] = selectProvisioningContext('showInvalidField');
   const { setFinancialIdentifier, setInvalidSubsidyFields } = useProvisioningContext();
   const [financialIdentifier, setFinancialIdentifierState] = useState('');
   const [isOpportunityProduct, setIsOpportunityProduct] = useState(true);
@@ -32,7 +32,7 @@ const ProvisioningFormCustomer = () => {
       setFinancialIdentifierState(value);
       setInvalidSubsidyFields({ ...subsidy, financialIdentifier: true });
     }
-  }, [formData.financialIdentifier]);
+  }, [setFinancialIdentifier, setInvalidSubsidyFields, subsidy]);
 
   return (
     <article className="mt-4.5">

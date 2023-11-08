@@ -8,7 +8,7 @@ import ProvisioningFormPolicyType from './ProvisioningFormPolicyType';
 
 const ProvisioningFormPolicyContainer = ({ title, index }) => (
   <div className="mt-5">
-    <h2>{title}</h2>
+    <h2>{title ? `${title} budget` : 'Budget'}</h2>
     <ProvisioningFormAccountDetails index={index} />
     <ProvisioningFormDescription index={index} />
     <ProvisioningFormCatalogContainer index={index} />

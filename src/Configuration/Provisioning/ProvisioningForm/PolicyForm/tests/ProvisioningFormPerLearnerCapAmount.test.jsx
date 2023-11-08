@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import PROVISIONING_PAGE_TEXT, { INITIAL_POLICIES } from '../../../data/constants';
 import ProvisioningFormPerLearnerCapAmount from '../ProvisioningFormPerLearnerCapAmount';
 
 const { LEARNER_CAP_DETAIL, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
@@ -26,7 +26,7 @@ describe('ProvisioningFormPerLearnerCapAmount', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -46,7 +46,7 @@ describe('ProvisioningFormPerLearnerCapAmount', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -82,7 +82,7 @@ describe('ProvisioningFormPerLearnerCapAmount', () => {
         ...initialStateValue.formData,
         policies: [{
           perLearnerCap: true,
-          perLearnerCapAmount: 4000,
+          perLearnerCapAmount: 400000,
         }],
       },
     };

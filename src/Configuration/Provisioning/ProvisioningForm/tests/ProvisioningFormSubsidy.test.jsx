@@ -34,15 +34,13 @@ describe('ProvisioningFormSubsidy', () => {
     renderWithRouter(<ProvisioningFormSubsidyWrapper />);
 
     const subsidyTypeOptions = Object.keys(SUBSIDY_TYPE.OPTIONS);
-    const subsidyButtons = [];
     // Retrieves a list of input elements based on test ids
     for (let i = 0; i < subsidyTypeOptions.length; i++) {
-      subsidyButtons.push(screen.getByTestId(SUBSIDY_TYPE.OPTIONS[subsidyTypeOptions[i]]));
-    }
-    // Clicks on each input element and checks if it is checked
-    for (let i = 0; i < subsidyButtons.length; i++) {
-      fireEvent.click(subsidyButtons[i]);
-      expect(subsidyButtons[i].checked).toBeTruthy();
+      const subsidyTypeRadioOptionBeforeClick = screen.getByTestId(subsidyTypeOptions[i]);
+      fireEvent.click(subsidyTypeRadioOptionBeforeClick);
+      // For some reason, we need to re-get the element to get the updated value.
+      const subsidyTypeRadioOptionAfterClick = screen.getByTestId(subsidyTypeOptions[i]);
+      expect(subsidyTypeRadioOptionAfterClick.checked).toBeTruthy();
     }
   });
   it('renders hydrated subsidyReqRev selection if isEditMode is true', () => {
@@ -51,11 +49,11 @@ describe('ProvisioningFormSubsidy', () => {
       isEditMode: true,
       formData: {
         ...initialStateValue.formData,
-        subsidyRevReq: SUBSIDY_TYPE.OPTIONS.yes,
+        subsidyRevReq: 'bulk-enrollment-prepay',
       },
     };
     renderWithRouter(<ProvisioningFormSubsidyWrapper value={updatedInitialState} />);
-    const subsidyButton = screen.getByTestId(SUBSIDY_TYPE.OPTIONS.yes);
+    const subsidyButton = screen.getByTestId('bulk-enrollment-prepay');
     expect(subsidyButton.checked).toBeTruthy();
   });
 });

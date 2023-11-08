@@ -5,46 +5,12 @@ import dayjs from './dayjs';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
-import { splitStringBudget } from './constants';
 import { isValidOpportunityProduct } from '../../../utils';
+import { PREDEFINED_QUERY_DISPLAY_NAMES } from './constants';
 
 export const indexOnlyPropType = {
   index: PropTypes.number.isRequired,
 };
-
-/**
- * Given an enterpriseUUID is passed to the 'queryBy' function, it will return url
- * with a query parameter 'q' that is a substring of the enterpriseUUID (first 7 characters).
- *
- * @param {string} enterpriseCustomerUUID - The UUID of the enterprise customer.
- * @returns {string} - The url to query the LMS for the customer catalog.
- */
-export const lmsCustomerCatalog = {
-  queryBy: (enterpriseCustomerUUID) => {
-    if (enterpriseCustomerUUID) {
-      return `/admin/enterprise/enterprisecustomercatalog/?q=${enterpriseCustomerUUID.slice(0, 7)}`;
-    }
-    return '/admin/enterprise/enterprisecustomercatalog/';
-  },
-};
-
-/**
- * Sorts an array of catalog queries by most recently modified date
- *
- * @param {Array} catalogQueries - Object array of catalog queries
- * @returns {Array} - Sorted catalog queries by most recently modified
- */
-export function sortedCatalogQueries(catalogQueries) {
-  return catalogQueries.sort((b, a) => {
-    if (a.modified < b.modified) {
-      return -1;
-    }
-    if (a.modified > b.modified) {
-      return 1;
-    }
-    return 0;
-  });
-}
 
 /**
  * Selects and returns the specified data attributes from the ProvisioningContext using the useContextSelector hook.
@@ -81,8 +47,9 @@ export function updatePolicies(data, newDataAttribute, index) {
 /**
  * Takes values from formData on submission after preliminary failure of hasValidPolicyAndSubsidy function
  * and determines which fields are not valid, and sets an object in the context for setting the isInvalid UI states
+ *
  * @param {Object} formData - values from formData state on submission
- * @returns {Array}  An array of subsidy and policy boolean value objects
+ * @returns {Array} - An array of subsidy and policy boolean value objects. `true` values means valid.
  */
 export async function determineInvalidFields(formData) {
   const { policies } = formData;
@@ -109,12 +76,21 @@ export async function determineInvalidFields(formData) {
   }
   policies.forEach((policy) => {
     const {
-      accountName, accountValue, catalogQueryMetadata, perLearnerCap, perLearnerCapAmount, policyType,
+      accountName,
+      accountValue,
+      predefinedQueryType,
+      catalogUuid,
+      perLearnerCap,
+      perLearnerCapAmount,
+      customCatalog,
+      policyType,
     } = policy;
     const policyData = {
       accountName: !!accountName,
       accountValue: !!accountValue,
-      catalogQueryMetadata: !!catalogQueryMetadata?.catalogQuery?.id,
+      // Either a predefined query type must be selected, or a custom catalog is selected.
+      predefinedQueryType: !!predefinedQueryType && !customCatalog,
+      catalogUuid: !!catalogUuid && customCatalog,
       perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
       perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
       policyType: !!policyType,
@@ -126,7 +102,7 @@ export async function determineInvalidFields(formData) {
 
 /**
  * Checks all form data to ensure that all required fields are filled out,
- * but not the individual validity of each field.
+ * but not the validity of each field value.
  *
  * @param {Object} formData - The form data object.
  * @returns {Boolean} - Returns true if all form data is valid, false otherwise.
@@ -145,6 +121,7 @@ export function hasValidPolicyAndSubsidy(formData) {
   // Checks user defined values related to subsidy creation to determine validity
   const isSubsidyValid = isEnterpriseUUIDValid && isFinancialIdentifierValid
   && isDateRangeValid && isRevReqValid;
+
   // Check if there are any policies
   if (policies.length === 0) {
     return false;
@@ -153,9 +130,7 @@ export function hasValidPolicyAndSubsidy(formData) {
     const isAccountNameValid = !!policy.accountName;
     const isAccountValueValid = !!policy.accountValue;
 
-    // Requires both an id and title to be valid
-    const isCatalogQueryValid = !!policy.catalogQueryMetadata?.catalogQuery?.id
-    && !!policy.catalogQueryMetadata?.catalogQuery?.title;
+    const isCatalogDefined = policy.customCatalog === true ? !!policy.catalogUuid : !!policy.predefinedQueryType;
 
     // Requires learner cap to pass conditionals to be true
     const { perLearnerCap, perLearnerCapAmount } = policy;
@@ -167,9 +142,8 @@ export function hasValidPolicyAndSubsidy(formData) {
         isPerLearnerCapValid = true;
       }
     }
-
     // returns true if all fields are valid for every policy
-    return isAccountNameValid && isAccountValueValid && isCatalogQueryValid && isPerLearnerCapValid;
+    return isAccountNameValid && isAccountValueValid && isCatalogDefined && isPerLearnerCapValid;
   });
 
   // returns true if all fields are valid for subsidy fields and all policy fields
@@ -177,72 +151,44 @@ export function hasValidPolicyAndSubsidy(formData) {
 }
 
 /**
- * Creates a new catalog for the specified valid enterprise customer.
+ * Gets or creates a new catalog for the specified valid enterprise customer.
+ *
+ * This is idempotent on [enterpriseCustomerUUID, catalogQueryID].
  *
  * @param {{
- * enterpriseCustomerUUID: String,
- * catalogQueryUUID: Number,
- * title: String
+ *   enterpriseCustomerUuid: String,
+ *   catalogQueryId: Number,
+ *   title: String,
  * }} - The new catalog data.
  * @returns {{
- * uuid: String,
- * title: String,
- * catalogQueryUUID: Number,
- * enterpriseCustomerUUID: String
+ *   uuid: String,
+ *   title: String,
+ *   enterprise_catalog_query: Number,
+ *   enterprise_customer: String,
  * }} - The newly created catalog where uuid is the catalog UUID.
  */
-export async function createCatalogs({ enterpriseCustomerUUID, catalogQueryUUID, title }) {
+export async function getOrCreateCatalog({ enterpriseCustomerUuid, catalogQueryId, title }) {
   const { data } = await LmsApiService.postEnterpriseCustomerCatalog(
-    enterpriseCustomerUUID,
-    catalogQueryUUID,
+    enterpriseCustomerUuid,
+    catalogQueryId,
     title,
   );
   return data;
 }
 
 /**
- * Updates an existing catalog for the specified valid enterprise customer.
- *
- * @param {{
-* catalogQueryUUID: Number,
-* catalogUUID: Number,
-* title: String
-* }} - The updated catalog data.
-* @returns {{
-* uuid: String,
-* title: String,
-* catalogQueryUUID: Number,
-* enterpriseCustomerUUID: String
-* }}
-*/
-export async function patchCatalogs({ catalogQueryUUID, catalogUuid, title }) {
-  const { data } = await LmsApiService.patchEnterpriseCustomerCatalog(
-    catalogQueryUUID,
-    catalogUuid,
-    title,
-  );
-  return { data };
-}
-
-/**
- * Extracts the catalog title from the catalogQueryTitle field of a policy.
- * Splitting on ' budget' for the case with multiple catalog queries, where the title
- * of each individual 'Policy' form data is `${title} account`
- *
- * @param {Object} policy - The policy object.
- * @returns {String} - The catalog title.
+ * Extracts the budget display name from a policy form data object.
+ * @returns {String} - The budget display name.
  */
-export function extractDefinedCatalogTitle(policy) {
-  if (policy?.catalogQueryMetadata?.catalogQuery) {
-    return policy?.catalogQueryMetadata?.catalogQuery.title;
+export function generateBudgetDisplayName(policy) {
+  const catalogQueryDisplayName = PREDEFINED_QUERY_DISPLAY_NAMES[policy?.predefinedQueryType];
+  if (catalogQueryDisplayName) {
+    return catalogQueryDisplayName;
   }
-  if (policy?.catalogQueryTitle?.includes(splitStringBudget)) {
-    return policy.catalogQueryTitle.split(splitStringBudget)[0];
+  if (policy?.customCatalog) {
+    return 'Unique/Curated';
   }
-  if (!policy || !policy?.catalogQueryTitle) {
-    return null;
-  }
-  return '';
+  return null;
 }
 
 /**
@@ -261,6 +207,50 @@ export function getCamelCasedConfigAttribute(attribute) {
     return camelCasedConfigurationObject;
   }
   return null;
+}
+
+/**
+ * Get bidirectional mappings between catalog query type enums and the database query IDs.
+ * This is powered by the MFE config `PREDEFINED_CATALOG_QUERIES`.
+ *
+ * @returns {{
+ * queryTypeToQueryId: Object,
+ * queryIdToQueryType: Object,
+ * }} Both mappings between query type and query ID.
+ */
+export function getPredefinedCatalogQueryMappings() {
+  const queryTypeToQueryId = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
+  const queryIdToQueryType = Object.fromEntries(Object.entries(queryTypeToQueryId).map(([key, value]) => [value, key]));
+  return {
+    queryTypeToQueryId,
+    queryIdToQueryType,
+  };
+}
+
+/**
+ * Filter down to custom catalogs then sorts them from most to least recently modified.  The returned list of catalogs
+ * will ultimately be used in the Unique/Curated catalog dropout selection.
+ *
+ * @param {Array} catalogs - Object array of enterprise catalogs.
+ * @returns {Array} -  Catalogs sorted by most recently modified.
+ */
+export function sortedCustomCatalogs(allCatalogs) {
+  if (!allCatalogs) {
+    return null;
+  }
+  const { queryIdToQueryType } = getPredefinedCatalogQueryMappings();
+  // Only include catalogs that are NOT predefined, i.e. only include the ones created by humans.
+  const customCatalogs = allCatalogs.filter((catalog) => !([catalog.enterpriseCatalogQuery] in queryIdToQueryType));
+  // Bump most recently modified catalogs to the top of the list.
+  return customCatalogs.sort((a, b) => {
+    if (a.modified < b.modified) {
+      return 1;
+    }
+    if (a.modified > b.modified) {
+      return -1;
+    }
+    return 0;
+  });
 }
 
 /**
@@ -289,6 +279,7 @@ export function normalizeSubsidyDataTableData({ fetchedSubsidyData, fetchedCusto
     results: normalizedData,
   };
 }
+
 /**
  * Creates a new subsidy for the specified valid enterprise customer.
  *
@@ -396,9 +387,7 @@ export function transformSubsidyData(formData) {
   const { enterpriseUUID, financialIdentifier, internalOnly } = formData;
   const isoEndDate = new Date(formData.endDate).toISOString();
   const isoStartDate = new Date(formData.startDate).toISOString();
-  const revenueCategory = formData.subsidyRevReq.includes('bulk')
-    ? 'bulk-enrollment-prepay'
-    : 'partner-no-rev-prepay';
+  const revenueCategory = formData.subsidyRevReq;
   let subsidyTitle = formData?.subsidyTitle || '';
   const startingBalance = formData.policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0);
   if (subsidyTitle.length === 0) {
@@ -495,6 +484,21 @@ export async function patchPolicy({
 }
 
 /**
+ * Converts the amount from USD cents to dollars
+ * @param {Number} usdCents - The amount in USD cents (e.g. 6000)
+ * @returns - Returns the converted amount (e.g. $60)
+ */
+export const formatCurrency = (usdCents) => {
+  const centsToDollarConversion = usdCents / 100;
+  const currencyUS = Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  });
+  return currencyUS.format(centsToDollarConversion);
+};
+
+/**
  * Takes the response of catalog creation, the response of subsidy creation and the formData object from context
  * to create an array of policy data objects that can be used to create new policies.
  *
@@ -503,23 +507,32 @@ export async function patchPolicy({
  * @param {Object} subsidyCreationResponse - The response from the subsidy creation API
  * @returns - Returns an array of policy data objects that can be used to create new policies
  */
-export function transformPolicyData(formData, catalogCreationResponse, subsidyCreationResponse) {
+export function transformPolicyData(formData, catalogCreationResponses, subsidyCreationResponse) {
   const { enterpriseUUID, policies } = formData;
   if (
     policies.length === 0
-    || catalogCreationResponse.length === 0
+    || catalogCreationResponses.length === 0
     || subsidyCreationResponse.length === 0
   ) { return []; }
   const payloads = policies.map((policy, index) => ({
     displayName: policy.accountName,
-    description: policy.accountDescription?.length > 0
-      ? policy.accountDescription
-      : `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
+    description: (
+      policy.accountDescription?.length > 0
+        ? policy.accountDescription
+        : (
+          `Initial Policy Display Name: ${policy.accountName}, `
+          + `Initial Policy Value: ${formatCurrency(policy.accountValue)}, `
+          + `Initial Subsidy Value: ${formatCurrency(subsidyCreationResponse[0].current_balance)}`
+        )
+    ),
     enterpriseCustomerUuid: enterpriseUUID,
-    catalogUuid: catalogCreationResponse[0][index].uuid,
+    // By the time that this function is run, one of the following will be true:
+    // 1. A custom catalog was selected, and policy.catalogUuid represents the custom catalog selection.
+    // 2. A predefined catalog query was selected, and catalogCreationResponses[index] represents a managed catalog.
+    catalogUuid: catalogCreationResponses[index]?.uuid || policy.catalogUuid,
     subsidyUuid: subsidyCreationResponse[0].uuid,
-    perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
-    spendLimit: parseInt(policy.accountValue, 10) * 100,
+    perLearnerSpendLimit: policy.perLearnerCap ? policy.perLearnerCapAmount : null,
+    spendLimit: policy.accountValue,
     policyType: policy.policyType,
     accessMethod: policy.accessMethod,
   }));
@@ -531,26 +544,27 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
  * to create an array of policy data objects that can be used to update the policies.
  *
  * @param {Object} formData - The formData object from context
- * @param {Object} catalogCreationResponse - The response from the catalog patched API
- * @returns - Returns an array of policy data objects that can be used to update policies
+ * @returns - Returns an array of policy payload objects that can be used to update policies
  */
-export function transformPatchPolicyPayload(formData, catalogSavedResponse) {
+export function transformPatchPolicyPayload(formData, catalogCreationResponses) {
   const { subsidyUuid, policies } = formData;
   if (
     policies.length === 0
-    || catalogSavedResponse.length === 0
+    || catalogCreationResponses.length === 0
     || !subsidyUuid
   ) { return []; }
-  const payloads = policies.map((policy) => ({
-    displayName: policy.accountName,
-    description: policy.accountDescription?.length > 0
-      ? policy.accountDescription
-      : `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
-    catalogUuid: policy.catalogQueryMetadata.catalogQuery.catalogUuid,
-    subsidyUuid,
-    perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
-    spendLimit: policy.accountValue,
+  const payloads = policies.map((policy, index) => ({
     uuid: policy.uuid,
+    // TODO: If we add support for customizable display names, we'll need to uncomment this.
+    // displayName: policy.accountName,
+    description: policy.accountDescription,
+    // By the time that this function is run, one of the following will be true:
+    // 1. A custom catalog was selected, and policy.catalogUuid represents the custom catalog selection.
+    // 2. A predefined catalog query was selected, and catalogCreationResponses[index] represents a managed catalog.
+    catalogUuid: catalogCreationResponses[index]?.uuid || policy.catalogUuid,
+    subsidyUuid,
+    perLearnerSpendLimit: policy.perLearnerCap ? policy.perLearnerCapAmount : null,
+    spendLimit: policy.accountValue,
   }));
   return payloads;
 }
@@ -571,14 +585,18 @@ export function filterIndexOfCatalogQueryTitle(catalogQueries, filteredBy) {
 }
 
 /**
- * Autogenerates the policy name based on the subsidy title and the catalog query title.
+ * Autogenerates the policy name based on form data.  intended for use as the policy record display_name field.
  * @param {Object} formData - The formData object from context
  * @param {Number} index - The index of the associated policy
- * @returns - Returns a string that can be used as the policy name
+ * @returns - Returns a string that can be used as the policy display name.
  */
 export function generatePolicyName(formData, index) {
   const { subsidyTitle, policies } = formData;
-  return `${subsidyTitle} --- ${extractDefinedCatalogTitle(policies[index])}`;
+  const budgetDisplayName = generateBudgetDisplayName(policies[index]);
+  if (budgetDisplayName) {
+    return `${subsidyTitle} --- ${budgetDisplayName}`;
+  }
+  return null;
 }
 
 // Start of Datatable functions
@@ -649,22 +667,6 @@ export function filterByEnterpriseCustomerName({ fetchedCustomerData, filterBy }
 }
 // End of Datatable functions
 
-/**
- * Converts the amount from usd cents to dollars
- * @param {Number} currency - The amount (e.g. 6000)
- * @returns - Returns the converted amount (e.g. $60)
- */
-export const formatCurrency = (currency) => {
-  const centsToDollarConversion = currency / 100;
-  const currencyUS = Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-  });
-
-  return currencyUS.format(centsToDollarConversion);
-};
-
 export async function getSubsidy(subsidyUuid) {
   const response = await SubsidyApiService.fetchSingleSubsidy(subsidyUuid);
   return response;
@@ -680,23 +682,29 @@ export async function getPolicies(customerUuid) {
   return response;
 }
 
-export async function getCatalogs(catalogUuid) {
-  const response = await LmsApiService.fetchEnterpriseCustomerCatalogs(catalogUuid);
-  return response;
-}
-
 /**
- * gets the catalog uuid that matches subsidy id of the policies
+ * Retrieve one catalog from the LMS/Enterprise API.
+ * @param {Number} catalogUuid - UUID of the single catalog to fetch.
+ * @returns - An object representing the requested catalog, or undefined if not found.
  */
-export function getCatalogUuid(policies, subsidyUuid) {
-  const foundPolicies = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid);
-  if (foundPolicies.length) {
-    return foundPolicies.map(policy => policy.catalog_uuid);
+export async function getCatalog(catalogUuid) {
+  const response = await LmsApiService.fetchEnterpriseCustomerCatalogs({ catalogUuid }).catch((e) => {
+    throw e;
+  });
+  if (response?.data?.results?.length === 1) {
+    return response.data.results[0];
   }
   return undefined;
 }
 
-export async function getCatalogQueries() {
-  const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
-  return data;
+/**
+ * Given an API response for listing all policies for a given customer, further filter the results down to just the
+ * policies for the given subsidy.
+ * @param {Number} policiesForCustomerResponse - The API response for listing policies for a given customer.
+ * @param {Number} subsidyUuid - The specific subsidy to which the returned policies relate.
+ * @returns - List of policy data objects which all relate to the given subsidyUuid.
+ */
+export function getPoliciesForSubsidy(policiesForCustomerResponse, subsidyUuid) {
+  const allPoliciesData = policiesForCustomerResponse.data.results;
+  return allPoliciesData.filter(policy => policy.subsidy_uuid === subsidyUuid);
 }

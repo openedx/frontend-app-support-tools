@@ -92,7 +92,7 @@ describe('DashboardTableLinks', () => {
         DJANGO_ADMIN_SUBSIDY_BASE_URL: 'https://pokemons.com',
       }));
       render(<DjangoIconHyperlink row={row} />);
-      expect(screen.getByTestId('django-admin-link')).toHaveAttribute('href', 'https://pokemons.com/admin/subsidy/subsidy/?uuid=123456789');
+      expect(screen.getByTestId('django-admin-link')).toHaveAttribute('href', 'https://pokemons.com/admin/subsidy/subsidy/123456789/change/');
     });
   });
 });

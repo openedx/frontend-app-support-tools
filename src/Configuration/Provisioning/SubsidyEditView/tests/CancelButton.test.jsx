@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 import PropTypes from 'prop-types';
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import Router from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
@@ -31,9 +31,9 @@ describe('Cancel button', () => {
   it('renders the button and opens modal when hasEdits is true ', async () => {
     const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(
+    renderWithRouter(
       <CancelButtonWrapper value={{ ...hydratedInitialState, hasEdits: false }} />,
-    ));
+    );
 
     const button = screen.getByRole('button', {
       name: CANCEL.description,
@@ -53,7 +53,7 @@ describe('Cancel button', () => {
   it('renders the button and navigates to view screen when hasEdits is false ', async () => {
     const { FORM: { CANCEL } } = PROVISIONING_PAGE_TEXT;
     jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<CancelButtonWrapper value={hydratedInitialState} />));
+    renderWithRouter(<CancelButtonWrapper value={hydratedInitialState} />);
     const button = screen.getByRole('button', {
       name: CANCEL.description,
     });

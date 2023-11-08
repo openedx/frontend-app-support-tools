@@ -1,33 +1,27 @@
 /* eslint-disable react/prop-types */
-import Router from 'react-router-dom';
+import '@testing-library/jest-dom/extend-expect';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProvisioningContext, hydratedInitialState } from '../../../testData/Provisioning/ProvisioningContextWrapper';
+import { initialStateValue, ProvisioningContext } from '../../../testData/Provisioning/ProvisioningContextWrapper';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import SubsidyEditView from '../SubsidyEditView';
-import '@testing-library/jest-dom/extend-expect';
+import { MOCK_PREDEFINED_CATALOG_QUERIES } from '../../../testData/constants';
 
 const { FORM } = PROVISIONING_PAGE_TEXT;
 
-const mockConfig = () => ({
-  FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: 'true',
-  PREDEFINED_CATALOG_QUERIES: {
-    everything: 1,
-    open_courses: 2,
-    executive_education: 3,
-  },
+// Patch frontend-platform to serve a custom version of PREDEFINED_CATALOG_QUERIES.
+jest.mock('@edx/frontend-platform', () => {
+  const actualModule = jest.requireActual('@edx/frontend-platform');
+  return ({
+    ...actualModule,
+    getConfig: jest.fn(() => ({
+      ...actualModule.getConfig(),
+      FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: 'true',
+      PREDEFINED_CATALOG_QUERIES: MOCK_PREDEFINED_CATALOG_QUERIES,
+    })),
+  });
 });
-
-jest.mock('@edx/frontend-platform', () => ({
-  ...jest.requireActual('@edx/frontend-platform'),
-  getConfig: () => mockConfig(),
-}));
 
 const mockData = {
   data: {
@@ -53,10 +47,10 @@ const mocks = {
   enterpriseCustomerCatalogsMock: {
     data: {
       results: [{
-        enterprise_customer: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de',
-        title: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de - Open Courses budget',
         uuid: '69035754-fa48-4519-92d8-a723ae0f6e58',
-        enterprise_catalog_query: 2,
+        title: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de - Open Courses',
+        enterprise_customer: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de',
+        enterprise_catalog_query: MOCK_PREDEFINED_CATALOG_QUERIES.open_courses,
       }],
     },
   },
@@ -88,6 +82,7 @@ const mocks = {
       results: [
         {
           uuid: '1fedab07-8872-4795-8f8c-e4035b1f41b7',
+          policy_type: 'PerLearnerSpendCreditAccessPolicy',
           description: 'description',
           enterprise_customer_uuid: '3d9b73dc-590a-48b3-81e2-fd270618b80e',
           catalog_uuid: '69035754-fa48-4519-92d8-a723ae0f6e58',
@@ -117,11 +112,11 @@ jest.mock('../../../../data/services/SubsidyApiService', () => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
+  useParams: () => ({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' }),
 }));
 
 const SubsidyEditViewWrapper = ({
-  value = hydratedInitialState,
+  value = initialStateValue,
 }) => (
   <ProvisioningContext value={value}>
     <SubsidyEditView />
@@ -136,29 +131,10 @@ describe('SubsidyEditView', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  it('renders on true multiple funds', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={{ ...hydratedInitialState }} />));
-    expect(screen.getByText(FORM.SUB_TITLE)).toBeTruthy();
-  });
 
-  it('should render policy container given a sample catalog query', async () => {
-    const updatedStateValue = {
-      ...hydratedInitialState,
-      alertMessage: '',
-      multipleFunds: true,
-    };
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />));
-    expect(screen.queryByText(FORM.ALERTS.unselectedAccountType)).toBeFalsy();
-  });
   it('renders with data', async () => {
-    const updatedStateValue = {
-      ...hydratedInitialState,
-      multipleFunds: false,
-    };
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />));
-    expect(screen.getByText('Plan Details')).toBeInTheDocument();
+    renderWithRouter(<SubsidyEditViewWrapper />);
+    await waitFor(() => expect(screen.getByText('Plan Details')).toBeInTheDocument());
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByTestId('customer-plan-title').value).toBe('Paper company');
     expect(screen.getByText('Enterprise Customer / UUID')).toBeInTheDocument();
@@ -169,7 +145,7 @@ describe('SubsidyEditView', () => {
     expect(screen.getByTestId('start-date').value).toBe('2023-06-20');
     expect(screen.getByTestId('end-date').value).toBe('2023-06-22');
     expect(screen.getByTestId('internal-only-checkbox').checked).toBeTruthy();
-    expect(screen.getByTestId('Yes (bulk enrollment prepay)').checked).toBeTruthy();
+    expect(screen.getByTestId('partner-no-rev-prepay').checked).toBeTruthy();
     expect(screen.getByText('No, create one Learner Credit budget')).toBeInTheDocument();
     expect(screen.getByTestId('account-name').value).toBe('Paper company --- Open Courses');
     expect(screen.getByText(
@@ -178,10 +154,10 @@ describe('SubsidyEditView', () => {
     expect(screen.getByText('Save Edits')).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
-  it('should call beforeunload of window and show alert to user', async () => {
-    jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
+
+  it('should call beforeunload of window and show alert to user', () => {
     jest.spyOn(window, 'addEventListener');
-    await act(async () => renderWithRouter(<SubsidyEditViewWrapper value={{ ...hydratedInitialState }} />));
+    renderWithRouter(<SubsidyEditViewWrapper />);
     const enableBeforeUnload = jest.fn();
     function setupEventListener() {
       window.addEventListener('beforeunload', enableBeforeUnload);
@@ -192,13 +168,10 @@ describe('SubsidyEditView', () => {
   });
 
   describe('updating form', () => {
-    beforeEach(() => {
-      const updatedStateValue = {
-        ...hydratedInitialState,
-        isEditMode: true,
-      };
-      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-      renderWithRouter(<SubsidyEditViewWrapper value={updatedStateValue} />);
+    beforeEach(async () => {
+      renderWithRouter(<SubsidyEditViewWrapper />);
+      // Wait for the loading phase, during which API calls are made to hydrate form data and the view is empty.
+      await waitFor(() => expect(screen.getByText('Plan Details')).toBeInTheDocument());
     });
     const checksForCancelConfirmation = async () => {
       const button = screen.getByRole('button', {
@@ -210,15 +183,15 @@ describe('SubsidyEditView', () => {
     };
     it('shows confirmation modal when there are edits to date input', async () => {
       const startDateInput = screen.getByTestId('start-date');
-      expect(startDateInput.value).toBe('2023-10-01');
+      expect(startDateInput.value).toBe('2023-06-20');
       fireEvent.change(startDateInput, { target: { value: '2021-01-01' } });
       expect(startDateInput.value).toBe('2021-01-01');
       await checksForCancelConfirmation();
     });
     it('shows confirmation modal when there are edits subsidy type selection', async () => {
-      const yesButton = screen.getByTestId(FORM.SUBSIDY_TYPE.OPTIONS.yes);
+      const yesButton = screen.getByTestId('partner-no-rev-prepay');
       expect(yesButton.checked).toBeTruthy();
-      const noButton = screen.getByTestId(FORM.SUBSIDY_TYPE.OPTIONS.no);
+      const noButton = screen.getByTestId('bulk-enrollment-prepay');
       fireEvent.click(noButton);
       await checksForCancelConfirmation();
     });

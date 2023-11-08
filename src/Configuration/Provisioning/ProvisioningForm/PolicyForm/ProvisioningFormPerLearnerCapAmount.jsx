@@ -17,9 +17,11 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
 
   let submittedFormPerLearnerCapAmount;
   if (isEditMode) {
-    submittedFormPerLearnerCapAmount = formData.policies[index]?.perLearnerCapAmount;
+    // Currency in formData is ALWAYS in cents, so we must convert to dollars to use for component-local state.
+    submittedFormPerLearnerCapAmount = formData.policies[index].perLearnerCapAmount / 100;
   }
 
+  // Currency in component-local state is ALWAYS in dollars.
   const [perLearnerCapValue, setPerLearnerCapValue] = useState(submittedFormPerLearnerCapAmount || '');
   const handleChange = (e) => {
     if (isEditMode && !hasEdits) {
@@ -32,8 +34,10 @@ const ProvisioningFormPerLearnerCapAmount = ({ index }) => {
       return;
     }
     setIsWholeDollar(true);
-    setPerLearnerCap({ perLearnerCapAmount: newEventValue }, index);
+    // Currency in formData is ALWAYS in cents.
+    setPerLearnerCap({ perLearnerCapAmount: parseInt(newEventValue, 10) * 100 }, index);
     setInvalidPolicyFields({ perLearnerCapAmount: true }, index);
+    // Currency in component-local state is ALWAYS in dollars.
     setPerLearnerCapValue(newEventValue);
   };
   return (
