@@ -8,8 +8,8 @@ import {
   filterByEnterpriseCustomerName,
   filterIndexOfCatalogQueryTitle,
   getCamelCasedConfigAttribute,
-  getCatalogUuid,
   getCatalogQueries,
+  getCatalogUuid,
   hasValidPolicyAndSubsidy,
   lmsCustomerCatalog,
   normalizeSubsidyDataTableData,
@@ -226,6 +226,7 @@ const sampleResponses = {
     createPolicy: {
       uuid: '7a5e4882-16a6-4a5f-bfe1-eda91014aff4',
       policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      display_name: 'test-display-name',
       description: 'This policy created for subsidy 205f11a4-0303-4407-a2e7-80261ef8fb8f with 1 associated policies',
       active: true,
       enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
@@ -264,6 +265,7 @@ const samplePatchResponses = {
     patchPolicy: {
       uuid: '7a5e4882-16a6-4a5f-bfe1-eda91014aff4',
       policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      display_name: 'test-display-name',
       description: 'awesome description',
       active: true,
       enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
@@ -348,6 +350,7 @@ describe('createPolicies', () => {
   it('returns the correct data', async () => {
     const { data } = await createPolicy({
       policy_type: 'PerLearnerSpendCreditAccessPolicy',
+      display_name: 'test-display-name',
       description: 'This policy created for subsidy 205f11a4-0303-4407-a2e7-80261ef8fb8f with 1 associated policies',
       active: true,
       enterprise_customer_uuid: 'a929e999-2487-4a53-9741-92e0d2022598',
