@@ -45,6 +45,7 @@ class LmsApiService {
   // Did not include perLearnerEnrollmentLimit field because it is
   // not used in the current implementation of the provisioning form
   static postSubsidyAccessPolicy = (
+    displayName,
     description,
     enterpriseCustomerUuid,
     catalogUuid,
@@ -58,6 +59,7 @@ class LmsApiService {
     `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/subsidy-access-policies/`,
     {
       policy_type: policyType,
+      display_name: displayName,
       description,
       active,
       enterprise_customer_uuid: enterpriseCustomerUuid,

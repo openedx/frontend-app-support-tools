@@ -1,11 +1,5 @@
-import {
-  Button,
-  ActionRow,
-  StatefulButton,
-} from '@edx/paragon';
-import {
-  useEffect, useMemo, useState,
-} from 'react';
+import { ActionRow, Button, StatefulButton } from '@edx/paragon';
+import { useEffect, useMemo, useState } from 'react';
 import { logError } from '@edx/frontend-platform/logging';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,13 +8,13 @@ import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
 import {
   createCatalogs,
-  selectProvisioningContext,
-  hasValidPolicyAndSubsidy,
-  createSubsidy,
-  transformSubsidyData,
-  transformPolicyData,
   createPolicy,
+  createSubsidy,
   determineInvalidFields,
+  hasValidPolicyAndSubsidy,
+  selectProvisioningContext,
+  transformPolicyData,
+  transformSubsidyData,
 } from '../data/utils';
 
 const ProvisioningFormSubmissionButton = () => {
@@ -65,7 +59,7 @@ const ProvisioningFormSubmissionButton = () => {
   const handleSubmit = async () => {
     setSubmitButtonState('pending');
     setAlertMessage(false);
-    // Checks validiy before performing any API calls
+    // Checks validity before performing any API calls
     if (policies.length === 0 || !canCreatePolicyAndSubsidy) {
       setSubmitButtonState('error');
       resetInvalidFields();
