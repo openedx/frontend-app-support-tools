@@ -439,6 +439,7 @@ export function transformSubsidyData(formData) {
  * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
  */
 export async function createPolicy({
+  displayName,
   description,
   enterpriseCustomerUuid,
   catalogUuid,
@@ -447,6 +448,7 @@ export async function createPolicy({
   spendLimit,
 }) {
   const data = LmsApiService.postSubsidyAccessPolicy(
+    displayName,
     description,
     enterpriseCustomerUuid,
     catalogUuid,
@@ -454,7 +456,6 @@ export async function createPolicy({
     perLearnerSpendLimit,
     spendLimit,
   );
-
   return data;
 }
 
@@ -503,6 +504,7 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     || subsidyCreationResponse.length === 0
   ) { return []; }
   const payloads = policies.map((policy, index) => ({
+    displayName: policy.accountName,
     description: policy.accountDescription?.length > 0
       ? policy.accountDescription
       : `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
@@ -531,6 +533,7 @@ export function transformPatchPolicyPayload(formData, catalogSavedResponse) {
     || !subsidyUuid
   ) { return []; }
   const payloads = policies.map((policy) => ({
+    displayName: policy.accountName,
     description: policy.accountDescription?.length > 0
       ? policy.accountDescription
       : `${policy.accountName}, Initial Policy Value: $${policy.accountValue}, Initial Subsidy Value: $${policies.reduce((acc, { accountValue }) => acc + parseInt(accountValue, 10), 0)}`,
