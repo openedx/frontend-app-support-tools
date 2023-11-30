@@ -4,6 +4,7 @@ import ProvisioningFormAccountDetails from './ProvisioningFormAccountDetails';
 import ProvisioningFormPerLearnerCapContainer from './ProvisioningFormPerLearnerCapContainer';
 import { indexOnlyPropType } from '../../data/utils';
 import ProvisioningFormDescription from './ProvisioningFormDescription';
+import ProvisioningFormPolicyType from './ProvisioningFormPolicyType';
 
 const ProvisioningFormPolicyContainer = ({ title, index }) => (
   <div className="mt-5">
@@ -11,6 +12,7 @@ const ProvisioningFormPolicyContainer = ({ title, index }) => (
     <ProvisioningFormAccountDetails index={index} />
     <ProvisioningFormDescription index={index} />
     <ProvisioningFormCatalogContainer index={index} />
+    <ProvisioningFormPolicyType index={index} />
     <ProvisioningFormPerLearnerCapContainer index={index} />
   </div>
 );
