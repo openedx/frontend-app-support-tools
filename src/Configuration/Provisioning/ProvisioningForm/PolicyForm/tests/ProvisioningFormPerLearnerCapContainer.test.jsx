@@ -69,4 +69,27 @@ describe('PerLearnerCapContainer', () => {
     fireEvent.click(input);
     expect(screen.queryByText(LEARNER_CAP_DETAIL.TITLE)).not.toBeTruthy();
   });
+  it('does not render learner cap if policy type is AssignedLearnerCreditAccessPolicy', () => {
+    const updatedState = {
+      ...initialStateValue,
+      multipleFunds: false,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [
+          {
+            ...INITIAL_CATALOG_QUERIES.defaultQuery,
+            policyType: POLICY_TYPE.OPTIONS.ADMIN_SELECTS.VALUE,
+          },
+        ],
+      },
+    };
+
+    renderWithRouter(
+      <ProvisioningFormPerLearnerCapContainerWrapper
+        value={updatedState}
+        index={0}
+      />,
+    );
+    expect(screen.queryByText(LEARNER_CAP.TITLE)).not.toBeTruthy();
+  });
 });
