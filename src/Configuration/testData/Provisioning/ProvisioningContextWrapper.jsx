@@ -60,6 +60,8 @@ export const hydratedInitialState = {
             uuid: '4ev3r',
           },
         },
+        policyType: 'PerLearnerSpendCreditAccessPolicy',
+        accessMethod: 'direct',
       },
     ],
   },
