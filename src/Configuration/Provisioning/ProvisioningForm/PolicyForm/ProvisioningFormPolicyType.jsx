@@ -52,15 +52,15 @@ const ProvisioningFormPolicyType = ({ index }) => {
           value={value || formData.policies[index]?.policyType}
         >
           {
-            Object.keys(POLICY_TYPE.OPTIONS).map((key) => (
+            Object.values(POLICY_TYPE.OPTIONS).map(({ DESCRIPTION }) => (
               <Form.Radio
-                value={POLICY_TYPE.OPTIONS[key].DESCRIPTION}
+                value={DESCRIPTION}
                 type="radio"
                 key={uuidv4()}
-                data-testid={POLICY_TYPE.OPTIONS[key].DESCRIPTION}
+                data-testid={DESCRIPTION}
                 isInvalid={isPolicyTypeDefinedAndFalse}
               >
-                {POLICY_TYPE.OPTIONS[key].DESCRIPTION}
+                {DESCRIPTION}
               </Form.Radio>
             ))
           }
