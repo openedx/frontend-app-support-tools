@@ -52,9 +52,9 @@ class LmsApiService {
     subsidyUuid,
     perLearnerSpendLimit,
     spendLimit,
-    accessMethod = 'direct',
+    accessMethod,
+    policyType,
     active = true,
-    policyType = 'PerLearnerSpendCreditAccessPolicy',
   ) => LmsApiService.apiClient().post(
     `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/subsidy-access-policies/`,
     {

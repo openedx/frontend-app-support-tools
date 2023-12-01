@@ -109,7 +109,7 @@ export async function determineInvalidFields(formData) {
   }
   policies.forEach((policy) => {
     const {
-      accountName, accountValue, catalogQueryMetadata, perLearnerCap, perLearnerCapAmount,
+      accountName, accountValue, catalogQueryMetadata, perLearnerCap, perLearnerCapAmount, policyType,
     } = policy;
     const policyData = {
       accountName: !!accountName,
@@ -117,6 +117,7 @@ export async function determineInvalidFields(formData) {
       catalogQueryMetadata: !!catalogQueryMetadata?.catalogQuery?.id,
       perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
       perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
+      policyType: !!policyType,
     };
     allInvalidPolicyFields.push(policyData);
   });
@@ -434,7 +435,9 @@ export function transformSubsidyData(formData) {
  * catalogUuid: String,
  * subsidyUuid: String,
  * perLearnerSpendLimit: Number,
- * spendLimit: Number
+ * spendLimit: Number,
+ * accessMethod: String,
+ * policyType: String,
  * }} - Object fields required to create a new policy
  * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
  */
@@ -446,6 +449,8 @@ export async function createPolicy({
   subsidyUuid,
   perLearnerSpendLimit,
   spendLimit,
+  accessMethod,
+  policyType,
 }) {
   const data = LmsApiService.postSubsidyAccessPolicy(
     displayName,
@@ -455,6 +460,8 @@ export async function createPolicy({
     subsidyUuid,
     perLearnerSpendLimit,
     spendLimit,
+    accessMethod,
+    policyType,
   );
   return data;
 }
@@ -513,6 +520,8 @@ export function transformPolicyData(formData, catalogCreationResponse, subsidyCr
     subsidyUuid: subsidyCreationResponse[0].uuid,
     perLearnerSpendLimit: policy.perLearnerCap ? parseInt(policy.perLearnerCapAmount, 10) * 100 : null,
     spendLimit: parseInt(policy.accountValue, 10) * 100,
+    policyType: policy.policyType,
+    accessMethod: policy.accessMethod,
   }));
   return payloads;
 }

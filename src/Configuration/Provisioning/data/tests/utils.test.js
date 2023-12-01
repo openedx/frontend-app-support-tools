@@ -416,6 +416,7 @@ describe('determineInvalidFields', () => {
       catalogQueryMetadata: false,
       perLearnerCap: false,
       perLearnerCapAmount: false,
+      policyType: false,
     }]];
     const emptyPolicyDataset = {
       ...emptyDataSet,
