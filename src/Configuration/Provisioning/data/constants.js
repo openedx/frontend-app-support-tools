@@ -239,6 +239,23 @@ const PROVISIONING_PAGE_TEXT = {
         },
       },
     },
+    POLICY_TYPE: {
+      TITLE: 'Budget distribution mode',
+      LABEL: 'How is content selected?',
+      OPTIONS: {
+        LEARNER_SELECTS: {
+          DESCRIPTION: 'Learner selects content or LMS',
+          VALUE: 'PerLearnerSpendCreditAccessPolicy',
+          ACCESS_METHOD: 'direct',
+        },
+        ADMIN_SELECTS: {
+          DESCRIPTION: 'Admin selects content',
+          VALUE: 'AssignedLearnerCreditAccessPolicy',
+          ACCESS_METHOD: 'assigned',
+        },
+      },
+      ERROR: 'Please select an option.',
+    },
   },
 };
 

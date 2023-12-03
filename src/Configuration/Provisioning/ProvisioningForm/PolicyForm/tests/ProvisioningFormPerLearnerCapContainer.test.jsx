@@ -5,7 +5,7 @@ import { ProvisioningContext, initialStateValue } from '../../../../testData/Pro
 import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
 import ProvisioningFormPerLearnerCapContainer from '../ProvisioningFormPerLearnerCapContainer';
 
-const { LEARNER_CAP_DETAIL, LEARNER_CAP } = PROVISIONING_PAGE_TEXT.FORM;
+const { LEARNER_CAP_DETAIL, LEARNER_CAP, POLICY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
 
 const ProvisioningFormPerLearnerCapContainerWrapper = ({
   value = initialStateValue,
@@ -16,19 +16,25 @@ const ProvisioningFormPerLearnerCapContainerWrapper = ({
   </ProvisioningContext>
 );
 
+const updatedInitialState = {
+  ...initialStateValue,
+  multipleFunds: false,
+  formData: {
+    ...initialStateValue.formData,
+    policies: [
+      {
+        ...INITIAL_CATALOG_QUERIES.defaultQuery,
+        policyType: POLICY_TYPE.OPTIONS.LEARNER_SELECTS.VALUE,
+      },
+    ],
+  },
+};
+
 describe('PerLearnerCapContainer', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
   it('renders single policy state', () => {
-    const updatedInitialState = {
-      ...initialStateValue,
-      multipleFunds: false,
-      formData: {
-        ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
-      },
-    };
     renderWithRouter(
       <ProvisioningFormPerLearnerCapContainerWrapper
         value={updatedInitialState}
@@ -40,14 +46,6 @@ describe('PerLearnerCapContainer', () => {
     expect(screen.getByText(LEARNER_CAP.SUB_TITLE)).toBeTruthy();
   });
   it('updates the state of form on change, true', () => {
-    const updatedInitialState = {
-      ...initialStateValue,
-      multipleFunds: false,
-      formData: {
-        ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
-      },
-    };
     renderWithRouter(
       <ProvisioningFormPerLearnerCapContainerWrapper
         value={updatedInitialState}
@@ -60,14 +58,6 @@ describe('PerLearnerCapContainer', () => {
     expect(screen.getByText(LEARNER_CAP_DETAIL.TITLE)).toBeTruthy();
   });
   it('updates the state of form on change, false', () => {
-    const updatedInitialState = {
-      ...initialStateValue,
-      multipleFunds: false,
-      formData: {
-        ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
-      },
-    };
     renderWithRouter(
       <ProvisioningFormPerLearnerCapContainerWrapper
         value={updatedInitialState}
@@ -78,5 +68,28 @@ describe('PerLearnerCapContainer', () => {
     const input = screen.getByTestId(LEARNER_CAP.OPTIONS.no);
     fireEvent.click(input);
     expect(screen.queryByText(LEARNER_CAP_DETAIL.TITLE)).not.toBeTruthy();
+  });
+  it('does not render learner cap if policy type is AssignedLearnerCreditAccessPolicy', () => {
+    const updatedState = {
+      ...initialStateValue,
+      multipleFunds: false,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [
+          {
+            ...INITIAL_CATALOG_QUERIES.defaultQuery,
+            policyType: POLICY_TYPE.OPTIONS.ADMIN_SELECTS.VALUE,
+          },
+        ],
+      },
+    };
+
+    renderWithRouter(
+      <ProvisioningFormPerLearnerCapContainerWrapper
+        value={updatedState}
+        index={0}
+      />,
+    );
+    expect(screen.queryByText(LEARNER_CAP.TITLE)).not.toBeTruthy();
   });
 });

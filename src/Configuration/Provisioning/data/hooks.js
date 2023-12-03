@@ -190,6 +190,8 @@ export default function useProvisioningContext() {
 
   const setPerLearnerCap = (perLearnerCapAmount, index) => updateFormDataState(perLearnerCapAmount, true, index);
 
+  const setPolicyType = (policyType, index) => updateFormDataState(policyType, true, index);
+
   const setHasEdits = (hasEditsBoolean) => updateRootDataState({ hasEdits: hasEditsBoolean });
 
   const hydrateCatalogQueryData = useCallback(async () => {
@@ -376,5 +378,6 @@ export default function useProvisioningContext() {
     setInvalidPolicyFields,
     resetInvalidFields,
     setHasEdits,
+    setPolicyType,
   };
 }
