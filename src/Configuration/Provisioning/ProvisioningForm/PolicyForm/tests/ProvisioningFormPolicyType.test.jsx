@@ -2,7 +2,7 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import PROVISIONING_PAGE_TEXT, { INITIAL_POLICIES } from '../../../data/constants';
 import ProvisioningFormPolicyType from '../ProvisioningFormPolicyType';
 
 const { POLICY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
@@ -26,7 +26,7 @@ describe('ProvisioningFormPolicyType', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(

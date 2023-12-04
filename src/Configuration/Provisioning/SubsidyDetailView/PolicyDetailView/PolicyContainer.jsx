@@ -4,35 +4,19 @@ import PolicyDescription from './PolicyDescription';
 import PolicyDetail from './PolicyDetail';
 import PolicyDetailHeader from './PolicyDetailHeader';
 import PolicyLimitsDetail from './PolicyLimitsDetail';
+import { selectProvisioningContext } from '../../data/utils';
 
-function getBudgetDisplayName(subsidyTitle, catalogTitle) {
-  let budgetDisplayName;
-  if (subsidyTitle && catalogTitle) {
-    const associatedCatalog = catalogTitle.split(' - ')[1];
-    budgetDisplayName = `${subsidyTitle} - ${associatedCatalog}`;
-  }
-  return budgetDisplayName;
-}
-
-const PolicyContainer = ({ data }) => {
-  const { subsidy, policies, catalogs } = data;
-  const renderPolicy = policies.map((policy) => catalogs.map(catalog => {
-    if (catalog.uuid === policy.catalog_uuid) {
-      return (
-        <Stack key={policy.catalog_uuid} gap={48}>
-          <PolicyDetailHeader policiesLength={policies.length} accountType={catalog.title} />
-          <PolicyDetail
-            displayName={getBudgetDisplayName(subsidy.title, catalog.title)}
-            spendLimit={policy.spend_limit}
-          />
-          <PolicyDescription description={policy.description} />
-          <AssociatedCatalogDetail associatedCatalog={catalog.title} />
-          <PolicyLimitsDetail perLearnerLimit={policy.per_learner_spend_limit} />
-        </Stack>
-      );
-    }
-    return null;
-  }));
+const PolicyContainer = () => {
+  const [formData] = selectProvisioningContext('formData');
+  const renderPolicy = formData.policies.map((policy, index) => (
+    <Stack key={policy.uuid} gap={48}>
+      <PolicyDetailHeader index={index} />
+      <PolicyDetail index={index} />
+      <PolicyDescription description={policy.accountDescription} />
+      <AssociatedCatalogDetail index={index} />
+      <PolicyLimitsDetail index={index} />
+    </Stack>
+  ));
   return renderPolicy;
 };
 

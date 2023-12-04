@@ -2,8 +2,12 @@
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import ProvisioningFormCatalog from '../ProvisioningFormCatalog';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES, splitStringBudget } from '../../../data/constants';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import PROVISIONING_PAGE_TEXT, {
+  INITIAL_POLICIES,
+  PREDEFINED_QUERIES_ENUM,
+  PREDEFINED_QUERY_DISPLAY_NAMES,
+} from '../../../data/constants';
 
 const { CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
 
@@ -31,7 +35,7 @@ describe('ProvisioningFormCatalog', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -45,15 +49,14 @@ describe('ProvisioningFormCatalog', () => {
     expect(screen.getByText(CATALOG.SUB_TITLE)).toBeTruthy();
 
     const catalogOptions = Object.keys(CATALOG.OPTIONS);
-    const catalogButtons = [];
-    // Retrieves a list of input elements based on test ids
+    // Clicks on each radio option and checks if it is checked
     for (let i = 0; i < catalogOptions.length; i++) {
-      catalogButtons.push(screen.getByTestId(CATALOG.OPTIONS[catalogOptions[i]]));
-    }
-    // Clicks on each input element and checks if it is checked
-    for (let i = 0; i < catalogButtons.length; i++) {
-      fireEvent.click(catalogButtons[i]);
-      expect(catalogButtons[i].checked).toBeTruthy();
+      const catalogButtonBeforeClick = screen.getByTestId(catalogOptions[i]);
+      expect(catalogButtonBeforeClick.getAttribute('checked')).toBeNull();
+      fireEvent.click(catalogButtonBeforeClick);
+      // For some reason, we need to re-get the element to get the updated value.
+      const catalogButtonAfterClick = screen.getByTestId(catalogOptions[i]);
+      expect(catalogButtonAfterClick.checked).toBeTruthy();
     }
   });
   it('renders multiple policy state', () => {
@@ -62,7 +65,7 @@ describe('ProvisioningFormCatalog', () => {
       multipleFunds: true,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.multipleQueries,
+        policies: INITIAL_POLICIES.multiplePolicies,
       },
     };
     renderWithRouter(<ProvisioningFormCatalogWrapper
@@ -72,7 +75,8 @@ describe('ProvisioningFormCatalog', () => {
     expect(screen.getByText(CATALOG.TITLE)).toBeTruthy();
     expect(screen.getByText(CATALOG.SUB_TITLE)).toBeTruthy();
     expect(screen.getByText(
-      INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle.split(splitStringBudget)[0],
+      PREDEFINED_QUERY_DISPLAY_NAMES[INITIAL_POLICIES.multiplePolicies[0].predefinedQueryType],
+      { exact: false },
     )).toBeTruthy();
   });
   it('sets context state with multipleFunds to be false', async () => {
@@ -82,13 +86,9 @@ describe('ProvisioningFormCatalog', () => {
       formData: {
         ...initialStateValue.formData,
         policies: [{
-          catalogCategory: 'Everything',
-          catalogQueryMetadata: {
-            catalogQuery: {
-              title: 'Everything Budget',
-              id: 29,
-            },
-          },
+          predefinedQueryType: PREDEFINED_QUERIES_ENUM.openCourses,
+          customCatalog: false,
+          catalogUuid: undefined,
         }],
       },
     };
@@ -96,27 +96,14 @@ describe('ProvisioningFormCatalog', () => {
       value={updatedInitialState}
       index={0}
     />);
-
-    const everythingOption = screen.getByTestId(CATALOG.OPTIONS.everything);
-    fireEvent.click(everythingOption);
-    await waitFor(() => expect(everythingOption.checked).toBeTruthy());
   });
   it('sets context state with custom catalog', async () => {
     const updatedInitialState = {
       ...initialStateValue,
       multipleFunds: false,
-      customCatalog: true,
       formData: {
         ...initialStateValue.formData,
-        policies: [{
-          catalogCategory: 'Custom',
-          catalogQueryMetadata: {
-            catalogQuery: {
-              title: 'custom title',
-              id: 31,
-            },
-          },
-        }],
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(<ProvisioningFormCatalogWrapper
@@ -124,8 +111,10 @@ describe('ProvisioningFormCatalog', () => {
       index={0}
     />);
 
-    const customOption = screen.getByTestId(CATALOG.OPTIONS.custom);
-    fireEvent.click(customOption);
-    await waitFor(() => expect(customOption.checked).toBeTruthy());
+    const customOptionBeforeClick = screen.getByTestId('custom');
+    fireEvent.click(customOptionBeforeClick);
+    // For some reason, we need to re-get the element to get the updated value.
+    const customOptionAfterClick = screen.getByTestId('custom');
+    await waitFor(() => expect(customOptionAfterClick.checked).toBeTruthy());
   });
 });

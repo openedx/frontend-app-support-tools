@@ -40,15 +40,15 @@ const ProvisioningFormSubsidy = () => {
         <Form.RadioSet
           name="display-subsidy"
           onChange={handleChange}
-          value={value || formData.subsidyRevReq}
+          value={value}
         >
           {
           Object.keys(SUBSIDY_TYPE.OPTIONS).map((key) => (
             <Form.Radio
-              value={SUBSIDY_TYPE.OPTIONS[key]}
+              value={key}
               type="radio"
               key={uuidv4()}
-              data-testid={SUBSIDY_TYPE.OPTIONS[key]}
+              data-testid={key}
               isInvalid={isSubsidyRevReqDefinedAndFalse}
             >
               {SUBSIDY_TYPE.OPTIONS[key]}

@@ -3,11 +3,11 @@ import ProvisioningFormCatalog from './ProvisioningFormCatalog';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
 const ProvisioningFormCatalogContainer = ({ index }) => {
-  const [customCatalog] = selectProvisioningContext('customCatalog');
+  const [formData] = selectProvisioningContext('formData');
   return (
     <>
       <ProvisioningFormCatalog index={index} />
-      {customCatalog && <ProvisioningFormCustomCatalog index={index} />}
+      {formData.policies[index]?.customCatalog && <ProvisioningFormCustomCatalog index={index} />}
     </>
   );
 };

@@ -11,7 +11,11 @@ import {
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
-import { createCatalogs, createPolicy, createSubsidy } from '../../data/utils';
+import {
+  getOrCreateCatalog,
+  createPolicy,
+  createSubsidy,
+} from '../../data/utils';
 
 const { CONFIGURATION: { SUB_DIRECTORY: { PROVISIONING } } } = ROUTES;
 const { BUTTON } = PROVISIONING_PAGE_TEXT.FORM;
@@ -22,7 +26,7 @@ jest.mock('../../data/utils', () => {
   const originalModule = jest.requireActual('../../data/utils');
   return {
     ...originalModule,
-    createCatalogs: jest.fn(),
+    getOrCreateCatalog: jest.fn(),
     createPolicy: jest.fn(),
     createSubsidy: jest.fn(),
     determineInvalidFields: jest.fn().mockReturnValue([
@@ -61,11 +65,11 @@ describe('ProvisioningFormSubmissionButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  const sampleDataSet = [
-    { sampleMultiplePolicyFormData },
-    { sampleSinglePolicyPredefinedCatalogQueryFormData },
-    { sampleSinglePolicyCustomCatalogQueryFormData },
-  ];
+  const sampleDataSets = {
+    sampleMultiplePolicyFormData,
+    sampleSinglePolicyPredefinedCatalogQueryFormData,
+    sampleSinglePolicyCustomCatalogQueryFormData,
+  };
   it('renders', () => {
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper />);
 
@@ -88,14 +92,14 @@ describe('ProvisioningFormSubmissionButton', () => {
 
     expect(mockedNavigator).toHaveBeenCalledWith(`${PROVISIONING.HOME}`);
   });
-  for (let i = 0; i < sampleDataSet.length; i++) {
-    it(`calls handleSubmit complete state when clicked with ${Object.keys(sampleDataSet[i])} data`, async () => {
-      createCatalogs.mockResolvedValue({ uuid: 'test-uuid' });
+  Object.keys(sampleDataSets).forEach(dataSetName => {
+    it(`calls handleSubmit complete state when clicked with ${dataSetName} data`, async () => {
+      getOrCreateCatalog.mockResolvedValue({ uuid: 'test-uuid' });
       createSubsidy.mockResolvedValue({ uuid: 'test-uuid' });
       createPolicy.mockResolvedValue({ uuid: 'test-uuid' });
       const value = {
         ...initialStateValue,
-        formData: sampleDataSet[i][Object.keys(sampleDataSet[i])],
+        formData: sampleDataSets[dataSetName],
       };
       renderWithRouter(<ProvisioningFormSubmissionButtonWrapper value={value} />);
 
@@ -104,16 +108,16 @@ describe('ProvisioningFormSubmissionButton', () => {
 
       await waitFor(() => expect(screen.getByText(BUTTON.success)).toBeTruthy());
     });
-  }
+  });
   it('confirming rejected catalog creation handles error via API', async () => {
     const error = new Error('Internal Server Error');
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    createCatalogs.mockRejectedValue(error);
+    getOrCreateCatalog.mockRejectedValue(error);
     const value = {
       ...initialStateValue,
-      formData: sampleDataSet[0][Object.keys(sampleDataSet[0])],
+      formData: sampleMultiplePolicyFormData,
     };
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper value={value} />);
 
@@ -127,11 +131,11 @@ describe('ProvisioningFormSubmissionButton', () => {
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    createCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
+    getOrCreateCatalog.mockResolvedValue({ uuid: 'test-catalog-uuid' });
     createSubsidy.mockRejectedValue(error);
     const value = {
       ...initialStateValue,
-      formData: sampleDataSet[0][Object.keys(sampleDataSet[0])],
+      formData: sampleMultiplePolicyFormData,
     };
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper value={value} />);
 
@@ -145,13 +149,13 @@ describe('ProvisioningFormSubmissionButton', () => {
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    createCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
+    getOrCreateCatalog.mockResolvedValue({ uuid: 'test-catalog-uuid' });
     createSubsidy.mockResolvedValue({ uuid: 'test-subsidy-uuid' });
     createPolicy.mockRejectedValue(error);
 
     const value = {
       ...initialStateValue,
-      formData: sampleDataSet[0][Object.keys(sampleDataSet[0])],
+      formData: sampleMultiplePolicyFormData,
     };
     renderWithRouter(<ProvisioningFormSubmissionButtonWrapper value={value} />);
 

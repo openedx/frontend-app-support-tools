@@ -21,7 +21,7 @@ const ErrorPageContainer = ({ to }) => {
     const newState = { ...locationState };
     delete newState.errorMessage;
     navigate({ ...location, state: newState, replace: true });
-  }, [locationState?.errorMessage]);
+  }, [location, locationState, navigate]);
 
   return (
     <Container size="md" className="mt-5 text-center">

@@ -1,22 +1,24 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen, act, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { v4 as uuidv4 } from 'uuid';
 import ProvisioningFormPolicyContainer from '../ProvisioningFormPolicyContainer';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import PROVISIONING_PAGE_TEXT, { INITIAL_POLICIES } from '../../../data/constants';
+import { generateBudgetDisplayName } from '../../../data/utils';
 
 const { ACCOUNT_DETAIL, POLICY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
 
 const ProvisioningFormPolicyContainerWrapper = ({
   value = initialStateValue,
-  sampleCatalogQuery = INITIAL_CATALOG_QUERIES.defaultQuery,
+  sampleCatalogQuery = INITIAL_POLICIES.multiplePolicies,
 }) => (
   <ProvisioningContext value={value}>
-    {sampleCatalogQuery.map(({ uuid, catalogQueryTitle }, index) => (
+    {sampleCatalogQuery.map(({ predefinedQueryType }, index) => (
       <ProvisioningFormPolicyContainer
-        key={uuid}
-        title={catalogQueryTitle}
+        key={uuidv4()}
+        title={predefinedQueryType}
         index={index}
       />
     ))}
@@ -34,17 +36,16 @@ describe('ProvisioningFormPolicyContainer', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
       <ProvisioningFormPolicyContainerWrapper
         value={updatedInitialState}
-        sampleCatalogQuery={INITIAL_CATALOG_QUERIES.defaultQuery}
+        sampleCatalogQuery={INITIAL_POLICIES.singlePolicy}
       />,
     );
-    expect(screen.getByText(ACCOUNT_DETAIL.TITLE)).toBeTruthy();
-    expect(screen.getByText(INITIAL_CATALOG_QUERIES.defaultQuery[0].catalogQueryTitle)).toBeTruthy();
+    expect(screen.getAllByText(ACCOUNT_DETAIL.TITLE)).toBeTruthy();
   });
   it('renders multiple policy state', () => {
     const updatedInitialState = {
@@ -52,18 +53,18 @@ describe('ProvisioningFormPolicyContainer', () => {
       multipleFunds: true,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.multipleQueries,
+        policies: INITIAL_POLICIES.multiplePolicies,
       },
     };
     renderWithRouter(
       <ProvisioningFormPolicyContainerWrapper
         value={updatedInitialState}
-        sampleCatalogQuery={INITIAL_CATALOG_QUERIES.multipleQueries}
+        sampleCatalogQuery={INITIAL_POLICIES.multiplePolicies}
       />,
     );
-    expect(screen.getAllByText(ACCOUNT_DETAIL.TITLE).length).toEqual(INITIAL_CATALOG_QUERIES.multipleQueries.length);
-    expect(screen.getByText(INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle)).toBeTruthy();
-    expect(screen.getByText(INITIAL_CATALOG_QUERIES.multipleQueries[1].catalogQueryTitle)).toBeTruthy();
+    expect(screen.getAllByText(ACCOUNT_DETAIL.TITLE).length).toEqual(INITIAL_POLICIES.multiplePolicies.length);
+    expect(screen.getByText(generateBudgetDisplayName(INITIAL_POLICIES.multiplePolicies[0]))).toBeTruthy();
+    expect(screen.getByText(generateBudgetDisplayName(INITIAL_POLICIES.multiplePolicies[1]))).toBeTruthy();
   });
   it('renders policy type and selects AssignedLearnerCreditAccessPolicy', async () => {
     const updatedInitialState = {
@@ -71,21 +72,19 @@ describe('ProvisioningFormPolicyContainer', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
       <ProvisioningFormPolicyContainerWrapper
         value={updatedInitialState}
-        sampleCatalogQuery={INITIAL_CATALOG_QUERIES.defaultQuery}
+        sampleCatalogQuery={INITIAL_POLICIES.singlePolicy}
       />,
     );
     expect(screen.getByText(POLICY_TYPE.TITLE)).toBeTruthy();
     expect(screen.getByText(POLICY_TYPE.LABEL)).toBeTruthy();
     const learnerOption = screen.getByTestId(POLICY_TYPE.OPTIONS.ADMIN_SELECTS.DESCRIPTION);
-    await act(async () => {
-      userEvent.click(learnerOption);
-    });
+    userEvent.click(learnerOption);
     await waitFor(() => {
       expect(learnerOption.checked).toBeTruthy();
     });

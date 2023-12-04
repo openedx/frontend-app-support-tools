@@ -87,11 +87,11 @@ const SubsidyEditView = () => {
           <AccountTypeDetail isMultipleFunds={multipleFunds} />
           {(multipleFunds !== undefined) && formData.policies?.map(({
             uuid,
-            catalogQueryTitle,
+            policyFormTitle,
           }, index) => (
             <ProvisioningFormPolicyContainer
               key={uuid}
-              title={catalogQueryTitle}
+              title={policyFormTitle}
               index={index}
             />
           ))}

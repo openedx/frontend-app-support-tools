@@ -1,88 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import {
+  Hyperlink,
+} from '@edx/paragon';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { logError } from '@edx/frontend-platform/logging';
-import LmsApiService from '../../../../data/services/EnterpriseApiService';
-import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import ROUTES from '../../../../data/constants/routes';
+import { getConfig } from '@edx/frontend-platform';
+import PROVISIONING_PAGE_TEXT, { DJANGO_ADMIN_RETRIEVE_CATALOG_PATH } from '../../data/constants';
 
 const { FORM: { CUSTOM_CATALOG } } = PROVISIONING_PAGE_TEXT;
 
-function getCustomCatalogTitle(catalogTitle) {
-  let customCatalogTitle;
-  const separator = ' - ';
-  if (catalogTitle.includes(separator)) {
-    [, customCatalogTitle] = catalogTitle.split(separator);
-  }
-  return customCatalogTitle;
-}
-
-async function getCatalogQueries() {
-  const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
-  return data;
-}
-
-const CustomCatalogDetail = ({ catalogTitle }) => {
-  const navigate = useNavigate();
-  const { SUB_DIRECTORY: { ERROR } } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
-
-  const [catalogQueryContentFilter, setCatalogQueryContentFilter] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const redirectOnError = (statusCode, message) => {
-    navigate(ERROR, {
-      state: {
-        errorMessage: `Error ${statusCode}: ${message}`,
-      },
-    });
-  };
-
-  const formatCatalogTitle = getCustomCatalogTitle(catalogTitle);
-
-  useEffect(() => {
-    const fetchCatalogQueryContentFilter = async () => {
-      try {
-        const catalogQueries = await getCatalogQueries();
-        const findCatalogQuery = catalogQueries.results.filter(
-          catalogQuery => formatCatalogTitle === catalogQuery.title,
-        );
-        setCatalogQueryContentFilter(JSON.stringify(findCatalogQuery[0]?.content_filter, null, 2));
-        setIsLoading(false);
-      } catch (error) {
-        const { customAttributes } = error;
-        logError(error);
-        redirectOnError(customAttributes?.httpErrorStatus, error);
-      }
-    };
-    fetchCatalogQueryContentFilter();
-  }, [catalogTitle]);
-
+const CustomCatalogDetail = ({ catalogUuid, catalogTitle }) => {
+  const { DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
   return (
-    !isLoading ? (
-      <div className="mb-1 mt-4.5">
-        <h4>{CUSTOM_CATALOG.HEADER.DEFINE.TITLE}</h4>
-        <div className="mb-1 ml-3 mt-3">
-          <h5>{CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title}</h5>
-          <p className="small">
-            {catalogTitle}
-          </p>
-          <h5>{CUSTOM_CATALOG.OPTIONS.catalogTitle}</h5>
-          <p className="small">
-            {getCustomCatalogTitle(catalogTitle)}
-          </p>
-          <h5>{CUSTOM_CATALOG.OPTIONS.contentFilter}</h5>
-          <pre data-testid="content-filter" style={{ font: 'inherit' }} className="text-gray-500">
-            <span className="small">
-              {catalogQueryContentFilter}
-            </span>
-          </pre>
-        </div>
+    <div className="mb-1 mt-4.5">
+      <h4>{CUSTOM_CATALOG.DETAIL_HEADER.TITLE}</h4>
+      <div className="mb-1 ml-3 mt-3">
+        <h5>{CUSTOM_CATALOG.DETAIL_HEADER.UUID_FIELD}</h5>
+        <p className="small">
+          <Hyperlink
+            target="_blank"
+            destination={`${DJANGO_ADMIN_LMS_BASE_URL}${DJANGO_ADMIN_RETRIEVE_CATALOG_PATH(catalogUuid)}`}
+          >
+            {catalogUuid}
+          </Hyperlink>
+        </p>
+        <h5>{CUSTOM_CATALOG.DETAIL_HEADER.TITLE_FIELD}</h5>
+        <p className="small">
+          {catalogTitle}
+        </p>
       </div>
-    ) : null
+    </div>
   );
 };
 
 CustomCatalogDetail.propTypes = {
+  catalogUuid: PropTypes.string.isRequired,
   catalogTitle: PropTypes.string.isRequired,
 };
 

@@ -1,8 +1,19 @@
-import { v4 as uuidv4 } from 'uuid';
 import { titleCase } from '../../../utils';
 
 // Set to true or false to enable local testing, populates DataTable with sample data
 export const USES_LOCAL_TEST_DATA = false;
+
+// The following object keys must match keys in the PREDEFINED_CATALOG_QUERIES mapping in config.  Note that they are
+// camelCase here, but must be snake_case in config.
+export const PREDEFINED_QUERY_DISPLAY_NAMES = {
+  everything: 'Everything',
+  openCourses: 'Open Courses',
+  executiveEducation: 'Executive Education',
+};
+// For convenience, create an enum to map internal predefined query keys to themselves.
+export const PREDEFINED_QUERIES_ENUM = Object.fromEntries(
+  Object.keys(PREDEFINED_QUERY_DISPLAY_NAMES).map(e => [e, e]),
+);
 
 const PROVISIONING_PAGE_TEXT = {
   DASHBOARD: {
@@ -69,8 +80,8 @@ const PROVISIONING_PAGE_TEXT = {
       TITLE: 'Subsidy type',
       SUB_TITLE: 'Rev req through standard commercial process?',
       OPTIONS: {
-        yes: 'Yes (bulk enrollment prepay)',
-        no: 'No (partner no rev prepay)',
+        'partner-no-rev-prepay': 'No (partner-no-rev-prepay)',
+        'bulk-enrollment-prepay': 'Yes (bulk-enrollment-prepay)',
       },
       ERROR: 'Please select an option.',
     },
@@ -82,13 +93,6 @@ const PROVISIONING_PAGE_TEXT = {
         single: 'No, create one Learner Credit budget',
       },
       ERROR: 'Please select a product configuration.',
-    },
-    ACCOUNT_TYPE: {
-      OPTIONS: {
-        openCourses: 'Open Courses budget',
-        executiveEducation: 'Executive Education budget',
-        default: 'Budget',
-      },
     },
     ACCOUNT_DETAIL: {
       TITLE: 'Budget details',
@@ -110,42 +114,38 @@ const PROVISIONING_PAGE_TEXT = {
       SUB_TITLE: 'Provide a description for the budget product',
       MAX_LENGTH: 255,
     },
+    // Constants and radio options used within ProvisioningFormCatalog.
     CATALOG: {
       TITLE: 'Catalog',
       SUB_TITLE: 'Associated catalog',
       OPTIONS: {
-        everything: 'Everything',
-        openCourses: 'Open Courses',
-        executiveEducation: 'Executive Education',
-        custom: 'Custom',
+        // Start with providing the default options corresponding to predefined catalog queries.
+        ...PREDEFINED_QUERY_DISPLAY_NAMES,
+        // The following special option triggers the app to display a custom catalog selection.
+        custom: 'Unique/Curated',
       },
       ERROR: 'Please select a catalog.',
     },
     CUSTOM_CATALOG: {
       HEADER: {
-        SOURCE: {
-          TITLE: 'Custom catalog source',
-          SUB_TITLE: 'Ensure the intended enterprise customer catalog has been created in Django before proceeding.',
-        },
-        DEFINE: {
-          TITLE: 'Define custom catalog',
-          SUB_TITLE: 'Ensure the intended custom catalog query has been created in Django before proceeding.',
-        },
+        TITLE: 'Select existing unique/curated enterprise catalog',
+        WARN_SUB_TITLE: 'Ensure the intended enterprise catalog has been created in Django Admin before proceeding.',
+      },
+      DETAIL_HEADER: {
+        TITLE: 'Select existing unique/curated enterprise catalog',
+        TITLE_FIELD: 'Catalog Title',
+        UUID_FIELD: 'Catalog UUID',
       },
       BUTTON: {
-        viewCustomerCatalog: 'View Enterprise Customer Catalog list',
-        createQuery: 'Create catalog query',
+        createCatalog: 'Create catalog',
       },
       OPTIONS: {
-        enterpriseCatalogQuery: {
-          title: 'Enterprise Catalog Query',
-          subtitle: 'Select an existing Enterprise Catalog Query to create the new Customer Catalog record from.',
-          error: 'Error, no selected value',
+        // Dropdown helper text configuration.
+        enterpriseCatalog: {
+          title: 'Enterprise Catalog',
+          subtitle: 'Select an existing enterprise catalog for this enterprise customer.',
+          error: 'Error, no selected catalog',
         },
-        catalogTitle: 'Catalog title',
-        contentFilter: 'Content filter',
-        includeExecEd2UCourses: 'Includes Executive Education courses',
-        courseModes: 'Enabled course modes',
       },
     },
     LEARNER_CAP: {
@@ -177,14 +177,14 @@ const PROVISIONING_PAGE_TEXT = {
       },
       unselectedAccountType: "Please select an 'Account Creation' option to create new policies.",
       API_ERROR_MESSAGES: {
-        ENTERPRISE_CATALOG_QUERY: {
-          400: 'The enterprise catalog query could not be created.',
+        ENTERPRISE_CUSTOMER_CATALOG_LISTING: {
+          400: 'The enterprise catalogs could not be fetched.',
           401: 'Authentication failed.',
-          403: 'Authentication recognized but incorrect credentials.',
-          404: 'Enterprise Catalog Query failed to respond.',
+          403: 'Authentication recognized but incorrect credentials enterprise customer catalog listing.',
+          404: 'Enterprise catalogs not found.',
           500: 'System failure',
         },
-        ENTERPRISE_CUSTOMER_CATALOG: {
+        ENTERPRISE_CUSTOMER_CATALOG_CREATION: {
           400: 'The enterprise catalog could not be created.',
           401: 'Authentication failed.',
           403: 'Authentication recognized but incorrect credentials enterprise customer catalog creation.',
@@ -255,31 +255,45 @@ const PROVISIONING_PAGE_TEXT = {
   },
 };
 
-export const splitStringBudget = ' budget';
-
 export const toastText = {
   successfulPlanCreation: 'Plan successfully created',
   successfulPlanSaved: 'Plan successfully saved',
 };
 
-export const CATALOG_QUERY_PATH = '/admin/enterprise/enterprisecatalogquery/';
+export const DJANGO_ADMIN_ADD_CATALOG_PATH = '/admin/enterprise/enterprisecustomercatalog/add/';
+export const DJANGO_ADMIN_RETRIEVE_CATALOG_PATH = (uuid) => (
+  `/admin/enterprise/enterprisecustomercatalog/${uuid}/change/`
+);
+export const DJANGO_ADMIN_RETRIEVE_SUBSIDY_PATH = (uuid) => `/admin/subsidy/subsidy/${uuid}/change/`;
 
-// Used to create pre-populated catalog queries for the form. Catalog query ids added in ProvisioningForm.jsx component
-export const INITIAL_CATALOG_QUERIES = {
-  multipleQueries: [
+// For the purposes of new plan creation, INITIAL_POLICIES defines different sets of default configurations for the
+// formData.policies list in the global ProvisioningContext.  Keys should correspond to different selections under
+// PROVISIONING_PAGE_TEXT.OPTIONS.
+export const INITIAL_POLICIES = {
+  // Corresponds to PROVISIONING_PAGE_TEXT.OPTIONS.multiple
+  multiplePolicies: [
     {
-      uuid: uuidv4(),
-      catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.openCourses,
+      predefinedQueryType: PREDEFINED_QUERIES_ENUM.openCourses,
+      customCatalog: false,
+      catalogUuid: undefined,
+      catalogTitle: undefined,
     },
     {
-      uuid: uuidv4(),
-      catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.executiveEducation,
+      predefinedQueryType: PREDEFINED_QUERIES_ENUM.executiveEducation,
+      customCatalog: false,
+      catalogUuid: undefined,
+      catalogTitle: undefined,
     },
   ],
-  defaultQuery: [
+  // Corresponds to PROVISIONING_PAGE_TEXT.OPTIONS.single
+  singlePolicy: [
     {
-      uuid: uuidv4(),
-      catalogQueryTitle: PROVISIONING_PAGE_TEXT.FORM.ACCOUNT_TYPE.OPTIONS.default,
+      // The default budget/policy makes no assumption about what is desired, so both the Catalog radio selection and
+      // custom catalog dropdown start empty (by setting all the following to undefined).
+      predefinedQueryType: undefined,
+      customCatalog: undefined,
+      catalogUuid: undefined,
+      catalogTitle: undefined,
     },
   ],
 };

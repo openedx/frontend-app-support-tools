@@ -29,7 +29,7 @@ const Dashboard = () => {
       }
       navigate({ ...location, state: newState, replace: true });
     }
-  }, [toastText.successfulPlanCreation, toastText.successfulPlanSaved, location, locationState]);
+  }, [location, locationState]);
 
   return (
     <>

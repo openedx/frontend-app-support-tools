@@ -1,25 +1,28 @@
-import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
-import { formatCurrency } from '../../data/utils';
+import { formatCurrency, indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 
-const PolicyLimitsDetail = ({ perLearnerLimit }) => {
-  const { FORM: { LEARNER_CAP, LEARNER_CAP_DETAIL } } = PROVISIONING_PAGE_TEXT;
+// TODO: Use formatCurrency (FIRST UPDATE STATE TO STORE CENTS IN formData.policies[index].perLearnerCapAmount).
+
+const { FORM } = PROVISIONING_PAGE_TEXT;
+
+const PolicyLimitsDetail = ({ index }) => {
+  const [formData] = selectProvisioningContext('formData');
 
   return (
     <div className="mb-1 mt-3">
-      <h3>{LEARNER_CAP.TITLE}</h3>
+      <h3>{FORM.LEARNER_CAP.TITLE}</h3>
       <div className="ml-3">
-        <p className="mb-1 mt-3">{LEARNER_CAP.SUB_TITLE}</p>
+        <p className="mb-1 mt-3">{FORM.LEARNER_CAP.SUB_TITLE}</p>
         <p className="text-gray-500">
-          {perLearnerLimit ? LEARNER_CAP.OPTIONS.yes : LEARNER_CAP.OPTIONS.no}
+          {formData.policies[index].perLearnerCap ? FORM.LEARNER_CAP.OPTIONS.yes : FORM.LEARNER_CAP.OPTIONS.no}
         </p>
       </div>
-      {perLearnerLimit ? (
+      {formData.policies[index].perLearnerCap ? (
         <div className="ml-3">
-          <h4 className="mb-1 mt-4.5">{LEARNER_CAP_DETAIL.TITLE}</h4>
-          <h5 className="mb-1 mt-3">{LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.title}</h5>
+          <h4 className="mb-1 mt-4.5">{FORM.LEARNER_CAP_DETAIL.TITLE}</h4>
+          <h5 className="mb-1 mt-3">{FORM.LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.title}</h5>
           <p className="text-gray-500">
-            {formatCurrency(perLearnerLimit)}
+            {formatCurrency(formData.policies[index].perLearnerCapAmount)}
           </p>
         </div>
       ) : null}
@@ -27,12 +30,6 @@ const PolicyLimitsDetail = ({ perLearnerLimit }) => {
   );
 };
 
-PolicyLimitsDetail.propTypes = {
-  perLearnerLimit: PropTypes.number,
-};
-
-PolicyLimitsDetail.defaultProps = {
-  perLearnerLimit: null,
-};
+PolicyLimitsDetail.propTypes = indexOnlyPropType;
 
 export default PolicyLimitsDetail;

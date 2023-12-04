@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Form,
-  Spinner,
-  ActionRow,
-} from '@edx/paragon';
+import { ActionRow, Form, Spinner } from '@edx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
@@ -13,12 +9,20 @@ import { selectProvisioningContext } from '../data/utils';
 const ProvisioningFormAccountType = () => {
   const {
     setMultipleFunds,
-    setCustomCatalog,
-    hydrateCatalogQueryData,
+    hydrateEnterpriseCatalogsData,
     setInvalidSubsidyFields,
   } = useProvisioningContext();
   const { ACCOUNT_CREATION, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
-  const [formData, catalogQueries, showInvalidField] = selectProvisioningContext('formData', 'catalogQueries', 'showInvalidField');
+  const [
+    formData,
+    existingEnterpriseCatalogs,
+    showInvalidField,
+  ] = selectProvisioningContext(
+    'formData',
+    'existingEnterpriseCatalogs',
+    'showInvalidField',
+  );
+
   const { subsidy } = showInvalidField;
   const isMultipleFundsDefinedAndFalse = subsidy?.multipleFunds === false;
   const [isLoadingSpinner, setIsLoadingSpinner] = useState(false);
@@ -30,9 +34,8 @@ const ProvisioningFormAccountType = () => {
 
   const handleFormChange = (selectedValue) => {
     if (selectedValue === ACCOUNT_CREATION.OPTIONS.multiple) {
-      setCustomCatalog(false);
       setMultipleFunds(true);
-    } else if (selectedValue === ACCOUNT_CREATION.OPTIONS.single) {
+    } else {
       setMultipleFunds(false);
     }
     setValue(selectedValue);
@@ -41,20 +44,24 @@ const ProvisioningFormAccountType = () => {
 
   const handleChange = async (e) => {
     const newTabValue = e.target.value;
-    if (!formData?.subsidyTitle) {
-      setInvalidSubsidyFields({ ...subsidy, subsidyTitle: false });
+    if (!formData?.subsidyTitle || !formData?.enterpriseUUID) {
+      setInvalidSubsidyFields({
+        ...subsidy,
+        subsidyTitle: !!formData?.subsidyTitle,
+        enterpriseUUID: !!formData?.enterpriseUUID,
+      });
       global.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    if (catalogQueries.data.length === 0) {
+    if (existingEnterpriseCatalogs.data.length === 0) {
       try {
         handleSpinnerLoadingState(newTabValue);
-        await hydrateCatalogQueryData();
+        await hydrateEnterpriseCatalogsData(formData.enterpriseUUID);
       } catch (error) {
         logError(error);
         const { customAttributes } = error;
         if (customAttributes) {
-          logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CATALOG_QUERY[customAttributes.httpErrorStatus]);
+          logError(ALERTS.API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG_LISTING[customAttributes.httpErrorStatus]);
           handleSpinnerLoadingState(false);
         }
       } finally {
@@ -79,7 +86,7 @@ const ProvisioningFormAccountType = () => {
           {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
             <div key={uuidv4()} className="d-flex align-items-center position-relative">
-              {catalogQueries?.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
+              {existingEnterpriseCatalogs?.isLoading && (isLoadingSpinner === ACCOUNT_CREATION.OPTIONS[key]) && (
                 <Spinner
                   className="position-absolute"
                   data-testid={`${ACCOUNT_CREATION.OPTIONS[key]}-form-control`}

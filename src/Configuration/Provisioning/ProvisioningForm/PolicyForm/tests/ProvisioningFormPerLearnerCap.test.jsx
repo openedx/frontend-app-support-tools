@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { fireEvent, screen } from '@testing-library/react';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import PROVISIONING_PAGE_TEXT, { INITIAL_POLICIES } from '../../../data/constants';
 import ProvisioningFormPerLearnerCap from '../ProvisioningFormPerLearnerCap';
 
 const { LEARNER_CAP } = PROVISIONING_PAGE_TEXT.FORM;
@@ -26,7 +26,7 @@ describe('ProvisioningFormPerLearnerCap', () => {
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(

@@ -10,7 +10,7 @@ class LmsApiService {
 
   static enterpriseCatalogQueriesUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_catalog_query/`;
 
-  static enterpriseCustomerCatalogsUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_catalog/`;
+  static enterpriseCustomerCatalogsWriteUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_catalog/`;
 
   static enterpriseCustomersBasicListUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/basic_list/`;
 
@@ -21,26 +21,44 @@ class LmsApiService {
   static fetchEnterpriseCustomersBasicList = (enterpriseNameOrUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomersBasicListUrl}${enterpriseNameOrUuid !== undefined ? `?name_or_uuid=${enterpriseNameOrUuid}` : ''}`);
 
   static postEnterpriseCustomerCatalog = (
-    enterpriseCustomerUUID,
-    catalogQueryUUID,
+    enterpriseCustomerUuid,
+    catalogQueryId,
     title,
-  ) => LmsApiService.apiClient().post(LmsApiService.enterpriseCustomerCatalogsUrl, {
-    enterprise_customer: enterpriseCustomerUUID,
-    enterprise_catalog_query: catalogQueryUUID,
+  ) => LmsApiService.apiClient().post(LmsApiService.enterpriseCustomerCatalogsWriteUrl, {
+    enterprise_customer: enterpriseCustomerUuid,
+    enterprise_catalog_query: catalogQueryId,
     title,
   });
 
   static patchEnterpriseCustomerCatalog = (
-    catalogQueryUUID,
+    catalogQueryId,
     catalogUuid,
     title,
-  ) => LmsApiService.apiClient().patch(LmsApiService.enterpriseCustomerCatalogsUrl, {
-    enterprise_catalog_query: catalogQueryUUID,
+  ) => LmsApiService.apiClient().patch(LmsApiService.enterpriseCustomerCatalogsWriteUrl, {
+    enterprise_catalog_query: catalogQueryId,
     uuid: catalogUuid,
     title,
   });
 
-  static fetchEnterpriseCustomerCatalogs = (catalogUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCatalogsUrl}?uuid=${catalogUuid}`);
+  /**
+   * Retrieve one catalog (the plurality of the function name is due to the fact that this is a list endpoint).
+   * @param {Number} catalogUuid - UUID of the single catalog to fetch.
+   * @returns - Standard API list response. Contains 0 or 1 catalogs under `.data.results`.
+   */
+  static fetchEnterpriseCustomerCatalogs = ({ catalogUuid = undefined, customerUuid = undefined }) => {
+    const params = {};
+    if (catalogUuid) {
+      params.uuid = catalogUuid;
+    }
+    if (customerUuid) {
+      params.enterprise_customer = customerUuid;
+    }
+    let querystring = new URLSearchParams(params).toString();
+    querystring = querystring ? `?${querystring}` : '';
+    return LmsApiService.apiClient().get(
+      `${LmsApiService.enterpriseCatalogsUrl}${querystring}`,
+    );
+  };
 
   // Did not include perLearnerEnrollmentLimit field because it is
   // not used in the current implementation of the provisioning form

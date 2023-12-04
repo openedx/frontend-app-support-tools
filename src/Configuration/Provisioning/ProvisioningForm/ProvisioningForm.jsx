@@ -7,7 +7,7 @@ import ProvisioningFormPolicyContainer from './PolicyForm';
 import ProvisioningFormAccountType from './ProvisioningFormAccountType';
 import ProvisioningFormSubmissionButton from './ProvisioningFormSubmissionButton';
 import useProvisioningContext from '../data/hooks';
-import { selectProvisioningContext } from '../data/utils';
+import { generateBudgetDisplayName, selectProvisioningContext } from '../data/utils';
 import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
 import ProvisioningFormTitle from './ProvisioningFormTitle';
 import ProvisioningFormAlert from './ProvisioningFormAlert';
@@ -36,13 +36,10 @@ const ProvisioningForm = () => {
       <ProvisioningFormInternalOnly />
       <ProvisioningFormSubsidy />
       <ProvisioningFormAccountType />
-      {(multipleFunds !== undefined) && formData.policies?.map(({
-        uuid,
-        catalogQueryTitle,
-      }, index) => (
+      {(multipleFunds !== undefined) && formData.policies?.map((policy, index) => (
         <ProvisioningFormPolicyContainer
-          key={uuid}
-          title={catalogQueryTitle}
+          key={policy.uuid}
+          title={generateBudgetDisplayName(policy)}
           index={index}
         />
       ))}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Form,
 } from '@edx/paragon';
@@ -17,7 +17,7 @@ const ProvisioningFormInternalOnly = () => {
   }
   const [value, setValue] = useState(submittedFormInternalOnly || false);
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     const checkedState = e.target.checked;
     if (isEditMode && !hasEdits) {
       setHasEdits(true);
@@ -25,12 +25,6 @@ const ProvisioningFormInternalOnly = () => {
     setInternalOnly(checkedState);
     setValue(checkedState);
   };
-
-  useEffect(() => {
-    if (!value) {
-      setInternalOnly(value);
-    }
-  }, [value]);
 
   return (
     <article className="mt-4.5">

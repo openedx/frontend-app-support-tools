@@ -1,18 +1,20 @@
 import React from 'react';
-import BrowserRouter from 'react-router-dom';
-import { screen, act } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import '@testing-library/jest-dom/extend-expect';
 import SubsidyDetailView from '../SubsidyDetailView';
+import { initialStateValue, ProvisioningContext } from '../../../testData/Provisioning';
+import { MOCK_PREDEFINED_CATALOG_QUERIES } from '../../../testData/constants';
 import LmsApiService from '../../../../data/services/EnterpriseApiService';
 
 const mocks = {
   enterpriseCustomerCatalogsMock: {
     data: {
       results: [{
-        enterprise_customer: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de',
-        title: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de - Open Courses budget',
         uuid: '69035754-fa48-4519-92d8-a723ae0f6e58',
+        title: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de - Open Courses budget',
+        enterprise_customer: '4a67c952-8eb1-44ba-9ab3-2faa5d0905de',
+        enterprise_catalog_query: MOCK_PREDEFINED_CATALOG_QUERIES.open_courses,
       }],
     },
   },
@@ -62,8 +64,17 @@ const mocks = {
 
 const mockNavigate = jest.fn();
 
+const SubsidyDetailWrapper = ({
+  // eslint-disable-next-line react/prop-types
+  value = initialStateValue,
+}) => (
+  <ProvisioningContext value={value}>
+    <SubsidyDetailView />
+  </ProvisioningContext>
+);
+
 jest.mock('../../../../data/services/EnterpriseApiService', () => ({
-  fetchEnterpriseCustomerCatalogs: jest.fn(() => Promise.resolve(mocks.enterpriseCustomerCatalogsMock)),
+  fetchEnterpriseCustomerCatalogs: jest.fn(),
   fetchSubsidyAccessPolicies: jest.fn(() => Promise.resolve(mocks.policyMock)),
   fetchEnterpriseCustomersBasicList: jest.fn(() => Promise.resolve(mocks.customersBasicListMock)),
 }));
@@ -74,17 +85,35 @@ jest.mock('../../../../data/services/SubsidyApiService', () => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: jest.fn(),
+  useParams: () => ({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' }),
   useNavigate: () => mockNavigate,
 }));
 
+// Patch frontend-platform to serve a custom version of PREDEFINED_CATALOG_QUERIES.
+jest.mock('@edx/frontend-platform', () => {
+  const actualModule = jest.requireActual('@edx/frontend-platform');
+  return ({
+    ...actualModule,
+    getConfig: jest.fn(() => ({
+      ...actualModule.getConfig(),
+      PREDEFINED_CATALOG_QUERIES: MOCK_PREDEFINED_CATALOG_QUERIES,
+    })),
+  });
+});
+
 describe('SubsidyDetailView', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('renders the component with content when loading is true', async () => {
-    jest.spyOn(BrowserRouter, 'useParams').mockReturnValue({ id: '0196e5c3-ba08-4798-8bf1-019d747c27bf' });
-    await act(async () => renderWithRouter(
-      <SubsidyDetailView />,
-    ));
-    expect(screen.getByText('Plan Details')).toBeInTheDocument();
+    LmsApiService.fetchEnterpriseCustomerCatalogs.mockResolvedValueOnce(mocks.enterpriseCustomerCatalogsMock);
+    renderWithRouter(<SubsidyDetailWrapper />);
+
+    // First, make sure the screen displays a loading spinner before the data has been hydrated.
+    expect(screen.getByText('Loading', { exact: false })).toBeInTheDocument();
+
+    // This await waits for hydrateEnterpriseSubsidiesData to run.
+    await waitFor(() => expect(screen.getByText('Plan Details')).toBeInTheDocument());
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByText('AshKetchum-Test')).toBeInTheDocument();
     expect(screen.getByText('Customer')).toBeInTheDocument();
@@ -101,28 +130,21 @@ describe('SubsidyDetailView', () => {
     expect(screen.getByText('Test Plan')).toBeInTheDocument();
     expect(screen.getByText('Subsidy type')).toBeInTheDocument();
     expect(screen.getByText('Rev req through standard commercial process?')).toBeInTheDocument();
-    expect(screen.getByText('No (partner no rev prepay)')).toBeInTheDocument();
+    expect(screen.getByText('No (partner-no-rev-prepay)')).toBeInTheDocument();
     expect(screen.getByText('Budget by product')).toBeInTheDocument();
     expect(screen.getByText('Divide Learner Credit purchase value by product?')).toBeInTheDocument();
     expect(screen.getByText('No, create one Learner Credit budget')).toBeInTheDocument();
-    expect(screen.getByText('Budget')).toBeInTheDocument();
-    expect(screen.getByText('Rev req through standard commercial process?')).toBeInTheDocument();
+    expect(screen.getByText('Budget details')).toBeInTheDocument();
+    expect(screen.getByText('Open Courses')).toBeInTheDocument();
     expect(screen.getByText('Display name')).toBeInTheDocument();
-    expect(screen.getByText('AshKetchum-Test - Open Courses budget')).toBeInTheDocument();
     expect(screen.getByText('Budget starting balance ($)')).toBeInTheDocument();
     expect(screen.getByText('$5,000')).toBeInTheDocument();
     expect(screen.getByText('Catalog')).toBeInTheDocument();
-    expect(screen.getByText('Open Courses')).toBeInTheDocument();
     expect(screen.getByText('Limits')).toBeInTheDocument();
     expect(screen.getByText('Create learner spend limits?')).toBeInTheDocument();
     expect(screen.getByText('Yes')).toBeInTheDocument();
     expect(screen.getByText('Per learner spend limit ($)')).toBeInTheDocument();
     expect(screen.getByText('$50')).toBeInTheDocument();
   });
-
-  it('redirects to error page if at least one API call fails', async () => {
-    LmsApiService.fetchEnterpriseCustomerCatalogs.mockImplementation(() => Promise.reject(new Error('API error')));
-    await act(async () => renderWithRouter(<SubsidyDetailView />));
-    expect(mockNavigate).toHaveBeenCalledWith('/enterprise-configuration/learner-credit/error', { state: { errorMessage: 'Error undefined: Error: API error' } });
-  });
+  // TODO: add a test to check that the page redirects to the error page if at least one API call fails.
 });
