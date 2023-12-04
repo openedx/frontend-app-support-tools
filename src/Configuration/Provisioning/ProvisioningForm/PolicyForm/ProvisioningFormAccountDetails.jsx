@@ -6,6 +6,7 @@ import {
   extractDefinedCatalogTitle, formatCurrency, generatePolicyName, indexOnlyPropType, selectProvisioningContext,
 } from '../../data/utils';
 import { isWholeDollarAmount } from '../../../../utils';
+import ProvisioningFormHelpText from '../ProvisioningFormHelpText';
 
 const ProvisioningFormAccountDetails = ({ index }) => {
   const { ACCOUNT_DETAIL } = PROVISIONING_PAGE_TEXT.FORM;
@@ -89,6 +90,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           <p className="small">
             {formatCurrency(formData.policies[index].accountValue)}
           </p>
+          <ProvisioningFormHelpText className="my-n2.5" />
         </div>
       ) : (
         <Form.Group
@@ -104,6 +106,7 @@ const ProvisioningFormAccountDetails = ({ index }) => {
           <Form.Control.Feedback>
             {formFeedbackText}
           </Form.Control.Feedback>
+          <ProvisioningFormHelpText />
           {!isWholeDollar && (
             <Form.Control.Feedback
               type="invalid"

@@ -9,6 +9,7 @@ import debounce from 'lodash.debounce';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import { selectProvisioningContext } from '../data/utils';
 import useProvisioningContext from '../data/hooks';
+import ProvisioningFormHelpText from './ProvisioningFormHelpText';
 
 const ProvisioningFormCustomerDropdown = () => {
   const { ENTERPRISE_UUID } = PROVISIONING_PAGE_TEXT.FORM.CUSTOMER;
@@ -68,6 +69,7 @@ const ProvisioningFormCustomerDropdown = () => {
           </Form.AutosuggestOption>
         ))}
       </Form.Autosuggest>
+      <ProvisioningFormHelpText className="my-n3" />
       {isEnterpriseUuidDefinedAndFalse && (
         <Form.Control.Feedback
           type="invalid"

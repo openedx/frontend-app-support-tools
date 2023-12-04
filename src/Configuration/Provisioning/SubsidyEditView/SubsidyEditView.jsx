@@ -19,6 +19,7 @@ import ProvisioningFormInternalOnly from '../ProvisioningForm/ProvisioningFormIn
 import ProvisioningFormSubsidy from '../ProvisioningForm/ProvisioningFormSubsidy';
 import ProvisioningFormPolicyContainer from '../ProvisioningForm/PolicyForm';
 import SaveEditsButton from './SaveEditsButton';
+import ProvisioningFormInstructionAlert from '../ProvisioningForm/ProvisioningFormInstructionAlert';
 
 const SubsidyEditView = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
@@ -73,6 +74,7 @@ const SubsidyEditView = () => {
     !isLoading ? (
       <div className="m-0 p-0 mb-6 mt-5">
         { alertMessage && <ProvisioningFormAlert /> }
+        <ProvisioningFormInstructionAlert formMode="edit" />
         <div className="mt-4.5">
           <h2>{FORM.SUB_TITLE}</h2>
           <ProvisioningFormTitle />

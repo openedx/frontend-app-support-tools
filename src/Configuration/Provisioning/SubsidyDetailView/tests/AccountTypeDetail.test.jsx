@@ -10,6 +10,7 @@ describe('AccountTypeDetail', () => {
     render(<AccountTypeDetail isMultipleFunds />);
     expect(screen.getByText(ACCOUNT_CREATION.OPTIONS.multiple)).toBeInTheDocument();
     expect(screen.queryByText(ACCOUNT_CREATION.OPTIONS.single)).toBeNull();
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
 
   it(`renders ${ACCOUNT_CREATION.OPTIONS.single} if isMultipleFunds is false`, () => {

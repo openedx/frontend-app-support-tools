@@ -11,6 +11,7 @@ import { selectProvisioningContext } from '../data/utils';
 import ProvisioningFormInternalOnly from './ProvisioningFormInternalOnly';
 import ProvisioningFormTitle from './ProvisioningFormTitle';
 import ProvisioningFormAlert from './ProvisioningFormAlert';
+import ProvisioningFormInstructionAlert from './ProvisioningFormInstructionAlert';
 
 const ProvisioningForm = () => {
   const { FORM } = PROVISIONING_PAGE_TEXT;
@@ -27,6 +28,7 @@ const ProvisioningForm = () => {
   return (
     <div className="m-0 p-0 mb-5 mt-5">
       {alertMessage && <ProvisioningFormAlert />}
+      <ProvisioningFormInstructionAlert formMode="new" />
       <div className="mt-4.5">
         <h2>{FORM.SUB_TITLE}</h2>
       </div>

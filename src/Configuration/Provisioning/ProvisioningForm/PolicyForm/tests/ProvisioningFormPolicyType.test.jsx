@@ -51,5 +51,6 @@ describe('ProvisioningFormPolicyType', () => {
       fireEvent.click(policyTypeButtons[i]);
       expect(policyTypeButtons[i].checked).toBeTruthy();
     }
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
 });

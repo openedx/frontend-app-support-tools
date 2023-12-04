@@ -16,6 +16,7 @@ import PageLoading from '../../../components/common/PageLoading';
 import {
   getCatalogs, getCatalogUuid, getCustomer, getPolicies, getSubsidy,
 } from '../data/utils';
+import ProvisioningFormInstructionAlert from '../ProvisioningForm/ProvisioningFormInstructionAlert';
 
 const SubsidyDetailView = () => {
   const navigate = useNavigate();
@@ -82,6 +83,7 @@ const SubsidyDetailView = () => {
   return (
     !isLoading ? (
       <div className="m-0 p-0 mb-5 mt-5">
+        <ProvisioningFormInstructionAlert formMode="view" />
         <div className="mt-4.5">
           <h2>{FORM.SUB_TITLE}</h2>
         </div>

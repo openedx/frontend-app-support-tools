@@ -74,6 +74,7 @@ describe('ProvisioningFormCatalog', () => {
     expect(screen.getByText(
       INITIAL_CATALOG_QUERIES.multipleQueries[0].catalogQueryTitle.split(splitStringBudget)[0],
     )).toBeTruthy();
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
   it('sets context state with multipleFunds to be false', async () => {
     const updatedInitialState = {

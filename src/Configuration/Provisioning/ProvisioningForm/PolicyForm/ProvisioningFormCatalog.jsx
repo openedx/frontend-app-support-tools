@@ -8,6 +8,7 @@ import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import { extractDefinedCatalogTitle, getCamelCasedConfigAttribute, indexOnlyPropType } from '../../data/utils';
 import { ProvisioningContext } from '../../ProvisioningContext';
+import ProvisioningFormHelpText from '../ProvisioningFormHelpText';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
@@ -93,9 +94,12 @@ const ProvisioningFormCatalog = ({ index }) => {
       <Form.Group className="mt-3.5">
         <Form.Label className="mb-2.5">{CATALOG.SUB_TITLE}</Form.Label>
         {multipleFunds && (
-        <h4>
-          {extractDefinedCatalogTitle(formData.policies[index])}
-        </h4>
+          <div>
+            <h4>
+              {extractDefinedCatalogTitle(formData.policies[index])}
+            </h4>
+            <ProvisioningFormHelpText />
+          </div>
         )}
         {multipleFunds === false && (
           <>
@@ -105,26 +109,26 @@ const ProvisioningFormCatalog = ({ index }) => {
               value={value || formData.policies[index].catalogCategory}
             >
               {
-            Object.keys(CATALOG.OPTIONS).map((key) => (
-              <Form.Radio
-                value={CATALOG.OPTIONS[key]}
-                type="radio"
-                key={uuidv4()}
-                data-testid={CATALOG.OPTIONS[key]}
-                data-catalogqueryid={camelCasedQueries[key]}
-                isInvalid={customCatalogSelected ? false : isCatalogQueryMetadataDefinedAndFalse}
-              >
-                {CATALOG.OPTIONS[key]}
-              </Form.Radio>
-            ))
-          }
+                Object.keys(CATALOG.OPTIONS).map((key) => (
+                  <Form.Radio
+                    value={CATALOG.OPTIONS[key]}
+                    type="radio"
+                    key={uuidv4()}
+                    data-testid={CATALOG.OPTIONS[key]}
+                    data-catalogqueryid={camelCasedQueries[key]}
+                    isInvalid={customCatalogSelected ? false : isCatalogQueryMetadataDefinedAndFalse}
+                  >
+                    {CATALOG.OPTIONS[key]}
+                  </Form.Radio>
+                ))
+              }
             </Form.RadioSet>
             {!customCatalogSelected && isCatalogQueryMetadataDefinedAndFalse && (
-            <Form.Control.Feedback
-              type="invalid"
-            >
-              {CATALOG.ERROR}
-            </Form.Control.Feedback>
+              <Form.Control.Feedback
+                type="invalid"
+              >
+                {CATALOG.ERROR}
+              </Form.Control.Feedback>
             )}
           </>
         )}

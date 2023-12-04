@@ -15,5 +15,6 @@ describe('PolicyDetail', () => {
     expect(screen.getByText('Ash Ketchum')).toBeInTheDocument();
     expect(screen.getByText('Budget starting balance ($)')).toBeInTheDocument();
     expect(screen.getByText('$100')).toBeInTheDocument();
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
 });
