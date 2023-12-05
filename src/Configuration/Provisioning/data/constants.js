@@ -23,6 +23,11 @@ const PROVISIONING_PAGE_TEXT = {
     },
   },
   FORM: {
+    MODE: {
+      NEW: 'new',
+      VIEW: 'view',
+      EDIT: 'edit',
+    },
     TITLE: (pathName) => `${titleCase(pathName.split('/').reverse()[0])} Learner Credit Plan`,
     SUB_TITLE: 'Plan Details',
     BUTTON: {

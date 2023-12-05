@@ -74,7 +74,7 @@ const SubsidyEditView = () => {
     !isLoading ? (
       <div className="m-0 p-0 mb-6 mt-5">
         { alertMessage && <ProvisioningFormAlert /> }
-        <ProvisioningFormInstructionAlert formMode="edit" />
+        <ProvisioningFormInstructionAlert formMode={FORM.MODE.EDIT} />
         <div className="mt-4.5">
           <h2>{FORM.SUB_TITLE}</h2>
           <ProvisioningFormTitle />

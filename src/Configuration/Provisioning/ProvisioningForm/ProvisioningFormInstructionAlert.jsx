@@ -4,13 +4,13 @@ import { Edit } from '@edx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const ProvisioningFormInstructionAlert = ({ formMode }) => {
-  const { NEW_FORM, EDIT_FORM, VIEW_FORM } = PROVISIONING_PAGE_TEXT.FORM.ALERTS;
+  const { ALERTS: { NEW_FORM, EDIT_FORM, VIEW_FORM }, MODE } = PROVISIONING_PAGE_TEXT.FORM;
   const [isOpen, , close] = useToggle(true);
 
   let alertContent;
-  if (formMode === 'new') {
+  if (formMode === MODE.NEW) {
     alertContent = NEW_FORM;
-  } else if (formMode === 'edit') {
+  } else if (formMode === MODE.EDIT) {
     alertContent = EDIT_FORM;
   } else {
     alertContent = VIEW_FORM;
@@ -36,7 +36,7 @@ const ProvisioningFormInstructionAlert = ({ formMode }) => {
 };
 
 ProvisioningFormInstructionAlert.propTypes = {
-  formMode: PropTypes.string.isRequired,
+  formMode: PropTypes.oneOf(['new', 'edit', 'view']).isRequired,
 };
 
 export default ProvisioningFormInstructionAlert;
