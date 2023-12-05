@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
+import ProvisioningFormHelpText from '../ProvisioningFormHelpText';
 
 const ProvisioningFormPolicyType = ({ index }) => {
   const { perLearnerCap, setPolicyType, setInvalidPolicyFields } = useProvisioningContext();
@@ -45,11 +46,13 @@ const ProvisioningFormPolicyType = ({ index }) => {
       <Form.Group
         className="mt-3.5"
       >
-        <Form.Label className="mb-2.5">{POLICY_TYPE.LABEL}</Form.Label>
+        <Form.Label>{POLICY_TYPE.LABEL}</Form.Label>
+        <ProvisioningFormHelpText />
         <Form.RadioSet
           name={`display-policy-type-${index}`}
           onChange={handleChange}
           value={value || formData.policies[index]?.policyType}
+          className="mt-2.5"
         >
           {
             Object.values(POLICY_TYPE.OPTIONS).map(({ DESCRIPTION }) => (

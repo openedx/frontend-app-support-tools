@@ -6,6 +6,7 @@ import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import useProvisioningContext from '../../data/hooks';
 import { generateBudgetDisplayName, indexOnlyPropType } from '../../data/utils';
 import { ProvisioningContext } from '../../ProvisioningContext';
+import ProvisioningFormHelpText from '../ProvisioningFormHelpText';
 
 // TODO: Replace URL for hyperlink to somewhere to display catalog content information
 const ProvisioningFormCatalog = ({ index }) => {
@@ -72,9 +73,12 @@ const ProvisioningFormCatalog = ({ index }) => {
           // predefined catalog query (see INITIAL_POLICIES.multiplePolicies).  Do not show a radio element since we
           // want to enforce the predefined catalog query selections for each policy.
           multipleFunds && (
-          <h4>
-            {generateBudgetDisplayName(formData.policies[index])}
-          </h4>
+            <>
+              <h4>
+                {generateBudgetDisplayName(formData.policies[index])}
+              </h4>
+              <ProvisioningFormHelpText />
+            </>
           )
         }
         {
@@ -87,26 +91,26 @@ const ProvisioningFormCatalog = ({ index }) => {
                 value={value}
               >
                 {
-              Object.keys(CATALOG.OPTIONS).map((key) => (
-                <Form.Radio
-                  value={key}
-                  type="radio"
-                  key={uuidv4()}
-                  data-testid={key}
-                  data-predefinedquerytype={key}
-                  isInvalid={isFormFieldInvalid}
-                >
-                  {CATALOG.OPTIONS[key]}
-                </Form.Radio>
-              ))
-            }
+                  Object.keys(CATALOG.OPTIONS).map((key) => (
+                    <Form.Radio
+                      value={key}
+                      type="radio"
+                      key={uuidv4()}
+                      data-testid={key}
+                      data-predefinedquerytype={key}
+                      isInvalid={isFormFieldInvalid}
+                    >
+                      {CATALOG.OPTIONS[key]}
+                    </Form.Radio>
+                  ))
+                }
               </Form.RadioSet>
               {isFormFieldInvalid && (
-              <Form.Control.Feedback
-                type="invalid"
-              >
-                {CATALOG.ERROR}
-              </Form.Control.Feedback>
+                <Form.Control.Feedback
+                  type="invalid"
+                >
+                  {CATALOG.ERROR}
+                </Form.Control.Feedback>
               )}
             </>
           )

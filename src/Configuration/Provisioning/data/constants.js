@@ -23,6 +23,11 @@ const PROVISIONING_PAGE_TEXT = {
     },
   },
   FORM: {
+    MODE: {
+      NEW: 'new',
+      VIEW: 'view',
+      EDIT: 'edit',
+    },
     TITLE: (pathName) => `${titleCase(pathName.split('/').reverse()[0])} Learner Credit Plan`,
     SUB_TITLE: 'Plan Details',
     BUTTON: {
@@ -170,7 +175,22 @@ const PROVISIONING_PAGE_TEXT = {
         emptyField: 'Please enter a valid value.',
       },
     },
+    HELP_TEXT: {
+      LABEL: 'Not editable',
+    },
     ALERTS: {
+      NEW_FORM: {
+        TITLE: 'New plan instructions',
+        DESCRIPTION: "Fill out the form to create the customer's plan. Some fields can be edited after submission, but not those marked 'not editable'. For changes to those fields after this initial submission, you will need to create a new plan.",
+      },
+      VIEW_FORM: {
+        TITLE: 'Editing instructions',
+        DESCRIPTION: "You are viewing this customer's plan. To edit, click the 'Edit Plan' button. Some fields can be edited after submission, but not those marked 'Not editable'. For changes to those fields, you will need to create a new plan.",
+      },
+      EDIT_FORM: {
+        TITLE: 'Editing instructions',
+        DESCRIPTION: "Some fields can be edited after submission, but not those marked 'Not editable'. For changes to those fields, you will need to create a new plan.",
+      },
       MISSING_FIELD_MESSAGES: {
         TITLE: 'Missing required fields',
         SUB_TITLE: 'Please enter incomplete fields and try again.',

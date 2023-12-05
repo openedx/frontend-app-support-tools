@@ -29,6 +29,7 @@ describe('PolicyDetail', () => {
     expect(screen.getByText('Display name')).toBeInTheDocument();
     expect(screen.getByText('I love Executive Education Only')).toBeInTheDocument();
     expect(screen.getByText('Budget starting balance ($)')).toBeInTheDocument();
+    expect(screen.getByText('Not editable')).toBeTruthy();
     expect(screen.getByText('$2,500')).toBeInTheDocument();
   });
 });

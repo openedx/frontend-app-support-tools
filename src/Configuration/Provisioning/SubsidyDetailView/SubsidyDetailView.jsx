@@ -14,6 +14,7 @@ import TermDetail from './TermDetail';
 import TitleDetail from './TitleDetail';
 import PolicyContainer from './PolicyDetailView/PolicyContainer';
 import PageLoading from '../../../components/common/PageLoading';
+import ProvisioningFormInstructionAlert from '../ProvisioningForm/ProvisioningFormInstructionAlert';
 import useProvisioningContext from '../data/hooks';
 import { ProvisioningContext } from '../ProvisioningContext';
 
@@ -57,6 +58,7 @@ const SubsidyDetailView = () => {
   return (
     isLoading === false ? (
       <div className="m-0 p-0 mb-5 mt-5">
+        <ProvisioningFormInstructionAlert formMode={FORM.MODE.VIEW} />
         <div className="mt-4.5">
           <h2>{FORM.SUB_TITLE}</h2>
         </div>

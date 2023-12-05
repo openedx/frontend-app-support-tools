@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
+import ProvisioningFormHelpText from '../ProvisioningForm/ProvisioningFormHelpText';
 
 const CustomerDetail = ({ enterpriseCustomer, financialIdentifier, uuid }) => {
   const { FORM: { CUSTOMER } } = PROVISIONING_PAGE_TEXT;
@@ -14,12 +15,14 @@ const CustomerDetail = ({ enterpriseCustomer, financialIdentifier, uuid }) => {
         <p className="small">
           {enterpriseCustomer} / {uuid}
         </p>
+        <ProvisioningFormHelpText className="my-n2.5" />
       </div>
-      <div className="mb-1 ml-3 mt-3">
+      <div className="mb-1 ml-3 mt-4.5">
         <h4>{CUSTOMER.FINANCIAL_IDENTIFIER.TITLE}</h4>
         <p className="small">
           {financialIdentifier}
         </p>
+        <ProvisioningFormHelpText className="my-n2.5" />
       </div>
     </article>
   );

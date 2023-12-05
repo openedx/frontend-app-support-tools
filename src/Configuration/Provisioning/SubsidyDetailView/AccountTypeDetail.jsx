@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
+import ProvisioningFormHelpText from '../ProvisioningForm/ProvisioningFormHelpText';
 
 const AccountTypeDetail = ({ isMultipleFunds }) => {
   const { FORM: { ACCOUNT_CREATION } } = PROVISIONING_PAGE_TEXT;
@@ -14,6 +15,7 @@ const AccountTypeDetail = ({ isMultipleFunds }) => {
         <p className="ml-3 text-gray-500">
           {isMultipleFunds ? ACCOUNT_CREATION.OPTIONS.multiple : ACCOUNT_CREATION.OPTIONS.single}
         </p>
+        <ProvisioningFormHelpText className="ml-3 my-n2.5" />
       </div>
     </article>
   );

@@ -7,6 +7,7 @@ import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
 import { isValidOpportunityProduct } from '../../../utils';
 import ProvisioningFormCustomerDropdown from './ProvisioningFormCustomerDropdown';
+import ProvisioningFormHelpText from './ProvisioningFormHelpText';
 
 const ProvisioningFormCustomer = () => {
   const { CUSTOMER } = PROVISIONING_PAGE_TEXT.FORM;
@@ -43,7 +44,7 @@ const ProvisioningFormCustomer = () => {
         <ProvisioningFormCustomerDropdown />
       </Form.Group>
       <Form.Group
-        className="mt-3.5"
+        className="mt-5"
         isInvalid={(!isOpportunityProduct || isOpportunityProductDefinedAndFalse)}
         spellCheck="false"
       >
@@ -53,11 +54,15 @@ const ProvisioningFormCustomer = () => {
           onChange={handleChange}
           data-testid="customer-financial-identifier"
         />
-        {isOpportunityProduct && (
-          <Form.Control.Feedback>
-            {financialIdentifier.length}/{CUSTOMER.FINANCIAL_IDENTIFIER.MAX_LENGTH}
-          </Form.Control.Feedback>
-        )}
+        <div className="d-flex justify-content-between mr-2">
+          <ProvisioningFormHelpText />
+          {isOpportunityProduct && (
+            <Form.Control.Feedback>
+              {financialIdentifier.length}/{CUSTOMER.FINANCIAL_IDENTIFIER.MAX_LENGTH}
+            </Form.Control.Feedback>
+          )}
+        </div>
+
         {!isOpportunityProduct && (
           <Form.Control.Feedback
             type="invalid"

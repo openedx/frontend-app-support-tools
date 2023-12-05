@@ -52,6 +52,7 @@ describe('ProvisioningFormAccountType', () => {
     for (let i = 0; i < accountTypeOptions.length; i++) {
       expect(screen.getByText(ACCOUNT_CREATION.OPTIONS[accountTypeOptions[i]])).toBeTruthy();
     }
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
   it('switches active account type', () => {
     renderWithRouter(<ProvisioningFormAccountTypeWrapper />);

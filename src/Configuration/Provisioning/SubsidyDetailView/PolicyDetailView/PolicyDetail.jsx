@@ -1,4 +1,5 @@
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
+import ProvisioningFormHelpText from '../../ProvisioningForm/ProvisioningFormHelpText';
 import {
   formatCurrency,
   indexOnlyPropType,
@@ -23,6 +24,7 @@ const PolicyDetail = ({ index }) => {
         <p className="small">
           {formatCurrency(formData.policies[index].accountValue)}
         </p>
+        <ProvisioningFormHelpText className="ml-1 my-n2.5" />
       </div>
     </div>
   );

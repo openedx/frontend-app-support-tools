@@ -78,6 +78,7 @@ describe('ProvisioningFormCatalog', () => {
       PREDEFINED_QUERY_DISPLAY_NAMES[INITIAL_POLICIES.multiplePolicies[0].predefinedQueryType],
       { exact: false },
     )).toBeTruthy();
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
   it('sets context state with multipleFunds to be false', async () => {
     const updatedInitialState = {

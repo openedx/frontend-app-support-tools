@@ -37,6 +37,7 @@ describe('ProvisioningFormCustomerDropdown', () => {
 
     expect(screen.getByText(ENTERPRISE_UUID.TITLE)).toBeTruthy();
     expect(screen.getByText(ENTERPRISE_UUID.SUB_TITLE)).toBeTruthy();
+    expect(screen.getByText('Not editable')).toBeTruthy();
   });
   it('renders the customer dropdown options', async () => {
     renderWithRouter(<ProvisioningFormCustomerDropdownWrapper />);

@@ -5,6 +5,7 @@ import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';
+import ProvisioningFormHelpText from './ProvisioningFormHelpText';
 
 const ProvisioningFormAccountType = () => {
   const {
@@ -77,11 +78,13 @@ const ProvisioningFormAccountType = () => {
         <h3>{ACCOUNT_CREATION.TITLE}</h3>
       </div>
       <Form.Group className="mt-3.5">
-        <Form.Label className="mb-2.5">{ACCOUNT_CREATION.SUB_TITLE}</Form.Label>
+        <Form.Label className="mb-1">{ACCOUNT_CREATION.SUB_TITLE}</Form.Label>
+        <ProvisioningFormHelpText />
         <Form.RadioSet
           name="display-account-type"
           onChange={handleChange}
           value={value || formData?.multipleFunds}
+          className="mt-2"
         >
           {
           Object.keys(ACCOUNT_CREATION.OPTIONS).map((key) => (
