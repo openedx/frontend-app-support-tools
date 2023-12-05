@@ -40,16 +40,13 @@ describe('ProvisioningFormPolicyType', () => {
     expect(screen.getByText(POLICY_TYPE.LABEL)).toBeTruthy();
 
     const policyTypeOptions = Object.keys(POLICY_TYPE.OPTIONS);
-    const policyTypeButtons = [];
-    // Retrieves a list of input elements based on test ids
-    for (let i = 0; i < policyTypeOptions.length; i++) {
-      policyTypeButtons.push(screen.getByTestId(POLICY_TYPE.OPTIONS[policyTypeOptions[i]].DESCRIPTION));
-    }
 
     // Clicks on each input element and checks if it is checked
-    for (let i = 0; i < policyTypeButtons.length; i++) {
-      fireEvent.click(policyTypeButtons[i]);
-      expect(policyTypeButtons[i].checked).toBeTruthy();
+    for (let i = 0; i < policyTypeOptions.length; i++) {
+      const buttonBeforeClick = screen.getByTestId(POLICY_TYPE.OPTIONS[policyTypeOptions[i]].DESCRIPTION);
+      fireEvent.click(buttonBeforeClick);
+      const buttonAfterClick = screen.getByTestId(POLICY_TYPE.OPTIONS[policyTypeOptions[i]].DESCRIPTION);
+      expect(buttonAfterClick.checked).toBeTruthy();
     }
     expect(screen.getByText('Not editable')).toBeTruthy();
   });

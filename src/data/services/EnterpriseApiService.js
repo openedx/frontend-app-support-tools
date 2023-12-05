@@ -89,14 +89,14 @@ class LmsApiService {
     },
   );
 
-  static patchSubsidyAccessPolicy = (
+  static patchSubsidyAccessPolicy = ({
     uuid,
     description,
     catalogUuid,
     perLearnerSpendLimit,
-    accessMethod = 'direct',
+    accessMethod,
     active = true,
-  ) => LmsApiService.apiClient().patch(
+  }) => LmsApiService.apiClient().patch(
     `${getConfig().ENTERPRISE_ACCESS_BASE_URL}/api/v1/subsidy-access-policies/${uuid}/`,
     {
       description,

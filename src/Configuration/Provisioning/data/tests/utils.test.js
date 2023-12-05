@@ -410,7 +410,7 @@ describe('transformPatchPolicyData', () => {
   it('returns the correct data', async () => {
     const mockFormData = {
       policies: [{
-        policy_type: 'PerLearnerSpendCreditAccessPolicy',
+        policyType: 'PerLearnerSpendCreditAccessPolicy',
         accountDescription: 'awesome policy description',
         customCatalog: true,
         catalogTitle: 'awesome custom catalog',
@@ -428,7 +428,6 @@ describe('transformPatchPolicyData', () => {
       catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
       subsidyUuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
       perLearnerSpendLimit: 200,
-      spendLimit: 12000,
       uuid: '12324232',
     }]);
   });

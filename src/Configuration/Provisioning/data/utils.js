@@ -462,26 +462,28 @@ export async function createPolicy({
  * subsidy and catalog uuid.
  *
  * @param {{
-* description: String,
-* catalogUuid: String,
-* subsidyUuid: String,
-* perLearnerSpendLimit: Number,
-* spendLimit: Number
-* }}
-* @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
-*/
+ * description: String,
+ * catalogUuid: String,
+ * subsidyUuid: String,
+ * perLearnerSpendLimit: Number,
+ * accessMethod: String,
+ * }}
+ * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
+ */
 export async function patchPolicy({
   uuid,
   description,
   catalogUuid,
   perLearnerSpendLimit,
+  accessMethod,
 }) {
-  const data = LmsApiService.patchSubsidyAccessPolicy(
+  const data = LmsApiService.patchSubsidyAccessPolicy({
     uuid,
     description,
     catalogUuid,
     perLearnerSpendLimit,
-  );
+    accessMethod,
+  });
   return data;
 }
 
@@ -566,7 +568,13 @@ export function transformPatchPolicyPayload(formData, catalogCreationResponses) 
     catalogUuid: catalogCreationResponses[index]?.uuid || policy.catalogUuid,
     subsidyUuid,
     perLearnerSpendLimit: policy.perLearnerCap ? policy.perLearnerCapAmount : null,
-    spendLimit: policy.accountValue,
+
+    // The spendLimit is currently NOT EDITABLE so do not include it in the PATCH payload.
+    // spendLimit: policy.accountValue,
+
+    // The policyType and accessMethod is currently NOT EDITABLE so do not include it in the PATCH payload.
+    // policyType: policy.policyType,
+    // accessMethod: policy.accessMethod,
   }));
   return payloads;
 }
