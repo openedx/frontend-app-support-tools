@@ -342,7 +342,7 @@ const emptyDataSet = {
   subsidyRevReq: '',
 };
 describe('determineInvalidFields', () => {
-  it('returns false for all subsidy fields', async () => {
+  it('returns false (invalid)for all subsidy fields', async () => {
     getAuthenticatedHttpClient.mockImplementation(() => ({
       get: jest.fn().mockResolvedValue({ data: [{ id: uuidv4() }] }),
     }));
@@ -358,7 +358,7 @@ describe('determineInvalidFields', () => {
     const output = await determineInvalidFields(emptyDataSet);
     expect(output).toEqual([expectedFailedSubsidyOutput]);
   });
-  it('returns false for all policy fields', async () => {
+  it('returns false (invalid)for all policy fields', async () => {
     const expectedFailedPolicyOutput = [{
       subsidyTitle: false,
       enterpriseUUID: false,
@@ -370,7 +370,7 @@ describe('determineInvalidFields', () => {
     }, [{
       accountName: false,
       accountValue: false,
-      catalogUuid: false,
+      catalogUuid: true, // This is true (i.e. valid) because catalogUuid is not required when customCatalog != true.
       predefinedQueryType: false,
       perLearnerCap: false,
       perLearnerCapAmount: false,
@@ -410,7 +410,7 @@ describe('transformPatchPolicyData', () => {
   it('returns the correct data', async () => {
     const mockFormData = {
       policies: [{
-        policy_type: 'PerLearnerSpendCreditAccessPolicy',
+        policyType: 'PerLearnerSpendCreditAccessPolicy',
         accountDescription: 'awesome policy description',
         customCatalog: true,
         catalogTitle: 'awesome custom catalog',
@@ -428,7 +428,6 @@ describe('transformPatchPolicyData', () => {
       catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
       subsidyUuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
       perLearnerSpendLimit: 200,
-      spendLimit: 12000,
       uuid: '12324232',
     }]);
   });

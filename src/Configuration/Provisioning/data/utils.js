@@ -88,9 +88,11 @@ export async function determineInvalidFields(formData) {
     const policyData = {
       accountName: !!accountName,
       accountValue: !!accountValue,
-      // Either a predefined query type must be selected, or a custom catalog is selected.
-      predefinedQueryType: !!predefinedQueryType && !customCatalog,
-      catalogUuid: !!catalogUuid && customCatalog,
+      // Either a predefined query type must be selected, or a catalog UUID is selected, depending on customCatalog.
+      // When customCatalog is false, make sure predefinedQueryType is selected:
+      predefinedQueryType: !customCatalog ? !!predefinedQueryType : true,
+      // When customCatalog is true, make sure predefinedQueryType is selected:
+      catalogUuid: customCatalog ? !!catalogUuid : true,
       perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
       perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
       policyType: !!policyType,
@@ -130,7 +132,7 @@ export function hasValidPolicyAndSubsidy(formData) {
     const isAccountNameValid = !!policy.accountName;
     const isAccountValueValid = !!policy.accountValue;
 
-    const isCatalogDefined = policy.customCatalog === true ? !!policy.catalogUuid : !!policy.predefinedQueryType;
+    const isCatalogDefined = policy.customCatalog ? !!policy.catalogUuid : !!policy.predefinedQueryType;
 
     // Requires learner cap to pass conditionals to be true
     const { perLearnerCap, perLearnerCapAmount } = policy;
@@ -460,26 +462,28 @@ export async function createPolicy({
  * subsidy and catalog uuid.
  *
  * @param {{
-* description: String,
-* catalogUuid: String,
-* subsidyUuid: String,
-* perLearnerSpendLimit: Number,
-* spendLimit: Number
-* }}
-* @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
-*/
+ * description: String,
+ * catalogUuid: String,
+ * subsidyUuid: String,
+ * perLearnerSpendLimit: Number,
+ * accessMethod: String,
+ * }}
+ * @returns {Promise<Object>} - Returns a promise that resolves to the response data from the API
+ */
 export async function patchPolicy({
   uuid,
   description,
   catalogUuid,
   perLearnerSpendLimit,
+  accessMethod,
 }) {
-  const data = LmsApiService.patchSubsidyAccessPolicy(
+  const data = LmsApiService.patchSubsidyAccessPolicy({
     uuid,
     description,
     catalogUuid,
     perLearnerSpendLimit,
-  );
+    accessMethod,
+  });
   return data;
 }
 
@@ -564,7 +568,13 @@ export function transformPatchPolicyPayload(formData, catalogCreationResponses) 
     catalogUuid: catalogCreationResponses[index]?.uuid || policy.catalogUuid,
     subsidyUuid,
     perLearnerSpendLimit: policy.perLearnerCap ? policy.perLearnerCapAmount : null,
-    spendLimit: policy.accountValue,
+
+    // The spendLimit is currently NOT EDITABLE so do not include it in the PATCH payload.
+    // spendLimit: policy.accountValue,
+
+    // The policyType and accessMethod is currently NOT EDITABLE so do not include it in the PATCH payload.
+    // policyType: policy.policyType,
+    // accessMethod: policy.accessMethod,
   }));
   return payloads;
 }

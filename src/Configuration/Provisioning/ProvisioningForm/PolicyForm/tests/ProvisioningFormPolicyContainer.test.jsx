@@ -83,10 +83,9 @@ describe('ProvisioningFormPolicyContainer', () => {
     );
     expect(screen.getByText(POLICY_TYPE.TITLE)).toBeTruthy();
     expect(screen.getByText(POLICY_TYPE.LABEL)).toBeTruthy();
-    const learnerOption = screen.getByTestId(POLICY_TYPE.OPTIONS.ADMIN_SELECTS.DESCRIPTION);
-    userEvent.click(learnerOption);
+    userEvent.click(screen.getByTestId(POLICY_TYPE.OPTIONS.ADMIN_SELECTS.DESCRIPTION));
     await waitFor(() => {
-      expect(learnerOption.checked).toBeTruthy();
+      expect(screen.getByTestId(POLICY_TYPE.OPTIONS.ADMIN_SELECTS.DESCRIPTION).checked).toBeTruthy();
     });
   });
 });

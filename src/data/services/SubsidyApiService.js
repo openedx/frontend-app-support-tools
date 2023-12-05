@@ -25,6 +25,22 @@ class SubsidyApiService {
     return SubsidyApiService.apiClient().get(`${subsidiesURL}?uuid=${uuid}`);
   };
 
+  /**
+   * postSubsidy gets or creates a learner credit Subsidy (and corresponding ledger).
+   *
+   * @param {String} financialIdentifier - A reference to the object responsible for originating this subsidy, and the
+   * key on which existing subsidies are retrieved.
+   * @param {String} title
+   * @param {String} enterpriseUUID
+   * @param {String} startDate
+   * @param {String} endDate
+   * @param {Number} startingBalance - The initial balance of the new subsidy in USD Cents (integer).
+   * @param {String} revenueCategory
+   * @param {Boolean} internalOnly
+   * @param {String} unit = 'usd_cents'
+   *
+   * @returns {Object} - The subsidy create endpoint response, containing a serialized subsidy.
+   */
   static postSubsidy = (
     financialIdentifier,
     title,
@@ -37,7 +53,6 @@ class SubsidyApiService {
     unit = 'usd_cents',
   ) => {
     const subsidiesURL = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/`;
-    const wholeDollarStartingBalance = startingBalance * 100;
     return SubsidyApiService.apiClient().post(
       subsidiesURL,
       {
@@ -47,7 +62,7 @@ class SubsidyApiService {
         default_active_datetime: startDate,
         default_expiration_datetime: endDate,
         default_unit: unit,
-        default_starting_balance: wholeDollarStartingBalance,
+        default_starting_balance: startingBalance,
         default_revenue_category: revenueCategory,
         default_internal_only: internalOnly,
       },
