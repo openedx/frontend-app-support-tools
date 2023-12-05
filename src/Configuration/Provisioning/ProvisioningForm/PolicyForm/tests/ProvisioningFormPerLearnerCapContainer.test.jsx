@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen, fireEvent } from '@testing-library/react';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import { fireEvent, screen } from '@testing-library/react';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import PROVISIONING_PAGE_TEXT, { INITIAL_POLICIES } from '../../../data/constants';
 import ProvisioningFormPerLearnerCapContainer from '../ProvisioningFormPerLearnerCapContainer';
 
 const { LEARNER_CAP_DETAIL, LEARNER_CAP, POLICY_TYPE } = PROVISIONING_PAGE_TEXT.FORM;
@@ -23,7 +23,7 @@ const updatedInitialState = {
     ...initialStateValue.formData,
     policies: [
       {
-        ...INITIAL_CATALOG_QUERIES.defaultQuery,
+        ...INITIAL_POLICIES.singlePolicy,
         policyType: POLICY_TYPE.OPTIONS.LEARNER_SELECTS.VALUE,
       },
     ],
@@ -77,7 +77,7 @@ describe('PerLearnerCapContainer', () => {
         ...initialStateValue.formData,
         policies: [
           {
-            ...INITIAL_CATALOG_QUERIES.defaultQuery,
+            ...INITIAL_POLICIES.singlePolicy,
             policyType: POLICY_TYPE.OPTIONS.ADMIN_SELECTS.VALUE,
           },
         ],

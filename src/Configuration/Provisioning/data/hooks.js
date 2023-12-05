@@ -3,24 +3,18 @@ import { useContextSelector } from 'use-context-selector';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import dayjs from './dayjs';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
-import PROVISIONING_PAGE_TEXT, {
-  INITIAL_CATALOG_QUERIES,
-  MAX_PAGE_SIZE,
-  splitStringBudget,
-} from './constants';
+import { INITIAL_POLICIES, MAX_PAGE_SIZE } from './constants';
 import { ProvisioningContext } from '../ProvisioningContext';
 import {
-  updatePolicies,
-  getCamelCasedConfigAttribute,
-  getCatalogs,
-  getCatalogUuid,
-  getCatalogQueries,
+  filterByEnterpriseCustomerName,
+  getCatalog,
   getCustomer,
   getPolicies,
+  getPoliciesForSubsidy,
+  getPredefinedCatalogQueryMappings,
   getSubsidy,
   normalizeSubsidyDataTableData,
-  filterIndexOfCatalogQueryTitle,
-  filterByEnterpriseCustomerName,
+  updatePolicies,
 } from './utils';
 import { DashboardContext } from '../DashboardContext';
 import SubsidyApiService from '../../../data/services/SubsidyApiService';
@@ -123,27 +117,15 @@ export default function useProvisioningContext() {
 
   const setAlertMessage = (alertMessage) => updateRootDataState({ alertMessage });
 
-  const setCustomCatalog = (customCatalogBoolean) => updateRootDataState({ customCatalog: customCatalogBoolean });
+  const setCustomCatalog = (customCatalog, index) => updateFormDataState({ customCatalog }, true, index);
 
   const instantiateMultipleFormData = (multipleFunds) => {
-    const { multipleQueries, defaultQuery } = INITIAL_CATALOG_QUERIES;
-    const { FORM } = PROVISIONING_PAGE_TEXT;
-    const camelCasedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
-
+    const { multiplePolicies, singlePolicy } = INITIAL_POLICIES;
     if (multipleFunds) {
-      const multipleFormData = multipleQueries?.map((query, index) => ({
-        ...query,
-        catalogQueryMetadata: {
-          catalogQuery: {
-            id: camelCasedQueries[Object.keys(FORM.ACCOUNT_TYPE.OPTIONS)[index]],
-            title: Object.values(FORM.ACCOUNT_TYPE.OPTIONS)[index],
-          },
-        },
-      }));
-      updateFormDataState({ policies: multipleFormData });
-      return;
+      updateFormDataState({ policies: multiplePolicies });
+    } else {
+      updateFormDataState({ policies: singlePolicy });
     }
-    updateFormDataState({ policies: defaultQuery });
   };
 
   const resetPolicies = () => updateFormDataState({ policies: [] });
@@ -182,9 +164,23 @@ export default function useProvisioningContext() {
     index,
   );
 
-  const setCatalogQueryCategory = (catalogCategory, index) => updateFormDataState(catalogCategory, true, index);
+  const setPredefinedQueryType = (predefinedQueryType, index) => updateFormDataState(
+    { predefinedQueryType },
+    true,
+    index,
+  );
 
-  const setCatalogQuerySelection = (catalogSelection, index) => updateFormDataState(catalogSelection, true, index);
+  const setCatalogUuid = (catalogUuid, index) => updateFormDataState(
+    { catalogUuid },
+    true,
+    index,
+  );
+
+  const setCatalogTitle = (catalogTitle, index) => updateFormDataState(
+    { catalogTitle },
+    true,
+    index,
+  );
 
   const perLearnerCap = (perLearnerCapValue, index) => updateFormDataState(perLearnerCapValue, true, index);
 
@@ -194,100 +190,67 @@ export default function useProvisioningContext() {
 
   const setHasEdits = (hasEditsBoolean) => updateRootDataState({ hasEdits: hasEditsBoolean });
 
-  const hydrateCatalogQueryData = useCallback(async () => {
-    const { data } = await LmsApiService.fetchEnterpriseCatalogQueries();
-    const learnerCreditPrefix = '[DO NOT ALTER][LEARNER CREDIT]';
-    const filteredCatalogQueries = filterIndexOfCatalogQueryTitle(data.results, learnerCreditPrefix);
-
+  /**
+   * Fetch all the catalogs for a given customer and store them in state for later display within a selector.
+   *
+   * @param {Object} invalidSubsidyFields - An object which maps field names to booleans which are true if the field is
+   *   valid, e.g. { ...invalidSubsidyFields, subsidyRevReq: true }
+   */
+  const hydrateEnterpriseCatalogsData = useCallback(async (customerUuid) => {
+    const { data } = await LmsApiService.fetchEnterpriseCustomerCatalogs({ customerUuid });
     setState(s => ({
       ...s,
-      catalogQueries: {
-        ...s.catalogQueries,
-        data: filteredCatalogQueries,
+      existingEnterpriseCatalogs: {
+        data: camelCaseObject(data.results),
         isLoading: false,
       },
     }));
-  });
+  }, [setState]);
 
   // Retrieve subsidy data
   const hydrateEnterpriseSubsidiesData = useCallback(async (subsidyUuid) => {
-    const { FORM: { SUBSIDY_TYPE } } = PROVISIONING_PAGE_TEXT;
-
-    const selections = {
-      'partner-no-rev-prepay': SUBSIDY_TYPE.OPTIONS.no,
-      'bulk-enrollment-prepay': SUBSIDY_TYPE.OPTIONS.yes,
-    };
     const subsidyResponse = await getSubsidy(subsidyUuid);
     const subsidyData = subsidyResponse.data.results[0];
-    const subsidyCustomerId = subsidyData.enterprise_customer_uuid;
-    const [customer, policies] = await Promise.all([
-      getCustomer(subsidyCustomerId), getPolicies(subsidyCustomerId),
+    const [customerResponse, policiesForCustomerResponse] = await Promise.all([
+      getCustomer(subsidyData.enterprise_customer_uuid),
+      getPolicies(subsidyData.enterprise_customer_uuid),
     ]);
-    const customerData = customer.data[0];
-    const catalogUuids = getCatalogUuid(policies, subsidyUuid);
-    const isMultipleFunds = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid).length > 1;
-
-    let catalogs;
-    if (catalogUuids !== undefined) {
-      catalogs = await Promise.all(catalogUuids.map(async (catalogUuid) => {
-        const catalog = await getCatalogs(catalogUuid);
-        return Object.assign({}, ...catalog.data.results);
-      }));
-    }
-    const catalogQueries = await getCatalogQueries();
-
-    let customCatalog;
-    const policiesData = policies.data.results.filter(policy => policy.subsidy_uuid === subsidyUuid).map(policy => {
-      let catalogCategoryTitle;
+    const customerData = customerResponse.data[0];
+    const policiesResponseData = getPoliciesForSubsidy(policiesForCustomerResponse, subsidyUuid);
+    const isMultipleFunds = policiesResponseData.length > 1;
+    const catalogs = await Promise.all(policiesResponseData.map(async (policyData) => {
+      const catalog = await getCatalog(policyData.catalog_uuid).then(error => error);
+      return catalog;
+    }));
+    const policiesData = policiesResponseData.map(policy => {
       const formattedPolicies = [];
-      const predefinedQueries = getCamelCasedConfigAttribute('PREDEFINED_CATALOG_QUERIES');
+      const { queryIdToQueryType } = getPredefinedCatalogQueryMappings();
 
       catalogs.forEach(catalog => {
         if (catalog.uuid === policy.catalog_uuid) {
-          [, catalogCategoryTitle] = catalog.title.split(' - ');
-          let catalogQuery;
-          // this check is to identify subsidies that either have:
-          // 1) multiple plans
-          // 2) single plan
-          // 3) single plan with custom catalog
-          if (isMultipleFunds) {
-            catalogQuery = {
-              id: catalog?.enterprise_catalog_query,
-              title: catalogCategoryTitle,
-              catalogUuid: catalog.uuid,
-            };
-          } else if ([
-            predefinedQueries.everything,
-            predefinedQueries.executiveEducation,
-            predefinedQueries.openCourses,
-          ].includes(catalog.enterprise_catalog_query)) {
-            catalogQuery = {
-              id: catalog?.enterprise_catalog_query,
-              title: catalogCategoryTitle.split(splitStringBudget)[0],
-              catalogUuid: catalog.uuid,
-            };
-          } else {
-            catalogQuery = Object.assign(
-              {},
-              ...camelCaseObject(
-                catalogQueries.results.filter(query => catalogCategoryTitle === query.title),
-              ),
-            );
-            customCatalog = true;
-          }
-
+          const predefinedQueryType = queryIdToQueryType[catalog.enterprise_catalog_query];
           formattedPolicies.push({
+            accountName: policy.display_name,
             accountDescription: policy.description,
-            accountValue: policy.spend_limit,
             uuid: policy.uuid,
-            catalogQueryTitle: isMultipleFunds ? catalogCategoryTitle : 'Budget',
-            catalogUuid: policy.catalog_uuid,
-            // Need to divide by 100 to convert amount in cents to dollar
-            perLearnerCapAmount: policy.per_learner_spend_limit / 100,
+            policyType: policy.policy_type,
+            // currency values ALWAYS stored in USD cents.
+            accountValue: policy.spend_limit,
+            // currency values ALWAYS stored in USD cents.
+            perLearnerCapAmount: policy.per_learner_spend_limit,
             perLearnerCap: !!policy.per_learner_spend_limit,
-            catalogQueryMetadata: {
-              catalogQuery,
-            },
+            // Set both old and current catalog values to identical values, to start.
+            // Old values should remain static and will help us later decide whether to skip catalog creation.
+            oldPredefinedQueryType: predefinedQueryType,
+            oldCustomCatalog: !predefinedQueryType,
+            oldCatalogUuid: catalog.uuid,
+            // New values will change over time as different options are selected.
+            predefinedQueryType,
+            customCatalog: !predefinedQueryType,
+            catalogUuid: catalog.uuid,
+            // We ostensibly don't rely on the catalog title for anything critical, but in case it is a custom catalog
+            // we can cache the title here so that we have something to display in the detail view header.
+            catalogTitle: catalog.title,
           });
         }
       });
@@ -304,7 +267,7 @@ export default function useProvisioningContext() {
         enterpriseUUID: customerData?.id,
         internalOnly: subsidyData?.internal_only,
         financialIdentifier: subsidyData?.reference_id,
-        subsidyRevReq: selections[subsidyData?.revenue_category],
+        subsidyRevReq: subsidyData?.revenue_category,
         startDate: dayjs(subsidyData?.active_datetime).utc().format('YYYY-MM-DD'),
         endDate: dayjs(subsidyData?.expiration_datetime).utc().format('YYYY-MM-DD'),
         policies: policiesData,
@@ -320,7 +283,6 @@ export default function useProvisioningContext() {
         subsidyTitle: !!subsidyData?.title,
       },
       multipleFunds: isMultipleFunds,
-      customCatalog,
       isLoading: false,
     }));
   }, [setState]);
@@ -328,7 +290,6 @@ export default function useProvisioningContext() {
   const resetFormData = useCallback(() => {
     setState(() => ({
       multipleFunds: undefined,
-      customCatalog: false,
       formData: {
         policies: [],
       },
@@ -339,24 +300,48 @@ export default function useProvisioningContext() {
     setState((s) => ({
       ...s,
       showInvalidField: {
-        subsidy: [],
+        subsidy: {},
         policies: [],
       },
     }));
   });
 
-  const setInvalidSubsidyFields = (subsidy) => updateShowInvalidFieldState({ subsidy });
+  /**
+   * Set whether or not a certain subsidy field is invalid.
+   *
+   * Notes:
+   * - Important: true means valid, false means invalid.
+   * - Under the hood, this updates attributes of `s.showInvalidField.subsidy`.
+   *
+   * @param {Object} invalidSubsidyFields - An object which maps field names to booleans which are true if the field is
+   *   valid, e.g. { ...invalidSubsidyFields, subsidyRevReq: true }
+   */
+  const setInvalidSubsidyFields = (invalidSubsidyFields) => {
+    updateShowInvalidFieldState({ subsidy: invalidSubsidyFields });
+  };
 
-  const setInvalidPolicyFields = (policy, index) => updateShowInvalidFieldState(policy, true, index);
+  /**
+   * Set whether or not a certain policy field is invalid.
+   *
+   * Notes:
+   * - Important: true means valid, false means invalid.
+   * - Under the hood, this updates attributes of `s.showInvalidField.policies[index]`.
+   *
+   * @param {Object} invalidPolicyFields - An object which maps field names to booleans which are true if the field is
+   *   valid, e.g. { accountValue: true }
+   * @param {Number} index - The policy index.
+   */
+  const setInvalidPolicyFields = (invalidPolicyFields, index) => {
+    updateShowInvalidFieldState(invalidPolicyFields, true, index);
+  };
 
   return {
     setMultipleFunds,
-    hydrateCatalogQueryData,
+    hydrateEnterpriseCatalogsData,
     hydrateEnterpriseSubsidiesData,
     setCustomCatalog,
     setSubsidyTitle,
     setCustomerCatalog,
-    setCatalogQuerySelection,
     instantiateMultipleFormData,
     resetPolicies,
     setCustomerUUID,
@@ -368,7 +353,6 @@ export default function useProvisioningContext() {
     setAccountName,
     setAccountValue,
     setAccountDescription,
-    setCatalogQueryCategory,
     perLearnerCap,
     setPerLearnerCap,
     resetFormData,
@@ -379,5 +363,8 @@ export default function useProvisioningContext() {
     resetInvalidFields,
     setHasEdits,
     setPolicyType,
+    setPredefinedQueryType,
+    setCatalogUuid,
+    setCatalogTitle,
   };
 }

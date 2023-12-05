@@ -1,27 +1,54 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import PolicyDetailHeader from '../PolicyDetailHeader';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+
+const PolicyDetailHeaderWrapper = ({
+  // eslint-disable-next-line react/prop-types
+  value = initialStateValue,
+  // eslint-disable-next-line react/prop-types
+  index = 0,
+}) => (
+  <ProvisioningContext value={value}>
+    <PolicyDetailHeader index={index} />
+  </ProvisioningContext>
+);
 
 describe('PolicyHeader', () => {
-  it('renders the component with Budget detail header if policies length is 1', () => {
-    const mockProps = {
-      accountType: 'Executive Education budget',
-      policiesLength: 1,
+  it('renders the component with the correct budget count', () => {
+    const value = {
+      ...initialStateValue,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [
+          {
+            predefinedQueryType: 'openCourses',
+          },
+        ],
+      },
     };
 
-    render(<PolicyDetailHeader {...mockProps} />);
-    expect(screen.getByText('Budget')).toBeInTheDocument();
-    expect(screen.queryByText('Executive Education')).toBeNull();
+    render(<PolicyDetailHeaderWrapper value={value} />);
+    expect(screen.getByText('Budget #1')).toBeInTheDocument();
   });
 
   it('renders Executive Education if policies length is greater than 1', () => {
-    const mockProps = {
-      accountType: 'Executive Education budget',
-      policiesLength: 2,
+    const value = {
+      ...initialStateValue,
+      formData: {
+        ...initialStateValue.formData,
+        policies: [
+          {
+            predefinedQueryType: 'openCourses',
+          },
+          {
+            predefinedQueryType: 'executiveEducation',
+          },
+        ],
+      },
     };
 
-    render(<PolicyDetailHeader {...mockProps} />);
-    expect(screen.getByText('Executive Education budget')).toBeInTheDocument();
-    expect(screen.queryByText('Open Courses budget')).toBeNull();
+    render(<PolicyDetailHeaderWrapper value={value} index={1} />);
+    expect(screen.getByText('Budget #2')).toBeInTheDocument();
   });
 });

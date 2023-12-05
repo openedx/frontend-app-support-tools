@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen, fireEvent } from '@testing-library/react';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import PROVISIONING_PAGE_TEXT, { INITIAL_CATALOG_QUERIES } from '../../../data/constants';
+import { fireEvent, screen } from '@testing-library/react';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import PROVISIONING_PAGE_TEXT, { INITIAL_POLICIES, PREDEFINED_QUERIES_ENUM } from '../../../data/constants';
 import ProvisioningFormAccountDetails from '../ProvisioningFormAccountDetails';
 
 const { ACCOUNT_DETAIL, ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
@@ -24,9 +24,10 @@ describe('ProvisioningFormAccountDetails', () => {
     const updatedInitialState = {
       ...initialStateValue,
       multipleFunds: false,
+      isEditMode: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -43,10 +44,11 @@ describe('ProvisioningFormAccountDetails', () => {
   it('updates the form display name data on change', () => {
     const updatedInitialState = {
       ...initialStateValue,
+      isEditMode: false,
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -65,10 +67,11 @@ describe('ProvisioningFormAccountDetails', () => {
   it('updates the form total account value data on change', () => {
     const updatedInitialState = {
       ...initialStateValue,
+      isEditMode: false,
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -96,14 +99,14 @@ describe('ProvisioningFormAccountDetails', () => {
     fireEvent.change(input, { target: { value: '100.50' } });
     expect(screen.getByText(ALERTS.incorrectDollarAmount)).toBeTruthy();
   });
-  it('autogenerates name from subsidyTitle', async () => {
+  it('generates an empty budget/policy display name when no catalog options are selected', async () => {
     const updatedInitialState = {
       ...initialStateValue,
       multipleFunds: false,
       formData: {
         ...initialStateValue.formData,
         subsidyTitle: 'Test Subsidy Title',
-        policies: INITIAL_CATALOG_QUERIES.defaultQuery,
+        policies: INITIAL_POLICIES.singlePolicy,
       },
     };
     renderWithRouter(
@@ -114,8 +117,36 @@ describe('ProvisioningFormAccountDetails', () => {
     );
 
     expect(screen.getByText(ACCOUNT_DETAIL.OPTIONS.displayName)).toBeTruthy();
-    const input = screen.getByTestId('account-name');
-    expect(input.getAttribute('value')).toEqual('Test Subsidy Title --- ');
+
+    // Make sure the budget display name field is empty since we haven't selected a catalog type yet.
+    expect(screen.getByTestId('account-name').getAttribute('value')).toEqual('');
+  });
+  it('generates the correct policy display name by combining the customer and selected catalog type', async () => {
+    const updatedInitialState = {
+      ...initialStateValue,
+      multipleFunds: false,
+      formData: {
+        ...initialStateValue.formData,
+        subsidyTitle: 'Test Subsidy Title',
+        policies: [{
+          predefinedQueryType: PREDEFINED_QUERIES_ENUM.openCourses,
+          customCatalog: false,
+          catalogUuid: undefined,
+          catalogTitle: undefined,
+        }],
+      },
+    };
+    renderWithRouter(
+      <ProvisioningFormAccountDetailsWrapper
+        value={updatedInitialState}
+        index={0}
+      />,
+    );
+
+    expect(screen.getByText(ACCOUNT_DETAIL.OPTIONS.displayName)).toBeTruthy();
+    expect(screen.getByRole('textbox', {
+      name: 'Display name',
+    }).value).toBe('Test Subsidy Title --- Open Courses');
   });
   it('renders hydrated subsidy display value and amount if isEditMode is true', () => {
     const updatedInitialState = {
@@ -126,13 +157,10 @@ describe('ProvisioningFormAccountDetails', () => {
         subsidyTitle: 'Test Subsidy Title',
         policies: [{
           accountValue: '4000',
-          accountName: 'Test Subsidy Title - Budget',
-          catalogQueryMetadata: {
-            catalogQuery: {
-              title: 'Budget',
-              uuid: '4ev3r',
-            },
-          },
+          accountName: 'Test Subsidy Title --- Open Courses',
+          predefinedQueryType: PREDEFINED_QUERIES_ENUM.openCourses,
+          customCatalog: false,
+          catalogUuid: undefined,
         }],
       },
     };
@@ -145,7 +173,7 @@ describe('ProvisioningFormAccountDetails', () => {
 
     expect(screen.getByRole('textbox', {
       name: 'Display name',
-    }).value).toBe('Test Subsidy Title --- Budget');
+    }).value).toBe('Test Subsidy Title --- Open Courses');
     expect(screen.getByText('$40')).toBeTruthy();
   });
 });

@@ -6,7 +6,9 @@ import {
   useEffect, useMemo, useState,
 } from 'react';
 import { logError } from '@edx/frontend-platform/logging';
-import PROVISIONING_PAGE_TEXT from '../data/constants';
+import PROVISIONING_PAGE_TEXT, {
+  PREDEFINED_QUERY_DISPLAY_NAMES,
+} from '../data/constants';
 import ROUTES from '../../../data/constants/routes';
 import useProvisioningContext from '../data/hooks';
 import {
@@ -14,10 +16,11 @@ import {
   hasValidPolicyAndSubsidy,
   transformSubsidyData,
   transformPatchPolicyPayload,
+  getOrCreateCatalog,
   patchSubsidy,
-  patchCatalogs,
   patchPolicy,
   determineInvalidFields,
+  getPredefinedCatalogQueryMappings,
 } from '../data/utils';
 
 const SaveEditsButton = () => {
@@ -78,6 +81,8 @@ const SaveEditsButton = () => {
       return;
     }
 
+    const { queryTypeToQueryId } = getPredefinedCatalogQueryMappings();
+
     // transforms formData into the correct shape for the API
     const {
       internalOnly,
@@ -88,34 +93,83 @@ const SaveEditsButton = () => {
     } = transformSubsidyData(formData);
 
     // containers for the API responses
-    const catalogSavedResponse = [];
     const subsidySavedResponse = [];
 
-    // patches catalog for each policy
+    // containers for the API responses
+    let catalogCreateResponses = [];
+
+    // Create or update a catalog for each policy that specifies an off-the-shelf content filter.
     try {
-      const catalogResponses = await Promise.all(policies.map(async (policy) => {
-        const payload = {
-          catalogQueryUUID: +policy.catalogQueryMetadata.catalogQuery.id,
-          catalogUuid: policy.catalogUuid,
-          title: `${formData.enterpriseUUID} - ${policy.catalogQueryMetadata.catalogQuery.title}`,
-        };
-        const catalogPatchedResponse = patchCatalogs(payload).catch((error) => {
-          throw error;
-        });
-        return catalogPatchedResponse;
+      catalogCreateResponses = await Promise.all(policies.map(async (policy) => {
+        // All cases to cover (only last four cases apply for the current view/container):
+        //
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | View   | Old Radio Selection | New Radio Selection |              Catalog API Action(s)                 |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | create | n/a                 | predefined query    | Get or create catalog using POST.                  |
+        // | plan   |                     |                     | Notes:                                             |
+        // |        |                     |                     | - POST is idempotent on [customer, query].         |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | create | n/a                 | custom catalog      | Do nothing.                                        |
+        // | plan   |                     |                     |                                                    |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | edit   | predefined query    | predefined query    | Get or create catalog using POST.                  |
+        // | plan   |                     |                     | Notes:                                             |
+        // |        |                     |                     | - POST is idempotent on [customer, query].         |
+        // |        |                     |                     | - We should PATCH policy to use new/found catalog. |
+        // |        |                     |                     | - This may result in an orphaned catalog.          |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | edit   | predefined query    | custom catalog      | Do nothing.                                        |
+        // | plan   |                     |                     | Notes:                                             |
+        // |        |                     |                     | - We should PATCH policy to use custom catalog.    |
+        // |        |                     |                     | - This may result in an orphaned catalog.          |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | edit   | custom catalog      | predefined query    | Get or create catalog using POST.                  |
+        // | plan   |                     |                     | Notes:                                             |
+        // |        |                     |                     | - POST is idempotent on [customer, query].         |
+        // |        |                     |                     | - We should PATCH policy to use new/found catalog. |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        // | edit   | custom catalog      | custom catalog      | Do nothing.                                        |
+        // | plan   |                     |                     | Notes:                                             |
+        // |        |                     |                     | - We should PATCH policy to use custom catalog.    |
+        // +--------+---------------------+---------------------+----------------------------------------------------+
+        //
+        if (policy.predefinedQueryType) {
+          // A predefined query type is prescribed in form data, so a predefined query was selected in the form.
+          // Handle the third/fifth cases in the matrix (get or create a new catalog for the selected predefined query).
+          //
+          // Also, we can skip a POST if the selection has not changed:
+          if (policy.predefinedQueryType !== policy.oldPredefinedQueryType) {
+            // The predefined query selection has changed, so we need to try to create a catalog.
+            const predefinedQueryDisplayName = PREDEFINED_QUERY_DISPLAY_NAMES[
+              policy.predefinedQueryType
+            ];
+            const catalogCreateResponse = getOrCreateCatalog({
+              enterpriseCustomerUuid: formData.enterpriseUUID,
+              catalogQueryId: queryTypeToQueryId[policy.predefinedQueryType],
+              title: `${formData.enterpriseUUID} - ${predefinedQueryDisplayName}`,
+            }).catch((error) => {
+              throw error;
+            });
+            return catalogCreateResponse;
+          }
+        }
+        // We did not find a predefined catalog query type, so we assume a custom catalog has been selected.  Handle
+        // fourth/sixth cases in the matrix (do nothing since we're using a custom catalog).
+        return undefined;
       }));
-      // checks if catalogs were updated/saved successfully before proceeding
-      if (catalogResponses.filter((response) => response.data.uuid).length === policies.length) {
-        catalogSavedResponse.push(catalogResponses);
-      }
     } catch (error) {
       setSubmitButtonState('error');
       const { customAttributes } = error;
       if (customAttributes) {
-        logError(`Alert Error: ${API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[customAttributes.httpErrorStatus]} ${error}`);
+        logError(
+          'Alert Error: '
+          + `${API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG_CREATION[customAttributes.httpErrorStatus]} `
+          + `${error}`,
+        );
         redirectOnError(
           customAttributes.httpErrorStatus,
-          API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG[
+          API_ERROR_MESSAGES.ENTERPRISE_CUSTOMER_CATALOG_CREATION[
             customAttributes.httpErrorStatus
           ] || API_ERROR_MESSAGES.DEFAULT,
         );
@@ -152,8 +206,8 @@ const SaveEditsButton = () => {
       }
     }
 
-    // transforms formData and catalogSavedResponse into the correct shape for the API
-    const policyPayloads = transformPatchPolicyPayload(formData, catalogSavedResponse);
+    // transforms formData into the correct shape for the API
+    const policyPayloads = transformPatchPolicyPayload(formData, catalogCreateResponses);
 
     // updates subsidy access policy for each policy in the form
     try {

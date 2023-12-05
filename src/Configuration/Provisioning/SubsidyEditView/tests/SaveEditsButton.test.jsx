@@ -5,7 +5,7 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import SaveEditsButton from '../SaveEditsButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { hydratedInitialState, ProvisioningContext } from '../../../testData/Provisioning/ProvisioningContextWrapper';
-import { patchCatalogs, patchPolicy, patchSubsidy } from '../../data/utils';
+import { patchPolicy, patchSubsidy, getOrCreateCatalog } from '../../data/utils';
 import {
   sampleMultiplePolicyFormData,
   sampleSingleEmptyData,
@@ -25,7 +25,7 @@ jest.mock('../../data/utils', () => {
   const originalModule = jest.requireActual('../../data/utils');
   return {
     ...originalModule,
-    patchCatalogs: jest.fn(),
+    getOrCreateCatalog: jest.fn(),
     patchPolicy: jest.fn(),
     patchSubsidy: jest.fn(),
     determineInvalidFields: jest.fn().mockReturnValue([
@@ -78,7 +78,7 @@ describe('Save edits button', () => {
   });
   for (let i = 0; i < sampleDataSet.length; i++) {
     it(`calls handleSubmit complete state when clicked with ${Object.keys(sampleDataSet[i])} data`, async () => {
-      patchCatalogs.mockResolvedValue({ uuid: 'test-uuid' });
+      getOrCreateCatalog.mockResolvedValue({ uuid: 'test-uuid' });
       patchSubsidy.mockResolvedValue({ uuid: 'test-uuid' });
       patchPolicy.mockResolvedValue({ uuid: 'test-uuid' });
       const value = {
@@ -98,7 +98,7 @@ describe('Save edits button', () => {
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    patchCatalogs.mockRejectedValue(error);
+    getOrCreateCatalog.mockRejectedValue(error);
     const value = {
       ...hydratedInitialState,
       formData: sampleDataSet[0][Object.keys(sampleDataSet[0])],
@@ -115,7 +115,7 @@ describe('Save edits button', () => {
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    patchCatalogs.mockResolvedValue({ uuid: 'test-catalog-uuid' });
+    getOrCreateCatalog.mockResolvedValue({ uuid: 'test-catalog-uuid' });
     patchSubsidy.mockRejectedValue(error);
     const value = {
       ...hydratedInitialState,
@@ -133,7 +133,7 @@ describe('Save edits button', () => {
     error.customAttributes = {
       httpErrorStatus: 500,
     };
-    patchCatalogs.mockResolvedValue({ data: { uuid: 'test-catalog-uuid' } });
+    getOrCreateCatalog.mockResolvedValue({ data: { uuid: 'test-catalog-uuid' } });
     patchSubsidy.mockResolvedValue({ uuid: 'test-subsidy-uuid' });
     patchPolicy.mockRejectedValue(error);
 

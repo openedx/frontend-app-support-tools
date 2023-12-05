@@ -1,38 +1,39 @@
+import { v4 as uuidv4 } from 'uuid';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import {
-  createCatalogs,
   createPolicy,
   createSubsidy,
   determineInvalidFields,
-  extractDefinedCatalogTitle,
   filterByEnterpriseCustomerName,
-  filterIndexOfCatalogQueryTitle,
+  generateBudgetDisplayName,
   getCamelCasedConfigAttribute,
-  getCatalogQueries,
-  getCatalogUuid,
+  getOrCreateCatalog,
   hasValidPolicyAndSubsidy,
-  lmsCustomerCatalog,
   normalizeSubsidyDataTableData,
-  patchCatalogs,
   patchPolicy,
   patchSubsidy,
   selectProvisioningContext,
   sortDataTableData,
-  sortedCatalogQueries,
+  sortedCustomCatalogs,
   transformDataTableData,
   transformDatatableDate,
   transformPatchPolicyPayload,
   transformPolicyData,
+  transformSubsidyData,
 } from '../utils';
 import {
-  sampleCatalogQueries,
+  sampleCatalogs,
   sampleDataTableData,
   sampleMultiplePolicyFormData,
-  samplePolicyResponse,
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
-import { USES_LOCAL_TEST_DATA } from '../constants';
+import { PREDEFINED_QUERIES_ENUM, USES_LOCAL_TEST_DATA } from '../constants';
+
+jest.mock('@edx/frontend-platform/auth', () => ({
+  getAuthenticatedHttpClient: jest.fn(),
+}));
 
 describe('selectProvisioningContext', () => {
   it('throws an error when no arguments are passed', () => {
@@ -40,33 +41,22 @@ describe('selectProvisioningContext', () => {
   });
 });
 
-describe('sortedCatalogQueries', () => {
-  it('sorts catalog queries by last modified date (newest first)', () => {
-    const sortedQueries = sortedCatalogQueries(sampleCatalogQueries.data);
-    for (let i = 0; i < sortedQueries.length - 1; i++) {
-      expect(sortedQueries[i].title).toEqual(`TestQ${sortedQueries.length - i}`);
-      expect(sortedQueries[i].modified < sortedQueries[i + 1]).toBeTruthy();
+describe('sortedCustomCatalogs', () => {
+  it('sorts catalogs by reverse modified date (newest first)', () => {
+    const testObjectSorted = sortedCustomCatalogs(sampleCatalogs);
+    for (let i = 0; i < testObjectSorted.length - 1; i++) {
+      expect(testObjectSorted[i].modified > testObjectSorted[i + 1].modified).toBeTruthy();
     }
   });
-  it('returns the object array in the same order if no modified date fields', () => {
+  it('returns the object array in the same order with no modified date fields', () => {
     const testObject = [{
       id: 1,
     },
     {
       id: 2,
     }];
-
-    const testObjectSort = sortedCatalogQueries(testObject);
-    expect(testObjectSort).toEqual(testObject);
-  });
-});
-
-describe('lmsCustomerCatalog', () => {
-  it('queryBy returns the correct url', () => {
-    expect(lmsCustomerCatalog.queryBy('testtest')).toEqual('/admin/enterprise/enterprisecustomercatalog/?q=testtes');
-  });
-  it('queryBy returns the correct url', () => {
-    expect(lmsCustomerCatalog.queryBy()).toEqual('/admin/enterprise/enterprisecustomercatalog/');
+    const testObjectSorted = sortedCustomCatalogs(testObject);
+    expect(testObjectSorted).toEqual(testObject);
   });
 });
 
@@ -100,18 +90,37 @@ describe('getCamelCasedConfigAttribute', () => {
   });
 });
 
-describe('extractDefinedCatalogTitle', () => {
-  it('returns the correct title', () => {
-    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests budget' })).toEqual('The Bestests');
+describe('generateBudgetDisplayName', () => {
+  it('returns the correct display name when a predefined query is selected', () => {
+    const actualDisplayName = generateBudgetDisplayName({
+      predefinedQueryType: PREDEFINED_QUERIES_ENUM.openCourses,
+      customCatalog: false,
+      catalogUuid: undefined,
+      catalogTitle: undefined,
+    });
+    expect(actualDisplayName).toEqual('Open Courses');
   });
-  it('returns null if policy does not container ` budget`', () => {
-    expect(extractDefinedCatalogTitle({ catalogQueryTitle: 'The Bestests' })).toEqual('');
+  it('returns the correct display name when a custom catalog is selected', () => {
+    const actualDisplayName = generateBudgetDisplayName({
+      predefinedQueryType: undefined,
+      customCatalog: true,
+      catalogUuid: uuidv4(),
+      catalogTitle: 'Foo Bar Custom Catalog',
+    });
+    expect(actualDisplayName).toEqual('Unique/Curated');
   });
-  it('returns null if no policy is passed', () => {
-    expect(extractDefinedCatalogTitle({})).toEqual(null);
+  it('returns the correct display name when no catalog is selected', () => {
+    const actualDisplayName = generateBudgetDisplayName({
+      predefinedQueryType: undefined,
+      customCatalog: false,
+      catalogUuid: undefined,
+      catalogTitle: undefined,
+    });
+    expect(actualDisplayName).toEqual(null);
   });
-  it('returns catalog query title', () => {
-    expect(extractDefinedCatalogTitle({ catalogQueryMetadata: { catalogQuery: { title: 'The Bestests' } } })).toEqual('The Bestests');
+  it('returns the correct display name when no policy is passed', () => {
+    const actualDisplayName = generateBudgetDisplayName({});
+    expect(actualDisplayName).toEqual(null);
   });
 });
 
@@ -155,55 +164,9 @@ describe('USES_LOCAL_TEST_DATA', () => {
   });
 });
 
-describe('filterIndexOfCatalogQuery', () => {
-  it('filters correctly', () => {
-    const sampleFilterBy = '[SPLIT][HERE]';
-    const modifedSampleCatalogQueries = sampleCatalogQueries.data.map((query, index) => ({
-      ...query,
-      title: index % 2 ? `${sampleFilterBy} ${query.title}` : query.title,
-    }));
-    const modifiedFilteredByResponse = sampleCatalogQueries.data
-      .map((query, index) => (!(index % 2) ? query : false))
-      .filter((query) => query !== false);
-    expect(filterIndexOfCatalogQueryTitle(
-      modifedSampleCatalogQueries,
-      sampleFilterBy,
-    )).toEqual(modifiedFilteredByResponse);
-  });
-  it('returns the original array if no filter is passed', () => {
-    expect(filterIndexOfCatalogQueryTitle(sampleCatalogQueries.data)).toEqual(sampleCatalogQueries.data);
-  });
-});
-
-describe('getCatalogUuid', () => {
-  it('returns a catalog uuid', () => {
-    const subsidyUuid = '0196e5c3-ba08-4798-8bf1-019d747c27bf';
-    const catalogUuid = '69035754-fa48-4519-92d8-a723ae0f6e58';
-    expect(getCatalogUuid(samplePolicyResponse, subsidyUuid)).toEqual([catalogUuid]);
-  });
-  it('returns undefined when no matching subsidy uuid is found', () => {
-    const subsidyUuid = '1234';
-    expect(getCatalogUuid(samplePolicyResponse, subsidyUuid)).toEqual(undefined);
-  });
-});
-
-describe('getCatalogQueries', () => {
-  it('returns data', async () => {
-    const data = await getCatalogQueries();
-    expect(data).toEqual([
-      {
-        id: '1',
-      },
-      {
-        id: '2',
-      },
-    ]);
-  });
-});
-
 const sampleResponses = {
   data: {
-    createCatalog: {
+    getOrCreateCatalog: {
       uuid: 'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
       title: 'test123',
       enterprise_customer: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0',
@@ -279,44 +242,26 @@ const samplePatchResponses = {
   },
 };
 
-jest.mock('@edx/frontend-platform/auth', () => ({
-  getAuthenticatedHttpClient: () => ({
-    get: () => Promise.resolve({
-      data: [{
-        id: '1',
-      }, {
-        id: '2',
-      }],
-    }),
-    post: () => Promise.resolve(sampleResponses),
-    patch: () => Promise.resolve(samplePatchResponses),
-  }),
-}));
-
-describe('createCatalogs', () => {
+describe('getOrCreateCatalog', () => {
   it('returns the correct data', async () => {
-    const data = await createCatalogs([
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
-      10,
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
-    ]);
-    expect(data.createCatalog).toEqual(sampleResponses.data.createCatalog);
-  });
-});
-
-describe('patchCatalogs', () => {
-  it('returns the correct data', async () => {
-    const data = await patchCatalogs([
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd',
-      10,
-      'abf9f43b-1872-4c26-a2e6-1598fc57fbdd - test123',
-    ]);
-    expect(data.patchCatalog).toEqual(samplePatchResponses.data.patchCatalogCatalog);
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      post: jest.fn().mockResolvedValue({ data: sampleResponses.data.getOrCreateCatalog }),
+    }));
+    const data = await getOrCreateCatalog({
+      enterpriseCustomerUuid: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0',
+      catalogQueryId: 10,
+      title: 'c6aaf182-bcae-4d14-84cd-d538b7ec08f0 - test123',
+    });
+    expect(data).toEqual(sampleResponses.data.getOrCreateCatalog);
+    // TODO: check that getAuthenticatedHttpClient.post was called with the correct payload.
   });
 });
 
 describe('createSubsidy', () => {
   it('returns the correct data', async () => {
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      post: jest.fn().mockResolvedValue({ data: sampleResponses.data.createSubsidy }),
+    }));
     const data = await createSubsidy({
       reference_id: '112211',
       default_title: '321',
@@ -328,12 +273,15 @@ describe('createSubsidy', () => {
       default_revenue_category: 'partner-no-rev-prepay',
       default_internal_only: true,
     });
-    expect(data.createSubsidy).toEqual(sampleResponses.data.createSubsidy);
+    expect(data).toEqual(sampleResponses.data.createSubsidy);
   });
 });
 
 describe('patchSubsidy', () => {
   it('returns the correct data', async () => {
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      patch: jest.fn().mockResolvedValue({ data: samplePatchResponses.data.patchSubsidy }),
+    }));
     const { data } = await patchSubsidy({
       uuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
       title: 'awesome subsidy title',
@@ -342,12 +290,15 @@ describe('patchSubsidy', () => {
       internal_only: true,
       revenue_category: 'partner-no-rev-prepay',
     });
-    expect(data.patchSubsidy).toEqual(samplePatchResponses.data.patchSubsidy);
+    expect(data).toEqual(samplePatchResponses.data.patchSubsidy);
   });
 });
 
 describe('createPolicies', () => {
   it('returns the correct data', async () => {
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      post: jest.fn().mockResolvedValue({ data: sampleResponses.data.createPolicy }),
+    }));
     const { data } = await createPolicy({
       policy_type: 'PerLearnerSpendCreditAccessPolicy',
       display_name: 'test-display-name',
@@ -361,12 +312,15 @@ describe('createPolicies', () => {
       per_learner_enrollment_limit: null,
       spend_limit: 1200,
     });
-    expect(data.createPolicy).toEqual(sampleResponses.data.createPolicy);
+    expect(data).toEqual(sampleResponses.data.createPolicy);
   });
 });
 
 describe('patchPolicy', () => {
   it('returns the correct data', async () => {
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      patch: jest.fn().mockResolvedValue({ data: samplePatchResponses.data.patchPolicy }),
+    }));
     const { data } = await patchPolicy({
       uuid: '7a5e4882-16a6-4a5f-bfe1-eda91014aff4',
       description: 'awesome description',
@@ -374,7 +328,7 @@ describe('patchPolicy', () => {
       per_learner_spend_limit: 12,
       spend_limit: 1200,
     });
-    expect(data.patchPolicy).toEqual(samplePatchResponses.data.patchPolicy);
+    expect(data).toEqual(samplePatchResponses.data.patchPolicy);
   });
 });
 
@@ -389,6 +343,9 @@ const emptyDataSet = {
 };
 describe('determineInvalidFields', () => {
   it('returns false for all subsidy fields', async () => {
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      get: jest.fn().mockResolvedValue({ data: [{ id: uuidv4() }] }),
+    }));
     const expectedFailedSubsidyOutput = {
       subsidyTitle: false,
       enterpriseUUID: false,
@@ -413,7 +370,8 @@ describe('determineInvalidFields', () => {
     }, [{
       accountName: false,
       accountValue: false,
-      catalogQueryMetadata: false,
+      catalogUuid: false,
+      predefinedQueryType: false,
       perLearnerCap: false,
       perLearnerCapAmount: false,
       policyType: false,
@@ -424,11 +382,10 @@ describe('determineInvalidFields', () => {
       policies: [{
         accountName: '',
         accountValue: '',
-        catalogQueryMetadata: {
-          catakigQuery: {
-            id: '',
-          },
-        },
+        catalogTitle: undefined,
+        catalogUuid: undefined,
+        customCatalog: undefined,
+        predefinedQueryType: undefined,
         perLearnerCap: undefined,
         perLearnerCapAmount: null,
       }],
@@ -447,7 +404,7 @@ describe('transformPolicyData', () => {
 
 describe('transformPatchPolicyData', () => {
   it('returns an empty array when no policies are passed', async () => {
-    const output = await transformPatchPolicyPayload({ policies: [] }, [], []);
+    const output = await transformPatchPolicyPayload({ policies: [] }, []);
     expect(output).toEqual([]);
   });
   it('returns the correct data', async () => {
@@ -455,25 +412,23 @@ describe('transformPatchPolicyData', () => {
       policies: [{
         policy_type: 'PerLearnerSpendCreditAccessPolicy',
         accountDescription: 'awesome policy description',
-        catalogQueryMetadata: {
-          catalogQuery: {
-            catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
-          },
-        },
+        customCatalog: true,
+        catalogTitle: 'awesome custom catalog',
+        catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
         perLearnerCap: true,
-        perLearnerCapAmount: 2000,
+        perLearnerCapAmount: 200,
         uuid: '12324232',
-        accountValue: 1200,
+        accountValue: 12000,
       }],
       subsidyUuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
     };
-    const output = await transformPatchPolicyPayload(mockFormData, [samplePatchResponses.createCatalog]);
+    const output = await transformPatchPolicyPayload(mockFormData, [undefined]);
     expect(output).toEqual([{
       description: 'awesome policy description',
       catalogUuid: '2afb0a7f-103d-43c3-8b1a-db8c5b3ba1f4',
       subsidyUuid: '205f11a4-0303-4407-a2e7-80261ef8fb8f',
-      perLearnerSpendLimit: 200000,
-      spendLimit: 1200,
+      perLearnerSpendLimit: 200,
+      spendLimit: 12000,
       uuid: '12324232',
     }]);
   });
@@ -592,5 +547,27 @@ describe('filterByEnterpriseCustomerName', () => {
   it('returns an empty object if no customer name matches', () => {
     const output = {};
     expect(filterByEnterpriseCustomerName({ filterBy: falseFilterBy, fetchedCustomerData })).toEqual(output);
+  });
+});
+
+describe('transformSubsidyData', () => {
+  const enterpriseUUID = uuidv4();
+  const transformedSinglePolicyData = {
+    enterpriseUUID,
+    financialIdentifier: '00kc1230abc1234321',
+    internalOnly: 'No',
+    isoStartDate: '2023-04-18T00:00:00.000Z',
+    isoEndDate: '2023-04-21T00:00:00.000Z',
+    revenueCategory: 'partner-no-rev-prepay',
+    startingBalance: 250000,
+    subsidyTitle: 'Test Subsidy',
+  };
+  it('transform single subsidy form data', () => {
+    const singlePolicyFormData = {
+      ...sampleSinglePolicyPredefinedCatalogQueryFormData,
+      enterpriseUUID,
+    };
+    const transformedSingleSubsidy = transformSubsidyData(singlePolicyFormData);
+    expect(transformedSingleSubsidy).toEqual(transformedSinglePolicyData);
   });
 });

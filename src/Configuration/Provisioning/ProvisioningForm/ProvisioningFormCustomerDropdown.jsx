@@ -21,7 +21,7 @@ const ProvisioningFormCustomerDropdown = () => {
   const [dropdownValues, setDropdownValues] = useState([ENTERPRISE_UUID.DROPDOWN_DEFAULT]);
   const debouncedSearch = useMemo(() => debounce(getCustomers, 500, {
     leading: false,
-  }), [formData.enterpriseUUID]);
+  }), [getCustomers]);
   const handleOnSelected = (value) => {
     /* .includes('---') and .split(' --- ') are used to get the UUID from the
     dropdown value, and populate the customerUUID state */

@@ -1,11 +1,18 @@
 import { v4 as uuidv4 } from 'uuid';
 
+// Dummy values for the PREDEFINED_CATALOG_QUERIES Config attribute.
+export const MOCK_PREDEFINED_CATALOG_QUERIES = {
+  everything: 2,
+  open_courses: 3,
+  executive_education: 1,
+};
+
 export const singlePolicy = [
   {
-    catalogQueryMetadata: {
-      catalogQuery: '',
-    },
-    catalogQueryTitle: 'Account',
+    catalogTitle: 'Account',
+    catalogUuid: '',
+    customCatalog: undefined,
+    predefinedQueryType: undefined,
     uuid: uuidv4(),
     customerCatalog: false,
   },
@@ -75,6 +82,52 @@ export const sampleCatalogQueries = {
   isLoading: false,
 };
 
+export const sampleEnterpriseUuid = uuidv4();
+
+// List of catalog objects as returned by the list catalogs API endpoint (converted to camelCase).
+export const sampleCatalogs = [
+  {
+    uuid: uuidv4(),
+    title: `${sampleEnterpriseUuid} --- Open Courses`,
+    enterpriseCustomer: sampleEnterpriseUuid,
+    enterpriseCatalogQuery: MOCK_PREDEFINED_CATALOG_QUERIES.open_courses,
+    created: '2023-03-10T17:24:51.545054Z',
+    modified: '2023-03-10T17:24:51.545054Z',
+  },
+  {
+    uuid: uuidv4(),
+    title: `${sampleEnterpriseUuid} --- Executive Education`,
+    enterpriseCustomer: sampleEnterpriseUuid,
+    enterpriseCatalogQuery: MOCK_PREDEFINED_CATALOG_QUERIES.executive_education,
+    created: '2023-03-13T19:09:24.841448Z',
+    modified: '2023-03-13T19:09:24.841448Z',
+  },
+  {
+    uuid: uuidv4(),
+    title: `${sampleEnterpriseUuid} --- Everything`,
+    enterpriseCustomer: sampleEnterpriseUuid,
+    enterpriseCatalogQuery: MOCK_PREDEFINED_CATALOG_QUERIES.everything,
+    created: '2023-03-12T21:59:28.014016Z',
+    modified: '2023-03-12T21:59:28.014016Z',
+  },
+  {
+    uuid: uuidv4(),
+    title: 'Foo Bar Custom Catalog 1',
+    enterpriseCustomer: sampleEnterpriseUuid,
+    enterpriseCatalogQuery: 101,
+    created: '2024-03-12T21:59:28.014016Z',
+    modified: '2024-03-12T21:59:28.014016Z',
+  },
+  {
+    uuid: uuidv4(),
+    title: 'Foo Bar Custom Catalog 2',
+    enterpriseCustomer: sampleEnterpriseUuid,
+    enterpriseCatalogQuery: 102,
+    created: '2025-03-12T21:59:28.014016Z',
+    modified: '2025-03-12T21:59:28.014016Z',
+  },
+];
+
 export const sampleDataTableData = (count, testing = true) => {
   if (!testing) {
     return [];
@@ -111,26 +164,20 @@ export const sampleMultiplePolicyFormData = {
   policies: [
     {
       uuid: uuidv4(),
-      catalogQueryTitle: 'Open Courses account',
-      catalogQueryMetadata: {
-        catalogQuery: {
-          id: 9,
-          title: 'Open Courses account',
-        },
-      },
+      catalogTitle: 'Open Courses account',
+      catalogUuid: undefined,
+      customCatalog: undefined,
+      predefinedQueryType: 'openCourses',
       accountName: 'Super Awesome Open Courses',
       accountValue: '250000',
       perLearnerCap: false,
     },
     {
       uuid: uuidv4(),
-      catalogQueryTitle: 'Executive Education account',
-      catalogQueryMetadata: {
-        catalogQuery: {
-          id: 10,
-          title: 'Executive Education account',
-        },
-      },
+      catalogTitle: 'Executive Education account',
+      catalogUuid: undefined,
+      customCatalog: undefined,
+      predefinedQueryType: 'executiveEducation',
       accountName: 'Ever Expanding Executive Education',
       accountValue: '750000',
       perLearnerCap: true,
@@ -142,7 +189,7 @@ export const sampleMultiplePolicyFormData = {
   startDate: '2023-04-18',
   endDate: '2023-04-21',
   internalOnly: 'Yes',
-  subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyRevReq: 'partner-no-rev-prepay',
   subsidyUuid: '123testSubsidyUuid',
   subsidyTitle: 'Test Subsidy',
 };
@@ -151,13 +198,10 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
   policies: [
     {
       uuid: uuidv4(),
-      catalogQueryTitle: 'Balance',
-      catalogQueryMetadata: {
-        catalogQuery: {
-          id: '10',
-          title: 'Executive Education',
-        },
-      },
+      catalogTitle: 'Balance',
+      catalogUuid: undefined,
+      customCatalog: undefined,
+      predefinedQueryType: 'executiveEducation',
       accountName: 'I love Executive Education Only',
       accountValue: '250000',
       perLearnerCap: true,
@@ -169,7 +213,7 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
   startDate: '2023-04-18',
   endDate: '2023-04-21',
   internalOnly: 'No',
-  subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyRevReq: 'partner-no-rev-prepay',
   subsidyTitle: 'Test Subsidy',
 };
 
@@ -177,20 +221,10 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
   policies: [
     {
       uuid: uuidv4(),
-      catalogQueryTitle: 'Balance',
-      catalogQueryMetadata: {
-        catalogQuery: {
-          id: 2,
-          contentFilter: {
-            contentType: 'courses',
-          },
-          created: '2023-02-22T19:30:19.611766Z',
-          modified: '2023-02-22T19:30:19.611766Z',
-          title: 'TestQ2',
-          uuid: uuidv4(),
-          includeExecEd2UCourses: false,
-        },
-      },
+      catalogTitle: 'Sample Custom Catalog',
+      catalogUuid: uuidv4(),
+      customCatalog: true,
+      predefinedQueryType: undefined,
       accountName: 'Super Cool Awesome',
       customerCatalog: false,
       accountValue: '250000',
@@ -202,7 +236,7 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
   startDate: '2023-04-06',
   endDate: '2023-04-27',
   internalOnly: 'Yes',
-  subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyRevReq: 'partner-no-rev-prepay',
   subsidyTitle: 'Test Subsidy',
 };
 
@@ -210,20 +244,10 @@ export const sampleSingleEmptyData = {
   policies: [
     {
       uuid: uuidv4(),
-      catalogQueryTitle: '',
-      catalogQueryMetadata: {
-        catalogQuery: {
-          id: 2,
-          contentFilter: {
-            contentType: 'courses',
-          },
-          created: '2023-02-22T19:30:19.611766Z',
-          modified: '2023-02-22T19:30:19.611766Z',
-          title: 'TestQ2',
-          uuid: uuidv4(),
-          includeExecEd2UCourses: false,
-        },
-      },
+      catalogTitle: '',
+      catalogUuid: undefined,
+      customCatalog: false,
+      predefinedQueryType: undefined,
       accountName: '',
       customerCatalog: false,
       accountValue: '',
@@ -235,7 +259,7 @@ export const sampleSingleEmptyData = {
   startDate: '2023-04-06',
   endDate: '2023-04-27',
   internalOnly: 'Yes',
-  subsidyRevReq: 'No (partner no rev prepay)',
+  subsidyRevReq: 'partner-no-rev-prepay',
   subsidyTitle: 'Test Subsidy',
 };
 

@@ -1,7 +1,11 @@
+import { v4 as uuidv4 } from 'uuid';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import PROVISIONING_PAGE_TEXT from '../../Provisioning/data/constants';
+import PROVISIONING_PAGE_TEXT, {
+  PREDEFINED_QUERIES_ENUM,
+  PREDEFINED_QUERY_DISPLAY_NAMES,
+} from '../../Provisioning/data/constants';
 import { ProvisioningContext as NestedProvisioningContext } from '../../Provisioning/ProvisioningContext';
 
 const { ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
@@ -9,10 +13,9 @@ const { ALERTS } = PROVISIONING_PAGE_TEXT.FORM;
 export const initialStateValue = {
   customers: [],
   multipleFunds: undefined,
-  customCatalog: false,
   alertMessage: ALERTS.unselectedAccountType,
   isEditMode: false,
-  catalogQueries: {
+  existingEnterpriseCatalogs: {
     data: [],
     isLoading: true,
   },
@@ -23,16 +26,16 @@ export const initialStateValue = {
     subsidy: [],
     policies: [],
   },
+  isLoading: true,
 };
 
-const customerUuid = '3d9b73dc-590a-48b3-81e2-fd270618b80e';
+const enterpriseUUID = uuidv4();
 export const hydratedInitialState = {
   customers: [],
   multipleFunds: true,
-  customCatalog: false,
   alertMessage: ALERTS.unselectedAccountType,
   isEditMode: true,
-  catalogQueries: {
+  existingEnterpriseCatalogs: {
     data: [],
     isLoading: true,
   },
@@ -40,11 +43,10 @@ export const hydratedInitialState = {
     subsidyUuid: '0196e5c3-ba08-4798-8bf1-019d747c27bf',
     subsidyTitle: 'Paper company',
     customerName: 'Dunder mifflin',
-    customerUuid,
-    enterpriseUUID: `Dunder mifflin --- ${customerUuid}`,
+    enterpriseUUID,
     internalOnly: true,
-    financialIdentifier: '00k12sdf4',
-    subsidyRevReq: 'Yes (bulk enrollment prepay)',
+    financialIdentifier: '00k12sdf4asdfasdfa',
+    subsidyRevReq: 'Yes (bulk-enrollment-prepay)',
     startDate: '2023-10-01',
     endDate: '2023-11-01',
     policies: [
@@ -53,13 +55,11 @@ export const hydratedInitialState = {
         perLearnerCap: true,
         perLearnerCapAmount: '99',
         description: 'blahblah',
-        accountName: 'Test Subsidy Title - Open Courses Budget',
-        catalogQueryMetadata: {
-          catalogQuery: {
-            title: 'Open Courses',
-            uuid: '4ev3r',
-          },
-        },
+        accountName: 'Test Subsidy Title --- Open Courses budget',
+        customCatalog: false,
+        predefinedQueryType: PREDEFINED_QUERIES_ENUM.openCourses,
+        catalogTitle: `${enterpriseUUID} --- ${PREDEFINED_QUERY_DISPLAY_NAMES.openCourses}`,
+        catalogUuid: uuidv4(),
         policyType: 'PerLearnerSpendCreditAccessPolicy',
         accessMethod: 'direct',
       },
@@ -70,6 +70,7 @@ export const hydratedInitialState = {
     policies: [],
   },
   hasEdits: false,
+  isLoading: false,
 };
 
 export const ProvisioningContext = ({

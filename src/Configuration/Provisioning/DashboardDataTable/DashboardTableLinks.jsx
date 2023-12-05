@@ -3,6 +3,7 @@ import { getConfig } from '@edx/frontend-platform';
 import { DjangoShort } from '@edx/paragon/icons';
 import PropTypes from 'prop-types';
 import ROUTES from '../../../data/constants/routes';
+import { DJANGO_ADMIN_RETRIEVE_SUBSIDY_PATH } from '../data/constants';
 
 const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.PROVISIONING;
 const dashboardLink = (planRowUuid, title) => {
@@ -33,7 +34,7 @@ export const DjangoIconHyperlink = ({ row }) => {
   return (
     <Hyperlink
       key="django-icon"
-      destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}/admin/subsidy/subsidy/?uuid=${rowUuid}`}
+      destination={`${DJANGO_ADMIN_SUBSIDY_BASE_URL}${DJANGO_ADMIN_RETRIEVE_SUBSIDY_PATH(rowUuid)}`}
       target="_blank"
       showLaunchIcon={false}
       data-testid="django-admin-link"

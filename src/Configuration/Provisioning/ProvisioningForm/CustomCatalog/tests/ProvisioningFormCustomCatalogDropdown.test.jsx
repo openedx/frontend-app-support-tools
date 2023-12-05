@@ -1,33 +1,40 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import ProvisioningFormCustomCatalogDropdown from '../ProvisioningFormCustomCatalogDropdown';
-import { ProvisioningContext, initialStateValue } from '../../../../testData/Provisioning';
-import { sampleCatalogQueries } from '../../../../testData';
+import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../../data/constants';
+import { MOCK_PREDEFINED_CATALOG_QUERIES, sampleCatalogs } from '../../../../testData/constants';
+import LmsApiService from '../../../../../data/services/EnterpriseApiService';
+import { getPredefinedCatalogQueryMappings } from '../../../data/utils';
 
 const { CUSTOM_CATALOG } = PROVISIONING_PAGE_TEXT.FORM;
 
-const catalogQueries = sampleCatalogQueries;
 const mockData = {
   data: {
-    results: catalogQueries.data,
+    results: sampleCatalogs,
   },
 };
 
 jest.mock('../../../../../data/services/EnterpriseApiService', () => ({
-  fetchEnterpriseCatalogQueries: jest.fn(() => Promise.resolve(mockData)),
+  fetchEnterpriseCustomerCatalogs: jest.fn(() => Promise.resolve(mockData)),
+}));
+
+// Patch frontend-platform to serve a custom version of PREDEFINED_CATALOG_QUERIES.
+jest.mock('@edx/frontend-platform', () => ({
+  ...jest.requireActual('@edx/frontend-platform'),
+  getConfig: jest.fn(() => ({
+    PREDEFINED_CATALOG_QUERIES: MOCK_PREDEFINED_CATALOG_QUERIES,
+  })),
 }));
 
 const ProvisioningFormCustomCatalogDropdownWrapper = ({
   value = {
     ...initialStateValue,
-    catalogQueries,
+    existingEnterpriseCatalogs: {
+      data: sampleCatalogs,
+      isLoading: false,
+    },
   },
 }) => (
   <ProvisioningContext value={value}>
@@ -39,29 +46,32 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it('renders the custom catalog dropdown', async () => {
-    await act(async () => renderWithRouter(
+  it('renders the custom catalog dropdown', () => {
+    renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper />,
-    ));
+    );
 
-    expect(screen.getByText(CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.title)).toBeTruthy();
-    expect(screen.getByText(CUSTOM_CATALOG.OPTIONS.enterpriseCatalogQuery.subtitle)).toBeTruthy();
+    expect(screen.getByText(CUSTOM_CATALOG.OPTIONS.enterpriseCatalog.title)).toBeTruthy();
+    expect(screen.getByText(CUSTOM_CATALOG.OPTIONS.enterpriseCatalog.subtitle)).toBeTruthy();
   });
-  it('renders the custom catalog dropdown options', async () => {
-    await act(async () => renderWithRouter(
+  it('renders the custom catalog dropdown options', () => {
+    renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper />,
-    ));
+    );
 
     const autoSuggestInput = screen.getByTestId('custom-catalog-dropdown-autosuggest');
     const autoSuggestButton = screen.getAllByRole('button')[0];
     // open dropdown
     fireEvent.click(autoSuggestButton);
     // Check values are populating
-    catalogQueries.data.forEach(({ title }) => {
-      expect(screen.getByText(title, { exact: false })).toBeTruthy();
+    const { queryIdToQueryType } = getPredefinedCatalogQueryMappings();
+    sampleCatalogs.forEach(({ title, enterpriseCatalogQuery }) => {
+      if (!(enterpriseCatalogQuery in queryIdToQueryType)) {
+        expect(screen.getByText(title, { exact: false })).toBeTruthy();
+      }
     });
     const autoSuggestDropdownButtons = screen.getAllByRole('button');
-    const filteredDropdowns = autoSuggestDropdownButtons.filter((element) => element.textContent.includes('Test'));
+    const filteredDropdowns = autoSuggestDropdownButtons.filter((element) => element.textContent.includes('73cb6181'));
     // close dropdown
     fireEvent.click(autoSuggestButton);
 
@@ -71,92 +81,85 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
       waitFor(() => expect(autoSuggestInput.getAttribute('value')).toContain(filteredDropdowns[i].textContent));
     }
   });
-  it('setSelected is called when autosuggest option is selected', async () => {
-    await act(async () => renderWithRouter(
-      <ProvisioningFormCustomCatalogDropdownWrapper />,
-    ));
+  it('renders correct dropdown when catalogs list is still loading', () => {
+    LmsApiService.fetchEnterpriseCustomerCatalogs.mockResolvedValueOnce({ data: { results: [] } });
+    renderWithRouter(
+      <ProvisioningFormCustomCatalogDropdownWrapper
+        value={initialStateValue}
+      />,
+    );
 
-    const autoSuggestInput = screen.getByTestId('custom-catalog-dropdown-autosuggest');
     const autoSuggestButton = screen.getAllByRole('button')[0];
-
-    // open dropdown
     fireEvent.click(autoSuggestButton);
-
-    const autoSuggestDropdownButtons = screen.getAllByRole('button');
-    const filteredDropdowns = autoSuggestDropdownButtons.filter((element) => element.textContent.includes('Test'));
-    fireEvent.click(filteredDropdowns[3]);
-    expect(autoSuggestInput.getAttribute('value')).toContain(filteredDropdowns[3].textContent);
+    expect(screen.getByText('Loading...')).toBeTruthy();
   });
-  it('renders default dropdown when catalogQueries is empty', async () => {
-    await act(async () => renderWithRouter(
+  it('renders correct dropdown when the selected customer has no custom catalogs', () => {
+    LmsApiService.fetchEnterpriseCustomerCatalogs.mockResolvedValueOnce({ data: { results: [] } });
+    renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper
         value={{
           ...initialStateValue,
-          catalogQueries: {
-            data: [],
+          existingEnterpriseCatalogs: {
+            data: [], // This customer has no custom/unique/curated catalogs!
+            isLoading: false,
           },
         }}
       />,
-    ));
+    );
 
     const autoSuggestButton = screen.getAllByRole('button')[0];
-    // open dropdown
     fireEvent.click(autoSuggestButton);
-
-    expect(screen.getByText('Loading')).toBeTruthy();
+    expect(screen.getByText('No catalogs found for customer.')).toBeTruthy();
   });
-  it('renders default catalog query title when isEditMode is true', async () => {
-    await act(async () => renderWithRouter(
+  it('renders default catalog query title when isEditMode is true', () => {
+    LmsApiService.fetchEnterpriseCustomerCatalogs.mockResolvedValue({ data: { results: sampleCatalogs } });
+    renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper
         value={{
           ...initialStateValue,
           isEditMode: true,
-          catalogQueries: {
-            data: mockData.data.results,
+          existingEnterpriseCatalogs: {
+            data: sampleCatalogs,
+            isLoading: false,
           },
-          customCatalog: true,
           formData: {
             policies: [{
-              catalogQueryMetadata: {
-                catalogQuery: {
-                  title: 'Snoopy gang',
-                  uuid: '4ev3r',
-                },
-              },
+              oldCustomCatalog: true,
+              oldCatalogTitle: 'Snoopy gang',
+              customCatalog: true,
+              catalogTitle: 'Snoopy gang',
+              catalogUuid: '4ev3r',
             }],
           },
         }}
       />,
-    ));
+    );
     expect(screen.getByRole('list', {
-      name: 'Enterprise Catalog Query',
+      name: 'Enterprise Catalog',
     }).value).toBe('Snoopy gang --- 4ev3r');
   });
-  it('renders empty string title when isEditMode is false', async () => {
-    await act(async () => renderWithRouter(
+  it('renders empty string title when isEditMode is false', () => {
+    renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper
         value={{
           ...initialStateValue,
           isEditMode: false,
-          catalogQueries: {
-            data: mockData.data.results,
+          existingEnterpriseCatalogs: {
+            data: sampleCatalogs,
+            isLoading: false,
           },
-          customCatalog: true,
           formData: {
             policies: [{
-              catalogQueryMetadata: {
-                catalogQuery: {
-                  title: 'Snoopy gang',
-                  uuid: '4ev3r',
-                },
-              },
+              customCatalog: true,
+              catalogTitle: 'Snoopy gang',
+              catalogUuid: '4ev3r',
             }],
           },
         }}
       />,
-    ));
+    );
     expect(screen.getByRole('list', {
-      name: 'Enterprise Catalog Query',
+      name: 'Enterprise Catalog',
     }).value).toBe('');
   });
 });

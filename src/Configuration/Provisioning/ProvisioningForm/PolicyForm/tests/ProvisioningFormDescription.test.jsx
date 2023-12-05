@@ -73,7 +73,7 @@ describe('ProvisioningFormDescription', () => {
       formData: {
         policies: [{
           accountValue: '4000',
-          accountName: 'Test Subsidy Title - Budget',
+          accountName: 'Test Subsidy Title --- Budget',
           accountDescription: 'Testing 123',
         }],
       },

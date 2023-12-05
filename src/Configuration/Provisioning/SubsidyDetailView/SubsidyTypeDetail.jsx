@@ -3,10 +3,6 @@ import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const SubsidyTypeDetail = ({ revenueCategory }) => {
   const { FORM: { SUBSIDY_TYPE } } = PROVISIONING_PAGE_TEXT;
-  const selections = {
-    'partner-no-rev-prepay': SUBSIDY_TYPE.OPTIONS.no,
-    'bulk-enrollment-prepay': SUBSIDY_TYPE.OPTIONS.yes,
-  };
   return (
     <article className="mt-4.5">
       <div className="mb-1">
@@ -15,7 +11,7 @@ const SubsidyTypeDetail = ({ revenueCategory }) => {
           {SUBSIDY_TYPE.SUB_TITLE}
         </p>
         <p className="ml-3 text-gray-500">
-          {selections[revenueCategory]}
+          {SUBSIDY_TYPE.OPTIONS[revenueCategory]}
         </p>
       </div>
     </article>
