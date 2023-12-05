@@ -243,11 +243,11 @@ export default function useProvisioningContext() {
             // Old values should remain static and will help us later decide whether to skip catalog creation.
             oldPredefinedQueryType: predefinedQueryType,
             oldCustomCatalog: !predefinedQueryType,
-            oldCatalogUuid: catalog.uuid,
+            oldCatalogUuid: !predefinedQueryType ? catalog.uuid : undefined,
             // New values will change over time as different options are selected.
             predefinedQueryType,
             customCatalog: !predefinedQueryType,
-            catalogUuid: catalog.uuid,
+            catalogUuid: !predefinedQueryType ? catalog.uuid : undefined,
             // We ostensibly don't rely on the catalog title for anything critical, but in case it is a custom catalog
             // we can cache the title here so that we have something to display in the detail view header.
             catalogTitle: catalog.title,

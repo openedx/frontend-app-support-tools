@@ -147,6 +147,7 @@ describe('SubsidyEditView', () => {
     expect(screen.getByTestId('internal-only-checkbox').checked).toBeTruthy();
     expect(screen.getByTestId('partner-no-rev-prepay').checked).toBeTruthy();
     expect(screen.getByText('No, create one Learner Credit budget')).toBeInTheDocument();
+    expect(screen.getByText('Open Courses budget')).toBeInTheDocument();
     expect(screen.getByTestId('account-name').value).toBe('Paper company --- Open Courses');
     expect(screen.getByText(
       'The maximum USD value a single learner may redeem from the budget. This value should be less than the budget starting balance.',

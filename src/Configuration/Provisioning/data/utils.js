@@ -88,9 +88,11 @@ export async function determineInvalidFields(formData) {
     const policyData = {
       accountName: !!accountName,
       accountValue: !!accountValue,
-      // Either a predefined query type must be selected, or a custom catalog is selected.
-      predefinedQueryType: !!predefinedQueryType && !customCatalog,
-      catalogUuid: !!catalogUuid && customCatalog,
+      // Either a predefined query type must be selected, or a catalog UUID is selected, depending on customCatalog.
+      // When customCatalog is false, make sure predefinedQueryType is selected:
+      predefinedQueryType: !customCatalog ? !!predefinedQueryType : true,
+      // When customCatalog is true, make sure predefinedQueryType is selected:
+      catalogUuid: customCatalog ? !!catalogUuid : true,
       perLearnerCap: perLearnerCap !== undefined || perLearnerCap === false,
       perLearnerCapAmount: !!perLearnerCapAmount || perLearnerCap === false,
       policyType: !!policyType,
@@ -130,7 +132,7 @@ export function hasValidPolicyAndSubsidy(formData) {
     const isAccountNameValid = !!policy.accountName;
     const isAccountValueValid = !!policy.accountValue;
 
-    const isCatalogDefined = policy.customCatalog === true ? !!policy.catalogUuid : !!policy.predefinedQueryType;
+    const isCatalogDefined = policy.customCatalog ? !!policy.catalogUuid : !!policy.predefinedQueryType;
 
     // Requires learner cap to pass conditionals to be true
     const { perLearnerCap, perLearnerCapAmount } = policy;

@@ -4,6 +4,7 @@ import { useContextSelector } from 'use-context-selector';
 
 import { logError } from '@edx/frontend-platform/logging';
 
+import { generateBudgetDisplayName } from '../data/utils';
 import useProvisioningContext from '../data/hooks';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import { ProvisioningContext } from '../ProvisioningContext';
@@ -87,13 +88,10 @@ const SubsidyEditView = () => {
           <ProvisioningFormInternalOnly />
           <ProvisioningFormSubsidy />
           <AccountTypeDetail isMultipleFunds={multipleFunds} />
-          {(multipleFunds !== undefined) && formData.policies?.map(({
-            uuid,
-            policyFormTitle,
-          }, index) => (
+          {(multipleFunds !== undefined) && formData.policies?.map((policy, index) => (
             <ProvisioningFormPolicyContainer
-              key={uuid}
-              title={policyFormTitle}
+              key={policy.uuid}
+              title={generateBudgetDisplayName(policy)}
               index={index}
             />
           ))}

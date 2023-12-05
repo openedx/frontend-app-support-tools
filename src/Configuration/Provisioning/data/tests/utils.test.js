@@ -342,7 +342,7 @@ const emptyDataSet = {
   subsidyRevReq: '',
 };
 describe('determineInvalidFields', () => {
-  it('returns false for all subsidy fields', async () => {
+  it('returns false (invalid)for all subsidy fields', async () => {
     getAuthenticatedHttpClient.mockImplementation(() => ({
       get: jest.fn().mockResolvedValue({ data: [{ id: uuidv4() }] }),
     }));
@@ -358,7 +358,7 @@ describe('determineInvalidFields', () => {
     const output = await determineInvalidFields(emptyDataSet);
     expect(output).toEqual([expectedFailedSubsidyOutput]);
   });
-  it('returns false for all policy fields', async () => {
+  it('returns false (invalid)for all policy fields', async () => {
     const expectedFailedPolicyOutput = [{
       subsidyTitle: false,
       enterpriseUUID: false,
@@ -370,7 +370,7 @@ describe('determineInvalidFields', () => {
     }, [{
       accountName: false,
       accountValue: false,
-      catalogUuid: false,
+      catalogUuid: true, // This is true (i.e. valid) because catalogUuid is not required when customCatalog != true.
       predefinedQueryType: false,
       perLearnerCap: false,
       perLearnerCapAmount: false,
