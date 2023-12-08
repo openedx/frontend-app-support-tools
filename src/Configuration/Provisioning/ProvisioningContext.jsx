@@ -20,6 +20,8 @@ const ProvisioningContextProvider = ({ children }) => {
       // `policies` is a list of all policies/budgets inputs for this plan. After form completion, length should be 1 if
       // multipleFunds = false, and 2 and multipleFunds = true.
       policies: [],
+      // `internalOnly` backs the "Test plan" checkbox.  A true value means the plan will not be customer facing.
+      internalOnly: false,
     },
     // `showInvalidField` indicates when form fields are valid/invalid, possibly triggering invalid attributes to be set
     // on various form field containers.

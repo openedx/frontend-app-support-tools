@@ -21,6 +21,7 @@ export const initialStateValue = {
   },
   formData: {
     policies: [],
+    internalOnly: false,
   },
   showInvalidField: {
     subsidy: [],
