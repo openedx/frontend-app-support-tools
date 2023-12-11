@@ -188,7 +188,7 @@ export const sampleMultiplePolicyFormData = {
   financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
-  internalOnly: 'Yes',
+  internalOnly: true,
   subsidyRevReq: 'partner-no-rev-prepay',
   subsidyUuid: '123testSubsidyUuid',
   subsidyTitle: 'Test Subsidy',
@@ -212,7 +212,7 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
   financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-18',
   endDate: '2023-04-21',
-  internalOnly: 'No',
+  internalOnly: false,
   subsidyRevReq: 'partner-no-rev-prepay',
   subsidyTitle: 'Test Subsidy',
 };
@@ -235,7 +235,7 @@ export const sampleSinglePolicyCustomCatalogQueryFormData = {
   financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-06',
   endDate: '2023-04-27',
-  internalOnly: 'Yes',
+  internalOnly: true,
   subsidyRevReq: 'partner-no-rev-prepay',
   subsidyTitle: 'Test Subsidy',
 };
@@ -258,7 +258,7 @@ export const sampleSingleEmptyData = {
   financialIdentifier: '00kc1230abc1234321',
   startDate: '2023-04-06',
   endDate: '2023-04-27',
-  internalOnly: 'Yes',
+  internalOnly: true,
   subsidyRevReq: 'partner-no-rev-prepay',
   subsidyTitle: 'Test Subsidy',
 };

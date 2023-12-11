@@ -554,7 +554,7 @@ describe('transformSubsidyData', () => {
   const transformedSinglePolicyData = {
     enterpriseUUID,
     financialIdentifier: '00kc1230abc1234321',
-    internalOnly: 'No',
+    internalOnly: false,
     isoStartDate: '2023-04-18T00:00:00.000Z',
     isoEndDate: '2023-04-21T00:00:00.000Z',
     revenueCategory: 'partner-no-rev-prepay',

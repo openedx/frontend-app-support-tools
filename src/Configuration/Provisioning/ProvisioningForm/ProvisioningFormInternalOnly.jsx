@@ -11,11 +11,9 @@ const ProvisioningFormInternalOnly = () => {
   const { INTERNAL_ONLY } = PROVISIONING_PAGE_TEXT.FORM;
   const [formData, isEditMode, hasEdits] = selectProvisioningContext('formData', 'isEditMode', 'hasEdits');
 
-  let submittedFormInternalOnly;
-  if (isEditMode) {
-    submittedFormInternalOnly = formData.internalOnly;
-  }
-  const [value, setValue] = useState(submittedFormInternalOnly || false);
+  // formData.internalOnly is always defined, whether it's hydrated from an API call (isEditMode = true) or not
+  // (isEditMode = false) in which case ProvisioningContextProvider supplies a default.
+  const [value, setValue] = useState(formData.internalOnly || false);
 
   const handleChange = (e) => {
     const checkedState = e.target.checked;
