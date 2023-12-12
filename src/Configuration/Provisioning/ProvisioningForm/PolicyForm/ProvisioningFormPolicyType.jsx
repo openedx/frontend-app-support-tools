@@ -64,7 +64,14 @@ const ProvisioningFormPolicyType = ({ index }) => {
         className="mt-3.5"
       >
         <Form.Label>{POLICY_TYPE.LABEL}</Form.Label>
-        <ProvisioningFormHelpText />
+        <p className="text-gray">
+          {(submittedFormPolicyType === POLICY_TYPE.OPTIONS.ADMIN_SELECTS.VALUE)
+            && POLICY_TYPE.OPTIONS.ADMIN_SELECTS.DESCRIPTION}
+          {(submittedFormPolicyType === POLICY_TYPE.OPTIONS.LEARNER_SELECTS.VALUE)
+            && POLICY_TYPE.OPTIONS.LEARNER_SELECTS.DESCRIPTION}
+          <ProvisioningFormHelpText />
+        </p>
+        {!submittedFormPolicyType && (
         <Form.RadioSet
           name={`display-policy-type-${index}`}
           onChange={handleChange}
@@ -80,13 +87,13 @@ const ProvisioningFormPolicyType = ({ index }) => {
                 data-testid={DESCRIPTION}
                 data-description={DESCRIPTION}
                 isInvalid={isFormFieldInvalid}
-                disabled={isEditMode}
               >
                 {DESCRIPTION}
               </Form.Radio>
             ))
           }
         </Form.RadioSet>
+        )}
         {isFormFieldInvalid && (
           <Form.Control.Feedback
             type="invalid"

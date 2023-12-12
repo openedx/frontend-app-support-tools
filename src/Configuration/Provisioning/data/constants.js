@@ -104,9 +104,9 @@ const PROVISIONING_PAGE_TEXT = {
       OPTIONS: {
         displayName: 'Display name',
         totalAccountValue: {
-          title: 'Budget starting balance ($)',
-          subtitle: 'The contracted USD value available through the budget.',
-          dynamicSubtitle: (budgetType) => `The contracted USD value available through the budget redeemable for ${budgetType} enrollment.`,
+          title: 'Budget starting balance',
+          subtitle: 'The total contracted USD value available through the budget.',
+          dynamicSubtitle: (budgetType) => `The total contracted USD value available through the budget redeemable for ${budgetType} enrollment.`,
         },
       },
       ERROR: {
