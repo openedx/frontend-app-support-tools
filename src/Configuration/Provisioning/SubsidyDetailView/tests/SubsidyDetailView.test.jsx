@@ -137,7 +137,7 @@ describe('SubsidyDetailView', () => {
     expect(screen.getByText('Budget details')).toBeInTheDocument();
     expect(screen.getByText('Open Courses')).toBeInTheDocument();
     expect(screen.getByText('Display name')).toBeInTheDocument();
-    expect(screen.getByText('Budget starting balance ($)')).toBeInTheDocument();
+    expect(screen.getByText('Budget starting balance')).toBeInTheDocument();
     expect(screen.getByText('$5,000')).toBeInTheDocument();
     expect(screen.getByText('Catalog')).toBeInTheDocument();
     expect(screen.getByText('Limits')).toBeInTheDocument();

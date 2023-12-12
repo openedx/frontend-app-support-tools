@@ -206,6 +206,7 @@ export const sampleSinglePolicyPredefinedCatalogQueryFormData = {
       accountValue: '250000',
       perLearnerCap: true,
       perLearnerCapAmount: '2000',
+      policyType: 'PerLearnerSpendCreditAccessPolicy',
     },
   ],
   enterpriseUUID: uuidv4(),

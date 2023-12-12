@@ -4,6 +4,7 @@ import PolicyDescription from './PolicyDescription';
 import PolicyDetail from './PolicyDetail';
 import PolicyDetailHeader from './PolicyDetailHeader';
 import PolicyLimitsDetail from './PolicyLimitsDetail';
+import PolicyDistributionDetail from './PolicyDistributionDetail';
 import { selectProvisioningContext } from '../../data/utils';
 
 const PolicyContainer = () => {
@@ -14,6 +15,7 @@ const PolicyContainer = () => {
       <PolicyDetail index={index} />
       <PolicyDescription description={policy.accountDescription} />
       <AssociatedCatalogDetail index={index} />
+      <PolicyDistributionDetail policyType={policy.policyType} />
       <PolicyLimitsDetail index={index} />
     </Stack>
   ));

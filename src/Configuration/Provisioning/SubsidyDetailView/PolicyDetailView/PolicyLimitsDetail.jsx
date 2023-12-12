@@ -9,7 +9,7 @@ const PolicyLimitsDetail = ({ index }) => {
   const [formData] = selectProvisioningContext('formData');
 
   return (
-    <div className="mb-1 mt-3">
+    <div className="ml-4 mb-1 mt-3">
       <h3>{FORM.LEARNER_CAP.TITLE}</h3>
       <div className="ml-3">
         <p className="mb-1 mt-3">{FORM.LEARNER_CAP.SUB_TITLE}</p>
@@ -20,10 +20,12 @@ const PolicyLimitsDetail = ({ index }) => {
       {formData.policies[index].perLearnerCap ? (
         <div className="ml-3">
           <h4 className="mb-1 mt-4.5">{FORM.LEARNER_CAP_DETAIL.TITLE}</h4>
-          <h5 className="mb-1 mt-3">{FORM.LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.title}</h5>
-          <p className="text-gray-500">
-            {formatCurrency(formData.policies[index].perLearnerCapAmount)}
-          </p>
+          <div className="ml-3">
+            <h5 className="mb-1 mt-3">{FORM.LEARNER_CAP_DETAIL.OPTIONS.perLearnerSpendCap.title}</h5>
+            <p className="text-gray">
+              {formatCurrency(formData.policies[index].perLearnerCapAmount)}
+            </p>
+          </div>
         </div>
       ) : null}
     </div>
