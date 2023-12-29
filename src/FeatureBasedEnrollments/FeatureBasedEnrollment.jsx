@@ -4,7 +4,7 @@ import React, {
   useState,
 } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { Row, Col } from '@edx/paragon';
+import { Row, Col } from '@openedx/paragon';
 import PropTypes from 'prop-types';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';

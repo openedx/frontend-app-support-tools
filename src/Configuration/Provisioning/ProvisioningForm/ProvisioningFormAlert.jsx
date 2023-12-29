@@ -1,5 +1,5 @@
-import { Alert } from '@edx/paragon';
-import { Info } from '@edx/paragon/icons';
+import { Alert } from '@openedx/paragon';
+import { Info } from '@openedx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const ProvisioningFormAlert = () => {

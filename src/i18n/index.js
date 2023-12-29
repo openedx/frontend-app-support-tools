@@ -1,4 +1,4 @@
-import { messages as paragonMessages } from '@edx/paragon';
+import { messages as paragonMessages } from '@openedx/paragon';
 
 import arMessages from './messages/ar.json';
 import caMessages from './messages/ca.json';

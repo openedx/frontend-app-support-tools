@@ -1,6 +1,6 @@
-import { Hyperlink, Icon, IconButton } from '@edx/paragon';
+import { Hyperlink, Icon, IconButton } from '@openedx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import { DjangoShort } from '@edx/paragon/icons';
+import { DjangoShort } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import ROUTES from '../../../data/constants/routes';
 import { DJANGO_ADMIN_RETRIEVE_SUBSIDY_PATH } from '../data/constants';

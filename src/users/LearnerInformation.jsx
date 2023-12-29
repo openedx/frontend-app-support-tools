@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Tabs, Tab } from '@edx/paragon';
+import { Tabs, Tab } from '@openedx/paragon';
 import UserSummary from './UserSummary';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import Licenses from './licenses/Licenses';

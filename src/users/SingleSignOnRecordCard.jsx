@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   Card, Row, Col, Button, ModalDialog, ActionRow,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import Table from '../components/Table';
 import { formatDate, formatUnixTimestamp } from '../utils';
 import CopyShowHyperlinks from './CopyShowHyperLinks';

@@ -1,4 +1,4 @@
-import { ActionRow, Button, StatefulButton } from '@edx/paragon';
+import { ActionRow, Button, StatefulButton } from '@openedx/paragon';
 import { useEffect, useMemo, useState } from 'react';
 import { logError } from '@edx/frontend-platform/logging';
 import { useNavigate } from 'react-router-dom';
