@@ -1,6 +1,7 @@
 import { useContextSelector } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
+import snakeCase from 'lodash.snakecase';
 import dayjs from './dayjs';
 import { ProvisioningContext } from '../ProvisioningContext';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
@@ -650,10 +651,13 @@ export function sortDataTableData({ sortBy }) {
   if (!sortByObject) {
     return null;
   }
-  if (sortByObject.id === 'isActive') {
-    return sortByObject.desc ? '-expirationDatetime' : 'expirationDatetime';
+  let sortString = sortByObject.id;
+  if (sortString === 'isActive') {
+    sortString = 'expirationDatetime';
   }
-  return sortByObject.desc ? `-${sortByObject.id}` : sortByObject.id;
+  sortString = snakeCase(sortString);
+  sortString = sortByObject.desc ? `-${sortString}` : sortString;
+  return sortString;
 }
 
 /**
