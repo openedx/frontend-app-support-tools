@@ -477,7 +477,7 @@ describe('sortDatatableData', () => {
     expect(sortDataTableData({ sortBy: {} })).toEqual(output);
   });
   it('returns a sort by expirationDateTime if isActive is passed as the id', () => {
-    const output = 'expirationDatetime';
+    const output = 'expiration_datetime';
 
     // desc is true
     expect(sortDataTableData({
