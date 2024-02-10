@@ -49,13 +49,15 @@ export default class MobileHeader extends React.Component {
     const {
       loggedIn,
       avatar,
+      name,
       username,
+      hideUsername,
     } = this.props;
 
     return (
       <Dropdown>
-        <Dropdown.Toggle showLabel={false} size="md" as={AvatarButton} src={avatar}>
-          {username}
+        <Dropdown.Toggle id="mobile-header-dropdown-toggle" showLabel={false} size="md" as={AvatarButton} src={avatar}>
+          {hideUsername ? name : username}
         </Dropdown.Toggle>
 
         <Dropdown.Menu alignRight>
@@ -151,8 +153,10 @@ MobileHeader.propTypes = {
   logoDestination: PropTypes.string,
   avatar: PropTypes.string,
   username: PropTypes.string,
+  name: PropTypes.string,
   loggedIn: PropTypes.bool,
   stickyOnMobile: PropTypes.bool,
+  hideUsername: PropTypes.bool,
 };
 
 MobileHeader.defaultProps = {
@@ -164,7 +168,8 @@ MobileHeader.defaultProps = {
   logoDestination: null,
   avatar: null,
   username: null,
+  name: null,
   loggedIn: false,
   stickyOnMobile: true,
-
+  hideUsername: false,
 };

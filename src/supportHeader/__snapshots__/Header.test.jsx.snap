@@ -1,0 +1,457 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Header /> renders correctly for authenticated desktop 1`] = `
+<div>
+  <header
+    class="site-header-desktop"
+  >
+    <div
+      class="container-fluid"
+    >
+      <div
+        class="nav-container position-relative d-flex align-items-center"
+      >
+        <a
+          class="logo"
+          href="http://localhost:18000/dashboard"
+        >
+          <img
+            alt="edX"
+            class="d-block"
+            src="logo_url.jpg"
+          />
+        </a>
+        <nav
+          aria-label="Main"
+          class="nav main-nav"
+        >
+          <a
+            class="nav-link"
+          >
+            Confluence
+          </a>
+          <a
+            class="nav-link"
+            href="undefined"
+          >
+            Support Tools
+          </a>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Escalations
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Payment
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Courses
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+          <a
+            class="nav-link"
+            href="http://localhost:18000/admin/edx_proctoring/proctoredexamsoftwaresecurereview/"
+          >
+            Proctoring
+          </a>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Programs
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+        </nav>
+        <nav
+          aria-label="Secondary"
+          class="nav secondary-menu-container align-items-center ml-auto"
+        >
+          <div
+            class="pgn__dropdown pgn__dropdown-light dropdown"
+            data-testid="dropdown"
+          >
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="btn-avatar pgn__avatar-button-avatar pgn__avatar-button-avatar-md dropdown-toggle btn btn-tertiary btn-md"
+              id="desktop-header-dropdown-toggle"
+              type="button"
+            >
+              <img
+                alt=""
+                class="pgn__avatar pgn__avatar-sm"
+                src="icon/mock/path"
+              />
+              abc
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`<Header /> renders correctly for authenticated desktop when HIDE_USERNAME_FROM_HEADER is set to true 1`] = `
+<div>
+  <header
+    class="site-header-desktop"
+  >
+    <div
+      class="container-fluid"
+    >
+      <div
+        class="nav-container position-relative d-flex align-items-center"
+      >
+        <a
+          class="logo"
+          href="http://localhost:18000/dashboard"
+        >
+          <img
+            alt="edX"
+            class="d-block"
+            src="logo_url.jpg"
+          />
+        </a>
+        <nav
+          aria-label="Main"
+          class="nav main-nav"
+        >
+          <a
+            class="nav-link"
+          >
+            Confluence
+          </a>
+          <a
+            class="nav-link"
+            href="undefined"
+          >
+            Support Tools
+          </a>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Escalations
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Payment
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Courses
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+          <a
+            class="nav-link"
+            href="http://localhost:18000/admin/edx_proctoring/proctoredexamsoftwaresecurereview/"
+          >
+            Proctoring
+          </a>
+          <div
+            class="menu nav-item"
+          >
+            <a
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="menu-trigger nav-link d-inline-flex align-items-center"
+            >
+              Programs
+               
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                height="16px"
+                role="img"
+                version="1.1"
+                viewBox="0 0 16 16"
+                width="16px"
+              >
+                <path
+                  d="M7,4 L7,8 L11,8 L11,10 L5,10 L5,4 L7,4 Z"
+                  fill="currentColor"
+                  transform="translate(8.000000, 7.000000) rotate(-45.000000) translate(-8.000000, -7.000000) "
+                />
+              </svg>
+            </a>
+          </div>
+        </nav>
+        <nav
+          aria-label="Secondary"
+          class="nav secondary-menu-container align-items-center ml-auto"
+        >
+          <div
+            class="pgn__dropdown pgn__dropdown-light dropdown"
+            data-testid="dropdown"
+          >
+            <button
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="btn-avatar pgn__avatar-button-avatar pgn__avatar-button-avatar-md dropdown-toggle pgn__avatar-button-hide-label btn btn-tertiary btn-md"
+              id="desktop-header-dropdown-toggle"
+              type="button"
+            >
+              <img
+                alt="full name"
+                class="pgn__avatar pgn__avatar-sm"
+                src="icon/mock/path"
+              />
+            </button>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+</div>
+`;
+
+exports[`<Header /> renders correctly for authenticated mobile 1`] = `
+<div>
+  <header
+    aria-label="Main"
+    class="site-header-mobile d-flex justify-content-between align-items-center shadow sticky-top"
+  >
+    <div
+      class="w-100 d-flex justify-content-start"
+    >
+      <div
+        class="menu position-static"
+      >
+        <button
+          aria-expanded="false"
+          aria-haspopup="menu"
+          aria-label="Main Menu"
+          class="menu-trigger icon-button"
+          title="Main Menu"
+        >
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            height="24px"
+            role="img"
+            style="width: 1.5rem; height: 1.5rem;"
+            version="1.1"
+            viewBox="0 0 24 24"
+            width="24px"
+          >
+            <rect
+              fill="currentColor"
+              height="2"
+              width="20"
+              x="2"
+              y="5"
+            />
+            <rect
+              fill="currentColor"
+              height="2"
+              width="20"
+              x="2"
+              y="11"
+            />
+            <rect
+              fill="currentColor"
+              height="2"
+              width="20"
+              x="2"
+              y="17"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div
+      class="w-100 d-flex justify-content-center"
+    >
+      <a
+        class="logo"
+        href="http://localhost:18000/dashboard"
+        itemtype="http://schema.org/Organization"
+      >
+        <img
+          alt="edX"
+          class="d-block"
+          src="logo_url.jpg"
+        />
+      </a>
+    </div>
+    <div
+      class="w-100 d-flex justify-content-end align-items-center"
+    >
+      <div
+        class="pgn__dropdown pgn__dropdown-light dropdown"
+        data-testid="dropdown"
+      >
+        <button
+          aria-expanded="false"
+          aria-haspopup="true"
+          class="btn-avatar pgn__avatar-button-avatar pgn__avatar-button-avatar-md dropdown-toggle pgn__avatar-button-hide-label btn btn-tertiary btn-md"
+          id="mobile-header-dropdown-toggle"
+          type="button"
+        >
+          <img
+            alt="abc"
+            class="pgn__avatar pgn__avatar-sm"
+            src="icon/mock/path"
+          />
+        </button>
+      </div>
+    </div>
+  </header>
+</div>
+`;

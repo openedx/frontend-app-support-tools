@@ -47,14 +47,22 @@ export default class DesktopHeader extends React.Component {
     const {
       loggedIn,
       avatar,
+      name,
       username,
+      hideUsername,
     } = this.props;
 
     return (
       <Dropdown>
-        <Dropdown.Toggle id="desktop-header-dropdown-toggle" as={AvatarButton} src={avatar}>
-          {username}
-        </Dropdown.Toggle>
+        {hideUsername ? (
+          <Dropdown.Toggle id="desktop-header-dropdown-toggle" showLabel={false} as={AvatarButton} src={avatar}>
+            {name}
+          </Dropdown.Toggle>
+        ) : (
+          <Dropdown.Toggle id="desktop-header-dropdown-toggle" as={AvatarButton} src={avatar}>
+            {username}
+          </Dropdown.Toggle>
+        )}
 
         <Dropdown.Menu alignRight>
           {loggedIn ? this.renderUserMenuItems() : this.renderLoggedOutItems()}
@@ -131,7 +139,9 @@ DesktopHeader.propTypes = {
   logoDestination: PropTypes.string,
   avatar: PropTypes.string,
   username: PropTypes.string,
+  name: PropTypes.string,
   loggedIn: PropTypes.bool,
+  hideUsername: PropTypes.bool,
 };
 
 DesktopHeader.defaultProps = {
@@ -143,5 +153,7 @@ DesktopHeader.defaultProps = {
   logoDestination: null,
   avatar: null,
   username: null,
+  name: null,
   loggedIn: false,
+  hideUsername: false,
 };

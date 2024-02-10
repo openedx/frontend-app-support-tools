@@ -172,8 +172,10 @@ export default function Header() {
     logoDestination: getConfig().MINIMAL_HEADER ? null : `${config.LMS_BASE_URL}/dashboard`,
     loggedIn: authenticatedUser !== null,
     username: authenticatedUser !== null ? authenticatedUser.username : null,
+    name: authenticatedUser !== null ? authenticatedUser?.name : null,
     avatar: authenticatedUser !== null ? authenticatedUser.avatar : null,
     mainMenu: getConfig().MINIMAL_HEADER ? [] : mainMenu,
+    hideUsername: !!getConfig().HIDE_USERNAME_FROM_HEADER,
     userMenu,
     loggedOutItems,
   };
