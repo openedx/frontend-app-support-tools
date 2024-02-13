@@ -7,6 +7,7 @@ module.exports = createConfig('jest', {
   coveragePathIgnorePatterns: [
     '/node_modules/',
     'src/setupTest.js',
+    'src/index.jsx',
     'src/i18n',
     'src/users/v2/UserPage.jsx',
     'src/supportHeader/ToggleVersion.jsx',
