@@ -61,6 +61,7 @@ describe('Learners and Enrollments component', () => {
     expect(tabs.at(3).text()).toEqual('SSO/License Info');
     expect(tabs.at(4).text()).toEqual('Learner Credentials');
     expect(tabs.at(5).text()).toEqual('Learner Records');
+    expect(tabs.at(6).text()).toEqual('Course Reset');
   });
 
   it('Account Information Tab', () => {
@@ -178,6 +179,28 @@ describe('Learners and Enrollments component', () => {
     expect(records.html()).toEqual(expect.stringContaining('active'));
     expect(records.html()).toEqual(
       expect.stringContaining('Learner Records'),
+    );
+  });
+
+  it('Course Reset Tab', () => {
+    let tabs = wrapper.find('nav.nav-tabs a');
+
+    tabs.at(6).simulate('click');
+    tabs = wrapper.find('nav.nav-tabs a');
+    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs.at(6).html()).toEqual(expect.stringContaining('active'));
+
+    const records = wrapper.find(
+      '.tab-content div#learner-information-tabpane-course-reset',
+    );
+    expect(records.html()).toEqual(expect.stringContaining('active'));
+    expect(records.html()).toEqual(
+      expect.stringContaining('Course Reset'),
     );
   });
 });

@@ -8,6 +8,7 @@ import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsCon
 import LearnerCredentials from './LearnerCredentials';
 import LearnerRecords from './LearnerRecords';
 import LearnerPurchases from './LearnerPurchases';
+import CourseReset from './CourseReset';
 
 export default function LearnerInformation({
   user, changeHandler,
@@ -56,6 +57,10 @@ export default function LearnerInformation({
         <Tab eventKey="records" title="Learner Records">
           <br />
           <LearnerRecords username={user.username} />
+        </Tab>
+        <Tab eventKey="course-reset" title="Course Reset">
+          <br />
+          <CourseReset username={user.username} />
         </Tab>
       </Tabs>
     </>
