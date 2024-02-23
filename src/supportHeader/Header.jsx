@@ -19,6 +19,8 @@ ensureConfig([
   'LOGIN_URL',
   'MARKETING_SITE_BASE_URL',
   'ORDER_HISTORY_URL',
+  'ACCOUNT_PROFILE_URL',
+  'ACCOUNT_SETTINGS_URL',
 ], 'Header component');
 
 subscribe(APP_CONFIG_INITIALIZED, () => {
@@ -139,12 +141,12 @@ export default function Header() {
     dashboardMenuItem,
     {
       type: 'item',
-      href: `${config.LMS_BASE_URL}/u/${authenticatedUser.username}`,
+      href: `${config.ACCOUNT_PROFILE_URL}/u/${authenticatedUser.username}`,
       content: 'Profile',
     },
     {
       type: 'item',
-      href: `${config.LMS_BASE_URL}/account/settings`,
+      href: config.ACCOUNT_SETTINGS_URL,
       content: 'Account',
     },
     logoutMenuItem,
