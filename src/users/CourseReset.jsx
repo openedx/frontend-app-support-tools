@@ -17,6 +17,24 @@ function CourseReset({ username, intl }) {
   const [courseResetData, setCourseResetData] = useState([]);
   const [error, setError] = useState('');
   const [isOpen, open, close] = useToggle(false);
+  const POLLING_INTERVAL = 10000;
+
+  useEffect(() => {
+    // check if there is an enqueued or in progress course reset
+    const shouldPoll = courseResetData.some((course) => {
+      const status = course.status.toLowerCase();
+      return status.includes('in progress') || status.includes('enqueued');
+    });
+
+    let intervalId;
+    if (shouldPoll) {
+      intervalId = setInterval(async () => {
+        const data = await getLearnerCourseResetList(username);
+        setCourseResetData(data);
+      }, POLLING_INTERVAL);
+    }
+    return () => clearInterval(intervalId);
+  }, [courseResetData]);
 
   const handleSubmit = async (courseID) => {
     setError(null);
