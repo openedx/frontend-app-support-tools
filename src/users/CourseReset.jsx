@@ -54,18 +54,24 @@ function CourseReset({ username, intl }) {
     close();
   };
 
-  useEffect(async () => {
-    const handleRequest = async () => {
+  useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
       const data = await getLearnerCourseResetList(username);
-      if (data.length) {
-        setCourseResetData(data);
-      } else {
-        setCourseResetData([]);
-        setError(data.errors[0].text);
+      if (isMounted) {
+        if (data.length) {
+          setCourseResetData(data);
+        } else if (data && data.errors) {
+          setCourseResetData([]);
+          setError(data.errors[0]?.text);
+        }
       }
     };
 
-    handleRequest();
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const renderResetData = courseResetData.map((data) => {

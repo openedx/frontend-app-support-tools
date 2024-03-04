@@ -36,7 +36,6 @@ describe('CourseReset', () => {
     await waitFor(() => {
       screen = render(<CourseResetWrapper username={user} />);
     });
-    screen.debug(undefined, 300000000000);
     const btn = screen.getByText('Reset', { selector: 'button' });
     userEvent.click(btn);
     await waitFor(() => {
@@ -51,6 +50,41 @@ describe('CourseReset', () => {
       expect(screen.queryByText(/Warning/)).not.toBeInTheDocument();
     });
     expect(postRequest).toHaveBeenCalled();
+  });
+
+  it('polls new data', async () => {
+    jest.useFakeTimers();
+    const data = [{
+      course_id: 'course-v1:edX+DemoX+Demo_Course',
+      display_name: 'Demonstration Course',
+      can_reset: false,
+      status: 'In progress - Created 2024-02-28 11:29:06.318091+00:00 by edx',
+    }];
+
+    const updatedData = [{
+      course_id: 'course-v1:edX+DemoX+Demo_Course',
+      display_name: 'Demonstration Course',
+      can_reset: false,
+      status: 'Completed by Support 2024-02-28 11:29:06.318091+00:00 by edx',
+    }];
+
+    jest
+      .spyOn(api, 'getLearnerCourseResetList')
+      .mockImplementationOnce(() => Promise.resolve(data))
+      .mockImplementationOnce(() => Promise.resolve(updatedData));
+    const user = 'John Doe';
+    let screen;
+    await act(async () => {
+      screen = render(<CourseResetWrapper username={user} />);
+    });
+
+    const inProgressText = screen.getByText(/in progress/i);
+    expect(inProgressText).toBeInTheDocument();
+
+    jest.advanceTimersByTime(10000);
+
+    const completedText = await screen.findByText(/Completed by/i);
+    expect(completedText).toBeInTheDocument();
   });
 
   it('returns an empty table if it cannot fetch course reset list', async () => {
