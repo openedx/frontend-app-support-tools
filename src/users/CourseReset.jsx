@@ -1,39 +1,71 @@
 import {
-  AlertModal, Button, useToggle, ActionRow,
+  Alert, AlertModal, Button, useToggle, ActionRow,
 } from '@edx/paragon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { injectIntl, intlShape, FormattedMessage } from '@edx/frontend-platform/i18n';
+import {
+  injectIntl,
+  intlShape,
+  FormattedMessage,
+} from '@edx/frontend-platform/i18n';
 import Table from '../components/Table';
 
+import { getLearnerCourseResetList, postCourseReset } from './data/api';
 import messages from './messages';
 
 function CourseReset({ username, intl }) {
   const [courseResetData, setCourseResetData] = useState([]);
+  const [error, setError] = useState('');
   const [isOpen, open, close] = useToggle(false);
-  const handleSubmit = () => {
-    console.log(`Request sent! for ${username}`);
+
+  const handleSubmit = async (courseID) => {
+    setError(null);
+    const data = await postCourseReset(username, courseID);
+    if (data && !data.errors) {
+      const updatedCourseResetData = courseResetData.map((course) => {
+        if (course.course_id === data.course_id) {
+          return data;
+        }
+        return course;
+      });
+      setCourseResetData(updatedCourseResetData);
+    }
+    if (data && data.errors) {
+      setError(data.errors[0].text);
+    }
     close();
   };
 
-  useEffect(() => {
-    const currentData = [
-      { course_id: 'Into to re-dos', status: 'Completed on 1/3/24 12:13:34 by rdoris@edx.org', can_reset: false },
-      { course_id: 'Intermediate try again', status: 'Unavailable', can_reset: false },
-      { course_id: 'Advanced Erasing', status: 'Course no yet begun', can_reset: false },
-      { course_id: 'Re-Dos 301', status: 'In Progress - Started 2/15/24 1:08:00', can_reset: false },
-      { course_id: 'Re-Dos 201', status: 'Available', can_reset: true },
-    ];
-    setCourseResetData(currentData);
+  useEffect(async () => {
+    const handleRequest = async () => {
+      const data = await getLearnerCourseResetList(username);
+      if (data.length) {
+        setCourseResetData(data);
+      } else {
+        setCourseResetData([]);
+        setError(data.errors[0].text);
+      }
+    };
+
+    handleRequest();
   }, []);
 
   const renderResetData = courseResetData.map((data) => {
-    const updatedData = { courseId: data.course_id, status: data.status, action: 'Unavailable' };
+    const updatedData = {
+      displayName: data.display_name,
+      courseId: data.course_id,
+      status: data.status,
+      action: 'Unavailable',
+    };
 
     if (data.can_reset) {
       updatedData.action = (
         <>
-          <Button variant="outline-primary" className="reset-btn" onClick={open}>
+          <Button
+            variant="outline-primary"
+            className="reset-btn"
+            onClick={open}
+          >
             Reset
           </Button>
 
@@ -44,12 +76,17 @@ function CourseReset({ username, intl }) {
             variant="warning"
             footerNode={(
               <ActionRow>
-                <Button variant="primary" onClick={handleSubmit}>Yes</Button>
+                <Button
+                  variant="primary"
+                  onClick={() => handleSubmit(data.course_id)}
+                >
+                  Yes
+                </Button>
                 <Button variant="tertiary" onClick={close}>
                   No
                 </Button>
               </ActionRow>
-      )}
+            )}
           >
             <p>
               <FormattedMessage
@@ -63,7 +100,11 @@ function CourseReset({ username, intl }) {
     }
 
     if (data.status.toLowerCase().includes('in progress')) {
-      updatedData.action = <Button type="Submit" disabled>In Progress</Button>;
+      updatedData.action = (
+        <Button type="Submit" disabled>
+          Processing
+        </Button>
+      );
     }
 
     return updatedData;
@@ -72,11 +113,22 @@ function CourseReset({ username, intl }) {
   return (
     <section data-testid="course-reset-container">
       <h3>Course Reset</h3>
+      {error && (
+        <Alert
+          variant="danger"
+          dismissible
+          onClose={() => {
+            setError(null);
+          }}
+        >
+          {error}
+        </Alert>
+      )}
       <Table
         columns={[
           {
             Header: intl.formatMessage(messages.recordTableHeaderCourseName),
-            accessor: 'courseId',
+            accessor: 'displayName',
           },
           {
             Header: intl.formatMessage(messages.recordTableHeaderStatus),
