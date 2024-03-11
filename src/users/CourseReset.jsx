@@ -170,6 +170,7 @@ function CourseReset({ username, intl }) {
           },
         ]}
         data={renderResetData}
+        styleName="custom-table"
       />
     </section>
   );
