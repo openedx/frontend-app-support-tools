@@ -2,7 +2,7 @@ import {
   Alert, AlertModal, Button, useToggle, ActionRow,
 } from '@edx/paragon';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   injectIntl,
   intlShape,
@@ -20,23 +20,49 @@ function CourseReset({ username, intl }) {
   const POLLING_INTERVAL = 10000;
 
   useEffect(() => {
-    // check if there is an enqueued or in progress course reset
-    const shouldPoll = courseResetData.some((course) => {
-      const status = course.status.toLowerCase();
+    let isMounted = true;
+
+    const fetchData = async () => {
+      const data = await getLearnerCourseResetList(username);
+      if (isMounted) {
+        if (data.length) {
+          setCourseResetData(data);
+        } else if (data && data.errors) {
+          setCourseResetData([]);
+          setError(data.errors[0]?.text);
+        }
+      }
+    };
+
+    const shouldPoll = courseResetData.some((data) => {
+      const status = data.status.toLowerCase();
       return status.includes('in progress') || status.includes('enqueued');
     });
 
     let intervalId;
-    if (shouldPoll) {
-      intervalId = setInterval(async () => {
-        const data = await getLearnerCourseResetList(username);
-        setCourseResetData(data);
-      }, POLLING_INTERVAL);
-    }
-    return () => clearInterval(intervalId);
-  }, [courseResetData]);
+    const initializeAndPoll = async () => {
+      if (!courseResetData.length) {
+        await fetchData(); // Initial data fetch
+      }
 
-  const handleSubmit = async (courseID) => {
+      if (shouldPoll) {
+        intervalId = setInterval(() => {
+          fetchData();
+        }, POLLING_INTERVAL);
+      }
+    };
+
+    if (isMounted) {
+      initializeAndPoll(); // Execute initial fetch and start polling if necessary
+    }
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [courseResetData, username]);
+
+  const handleSubmit = useCallback(async (courseID) => {
     setError(null);
     const data = await postCourseReset(username, courseID);
     if (data && !data.errors) {
@@ -52,27 +78,7 @@ function CourseReset({ username, intl }) {
       setError(data.errors[0].text);
     }
     close();
-  };
-
-  useEffect(() => {
-    let isMounted = true;
-    const fetchData = async () => {
-      const data = await getLearnerCourseResetList(username);
-      if (isMounted) {
-        if (data.length) {
-          setCourseResetData(data);
-        } else if (data && data.errors) {
-          setCourseResetData([]);
-          setError(data.errors[0]?.text);
-        }
-      }
-    };
-
-    fetchData();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [username, courseResetData]);
 
   const renderResetData = courseResetData.map((data) => {
     const updatedData = {
@@ -164,7 +170,6 @@ function CourseReset({ username, intl }) {
           },
         ]}
         data={renderResetData}
-        styleName="custom-table"
       />
     </section>
   );

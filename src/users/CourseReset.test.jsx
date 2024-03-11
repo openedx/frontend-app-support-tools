@@ -131,22 +131,23 @@ describe('CourseReset', () => {
 
     await act(async () => {
       screen = render(<CourseResetWrapper username={user} />);
-      await waitFor(() => {
-        const btn = screen.getByText('Reset', { selector: 'button' });
-        userEvent.click(btn);
-      });
+    });
 
-      await waitFor(() => {
-        const submitButton = screen.getByText(/Yes/);
-        userEvent.click(submitButton);
-        expect(screen.getByText(/Yes/)).toBeInTheDocument();
-      });
+    await waitFor(() => {
+      const btn = screen.getByText('Reset', { selector: 'button' });
+      userEvent.click(btn);
+    });
 
-      userEvent.click(screen.queryByText(/Yes/));
+    await waitFor(() => {
+      const submitButton = screen.getByText(/Yes/);
+      userEvent.click(submitButton);
+      expect(screen.getByText(/Yes/)).toBeInTheDocument();
+    });
 
-      await waitFor(() => {
-        expect(screen.queryByText(/Warning/)).not.toBeInTheDocument();
-      });
+    userEvent.click(screen.queryByText(/Yes/));
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Warning/)).not.toBeInTheDocument();
     });
 
     expect(api.postCourseReset).toHaveBeenCalled();
