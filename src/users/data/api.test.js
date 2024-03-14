@@ -36,6 +36,7 @@ describe('API', () => {
   const programRecordsUrl = urls.getLearnerRecordsUrl();
   const retirementApiUrl = urls.userRetirementUrl();
   const orderHistoryApiUrl = urls.getOrderHistoryUrl();
+  const courseResetUrl = urls.courseResetUrl(testUsername);
 
   let mockAdapter;
 
@@ -1266,5 +1267,83 @@ describe('API', () => {
 
       expect(result).toEqual(expectedError);
     });
+  });
+
+  describe('Course Reset', () => {
+    it('should return course reset list for a user', async () => {
+      const expectedData = [
+        {
+          course_id: 'course-v1:edX+DemoX+Demo_Course',
+          display_name: 'Demonstration Course',
+          can_reset: false,
+          status: 'Enqueued - Created 2024-02-28 11:29:06.318091+00:00 by edx',
+        },
+        {
+          course_id: 'course-v1:EdxOrg+EDX101+2024_Q1',
+          display_name: 'Intro to edx',
+          can_reset: true,
+          status: 'Available',
+        },
+      ];
+
+      mockAdapter.onGet(courseResetUrl).reply(200, expectedData);
+
+      const result = await api.getLearnerCourseResetList(testUsername);
+
+      expect(result).toEqual(expectedData);
+    });
+
+    it('should return an empty array when an error occurs', async () => {
+      const expectedError = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'There was an error retrieving list of course reset for the user',
+            type: 'danger',
+            topic: 'courseReset',
+          },
+        ],
+      };
+      mockAdapter.onGet().reply(() => throwError(404, ''));
+
+      const result = await api.getLearnerCourseResetList(testUsername);
+
+      expect(result).toEqual(expectedError);
+    });
+
+    it('should post a course reset', async () => {
+      const expectedData = {
+        course_id: 'course-v1:EdxOrg+EDX101+2024_Q1',
+        display_name: 'Intro to edx',
+        can_reset: false,
+        status: 'Enqueued - Created 2024-02-28 11:29:06.318091+00:00 by edx',
+      };
+
+      mockAdapter.onPost(courseResetUrl).reply(201, expectedData);
+
+      const result = await api.postCourseReset(testUsername, 'course-v1:EdxOrg+EDX101+2024_Q1');
+
+      expect(result).toEqual(expectedData);
+    });
+  });
+
+  it('returns a 400 error', async () => {
+    const expectedError = {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'An error occurred when resetting user\'s course',
+          type: 'danger',
+          topic: 'courseReset',
+        },
+      ],
+    };
+    mockAdapter.onPost().reply(() => throwError(400, ''));
+
+    const result = await api.postCourseReset(testUsername);
+
+    expect(result).toEqual(expectedError);
   });
 });

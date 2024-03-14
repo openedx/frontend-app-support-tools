@@ -111,3 +111,5 @@ export const getUserCredentialsUrl = () => `${CREDENTIALS_BASE_URL}/api/v2/crede
 export const getLearnerRecordsUrl = () => `${CREDENTIALS_BASE_URL}/records/api/v1/program_records`;
 
 export const getOrderHistoryUrl = () => `${ECOMMERCE_BASE_URL}/api/v2/orders`;
+
+export const courseResetUrl = (username) => `${LMS_BASE_URL}/support/course_reset/${username}`;

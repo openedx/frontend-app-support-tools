@@ -781,3 +781,43 @@ export async function getOrderHistory(username) {
     };
   }
 }
+
+export async function getLearnerCourseResetList(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(AppUrls.courseResetUrl(username));
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving list of course reset for the user',
+          type: 'danger',
+          topic: 'courseReset',
+        },
+      ],
+    };
+  }
+}
+
+export async function postCourseReset(username, courseID) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.courseResetUrl(username), {
+      course_id: courseID,
+    });
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'An error occurred when resetting user\'s course',
+          type: 'danger',
+          topic: 'courseReset',
+        },
+      ],
+    };
+  }
+}
