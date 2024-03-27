@@ -1,5 +1,7 @@
 import React from 'react';
-import { act, render, waitFor } from '@testing-library/react';
+import {
+  act, fireEvent, render, waitFor,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
@@ -13,22 +15,31 @@ const CourseResetWrapper = (props) => (
   </IntlProvider>
 );
 
+const apiDataMocks = () => {
+  jest
+    .spyOn(api, 'getLearnerCourseResetList')
+    .mockImplementationOnce(() => Promise.resolve(expectedGetData));
+  const postRequest = jest
+    .spyOn(api, 'postCourseReset')
+    .mockImplementationOnce(() => Promise.resolve(expectedPostData));
+
+  return postRequest;
+};
+
 describe('CourseReset', () => {
   it('renders the component with the provided user prop', () => {
     const user = 'John Doe';
-    const screen = render(<CourseResetWrapper username={user} />);
-    const container = screen.getByTestId('course-reset-container');
-    expect(screen).toBeTruthy();
+    const { getByText, getByTestId } = render(<CourseResetWrapper username={user} />);
+    const container = getByTestId('course-reset-container');
     expect(container).toBeInTheDocument();
+    expect(getByText(/Course Name/)).toBeInTheDocument();
+    expect(getByText(/Status/)).toBeInTheDocument();
+    expect(getByText(/Comment/)).toBeInTheDocument();
+    expect(getByText(/Action/)).toBeInTheDocument();
   });
 
   it('clicks on the reset button and make a post request successfully', async () => {
-    jest
-      .spyOn(api, 'getLearnerCourseResetList')
-      .mockImplementationOnce(() => Promise.resolve(expectedGetData));
-    const postRequest = jest
-      .spyOn(api, 'postCourseReset')
-      .mockImplementationOnce(() => Promise.resolve(expectedPostData));
+    const postRequest = apiDataMocks();
 
     const user = 'John Doe';
     let screen;
@@ -158,5 +169,41 @@ describe('CourseReset', () => {
     await waitFor(() => {
       expect(alertText).not.toBeInTheDocument();
     });
+  });
+
+  it('asserts different comment state', async () => {
+    const postRequest = apiDataMocks();
+
+    const user = 'John Doe';
+    let screen;
+
+    await waitFor(() => {
+      screen = render(<CourseResetWrapper username={user} />);
+    });
+    const resetButton = screen.getByText('Reset', { selector: 'button' });
+    fireEvent.click(resetButton);
+
+    const submitButton = screen.getByText(/Yes/);
+    expect(submitButton).toBeInTheDocument();
+
+    // Get the comment textarea and make assertions
+    const commentInput = screen.getByRole('textbox');
+    expect(commentInput).toBeInTheDocument();
+
+    // Assert that an error occurs when the characters length of comment text is more than 255
+    fireEvent.change(commentInput, { target: { value: 'hello world'.repeat(200) } });
+    expect(commentInput).toHaveValue('hello world'.repeat(200));
+    const commentErrorText = screen.getByText('Maximum length allowed for comment is 255 characters');
+    expect(commentErrorText).toBeInTheDocument();
+
+    // check that no error occurs with comment length less than 256 characters
+    fireEvent.change(commentInput, { target: { value: 'hello world' } });
+    expect(commentInput).toHaveValue('hello world');
+    const errorText = screen.queryByText('Maximum length allowed for comment is 255 characters');
+    expect(errorText).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText(/Yes/));
+
+    await waitFor(() => expect(postRequest).toHaveBeenCalled());
   });
 });
