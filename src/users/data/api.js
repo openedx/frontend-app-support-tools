@@ -801,10 +801,11 @@ export async function getLearnerCourseResetList(username) {
   }
 }
 
-export async function postCourseReset(username, courseID) {
+export async function postCourseReset(username, courseID, comment = '') {
   try {
     const { data } = await getAuthenticatedHttpClient().post(AppUrls.courseResetUrl(username), {
       course_id: courseID,
+      comment,
     });
     return data;
   } catch (error) {
