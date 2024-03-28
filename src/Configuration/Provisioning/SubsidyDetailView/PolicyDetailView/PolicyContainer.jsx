@@ -1,4 +1,4 @@
-import { Stack } from '@edx/paragon';
+import { Stack } from '@openedx/paragon';
 import AssociatedCatalogDetail from './AssociatedCatalogDetail';
 import PolicyDescription from './PolicyDescription';
 import PolicyDetail from './PolicyDetail';

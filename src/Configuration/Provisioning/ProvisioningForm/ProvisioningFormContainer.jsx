@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import {
   Container,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import ProvisioningForm from './ProvisioningForm';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import ProvisioningContextProvider from '../ProvisioningContext';

@@ -1,6 +1,6 @@
 import {
   StatefulButton,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { useNavigate } from 'react-router-dom';
 import {
   useEffect, useMemo, useState,

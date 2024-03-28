@@ -1,6 +1,6 @@
 import {
   Form,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { useState } from 'react';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';

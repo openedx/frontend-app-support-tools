@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   ActionRow,
   Button, Input, ModalDialog,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import AlertList from '../../userMessages/AlertList';

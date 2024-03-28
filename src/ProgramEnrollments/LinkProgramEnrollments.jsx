@@ -1,4 +1,4 @@
-import { Input, Button } from '@edx/paragon';
+import { Input, Button } from '@openedx/paragon';
 import React, { useState, useCallback } from 'react';
 import getLinkProgramEnrollmentDetails from './data/api';
 import LinkProgramEnrollmentsTable from './LinkProgramEnrollmentsTable';

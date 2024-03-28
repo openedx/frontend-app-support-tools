@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, act } from '@testing-library/react';
 import { ProvisioningContext, initialStateValue } from '../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import ProvisioningFormCustomerDropdown from '../ProvisioningFormCustomerDropdown';
@@ -48,29 +48,31 @@ describe('ProvisioningFormCustomerDropdown', () => {
     expect(screen.getByText(ENTERPRISE_UUID.TITLE)).toBeTruthy();
     expect(screen.getByText(ENTERPRISE_UUID.SUB_TITLE)).toBeTruthy();
 
-    fireEvent.change(autoSuggestInput, { target: { value: '' } });
+    act(async () => {
+      fireEvent.change(autoSuggestInput, { target: { value: '' } });
 
-    // open dropdown
-    fireEvent.click(autoSuggestButton);
+      // open dropdown
+      fireEvent.click(autoSuggestButton);
 
-    expect(screen.getByText(ENTERPRISE_UUID.DROPDOWN_DEFAULT)).toBeTruthy();
+      expect(screen.getByText(ENTERPRISE_UUID.DROPDOWN_DEFAULT)).toBeTruthy();
 
-    // close dropdown
-    fireEvent.click(autoSuggestButton);
-    expect(screen.queryByText(ENTERPRISE_UUID.DROPDOWN_DEFAULT)).toBeFalsy();
+      // close dropdown
+      fireEvent.click(autoSuggestButton);
+      expect(screen.queryByText(ENTERPRISE_UUID.DROPDOWN_DEFAULT)).toBeFalsy();
 
-    fireEvent.change(autoSuggestInput, { target: { value: 'Customer 1' } });
-    // open dropdown
-    // open dropdown
-    fireEvent.click(autoSuggestButton);
-    fireEvent.click(autoSuggestButton);
+      fireEvent.change(autoSuggestInput, { target: { value: 'Customer 1' } });
+      // open dropdown
+      // open dropdown
+      fireEvent.click(autoSuggestButton);
+      fireEvent.click(autoSuggestButton);
 
-    const autoSuggestDropdownButtons = screen.getAllByRole('button');
-    const filteredDropdowns = autoSuggestDropdownButtons.filter((element) => element.textContent.includes('Customer'));
+      const autoSuggestDropdownButtons = screen.getAllByRole('button');
+      const filteredDropdowns = autoSuggestDropdownButtons.filter((element) => element.textContent.includes('Customer'));
 
-    expect(filteredDropdowns[1]).toBeTruthy();
+      expect(filteredDropdowns[1]).toBeTruthy();
 
-    fireEvent.click(filteredDropdowns[1]);
-    expect(autoSuggestInput.getAttribute('value')).toContain(filteredDropdowns[1].textContent);
+      fireEvent.click(filteredDropdowns[1]);
+      expect(autoSuggestInput.getAttribute('value')).toContain(filteredDropdowns[1].textContent);
+    });
   });
 });

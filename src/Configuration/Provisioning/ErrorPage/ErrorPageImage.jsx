@@ -1,4 +1,4 @@
-import { Image } from '@edx/paragon';
+import { Image } from '@openedx/paragon';
 import PropTypes from 'prop-types';
 
 const ErrorPageImage = ({ image, imageAltText }) => (

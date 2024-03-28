@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import {
   ActionRow,
   Container,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import CancelButton from './CancelButton';
 import SaveEditsButton from './SaveEditsButton';
 import SubsidyEditView from './SubsidyEditView';

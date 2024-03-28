@@ -9,7 +9,7 @@ import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import {
   ActionRow, Alert, Button, ModalDialog,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PageLoading from '../../components/common/PageLoading';
 import { formatDate } from '../../utils';
 import { getCertificate, generateCertificate, regenerateCertificate } from '../data/api';

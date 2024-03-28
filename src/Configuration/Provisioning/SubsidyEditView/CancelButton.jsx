@@ -4,7 +4,7 @@ import {
   Button,
   ModalDialog,
   useToggle,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import { selectProvisioningContext } from '../data/utils';
 

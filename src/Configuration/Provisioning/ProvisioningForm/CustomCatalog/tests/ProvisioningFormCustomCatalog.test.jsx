@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { screen } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import ProvisioningFormCustomCatalog from '../ProvisioningFormCustomCatalog';
 import { singlePolicy } from '../../../../testData';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
@@ -38,7 +38,7 @@ describe('ProvisioningFormCustomCatalog', () => {
     expect(screen.getByText(CUSTOM_CATALOG.HEADER.TITLE)).toBeTruthy();
     expect(screen.getByText(CUSTOM_CATALOG.HEADER.WARN_SUB_TITLE)).toBeTruthy();
   });
-  it('renders dropdown if customerCatalog is false', () => {
+  it('renders dropdown if customerCatalog is false', async () => {
     const customCatalogPolicies = singlePolicy
       .map(policy => ({ ...policy, customerCatalog: false }));
     const customInitialStateValue = {
@@ -55,10 +55,12 @@ describe('ProvisioningFormCustomCatalog', () => {
     renderWithRouter(<ProvisioningFormCustomCatalogWrapper
       value={customInitialStateValue}
     />);
-    const autoSuggestInput = screen.getByRole('list');
-    expect(autoSuggestInput.readOnly).toBeFalsy();
+    act(async () => {
+      const autoSuggestInput = await screen.findByRole('list');
+      expect(autoSuggestInput.readOnly).toBeFalsy();
+    });
   });
-  it('renders null if customerCatalog is undefined', () => {
+  it('renders null if customerCatalog is undefined', async () => {
     const customCatalogPolicies = singlePolicy
       .map(policy => ({ ...policy, customerCatalog: undefined }));
     const customInitialStateValue = {
@@ -76,7 +78,9 @@ describe('ProvisioningFormCustomCatalog', () => {
     renderWithRouter(<ProvisioningFormCustomCatalogWrapper
       value={customInitialStateValue}
     />);
-    const autoSuggestInput = screen.getByRole('list');
-    expect(autoSuggestInput.readOnly).toBeTruthy();
+    act(async () => {
+      const autoSuggestInput = await screen.findByRole('list');
+      expect(autoSuggestInput.readOnly).toBeTruthy();
+    });
   });
 });

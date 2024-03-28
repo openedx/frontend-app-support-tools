@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { Alert, useToggle } from '@edx/paragon';
-import { Edit } from '@edx/paragon/icons';
+import { Alert, useToggle } from '@openedx/paragon';
+import { Edit } from '@openedx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const ProvisioningFormInstructionAlert = ({ formMode }) => {

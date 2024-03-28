@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import {
   Button, Alert, ModalDialog, ActionRow,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { postCancelRetirement } from '../data/api';
 
 export default function CancelRetirement({
