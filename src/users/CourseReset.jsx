@@ -17,14 +17,15 @@ function CourseReset({ username, intl }) {
   const [courseResetData, setCourseResetData] = useState([]);
   const [error, setError] = useState('');
   const [isOpen, open, close] = useToggle(false);
-  const [comment, setComment] = useState();
+  const [comment, setComment] = useState('');
   const [commentError, setCommentError] = useState('');
   const POLLING_INTERVAL = 10000;
+  const MAX_COMMENT_LENGTH = 255;
 
   const handleCommentChange = (e) => {
     const text = e.target.value;
     setComment(text);
-    if (text.length > 255) {
+    if (text.length > MAX_COMMENT_LENGTH) {
       setCommentError('Maximum length allowed for comment is 255 characters');
     } else {
       setCommentError('');
