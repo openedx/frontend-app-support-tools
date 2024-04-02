@@ -101,8 +101,8 @@ describe('Course Enrollments Listing', () => {
 
     const extraDataTable = extraTables.at(0);
     const extraTableHeaders = extraDataTable.find('thead tr th');
-    expect(extraTableHeaders.length).toEqual(4);
-    ['Last Modified', 'Last Modified By', 'Reason', 'Order Number'].forEach((expectedHeader, index) => expect(
+    expect(extraTableHeaders.length).toEqual(5);
+    ['Last Modified', 'Last Modified By', 'Reason', 'Order Number', 'Source System'].forEach((expectedHeader, index) => expect(
       extraTableHeaders.at(index).text(),
     ).toEqual(expectedHeader));
 
@@ -146,8 +146,8 @@ describe('Course Enrollments Listing', () => {
 
       const extraDataTable = extraTables.at(0);
       const extraTableHeaders = extraDataTable.find('thead tr th');
-      expect(extraTableHeaders.length).toEqual(4);
-      ['Last Modified', 'Last Modified By', 'Reason', 'Order Number'].forEach((expectedHeader, idx) => expect(
+      expect(extraTableHeaders.length).toEqual(5);
+      ['Last Modified', 'Last Modified By', 'Reason', 'Order Number', 'Source System'].forEach((expectedHeader, idx) => expect(
         extraTableHeaders.at(idx).text(),
       ).toEqual(expectedHeader));
     });
