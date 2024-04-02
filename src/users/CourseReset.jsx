@@ -1,5 +1,5 @@
 import {
-  Alert, AlertModal, Button, useToggle, ActionRow,
+  Alert, AlertModal, Button, useToggle, ActionRow, Form,
 } from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -17,7 +17,20 @@ function CourseReset({ username, intl }) {
   const [courseResetData, setCourseResetData] = useState([]);
   const [error, setError] = useState('');
   const [isOpen, open, close] = useToggle(false);
+  const [comment, setComment] = useState('');
+  const [commentError, setCommentError] = useState('');
   const POLLING_INTERVAL = 10000;
+  const MAX_COMMENT_LENGTH = 255;
+
+  const handleCommentChange = (e) => {
+    const text = e.target.value;
+    setComment(text);
+    if (text.length > MAX_COMMENT_LENGTH) {
+      setCommentError('Maximum length allowed for comment is 255 characters');
+    } else {
+      setCommentError('');
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -64,7 +77,11 @@ function CourseReset({ username, intl }) {
 
   const handleSubmit = useCallback(async (courseID) => {
     setError(null);
-    const data = await postCourseReset(username, courseID);
+    if (commentError.length) {
+      return;
+    }
+
+    const data = await postCourseReset(username, courseID, comment);
     if (data && !data.errors) {
       const updatedCourseResetData = courseResetData.map((course) => {
         if (course.course_id === data.course_id) {
@@ -78,7 +95,7 @@ function CourseReset({ username, intl }) {
       setError(data.errors[0].text);
     }
     close();
-  }, [username, courseResetData]);
+  }, [username, courseResetData, comment]);
 
   const renderResetData = courseResetData.map((data) => {
     const updatedData = {
@@ -86,6 +103,7 @@ function CourseReset({ username, intl }) {
       courseId: data.course_id,
       status: data.status,
       action: 'Unavailable',
+      comment: data.comment,
     };
 
     if (data.can_reset) {
@@ -109,6 +127,7 @@ function CourseReset({ username, intl }) {
                 <Button
                   variant="primary"
                   onClick={() => handleSubmit(data.course_id)}
+                  disabled={!!commentError.length}
                 >
                   Yes
                 </Button>
@@ -124,6 +143,18 @@ function CourseReset({ username, intl }) {
                 defaultMessage="Are you sure? This will erase all of this learner's data for this course. This can only happen once per learner per course."
               />
             </p>
+            <Form.Group>
+              <Form.Control
+                floatingLabel="Comment"
+                value={comment}
+                onChange={handleCommentChange}
+                as="textarea"
+                autoResize
+              />
+            </Form.Group>
+            {commentError && (
+              <Alert variant="danger">{commentError}</Alert>
+            )}
           </AlertModal>
         </>
       );
@@ -163,6 +194,10 @@ function CourseReset({ username, intl }) {
           {
             Header: intl.formatMessage(messages.recordTableHeaderStatus),
             accessor: 'status',
+          },
+          {
+            Header: 'Comment',
+            accessor: 'comment',
           },
           {
             Header: 'Action',
