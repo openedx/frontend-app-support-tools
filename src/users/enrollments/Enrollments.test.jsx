@@ -1,10 +1,19 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { getConfig } from '@edx/frontend-platform';
 import Enrollments from './Enrollments';
 import { enrollmentsData } from '../data/test/enrollments';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import { waitForComponentToPaint } from '../../setupTest';
 import * as api from '../data/api';
+
+jest.mock('@edx/frontend-platform', () => ({
+  ...jest.requireActual('@edx/frontend-platform'),
+  getConfig: jest.fn(() => ({
+    ECOMMERCE_BASE_URL: 'http://example.com',
+    COMMERCE_COORDINATOR_ORDER_DETAILS_URL: 'http://example.com/coordinater/',
+  })),
+}));
 
 const EnrollmentPageWrapper = (props) => (
   <UserMessagesProvider>
@@ -123,6 +132,10 @@ describe('Course Enrollments Listing', () => {
   });
 
   it('Enterprise course enrollments table is not rendered if are no enterprise course enrollments', async () => {
+    getConfig.mockReturnValue({
+      ECOMMERCE_BASE_URL: 'http://example.com',
+      COMMERCE_COORDINATOR_ORDER_DETAILS_URL: null,
+    });
     const mockEnrollments = [{
       ...enrollmentsData[0],
       enterpriseCourseEnrollments: [],
