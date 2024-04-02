@@ -68,6 +68,7 @@ export default function Enrollments({
         lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
         reason: enrollment.manualEnrollment && enrollment.manualEnrollment.reason ? enrollment.manualEnrollment.reason : 'N/A',
         orderNumber: enrollment.orderNumber,
+        sourceSystem: enrollment.sourceSystem || 'N/A',
       },
       enterpriseCourseEnrollments: enrollment.enterpriseCourseEnrollments?.map((ece => ({
         enterpriseCustomerName: ece.enterpriseCustomerName,
@@ -225,6 +226,9 @@ export default function Enrollments({
             {value}
           </a>
         ),
+      },
+      {
+        Header: 'Source System', accessor: 'sourceSystem',
       },
     ],
     [],
