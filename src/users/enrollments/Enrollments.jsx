@@ -208,8 +208,23 @@ export default function Enrollments({
         Header: 'Reason', accessor: 'reason',
       },
       {
+        Header: 'Order Number',
+        accessor: 'orderNumber',
         // eslint-disable-next-line react/prop-types
-        Header: 'Order Number', accessor: 'orderNumber', Cell: ({ value }) => <a href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${value}`} rel="noopener noreferrer" target="_blank" className="word_break">{value}</a>,
+        Cell: ({ value }) => (
+          <a
+            href={
+              getConfig().COMMERCE_COORDINATOR_ORDER_DETAILS_URL
+                ? `${getConfig().COMMERCE_COORDINATOR_ORDER_DETAILS_URL}/?order_number=${value}`
+                : `${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${value}`
+            }
+            rel="noopener noreferrer"
+            target="_blank"
+            className="word_break"
+          >
+            {value}
+          </a>
+        ),
       },
     ],
     [],
