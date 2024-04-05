@@ -1,10 +1,8 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 
-const { LMS_BASE_URL } = getConfig();
-
 export async function getProgramEnrollmentsInspector({ params }) {
-  const apiUrl = `${LMS_BASE_URL}/support/program_enrollments_inspector_details${params}`;
+  const apiUrl = `${getConfig().LMS_BASE_URL}/support/program_enrollments_inspector_details${params}`;
   try {
     const { data } = await getAuthenticatedHttpClient().get(apiUrl);
     return data;
@@ -24,7 +22,7 @@ export async function getProgramEnrollmentsInspector({ params }) {
 }
 
 export async function getSAMLProviderList() {
-  const apiUrl = `${LMS_BASE_URL}/support/get_saml_providers/`;
+  const apiUrl = `${getConfig().LMS_BASE_URL}/support/get_saml_providers/`;
   try {
     const { data } = await getAuthenticatedHttpClient().get(apiUrl);
     return data;
