@@ -68,6 +68,7 @@ export default function Enrollments({
         lastModifiedBy: enrollment.manualEnrollment && enrollment.manualEnrollment.enrolledBy ? enrollment.manualEnrollment.enrolledBy : 'N/A',
         reason: enrollment.manualEnrollment && enrollment.manualEnrollment.reason ? enrollment.manualEnrollment.reason : 'N/A',
         orderNumber: enrollment.orderNumber,
+        sourceSystem: enrollment.sourceSystem || 'N/A',
       },
       enterpriseCourseEnrollments: enrollment.enterpriseCourseEnrollments?.map((ece => ({
         enterpriseCustomerName: ece.enterpriseCustomerName,
@@ -208,8 +209,26 @@ export default function Enrollments({
         Header: 'Reason', accessor: 'reason',
       },
       {
+        Header: 'Order Number',
+        accessor: 'orderNumber',
         // eslint-disable-next-line react/prop-types
-        Header: 'Order Number', accessor: 'orderNumber', Cell: ({ value }) => <a href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${value}`} rel="noopener noreferrer" target="_blank" className="word_break">{value}</a>,
+        Cell: ({ value }) => (
+          <a
+            href={
+              getConfig().COMMERCE_COORDINATOR_ORDER_DETAILS_URL
+                ? `${getConfig().COMMERCE_COORDINATOR_ORDER_DETAILS_URL}/?order_number=${value}`
+                : `${getConfig().ECOMMERCE_BASE_URL}/dashboard/orders/${value}`
+            }
+            rel="noopener noreferrer"
+            target="_blank"
+            className="word_break"
+          >
+            {value}
+          </a>
+        ),
+      },
+      {
+        Header: 'Source System', accessor: 'sourceSystem',
       },
     ],
     [],

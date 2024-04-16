@@ -100,6 +100,7 @@ initialize({
   handlers: {
     config: () => {
       mergeConfig({
+        COMMERCE_COORDINATOR_ORDER_DETAILS_URL: process.env.COMMERCE_COORDINATOR_ORDER_DETAILS_URL || null,
         LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL || null,
         ENTERPRISE_ACCESS_BASE_URL: process.env.ENTERPRISE_ACCESS_BASE_URL || null,
         FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,

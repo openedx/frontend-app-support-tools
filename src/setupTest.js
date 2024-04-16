@@ -8,6 +8,7 @@ import { MockAuthService } from '@edx/frontend-platform/auth';
 Enzyme.configure({ adapter: new Adapter() });
 
 mergeConfig({
+  COMMERCE_COORDINATOR_ORDER_DETAILS_URL: process.env.COMMERCE_COORDINATOR_ORDER_DETAILS_URL || null,
   LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL,
   PREDEFINED_CATALOG_QUERIES: {
     everything: 1,
