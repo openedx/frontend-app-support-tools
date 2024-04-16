@@ -23,26 +23,26 @@ ensureConfig([
 
 subscribe(APP_CONFIG_INITIALIZED, () => {
   mergeConfig({
-    MINIMAL_HEADER: !!process.env.MINIMAL_HEADER,
-    PUBLISHER_BASE_URL: process.env.PUBLISHER_BASE_URL,
-    SUPPORT_CONFLUENCE: process.env.SUPPORT_CONFLUENCE,
-    SUPPORT_CUSTOMER_REQUEST: process.env.SUPPORT_CUSTOMER_REQUEST,
+    MINIMAL_HEADER: !!getConfig().MINIMAL_HEADER,
+    PUBLISHER_BASE_URL: getConfig().PUBLISHER_BASE_URL,
+    SUPPORT_CONFLUENCE: getConfig().SUPPORT_CONFLUENCE,
+    SUPPORT_CUSTOMER_REQUEST: getConfig().SUPPORT_CUSTOMER_REQUEST,
   }, 'Header additional config');
 });
 
 export default function Header() {
   const { authenticatedUser, config } = useContext(AppContext);
-  let COURSES_INTERNAL = config.LMS_BASE_URL;
-  let DISCOVERY_INTERNAL = config.DISCOVERY_API_BASE_URL;
-  let CREDENTIALS_INTERNAL = config.CREDENTIALS_BASE_URL;
+  let COURSES_INTERNAL = getConfig().LMS_BASE_URL;
+  let DISCOVERY_INTERNAL = getConfig().DISCOVERY_API_BASE_URL;
+  let CREDENTIALS_INTERNAL = getConfig().CREDENTIALS_BASE_URL;
   const { SUPPORT_CONFLUENCE, SUPPORT_CUSTOMER_REQUEST } = config;
   const { CONFIGURATION } = ROUTES;
 
-  if (config.LMS_BASE_URL.indexOf('.stage.') !== -1) {
+  if (getConfig().LMS_BASE_URL.indexOf('.stage.') !== -1) {
     COURSES_INTERNAL = COURSES_INTERNAL.replace('.stage.', '-internal.stage.');
     DISCOVERY_INTERNAL = DISCOVERY_INTERNAL.replace('.stage.', '-internal.stage.');
     CREDENTIALS_INTERNAL = CREDENTIALS_INTERNAL.replace('.stage.', '-internal.stage.');
-  } else if (config.LMS_BASE_URL.indexOf('.edx.') !== -1) {
+  } else if (getConfig().LMS_BASE_URL.indexOf('.edx.') !== -1) {
     COURSES_INTERNAL = COURSES_INTERNAL.replace('.edx.', '-internal.edx.');
     DISCOVERY_INTERNAL = DISCOVERY_INTERNAL.replace('.edx.', '-internal.edx.');
     CREDENTIALS_INTERNAL = CREDENTIALS_INTERNAL.replace('.edx.', '-internal.edx.');
@@ -56,7 +56,7 @@ export default function Header() {
     {
       type: 'item',
       content: 'Support Tools',
-      href: `${config.BASE_URL}`,
+      href: `${getConfig().BASE_URL}`,
     },
     {
       type: 'submenu',
@@ -73,10 +73,10 @@ export default function Header() {
       content: 'Payment',
       submenuContent: (
         <>
-          <div className="mb-1"><a rel="noopener" href={`${config.ECOMMERCE_BASE_URL}/dashboard/users/`}>Otto</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${getConfig().ECOMMERCE_BASE_URL}/dashboard/users/`}>Otto</a></div>
           <div className="mb-1"><a rel="noopener" href="https://ebc2.cybersource.com/ebc2/app/Home">Cybersource</a></div>
           <div className="mb-1"><a rel="noopener" href="https://www.paypal.com/mep/dashboard">Paypal</a></div>
-          <div className="mb-1"><a rel="noopener" href={`${config.ECOMMERCE_BASE_URL}/enterprise/coupons/`}>Enterprise Coupons</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${getConfig().ECOMMERCE_BASE_URL}/enterprise/coupons/`}>Enterprise Coupons</a></div>
         </>
       ),
     },
@@ -85,9 +85,9 @@ export default function Header() {
       content: 'Courses',
       submenuContent: (
         <>
-          <div className="mb-1"><a rel="noopener" href={`${config.PUBLISHER_BASE_URL}`}>Publisher</a></div>
-          <div className="mb-1"><a rel="noopener" href={`${config.DISCOVERY_API_BASE_URL}`}>Discovery</a></div>
-          <div className="mb-1"><a rel="noopener" href={`${config.LMS_BASE_URL}/courses`}>Course Catalogue</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${getConfig().PUBLISHER_BASE_URL}`}>Publisher</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${getConfig().DISCOVERY_API_BASE_URL}`}>Discovery</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${getConfig().LMS_BASE_URL}/courses`}>Course Catalogue</a></div>
         </>
       ),
     },
@@ -101,7 +101,7 @@ export default function Header() {
       content: 'Programs',
       submenuContent: (
         <>
-          <div className="mb-1"><a rel="noopener" href={`${config.CREDENTIALS_BASE_URL}/records/`}>Learner Record</a></div>
+          <div className="mb-1"><a rel="noopener" href={`${getConfig().CREDENTIALS_BASE_URL}/records/`}>Learner Record</a></div>
           <div className="mb-1"><a rel="noopener" href={`${CREDENTIALS_INTERNAL}/admin/credentials/usercredential/`}>Credentials Search</a></div>
           <div className="mb-1"><a rel="noopener" href={`${DISCOVERY_INTERNAL}/admin/course_metadata/program/`}>Programs Discovery</a></div>
         </>
@@ -115,7 +115,7 @@ export default function Header() {
     content: 'Enterprise Setup',
     submenuContent:
       getConfig().FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
-        ? (<div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}`}>Learner Credit Plans</a></div>)
+        ? (<div className="mb-1"><a rel="noopener" href={`${getConfig().BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}`}>Learner Credit Plans</a></div>)
         : null,
   };
   if (getConfig().FEATURE_CONFIGURATION_MANAGEMENT) {
@@ -125,13 +125,13 @@ export default function Header() {
 
   const dashboardMenuItem = {
     type: 'item',
-    href: `${config.LMS_BASE_URL}/dashboard`,
+    href: `${getConfig().LMS_BASE_URL}/dashboard`,
     content: 'Dashboard',
   };
 
   const logoutMenuItem = {
     type: 'item',
-    href: config.LOGOUT_URL,
+    href: getConfig().LOGOUT_URL,
     content: 'Logout',
   };
 
@@ -139,12 +139,12 @@ export default function Header() {
     dashboardMenuItem,
     {
       type: 'item',
-      href: `${config.LMS_BASE_URL}/u/${authenticatedUser.username}`,
+      href: `${getConfig().LMS_BASE_URL}/u/${authenticatedUser.username}`,
       content: 'Profile',
     },
     {
       type: 'item',
-      href: `${config.LMS_BASE_URL}/account/settings`,
+      href: `${getConfig().LMS_BASE_URL}/account/settings`,
       content: 'Account',
     },
     logoutMenuItem,
@@ -160,16 +160,16 @@ export default function Header() {
   const loggedOutItems = [
     {
       type: 'item',
-      href: config.LOGIN_URL,
+      href: getConfig().LOGIN_URL,
       content: 'Login',
     },
   ];
 
   const props = {
-    logo: config.LOGO_URL,
+    logo: getConfig().LOGO_URL,
     logoAltText: 'edX',
     siteName: 'edX',
-    logoDestination: getConfig().MINIMAL_HEADER ? null : `${config.LMS_BASE_URL}/dashboard`,
+    logoDestination: getConfig().MINIMAL_HEADER ? null : `${getConfig().LMS_BASE_URL}/dashboard`,
     loggedIn: authenticatedUser !== null,
     username: authenticatedUser !== null ? authenticatedUser.username : null,
     avatar: authenticatedUser !== null ? authenticatedUser.avatar : null,
