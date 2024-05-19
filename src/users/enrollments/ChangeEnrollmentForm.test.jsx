@@ -27,9 +27,9 @@ describe('Enrollment Change form', () => {
   it('Default form rendering', () => {
     let changeFormModal = wrapper.find('ModalDialog#change-enrollment');
     expect(changeFormModal.prop('isOpen')).toEqual(true);
-    const modeSelectionDropdown = wrapper.find('select#mode');
-    const modeChangeReasonDropdown = wrapper.find('select#reason');
-    const commentsTextarea = wrapper.find('textarea#comments');
+    const modeSelectionDropdown = wrapper.find('#mode');
+    const modeChangeReasonDropdown = wrapper.find('#reason');
+    const commentsTextarea = wrapper.find('#comments');
     expect(modeSelectionDropdown.find('option')).toHaveLength(2);
     expect(modeChangeReasonDropdown.find('option')).toHaveLength(5);
     expect(commentsTextarea.text()).toEqual('');
@@ -44,9 +44,10 @@ describe('Enrollment Change form', () => {
       const apiMock = jest.spyOn(api, 'patchEnrollment').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
+      wrapper.find('select.form-control').at(0).simulate('change', { target: { value: 'verified' } });
+      wrapper.find('select.form-control').at(1).simulate('change', { target: { value: 'Other' } });
+
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'test mode change' } });
       expect(wrapper.find('div.spinner-border').length).toEqual(0);
       wrapper.find('button.btn-primary').simulate('click');
       expect(wrapper.find('div.spinner-border').length).toEqual(1);
@@ -74,11 +75,10 @@ describe('Enrollment Change form', () => {
         ],
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
+      wrapper.find('select.form-control').at(0).simulate('change', { target: { value: 'Other' } });
 
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
+      wrapper.find('select.form-control').at(1).simulate('change', { target: { value: 'verified' } });
+      wrapper.find('textarea.form-control').simulate('change', { target: { value: 'test mode change' } });
       wrapper.find('button.btn-primary').simulate('click');
       await waitForComponentToPaint(wrapper);
 
