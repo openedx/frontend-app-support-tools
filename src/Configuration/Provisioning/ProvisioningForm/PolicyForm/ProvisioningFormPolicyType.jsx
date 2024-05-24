@@ -1,6 +1,6 @@
 import {
   Form,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { useContextSelector } from 'use-context-selector';
 import React, { useState } from 'react';

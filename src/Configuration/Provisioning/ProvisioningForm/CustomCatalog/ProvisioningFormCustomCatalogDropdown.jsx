@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { Button, Form } from '@edx/paragon';
+import { Button, Form } from '@openedx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { logError } from '@edx/frontend-platform/logging';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';

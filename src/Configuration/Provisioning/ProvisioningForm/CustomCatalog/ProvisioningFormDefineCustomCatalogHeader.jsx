@@ -5,9 +5,9 @@ import {
   Stack,
   Icon,
   Col,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import { Warning } from '@edx/paragon/icons';
+import { Warning } from '@openedx/paragon/icons';
 import PROVISIONING_PAGE_TEXT, { DJANGO_ADMIN_ADD_CATALOG_PATH } from '../../data/constants';
 import { indexOnlyPropType, selectProvisioningContext } from '../../data/utils';
 

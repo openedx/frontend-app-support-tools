@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import {
   Hyperlink, TransitionReplace, Button, Alert,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import React, { useEffect, useState } from 'react';
 import Table from '../components/Table';
 import { getUserProgramCredentials } from './data/api';

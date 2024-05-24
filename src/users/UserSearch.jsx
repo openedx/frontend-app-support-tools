@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
-import { Input, Button } from '@edx/paragon';
+import { Input, Button } from '@openedx/paragon';
 
 export default function UserSearch({ userIdentifier, searchHandler }) {
   const searchRef = useRef();
