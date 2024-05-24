@@ -46,3 +46,9 @@ process.on('unhandledRejection', (reason, p) => {
   // eslint-disable-next-line no-console
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason.stack);
 });
+
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
