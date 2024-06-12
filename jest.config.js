@@ -11,4 +11,6 @@ module.exports = createConfig('jest', {
     'src/users/v2/UserPage.jsx',
     'src/supportHeader/ToggleVersion.jsx',
   ],
+  verbose: true,
+  detectOpenHandles: true,
 });
