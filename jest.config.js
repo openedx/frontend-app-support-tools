@@ -2,7 +2,7 @@ const { createConfig } = require('@openedx/frontend-build');
 
 module.exports = createConfig('jest', {
   setupFiles: ['<rootDir>/src/setupTest.js'],
-  collectCoverage: true,
+  collectCoverage: false, // Temporarily disable coverage collection
   collectCoverageFrom: ['src/**/*.{js,jsx}'],
   coveragePathIgnorePatterns: [
     '/node_modules/',
