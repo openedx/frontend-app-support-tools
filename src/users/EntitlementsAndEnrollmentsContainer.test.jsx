@@ -5,7 +5,6 @@ import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsCon
 import * as api from './data/api';
 import { enrollmentsData } from './data/test/enrollments';
 import { entitlementsData } from './data/test/entitlements';
-import { waitForComponentToPaint } from '../setupTest';
 
 const EntitlementsAndEnrollmentsContainerWrapper = (props) => (
   <UserMessagesProvider>
@@ -23,7 +22,6 @@ describe('Entitlements and Enrollments component', () => {
     jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     wrapper = mount(<EntitlementsAndEnrollmentsContainerWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   afterEach(() => {
