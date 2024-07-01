@@ -260,12 +260,12 @@ const PROVISIONING_PAGE_TEXT = {
       LABEL: 'How is content selected?',
       OPTIONS: {
         LEARNER_SELECTS: {
-          DESCRIPTION: 'Learner selects content or LMS',
+          DESCRIPTION: 'Browse and Enroll or LMS',
           VALUE: 'PerLearnerSpendCreditAccessPolicy',
           ACCESS_METHOD: 'direct',
         },
         ADMIN_SELECTS: {
-          DESCRIPTION: 'Admin selects content',
+          DESCRIPTION: 'Admin assign',
           VALUE: 'AssignedLearnerCreditAccessPolicy',
           ACCESS_METHOD: 'assigned',
         },

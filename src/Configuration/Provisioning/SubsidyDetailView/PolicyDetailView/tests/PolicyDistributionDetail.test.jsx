@@ -24,7 +24,7 @@ describe('PolicyDistributionDetail', () => {
     );
     expect(screen.getByText('Budget distribution mode')).toBeInTheDocument();
     expect(screen.getByText('How is content selected?')).toBeInTheDocument();
-    expect(screen.getByText('Learner selects content or LMS')).toBeInTheDocument();
+    expect(screen.getByText('Browse and Enroll or LMS')).toBeInTheDocument();
     expect(screen.getByText('Not editable')).toBeInTheDocument();
   });
   it('renders Admin selects option', () => {
@@ -45,7 +45,7 @@ describe('PolicyDistributionDetail', () => {
         <PolicyDistributionDetail policyType={policyType} />
       </ProvisioningContext>,
     );
-    expect(screen.getByText('Admin selects content')).toBeInTheDocument();
+    expect(screen.getByText('Admin assign')).toBeInTheDocument();
     expect(screen.getByText('Not editable')).toBeInTheDocument();
   });
 });
