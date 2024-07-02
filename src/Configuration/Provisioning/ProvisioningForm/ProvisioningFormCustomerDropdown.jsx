@@ -1,6 +1,6 @@
 import {
   Form,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import {
   useEffect, useMemo, useState,
 } from 'react';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Tabs, Tab } from '@edx/paragon';
+import { Tabs, Tab } from '@openedx/paragon';
 import LinkProgramEnrollments from './LinkProgramEnrollments';
 import ProgramInspector from './ProgramInspector/ProgramInspector';
 

@@ -2,7 +2,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
-import { waitForComponentToPaint } from '../setupTest';
+import { waitFor } from '@testing-library/react';
 import FeatureBasedEnrollmentIndexPage from './FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
@@ -59,7 +59,6 @@ describe('Feature Based Enrollment Index Page', () => {
   it('default page render with query param course id', async () => {
     apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
     wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper searchQuery={`?course_id=${courseId}`} />);
-    await waitForComponentToPaint(wrapper);
 
     const courseIdInput = wrapper.find('input[name="courseId"]');
     const searchButton = wrapper.find('button.btn-primary');
@@ -76,10 +75,11 @@ describe('Feature Based Enrollment Index Page', () => {
     wrapper.find('input[name="courseId"]').instance().value = courseId;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('Card')).toHaveLength(2);
-    expect(mockedNavigator).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
+    waitFor(() => {
+      expect(wrapper.find('Card')).toHaveLength(2);
+      expect(mockedNavigator).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
+    });
   });
 
   it('api call made on each click', async () => {
@@ -90,12 +90,12 @@ describe('Feature Based Enrollment Index Page', () => {
     wrapper.find('input[name="courseId"]').instance().value = courseId;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(1);
+    waitFor(() => {
+      expect(apiMock).toHaveBeenCalledTimes(1);
 
-    wrapper.find('button.btn-primary').simulate('click');
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(2);
+      wrapper.find('button.btn-primary').simulate('click');
+      expect(apiMock).toHaveBeenCalledTimes(2);
+    });
   });
 
   it('empty search value does not yield anything', async () => {
@@ -104,11 +104,11 @@ describe('Feature Based Enrollment Index Page', () => {
 
     wrapper.find('input[name="courseId"]').instance().value = '';
     wrapper.find('button.btn-primary').simulate('click');
-
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(0);
-    expect(wrapper.find('Card')).toHaveLength(0);
-    expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', { replace: true });
+    waitFor(() => {
+      expect(apiMock).toHaveBeenCalledTimes(0);
+      expect(wrapper.find('Card')).toHaveLength(0);
+      expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', { replace: true });
+    });
   });
 
   it('Invalid search value', async () => {
@@ -118,7 +118,6 @@ describe('Feature Based Enrollment Index Page', () => {
     wrapper.find('input[name="courseId"]').instance().value = 'invalid-value';
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(0);
     expect(wrapper.find('Card')).toHaveLength(0);
     expect(wrapper.find('.alert').text()).toEqual('Supplied course ID "invalid-value" is either invalid or incorrect.');

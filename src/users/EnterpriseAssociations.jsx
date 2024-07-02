@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { Alert } from '@edx/paragon';
+import { Alert } from '@openedx/paragon';
 import { getEnterpriseCustomerUsers } from './data/api';
 import Table from '../components/Table';
 import PageLoading from '../components/common/PageLoading';

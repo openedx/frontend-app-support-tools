@@ -1,8 +1,8 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
-import { waitForComponentToPaint } from '../../setupTest';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from './data/api';
 import ProgramInspector from './ProgramInspector';
@@ -76,8 +76,6 @@ describe('Program Inspector', () => {
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorErrorResponse));
 
-    await waitForComponentToPaint(wrapper);
-
     const usernameInput = wrapper.find("input[name='username']");
     const externalKeyInput = wrapper.find("input[name='externalKey']");
     expect(usernameInput.prop('defaultValue')).toEqual('');
@@ -89,8 +87,6 @@ describe('Program Inspector', () => {
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
-
-    await waitForComponentToPaint(wrapper);
 
     wrapper.find("input[name='username']").simulate(
       'change',
@@ -105,19 +101,20 @@ describe('Program Inspector', () => {
     expect(mockedNavigator).toHaveBeenCalledWith(
       `/programs?edx_user=${data.username}&org_key=${data.orgKey}&external_user_key=`,
     );
-    await waitForComponentToPaint(wrapper);
-    expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
-      'Username',
-    );
-    expect(wrapper.find('.inspector-name-row p.small').at(0).text()).toEqual(
-      programInspectorSuccessResponse.learner_program_enrollments.user.username,
-    );
-    expect(wrapper.find('.inspector-name-row p.h5').at(1).text()).toEqual(
-      'Email',
-    );
-    expect(wrapper.find('.inspector-name-row p.small').at(1).text()).toEqual(
-      programInspectorSuccessResponse.learner_program_enrollments.user.email,
-    );
+    waitFor(() => {
+      expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
+        'Username',
+      );
+      expect(wrapper.find('.inspector-name-row p.small').at(0).text()).toEqual(
+        programInspectorSuccessResponse.learner_program_enrollments.user.username,
+      );
+      expect(wrapper.find('.inspector-name-row p.h5').at(1).text()).toEqual(
+        'Email',
+      );
+      expect(wrapper.find('.inspector-name-row p.small').at(1).text()).toEqual(
+        programInspectorSuccessResponse.learner_program_enrollments.user.email,
+      );
+    });
   });
 
   it('render when external_user_key', async () => {
@@ -125,10 +122,6 @@ describe('Program Inspector', () => {
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
-
-    await waitForComponentToPaint(
-      wrapper,
-    );
 
     wrapper.find(
       "input[name='externalKey']",
@@ -147,19 +140,20 @@ describe('Program Inspector', () => {
     expect(mockedNavigator).toHaveBeenCalledWith(
       `/programs?edx_user=&org_key=${data.orgKey}&external_user_key=${data.externalKey}`,
     );
-    await waitForComponentToPaint(wrapper);
-    expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
-      'Username',
-    );
-    expect(wrapper.find('.inspector-name-row p.small').at(0).text()).toEqual(
-      programInspectorSuccessResponse.learner_program_enrollments.user.username,
-    );
-    expect(wrapper.find('.inspector-name-row p.h5').at(1).text()).toEqual(
-      'Email',
-    );
-    expect(wrapper.find('.inspector-name-row p.small').at(1).text()).toEqual(
-      programInspectorSuccessResponse.learner_program_enrollments.user.email,
-    );
+    waitFor(() => {
+      expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
+        'Username',
+      );
+      expect(wrapper.find('.inspector-name-row p.small').at(0).text()).toEqual(
+        programInspectorSuccessResponse.learner_program_enrollments.user.username,
+      );
+      expect(wrapper.find('.inspector-name-row p.h5').at(1).text()).toEqual(
+        'Email',
+      );
+      expect(wrapper.find('.inspector-name-row p.small').at(1).text()).toEqual(
+        programInspectorSuccessResponse.learner_program_enrollments.user.email,
+      );
+    });
   });
 
   it('render nothing when no username or external_user_key', async () => {
@@ -167,10 +161,6 @@ describe('Program Inspector', () => {
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
-
-    await waitForComponentToPaint(
-      wrapper,
-    );
 
     wrapper.find(
       "input[name='username']",
@@ -195,7 +185,6 @@ describe('Program Inspector', () => {
     expect(mockedNavigator).toHaveBeenCalledWith(
       '/programs',
     );
-    await waitForComponentToPaint(wrapper);
     expect(wrapper.find('.inspector-name-row').exists()).toBeFalsy();
   });
 
@@ -204,10 +193,6 @@ describe('Program Inspector', () => {
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
-
-    await waitForComponentToPaint(
-      wrapper,
-    );
 
     wrapper.find(
       "input[name='username']",
@@ -223,11 +208,12 @@ describe('Program Inspector', () => {
     );
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     const ssoRecords = wrapper.find('.sso-records');
-    expect(ssoRecords.find('h4').at(0).text()).toEqual('SSO Records');
-    expect(ssoRecords.find('.h3').text()).toEqual(
-      'tpa-saml (Provider)',
-    );
+    waitFor(() => {
+      expect(ssoRecords.find('h4').at(0).text()).toEqual('SSO Records');
+      expect(ssoRecords.find('.h3').text()).toEqual(
+        'tpa-saml (Provider)',
+      );
+    });
   });
 });

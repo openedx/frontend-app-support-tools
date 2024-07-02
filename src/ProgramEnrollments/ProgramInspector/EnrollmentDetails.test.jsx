@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitForComponentToPaint } from '../../setupTest';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import EnrollmentDetails from './EnrollmentDetails';
 import { programInspectorSuccessResponse } from './data/test/programInspector';
@@ -26,7 +25,6 @@ describe('Enrollment Details', () => {
         }
       />,
     );
-    await waitForComponentToPaint(wrapper);
 
     const heading = wrapper.find('.enrollments h3');
     expect(heading.text()).toEqual(
@@ -38,7 +36,6 @@ describe('Enrollment Details', () => {
     'Enrollment Details do not render',
     async ({ enrollment }) => {
       wrapper = mount(<EnrollmentDetailsWrapper enrollments={enrollment} />);
-      await waitForComponentToPaint(wrapper);
 
       const heading = wrapper.find('.enrollments h3');
       expect(heading.exists()).toBeFalsy();
@@ -53,7 +50,6 @@ describe('Enrollment Details', () => {
         }
       />,
     );
-    await waitForComponentToPaint(wrapper);
 
     const row = wrapper.find('.enrollment-details tbody tr');
     expect(row.find('td').at(0).text()).toEqual(data.status);
@@ -75,7 +71,6 @@ describe('Enrollment Details', () => {
           }
         />,
       );
-      await waitForComponentToPaint(wrapper);
       const programCourseEnrollments = data.program_course_enrollments[index];
       expect(wrapper.find('.enrollments h5').text()).toEqual(
         'Program Course Enrollments',

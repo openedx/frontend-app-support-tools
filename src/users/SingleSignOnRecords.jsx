@@ -3,7 +3,7 @@ import { camelCaseObject } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import {
   Row, Col,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import UserMessagesContext from '../userMessages/UserMessagesContext';
 import { getSsoRecords } from './data/api';

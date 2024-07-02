@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
-import { waitForComponentToPaint } from '../setupTest';
+import { waitFor } from '@testing-library/react';
 import FeatureBasedEnrollment from './FeatureBasedEnrollment';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
@@ -25,7 +25,6 @@ describe('Feature Based Enrollment', () => {
     // api file has only one default export, so that will be spied-on
     jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
     wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   afterEach(() => {
@@ -41,22 +40,23 @@ describe('Feature Based Enrollment', () => {
     const cardList = wrapper.find('Card');
     const courseTitle = wrapper.find('h4');
 
-    expect(cardList).toHaveLength(2);
-    expect(wrapper.find('h3#fbe-title-header').text()).toEqual('Feature Based Enrollment Configuration');
-    expect(courseTitle.text()).toEqual('Course Title: test course');
+    waitFor(() => {
+      expect(cardList).toHaveLength(2);
+      expect(wrapper.find('h3#fbe-title-header').text()).toEqual('Feature Based Enrollment Configuration');
+      expect(courseTitle.text()).toEqual('Course Title: test course');
+    });
   });
 
   it('No FBE Data', async () => {
     jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
     wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const cardList = wrapper.find('Card');
     const noRecordMessage = wrapper.find('p');
 
     expect(cardList).toHaveLength(0);
     expect(wrapper.find('h3#fbe-title-header').text()).toEqual('Feature Based Enrollment Configuration');
-    expect(noRecordMessage.text()).toEqual('No Feature Based Enrollment Configurations were found.');
+    waitFor(() => expect(noRecordMessage.text()).toEqual('No Feature Based Enrollment Configurations were found.'));
   });
 
   it('Page Loading component render', async () => {
@@ -78,9 +78,8 @@ describe('Feature Based Enrollment', () => {
     };
     jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeErrors));
     wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const alert = wrapper.find('.alert');
-    expect(alert.text()).toEqual('Error fetching FBE Data');
+    waitFor(() => expect(alert.text()).toEqual('Error fetching FBE Data'));
   });
 });

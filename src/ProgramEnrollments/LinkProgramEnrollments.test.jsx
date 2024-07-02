@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitForComponentToPaint } from '../setupTest';
+import { waitFor } from '@testing-library/react';
 import LinkProgramEnrollments from './LinkProgramEnrollments';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import {
@@ -60,7 +60,6 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
   });
 
@@ -75,12 +74,12 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(1);
+    waitFor(() => {
+      expect(apiMock).toHaveBeenCalledTimes(1);
 
-    wrapper.find('button.btn-primary').simulate('click');
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(2);
+      wrapper.find('button.btn-primary').simulate('click');
+      expect(apiMock).toHaveBeenCalledTimes(2);
+    });
   });
 
   it('empty search value yields error response', async () => {
@@ -93,10 +92,11 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = '';
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('.error-message')).toHaveLength(1);
-    expect(wrapper.find('.success-message')).toHaveLength(0);
+    waitFor(() => {
+      expect(wrapper.find('.error-message')).toHaveLength(1);
+      expect(wrapper.find('.success-message')).toHaveLength(0);
+    });
   });
 
   it('Invalid Program UUID value', async () => {
@@ -109,10 +109,11 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('.error-message')).toHaveLength(1);
-    expect(wrapper.find('.success-message')).toHaveLength(0);
+    waitFor(() => {
+      expect(apiMock).toHaveBeenCalledTimes(1);
+      expect(wrapper.find('.error-message')).toHaveLength(1);
+      expect(wrapper.find('.success-message')).toHaveLength(0);
+    });
   });
 
   it('Invalid Username value', async () => {
@@ -125,10 +126,11 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
-    expect(apiMock).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('.error-message')).toHaveLength(1);
-    expect(wrapper.find('.success-message')).toHaveLength(0);
+    waitFor(() => {
+      expect(apiMock).toHaveBeenCalledTimes(1);
+      expect(wrapper.find('.error-message')).toHaveLength(1);
+      expect(wrapper.find('.success-message')).toHaveLength(0);
+    });
   });
 
   it('Invalid External User Key value', async () => {
@@ -141,10 +143,11 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('.error-message')).toHaveLength(1);
-    expect(wrapper.find('.success-message')).toHaveLength(0);
+    waitFor(() => {
+      expect(wrapper.find('.error-message')).toHaveLength(1);
+      expect(wrapper.find('.success-message')).toHaveLength(0);
+    });
   });
 
   it('Program Already Linked', async () => {
@@ -157,9 +160,10 @@ describe('Link Program Enrollments', () => {
     wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
     wrapper.find('button.btn-primary').simulate('click');
 
-    await waitForComponentToPaint(wrapper);
     expect(apiMock).toHaveBeenCalledTimes(1);
-    expect(wrapper.find('.error-message')).toHaveLength(1);
-    expect(wrapper.find('.success-message')).toHaveLength(0);
+    waitFor(() => {
+      expect(wrapper.find('.error-message')).toHaveLength(1);
+      expect(wrapper.find('.success-message')).toHaveLength(0);
+    });
   });
 });

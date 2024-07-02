@@ -2,7 +2,7 @@ import {
   Container,
   Hyperlink,
   Stack,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import ROUTES from '../data/constants/routes';
 import { titleCase } from '../utils';

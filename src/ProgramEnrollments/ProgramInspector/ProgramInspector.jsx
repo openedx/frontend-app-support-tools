@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Alert, Col, Row, Button, Input,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { getSsoRecords } from '../../users/data/api';
 import EnrollmentDetails from './EnrollmentDetails';
 import SingleSignOnRecordCard from '../../users/SingleSignOnRecordCard';

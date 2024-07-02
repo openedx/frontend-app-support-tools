@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import {
   Button, TransitionReplace, Dropdown, Hyperlink,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';

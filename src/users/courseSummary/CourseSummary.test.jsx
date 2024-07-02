@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 
-import { waitForComponentToPaint } from '../../setupTest';
 import CourseSummary from './CourseSummary';
 import courseSummaryData from '../data/test/courseSummary';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -24,7 +24,6 @@ describe('Course Summary', () => {
   beforeEach(async () => {
     apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
     wrapper = mount(<CourseSummaryWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   afterEach(() => {
@@ -34,18 +33,20 @@ describe('Course Summary', () => {
 
   it('Default component render with Modal', () => {
     const dataRows = wrapper.find('table.course-summary-table tbody').first().children();
-    expect(dataRows.length).toEqual(5);
+    waitFor(() => {
+      expect(dataRows.length).toEqual(5);
 
-    let courseSummaryModal = wrapper.find('ModalDialog#course-summary');
-    expect(courseSummaryModal.prop('isOpen')).toEqual(true);
-    expect(courseSummaryModal.find('h2.pgn__modal-title').text()).toEqual('Course Summary: Test Course');
+      let courseSummaryModal = wrapper.find('ModalDialog#course-summary');
+      expect(courseSummaryModal.prop('isOpen')).toEqual(true);
+      expect(courseSummaryModal.find('h2.pgn__modal-title').text()).toEqual('Course Summary: Test Course');
 
-    const courseRunsTable = wrapper.find('table.course-runs-table');
-    expect(courseRunsTable.find('tbody tr').length).toEqual(2);
+      const courseRunsTable = wrapper.find('table.course-runs-table');
+      expect(courseRunsTable.find('tbody tr').length).toEqual(2);
 
-    wrapper.find('button.btn-link').simulate('click');
-    courseSummaryModal = wrapper.find('ModalDialog#course-summary');
-    expect(courseSummaryModal.prop('isOpen')).toEqual(false);
+      wrapper.find('button.btn-link').simulate('click');
+      courseSummaryModal = wrapper.find('ModalDialog#course-summary');
+      expect(courseSummaryModal.prop('isOpen')).toEqual(false);
+    });
   });
 
   it('Missing Course Run Information', async () => {
@@ -53,15 +54,13 @@ describe('Course Summary', () => {
     const summaryData = { ...courseSummaryData, courseData };
     apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(summaryData.courseData));
     wrapper = mount(<CourseSummaryWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
-    expect(wrapper.html()).toEqual(expect.stringContaining('No Course Runs available'));
+    waitFor(() => expect(wrapper.html()).toEqual(expect.stringContaining('No Course Runs available')));
   });
 
   it('Render loading page correctly', async () => {
     apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
     wrapper = mount(<CourseSummaryWrapper {...props} />);
     expect(wrapper.find('PageLoading').html()).toEqual(expect.stringContaining('Loading'));
-    await waitForComponentToPaint(wrapper);
   });
 
   it('Course Summary Fetch Errors', async () => {
@@ -77,11 +76,10 @@ describe('Course Summary', () => {
       ],
     }));
     wrapper = mount(<CourseSummaryWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const courseSummaryModal = wrapper.find('ModalDialog#course-summary');
     expect(courseSummaryModal.find('h2.pgn__modal-title').text()).toEqual('Course Summary');
     const alert = wrapper.find('.alert');
-    expect(alert.text()).toEqual('No Course Summary Data found');
+    waitFor(() => expect(alert.text()).toEqual('No Course Summary Data found'));
   });
 });

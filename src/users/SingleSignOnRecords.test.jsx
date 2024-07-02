@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
-import { waitForComponentToPaint } from '../setupTest';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import ssoRecordsData from './data/test/ssoRecords';
@@ -31,7 +31,6 @@ describe('Single Sign On Records', () => {
   beforeEach(async () => {
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecords));
     wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   it('SSO props', () => {
@@ -41,21 +40,22 @@ describe('Single Sign On Records', () => {
 
   it('SSO Data', () => {
     const cardList = wrapper.find('Card');
-    expect(cardList).toHaveLength(ssoRecords.length);
-    expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
+    waitFor(() => {
+      expect(cardList).toHaveLength(ssoRecords.length);
+      expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
+    });
   });
 
   it('No SSO Data', async () => {
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve([]));
     wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
     const cardList = wrapper.find('Card');
     expect(cardList).toHaveLength(0);
 
     const noRecordMessage = wrapper.find('p');
-    expect(noRecordMessage.text()).toEqual('No SSO Records were Found.');
+    waitFor(() => expect(noRecordMessage.text()).toEqual('No SSO Records were Found.'));
   });
 
   it('Error fetching sso data', async () => {
@@ -72,9 +72,8 @@ describe('Single Sign On Records', () => {
     };
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoErrors));
     wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const alert = wrapper.find('div.alert');
-    expect(alert.text()).toEqual(ssoErrors.errors[0].text);
+    waitFor(() => expect(alert.text()).toEqual(ssoErrors.errors[0].text));
   });
 });

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import {
   Icon, Form,
-} from '@edx/paragon';
-import { WarningFilled } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { WarningFilled } from '@openedx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const ProvisioningFormHelpText = ({ className }) => {

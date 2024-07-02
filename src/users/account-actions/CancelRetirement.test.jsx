@@ -1,9 +1,9 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
 import CancelRetirement from './CancelRetirement';
-import { waitForComponentToPaint } from '../../setupTest';
 
 const CancelRetirementWrapper = (props) => (
   <IntlProvider locale="en">
@@ -49,11 +49,12 @@ describe('Cancel Retirement Component Tests', () => {
     expect(confirmAlert.text()).toEqual('This will cancel retirement for the requested user. Do you wish to proceed?');
 
     cancelRetirementModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
-    expect(changeHandler).toHaveBeenCalled();
-    cancelRetirementModal.find('button.btn-link').simulate('click');
-    cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-    expect(cancelRetirementModal.prop('isOpen')).toEqual(false);
+    waitFor(() => {
+      expect(changeHandler).toHaveBeenCalled();
+      cancelRetirementModal.find('button.btn-link').simulate('click');
+      cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
+      expect(cancelRetirementModal.prop('isOpen')).toEqual(false);
+    });
 
     mockApiCall.mockRestore();
   });
@@ -81,10 +82,9 @@ describe('Cancel Retirement Component Tests', () => {
     );
 
     cancelRetirementModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
     cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
     const errorAlert = cancelRetirementModal.find('.alert-danger');
-    expect(errorAlert.text()).toEqual('Retirement does not exist!');
+    waitFor(() => expect(errorAlert.text()).toEqual('Retirement does not exist!'));
 
     cancelRetirementModal.find('button.btn-link').simulate('click');
     cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
@@ -109,12 +109,11 @@ describe('Cancel Retirement Component Tests', () => {
     cancelRetirementButton.simulate('click');
     let cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
     cancelRetirementModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
     cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
     const errorAlert = cancelRetirementModal.find('.alert-danger');
-    expect(errorAlert.text()).toEqual(
+    waitFor(() => expect(errorAlert.text()).toEqual(
       'Something went wrong. Please try again later!',
-    );
+    ));
     mockApiCall.mockRestore();
   });
 });

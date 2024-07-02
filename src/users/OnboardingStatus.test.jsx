@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
-import { waitForComponentToPaint } from '../setupTest';
+import { waitFor } from '@testing-library/react';
 import OnboardingStatus from './OnboardingStatus';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import OnboardingStatusData from './data/test/onboardingStatus';
@@ -24,7 +24,6 @@ describe('Onboarding Status', () => {
   beforeEach(async () => {
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(OnboardingStatusData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   it('Onboarding props', () => {
@@ -36,21 +35,23 @@ describe('Onboarding Status', () => {
   it('Onboarding Status', () => {
     const verifiedInData = wrapper.find('Table#verified-in-data');
     const verifiedInDataBody = verifiedInData.find('tbody tr td');
-    expect(verifiedInDataBody).toHaveLength(4);
-    expect(verifiedInDataBody.at(0).text()).toEqual(OnboardingStatusData.verifiedIn.courseId);
-    expect(verifiedInDataBody.at(1).text()).toEqual(titleCase(OnboardingStatusData.verifiedIn.onboardingStatus));
-    expect(verifiedInDataBody.at(2).text()).toEqual(formatDate(OnboardingStatusData.verifiedIn.expirationDate));
-    expect(verifiedInDataBody.at(3).text()).toEqual('Link');
+    waitFor(() => {
+      expect(verifiedInDataBody).toHaveLength(4);
+      expect(verifiedInDataBody.at(0).text()).toEqual(OnboardingStatusData.verifiedIn.courseId);
+      expect(verifiedInDataBody.at(1).text()).toEqual(titleCase(OnboardingStatusData.verifiedIn.onboardingStatus));
+      expect(verifiedInDataBody.at(2).text()).toEqual(formatDate(OnboardingStatusData.verifiedIn.expirationDate));
+      expect(verifiedInDataBody.at(3).text()).toEqual('Link');
 
-    const currentStatusData = wrapper.find('Table#current-status-data');
-    const currentStatusDataBody = currentStatusData.find('tbody tr td');
-    expect(currentStatusDataBody).toHaveLength(4);
-    expect(currentStatusDataBody.at(0).text()).toEqual(OnboardingStatusData.currentStatus.courseId);
-    expect(currentStatusDataBody.at(1).text()).toEqual(
-      titleCase(OnboardingStatusData.currentStatus.onboardingStatus),
-    );
-    expect(currentStatusDataBody.at(2).text()).toEqual(formatDate(OnboardingStatusData.currentStatus.expirationDate));
-    expect(currentStatusDataBody.at(3).text()).toEqual('Link');
+      const currentStatusData = wrapper.find('Table#current-status-data');
+      const currentStatusDataBody = currentStatusData.find('tbody tr td');
+      expect(currentStatusDataBody).toHaveLength(4);
+      expect(currentStatusDataBody.at(0).text()).toEqual(OnboardingStatusData.currentStatus.courseId);
+      expect(currentStatusDataBody.at(1).text()).toEqual(
+        titleCase(OnboardingStatusData.currentStatus.onboardingStatus),
+      );
+      expect(currentStatusDataBody.at(2).text()).toEqual(formatDate(OnboardingStatusData.currentStatus.expirationDate));
+      expect(currentStatusDataBody.at(3).text()).toEqual('Link');
+    });
   });
 
   it('No Onboarding Status Data', async () => {
@@ -58,12 +59,13 @@ describe('Onboarding Status', () => {
 
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const verifiedInDataTable = wrapper.find('div#verified-in-no-data');
-    expect(verifiedInDataTable.text()).toEqual('No Record Found');
-    const currentStatusDataTable = wrapper.find('div#current-status-no-data');
-    expect(currentStatusDataTable.text()).toEqual('No Record Found');
+    waitFor(() => {
+      expect(verifiedInDataTable.text()).toEqual('No Record Found');
+      const currentStatusDataTable = wrapper.find('div#current-status-no-data');
+      expect(currentStatusDataTable.text()).toEqual('No Record Found');
+    });
   });
 
   it('No Onboarding Status Data with error message', async () => {
@@ -71,12 +73,13 @@ describe('Onboarding Status', () => {
 
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const verifiedInDataTable = wrapper.find('div#verified-in-no-data');
-    expect(verifiedInDataTable.text()).toEqual('Server fetched failed');
-    const currentStatusDataTable = wrapper.find('div#current-status-no-data');
-    expect(currentStatusDataTable.text()).toEqual('Server fetched failed');
+    waitFor(() => {
+      expect(verifiedInDataTable.text()).toEqual('Server fetched failed');
+      const currentStatusDataTable = wrapper.find('div#current-status-no-data');
+      expect(currentStatusDataTable.text()).toEqual('Server fetched failed');
+    });
   });
 
   it('No Onboarding Status Data with current status data only', async () => {
@@ -85,20 +88,21 @@ describe('Onboarding Status', () => {
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const verifiedInDataTable = wrapper.find('div#verified-in-no-data');
-    expect(verifiedInDataTable.text()).toEqual('No Record Found');
+    waitFor(() => {
+      expect(verifiedInDataTable.text()).toEqual('No Record Found');
 
-    const currentStatusData = wrapper.find('Table#current-status-data');
-    const currentStatusDataBody = currentStatusData.find('tbody tr td');
-    expect(currentStatusDataBody).toHaveLength(4);
-    expect(currentStatusDataBody.at(0).text()).toEqual(OnboardingStatusData.currentStatus.courseId);
-    expect(currentStatusDataBody.at(1).text()).toEqual(
-      titleCase(OnboardingStatusData.currentStatus.onboardingStatus),
-    );
-    expect(currentStatusDataBody.at(2).text()).toEqual(formatDate(OnboardingStatusData.currentStatus.expirationDate));
-    expect(currentStatusDataBody.at(3).text()).toEqual('Link');
+      const currentStatusData = wrapper.find('Table#current-status-data');
+      const currentStatusDataBody = currentStatusData.find('tbody tr td');
+      expect(currentStatusDataBody).toHaveLength(4);
+      expect(currentStatusDataBody.at(0).text()).toEqual(OnboardingStatusData.currentStatus.courseId);
+      expect(currentStatusDataBody.at(1).text()).toEqual(
+        titleCase(OnboardingStatusData.currentStatus.onboardingStatus),
+      );
+      expect(currentStatusDataBody.at(2).text()).toEqual(formatDate(OnboardingStatusData.currentStatus.expirationDate));
+      expect(currentStatusDataBody.at(3).text()).toEqual('Link');
+    });
   });
 
   it('Onboarding Status Data with null values', async () => {
@@ -117,15 +121,16 @@ describe('Onboarding Status', () => {
 
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     const verifiedInData = wrapper.find('Table#verified-in-data');
     const verifiedInDataBody = verifiedInData.find('tbody tr td');
-    expect(verifiedInDataBody).toHaveLength(4);
-    expect(verifiedInDataBody.at(0).text()).toEqual('No Course');
-    expect(verifiedInDataBody.at(1).text()).toEqual('See Instructor Dashboard');
-    expect(verifiedInDataBody.at(2).text()).toEqual('N/A');
-    expect(verifiedInDataBody.at(3).text()).toEqual('N/A');
+    waitFor(() => {
+      expect(verifiedInDataBody).toHaveLength(4);
+      expect(verifiedInDataBody.at(0).text()).toEqual('No Course');
+      expect(verifiedInDataBody.at(1).text()).toEqual('See Instructor Dashboard');
+      expect(verifiedInDataBody.at(2).text()).toEqual('N/A');
+      expect(verifiedInDataBody.at(3).text()).toEqual('N/A');
+    });
   });
 
   it('Onboarding Status Data is loading', async () => {
@@ -133,7 +138,6 @@ describe('Onboarding Status', () => {
 
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingData));
     wrapper = mount(<OnboardingStatusWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
     expect(wrapper.find('.sr-only').text()).toEqual('Loading..');
   });
 });

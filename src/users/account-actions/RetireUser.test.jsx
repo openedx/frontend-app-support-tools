@@ -1,10 +1,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
 import RetireUser from './RetireUser';
 import UserSummaryData from '../data/test/userSummary';
-import { waitForComponentToPaint } from '../../setupTest';
 
 const RetireUserWrapper = (props) => (
   <IntlProvider locale="en">
@@ -51,11 +51,13 @@ describe('Retire User Component Tests', () => {
       "You are about to retire edx with the email address: edx@example.com. This is a serious action that will revoke this user's access to edX and their earned certificates. Furthermore, the email address associated with the retired account will not be able to be used to create a new account.",
     );
     retireUserModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
-    expect(UserSummaryData.changeHandler).toHaveBeenCalled();
-    retireUserModal.find('button.btn-link').simulate('click');
-    retireUserModal = wrapper.find('ModalDialog#user-account-retire');
-    expect(retireUserModal.prop('isOpen')).toEqual(false);
+    waitFor(() => {
+      expect(UserSummaryData.changeHandler).toHaveBeenCalled();
+
+      retireUserModal.find('button.btn-link').simulate('click');
+      retireUserModal = wrapper.find('ModalDialog#user-account-retire');
+      expect(retireUserModal.prop('isOpen')).toEqual(false);
+    });
 
     mockApiCall.mockRestore();
   });
@@ -78,14 +80,15 @@ describe('Retire User Component Tests', () => {
     let retireUserModal = wrapper.find('ModalDialog#user-account-retire');
 
     retireUserModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
     retireUserModal = wrapper.find('ModalDialog#user-account-retire');
 
     const confirmAlert = retireUserModal.find('.alert-danger');
-    expect(confirmAlert.text()).toEqual(
-      'Something went wrong. Please try again later!',
-    );
-    expect(retireUserModal.prop('isOpen')).toEqual(true);
+    waitFor(() => {
+      expect(confirmAlert.text()).toEqual(
+        'Something went wrong. Please try again later!',
+      );
+      expect(retireUserModal.prop('isOpen')).toEqual(true);
+    });
 
     mockApiCall.mockRestore();
   });

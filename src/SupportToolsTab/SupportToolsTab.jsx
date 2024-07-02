@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Tabs, Tab } from '@edx/paragon';
+import { Tabs, Tab } from '@openedx/paragon';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import {
   FEATURE_BASED_ENROLLMENT_TAB,

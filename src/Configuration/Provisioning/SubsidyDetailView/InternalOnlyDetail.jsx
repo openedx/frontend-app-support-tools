@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { Icon } from '@edx/paragon';
-import { Check } from '@edx/paragon/icons';
+import { Icon } from '@openedx/paragon';
+import { Check } from '@openedx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const InternalOnlyDetail = ({ isInternalOnly }) => {

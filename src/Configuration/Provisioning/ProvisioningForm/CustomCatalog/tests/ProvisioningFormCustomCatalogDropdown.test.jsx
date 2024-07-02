@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent, screen, waitFor, act,
+} from '@testing-library/react';
 import ProvisioningFormCustomCatalogDropdown from '../ProvisioningFormCustomCatalogDropdown';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
 import PROVISIONING_PAGE_TEXT from '../../../data/constants';
@@ -111,7 +113,7 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
     fireEvent.click(autoSuggestButton);
     expect(screen.getByText('No catalogs found for customer.')).toBeTruthy();
   });
-  it('renders default catalog query title when isEditMode is true', () => {
+  it('renders default catalog query title when isEditMode is true', async () => {
     LmsApiService.fetchEnterpriseCustomerCatalogs.mockResolvedValue({ data: { results: sampleCatalogs } });
     renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper
@@ -134,11 +136,13 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
         }}
       />,
     );
-    expect(screen.getByRole('list', {
-      name: 'Enterprise Catalog',
-    }).value).toBe('Snoopy gang --- 4ev3r');
+    act(async () => {
+      expect(await screen.findByRole('list', {
+        name: 'Enterprise Catalog',
+      }).value).toBe('Snoopy gang --- 4ev3r');
+    });
   });
-  it('renders empty string title when isEditMode is false', () => {
+  it('renders empty string title when isEditMode is false', async () => {
     renderWithRouter(
       <ProvisioningFormCustomCatalogDropdownWrapper
         value={{
@@ -158,8 +162,10 @@ describe('ProvisioningFormCustomCatalogDropdown', () => {
         }}
       />,
     );
-    expect(screen.getByRole('list', {
-      name: 'Enterprise Catalog',
-    }).value).toBe('');
+    act(async () => {
+      expect(await screen.findByRole('list', {
+        name: 'Enterprise Catalog',
+      }).value).toBe('');
+    });
   });
 });

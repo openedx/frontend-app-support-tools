@@ -12,7 +12,7 @@ import React, {
 
 import {
   Button, TransitionReplace, Dropdown,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

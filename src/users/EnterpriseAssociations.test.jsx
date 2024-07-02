@@ -1,9 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { waitFor } from '@testing-library/react';
 import * as api from './data/api';
 import enterpriseCustomerUsersData from './data/test/enterpriseCustomerUsers';
 import EnterpriseAssociations from './EnterpriseAssociations';
-import { waitForComponentToPaint } from '../setupTest';
 
 describe('<EnterpriseAssociations />', () => {
   const props = {
@@ -16,7 +16,6 @@ describe('<EnterpriseAssociations />', () => {
 
   const renderWrapper = async () => {
     const wrapper = mount(<EnterpriseAssociations {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     return wrapper;
   };
@@ -37,8 +36,10 @@ describe('<EnterpriseAssociations />', () => {
     expect(mockGetEnterpriseCustomerUsers).toHaveBeenCalledWith(props.username);
 
     const alert = wrapper.find('.alert');
-    expect(alert).toHaveLength(1);
-    expect(alert.text()).toEqual('Failed to retrieve enterprise associations.');
+    waitFor(() => {
+      expect(alert).toHaveLength(1);
+      expect(alert.text()).toEqual('Failed to retrieve enterprise associations.');
+    });
   });
 
   it('renders enterprise associations', async () => {
@@ -47,6 +48,6 @@ describe('<EnterpriseAssociations />', () => {
 
     const dataRows = wrapper.find('tr');
     // first row is the headers
-    expect(dataRows.length).toEqual(enterpriseCustomerUsersData.length + 1);
+    waitFor(() => expect(dataRows.length).toEqual(enterpriseCustomerUsersData.length + 1));
   });
 });

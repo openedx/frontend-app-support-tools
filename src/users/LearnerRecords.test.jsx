@@ -1,8 +1,8 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
-import { waitForComponentToPaint } from '../setupTest';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import * as api from './data/api';
 import records from './data/test/records';
@@ -41,8 +41,6 @@ describe('Learner Records Tests', () => {
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve([]));
 
-    await waitForComponentToPaint(wrapper);
-
     expect(wrapper.find('p').text()).toEqual(`No results found for username: ${data.username}`);
   });
 
@@ -63,9 +61,7 @@ describe('Learner Records Tests', () => {
       .mockImplementationOnce(() => Promise.resolve(expectedError));
     wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
 
-    await waitForComponentToPaint(wrapper);
-
-    expect(wrapper.find('.alert').text()).toEqual(expectedError.errors[0].text);
+    waitFor(() => expect(wrapper.find('.alert').text()).toEqual(expectedError.errors[0].text));
   });
 
   it('renders metadata for a program record', async () => {
@@ -75,14 +71,14 @@ describe('Learner Records Tests', () => {
 
     wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
 
-    await waitForComponentToPaint(wrapper);
-
     const { program } = records[0].record;
 
-    expect(wrapper.find('h4').text()).toEqual(program.name);
-    expect(wrapper.find('p').at(0).text()).toEqual(program.type_name);
-    expect(wrapper.find('p').at(1).text()).toEqual('Partially Completed');
-    expect(wrapper.find('p').at(2).text()).toEqual(`Last updated: ${new Date(program.last_updated).toLocaleDateString()}`);
+    waitFor(() => {
+      expect(wrapper.find('h4').text()).toEqual(program.name);
+      expect(wrapper.find('p').at(0).text()).toEqual(program.type_name);
+      expect(wrapper.find('p').at(1).text()).toEqual('Partially Completed');
+      expect(wrapper.find('p').at(2).text()).toEqual(`Last updated: ${new Date(program.last_updated).toLocaleDateString()}`);
+    });
   });
 
   it('copies a link to the clipboard when the "Copy Program Record link" button is clicked', async () => {
@@ -92,8 +88,6 @@ describe('Learner Records Tests', () => {
 
     wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
 
-    await waitForComponentToPaint(wrapper);
-
     Object.assign(navigator, {
       clipboard: {
         writeText: () => {},
@@ -102,10 +96,12 @@ describe('Learner Records Tests', () => {
     jest.spyOn(navigator.clipboard, 'writeText');
 
     const copyButton = wrapper.find('button').at(0);
-    expect(copyButton.text()).toEqual('Copy public record link');
-    copyButton.simulate('click');
+    waitFor(() => {
+      expect(copyButton.text()).toEqual('Copy public record link');
+      copyButton.simulate('click');
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+      expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('renders an alert when there is no public instance of a record', async () => {
@@ -117,9 +113,7 @@ describe('Learner Records Tests', () => {
 
     wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
 
-    await waitForComponentToPaint(wrapper);
-
-    expect(wrapper.find('div.no-public-link').text()).toEqual('There is no public instance for this record. Learners must create a public link on their own.');
+    waitFor(() => expect(wrapper.find('div.no-public-link').text()).toEqual('There is no public instance for this record. Learners must create a public link on their own.'));
   });
 
   it('renders a table for a program record', async () => {
@@ -129,29 +123,29 @@ describe('Learner Records Tests', () => {
 
     wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
 
-    await waitForComponentToPaint(wrapper);
-
     const dataTable = wrapper.find('table.custom-table').at(0);
     const firstDataRow = dataTable.find('tr').at(1);
 
-    expect(dataTable.find('th').at(0).text()).toEqual('Course Name');
-    expect(dataTable.find('th').at(1).text()).toEqual('School');
-    expect(dataTable.find('th').at(2).text()).toEqual('Course ID');
-    expect(dataTable.find('th').at(3).text()).toEqual('Highest grade earned');
-    expect(dataTable.find('th').at(4).text()).toEqual('Letter Grade');
-    expect(dataTable.find('th').at(5).text()).toEqual('Verified Attempts');
-    expect(dataTable.find('th').at(6).text()).toEqual('Date Earned');
-    expect(dataTable.find('th').at(7).text()).toEqual('Status');
+    waitFor(() => {
+      expect(dataTable.find('th').at(0).text()).toEqual('Course Name');
+      expect(dataTable.find('th').at(1).text()).toEqual('School');
+      expect(dataTable.find('th').at(2).text()).toEqual('Course ID');
+      expect(dataTable.find('th').at(3).text()).toEqual('Highest grade earned');
+      expect(dataTable.find('th').at(4).text()).toEqual('Letter Grade');
+      expect(dataTable.find('th').at(5).text()).toEqual('Verified Attempts');
+      expect(dataTable.find('th').at(6).text()).toEqual('Date Earned');
+      expect(dataTable.find('th').at(7).text()).toEqual('Status');
 
-    const grade = records[0].record.grades[0];
+      const grade = records[0].record.grades[0];
 
-    expect(firstDataRow.find('td').at(0).text()).toEqual(grade.name);
-    expect(firstDataRow.find('td').at(1).text()).toEqual(grade.school);
-    expect(firstDataRow.find('td').at(2).text()).toEqual(grade.course_id.split(':')[1]);
-    expect(firstDataRow.find('td').at(3).text()).toEqual(`${parseInt(Math.round(grade.percent_grade * 100), 10).toString()}%`);
-    expect(firstDataRow.find('td').at(4).text()).toEqual(grade.letter_grade);
-    expect(firstDataRow.find('td').at(5).text()).toEqual(grade.attempts.toString());
-    expect(firstDataRow.find('td').at(6).text()).toEqual(new Date(grade.issue_date).toLocaleDateString());
-    expect(firstDataRow.find('td').at(7).text()).toEqual('Earned');
+      expect(firstDataRow.find('td').at(0).text()).toEqual(grade.name);
+      expect(firstDataRow.find('td').at(1).text()).toEqual(grade.school);
+      expect(firstDataRow.find('td').at(2).text()).toEqual(grade.course_id.split(':')[1]);
+      expect(firstDataRow.find('td').at(3).text()).toEqual(`${parseInt(Math.round(grade.percent_grade * 100), 10).toString()}%`);
+      expect(firstDataRow.find('td').at(4).text()).toEqual(grade.letter_grade);
+      expect(firstDataRow.find('td').at(5).text()).toEqual(grade.attempts.toString());
+      expect(firstDataRow.find('td').at(6).text()).toEqual(new Date(grade.issue_date).toLocaleDateString());
+      expect(firstDataRow.find('td').at(7).text()).toEqual('Earned');
+    });
   });
 });

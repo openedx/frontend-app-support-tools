@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button } from '@edx/paragon';
+import { Button } from '@openedx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 
 const EditButton = () => {

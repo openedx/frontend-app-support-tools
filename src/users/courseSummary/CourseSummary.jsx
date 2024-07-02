@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
-import { ModalDialog, ActionRow } from '@edx/paragon';
+import { ModalDialog, ActionRow } from '@openedx/paragon';
 import PageLoading from '../../components/common/PageLoading';
 import { formatDate } from '../../utils';
 import UserMessagesContext from '../../userMessages/UserMessagesContext';

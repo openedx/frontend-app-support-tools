@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { waitForComponentToPaint } from '../../setupTest';
 import licenseData from '../data/test/licenses';
 import LicenseCard from './LicenseCard';
 import { formatDate } from '../../utils';
@@ -18,7 +17,6 @@ describe.each(licenseData.results)('License Record Card', (licenseRecord) => {
       licenseRecord: licenseRecordProp,
     };
     wrapper = mount(<LicenseCard {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   it('License props', () => {
@@ -31,7 +29,6 @@ describe.each(licenseData.results)('License Record Card', (licenseRecord) => {
       licenseRecord: null,
     };
     wrapper = mount(<LicenseCard {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     expect(wrapper.isEmptyRender()).toBeTruthy();
   });

@@ -5,7 +5,7 @@ import {
   faExclamationTriangle, faInfoCircle, faCheckCircle, faMinusCircle, faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button } from '@edx/paragon';
+import { Button } from '@openedx/paragon';
 
 function getAlertClass(type) {
   if (type === 'error') {

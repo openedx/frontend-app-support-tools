@@ -1,5 +1,5 @@
 import { getConfig } from '@edx/frontend-platform';
-import { Alert, Button } from '@edx/paragon';
+import { Alert, Button } from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
