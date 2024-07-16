@@ -19,6 +19,7 @@ import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexP
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
 import Head from './head/Head';
+import CustomersPage from './Configuration/Customers/CustomersPage';
 
 import './index.scss';
 import ProvisioningPage from './Configuration/Provisioning/ProvisioningPage';
@@ -69,6 +70,14 @@ subscribe(APP_READY, () => {
       element={<ConfigurationPage />}
     />,
   ];
+  const customerRoutes = [
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.CUSTOMERS.HOME}
+      element={<CustomersPage />}
+    />,
+
+  ];
   ReactDOM.render(
     <AppProvider>
       <UserMessagesProvider>
@@ -77,6 +86,8 @@ subscribe(APP_READY, () => {
         <Routes>
           {/* Start: Configuration Dropdown Routes */}
           {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
+          {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && customerRoutes}
+
           {/* End: Configuration Dropdown Routes */}
           <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
           <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
