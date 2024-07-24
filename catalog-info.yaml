@@ -5,7 +5,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: 'frontend-app-support-tools'
-  description: 'Micro-frontend with a series of support tools for edx-platform.'
+  description: 'Micro-frontend with a series of support tools for edX ecosystem.'
   links:
     - url: 'https://github.com/openedx/frontend-app-support-tools'
       title: 'frontend-app-support-tools GitHub Repository'
@@ -14,3 +14,8 @@ spec:
   owner: group:2u-phoenix
   type: 'service'
   lifecycle: 'production'
+  dependsOn:
+    - edx-platform
+    - course-discovery
+    - license-manager
+    - enterprise-subsidy
