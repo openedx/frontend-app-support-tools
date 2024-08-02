@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import {
   DataTable, Icon, OverlayTrigger, Stack, Tooltip,
-} from '@edx/paragon';
-import { Check, InfoOutline } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { Check, InfoOutline } from '@openedx/paragon/icons';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import useActiveAssociatedPlans from '../data/hooks/useActiveAssociatedPlans';
 

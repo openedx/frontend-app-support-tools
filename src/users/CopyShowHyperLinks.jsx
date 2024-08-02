@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Hyperlink } from '@edx/paragon';
+import { Hyperlink } from '@openedx/paragon';
 
 export default function CopyShowHyperlinks({ text }) {
   const [copyText, setCopyText] = useState('Copy ');

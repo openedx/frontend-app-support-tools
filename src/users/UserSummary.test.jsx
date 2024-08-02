@@ -10,7 +10,6 @@ import enrollmentsData from './data/test/enrollments';
 import OnboardingStatusData from './data/test/onboardingStatus';
 import enterpriseCustomerUsersData from './data/test/enterpriseCustomerUsers';
 import verifiedNameHistoryData from './data/test/verifiedNameHistory';
-import { waitForComponentToPaint } from '../setupTest';
 
 const UserSummaryWrapper = (props) => (
   <IntlProvider locale="en">
@@ -29,7 +28,6 @@ describe('User Summary Component Tests', () => {
     jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(OnboardingStatusData));
     jest.spyOn(api, 'getEnterpriseCustomerUsers').mockImplementationOnce(() => Promise.resolve(enterpriseCustomerUsersData));
     wrapper = mount(<UserSummaryWrapper {...data} />);
-    await waitForComponentToPaint(wrapper);
   };
 
   beforeEach(() => {

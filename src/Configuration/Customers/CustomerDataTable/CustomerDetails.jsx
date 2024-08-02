@@ -3,9 +3,9 @@ import {
   Hyperlink,
   Icon,
   Toast,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import { Check, ContentCopy } from '@edx/paragon/icons';
+import { Check, ContentCopy } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import ROUTES from '../../../data/constants/routes';
 
