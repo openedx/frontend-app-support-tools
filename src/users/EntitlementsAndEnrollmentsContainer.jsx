@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Input } from '@edx/paragon';
+import { Input } from '@openedx/paragon';
 import Enrollments from './enrollments/Enrollments';
 import Entitlements from './entitlements/Entitlements';
 

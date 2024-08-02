@@ -112,6 +112,6 @@ describe('CustomerDetails', () => {
     expect(screen.getByText('123456789')).toBeInTheDocument();
     const copy = screen.getByTestId('copy');
     userEvent.click(copy);
-    await waitFor(() => expect(screen.getByText('Copied to clipboard!')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Copied to clipboard')).toBeInTheDocument());
   });
 });

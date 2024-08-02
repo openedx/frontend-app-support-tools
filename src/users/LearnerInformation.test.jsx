@@ -3,7 +3,6 @@ import React from 'react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import * as api from './data/api';
-import { waitForComponentToPaint } from '../setupTest';
 import UserSummaryData from './data/test/userSummary';
 import LearnerInformation from './LearnerInformation';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
@@ -45,7 +44,6 @@ describe('Learners and Enrollments component', () => {
     }));
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecords));
     wrapper = mount(<LearnerInformationWrapper {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   afterEach(() => {

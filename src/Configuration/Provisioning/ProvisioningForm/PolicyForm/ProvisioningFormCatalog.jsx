@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form } from '@edx/paragon';
+import { Form } from '@openedx/paragon';
 import { v4 as uuidv4 } from 'uuid';
 import { useContextSelector } from 'use-context-selector';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';

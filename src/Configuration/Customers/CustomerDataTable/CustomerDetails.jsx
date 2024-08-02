@@ -3,9 +3,9 @@ import {
   Hyperlink,
   Icon,
   Toast,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { getConfig } from '@edx/frontend-platform';
-import { Check, ContentCopy } from '@edx/paragon/icons';
+import { Check, ContentCopy } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import ROUTES from '../../../data/constants/routes';
 
@@ -25,6 +25,7 @@ export const CustomerDetailLink = ({ row }) => {
         <Hyperlink
           destination={`${HOME}/${row.original.slug}/view`}
           key={row.original.uuid}
+          rel="noopener noreferrer"
           variant="muted"
           target="_blank"
           showLaunchIcon={false}
@@ -37,6 +38,7 @@ export const CustomerDetailLink = ({ row }) => {
         <Hyperlink
           destination={`${ADMIN_PORTAL_BASE_URL}/${row.original.slug}/admin/learners`}
           key={row.original.uuid}
+          rel="noopener noreferrer"
           variant="muted"
           target="_blank"
           showLaunchIcon
@@ -61,7 +63,7 @@ export const CustomerDetailLink = ({ row }) => {
         show={showToast}
         delay={2000}
       >
-        Copied to clipboard!
+        Copied to clipboard
       </Toast>
     </div>
   );

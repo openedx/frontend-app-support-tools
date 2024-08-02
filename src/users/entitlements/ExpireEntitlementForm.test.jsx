@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 
-import { waitForComponentToPaint } from '../../setupTest';
 import ExpireEntitlementForm from './ExpireEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -52,9 +52,10 @@ describe('Expire Entitlement Form', () => {
       expect(wrapper.find('div.spinner-border').length).toEqual(1);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      await waitForComponentToPaint(wrapper);
-      expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      waitFor(() => {
+        expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
+        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      });
       apiMock.mockReset();
 
       submitButton = wrapper.find('button.btn-primary');
@@ -77,10 +78,9 @@ describe('Expire Entitlement Form', () => {
 
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'expiring entitlement' } });
       wrapper.find('button.btn-primary').simulate('click');
-      await waitForComponentToPaint(wrapper);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.alert').text()).toEqual('Error expiring entitlement');
+      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error expiring entitlement'));
     });
   });
 });

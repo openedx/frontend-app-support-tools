@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { waitForComponentToPaint } from '../setupTest';
 import ssoRecordsData from './data/test/ssoRecords';
 import SingleSignOnRecordCard from './SingleSignOnRecordCard';
 import { formatDate, formatUnixTimestamp } from '../utils';
@@ -21,7 +20,6 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
       ssoRecord: ssoRecordProp,
     };
     wrapper = mount(<SingleSignOnRecordCard {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   it('SSO props', () => {
@@ -34,7 +32,6 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
       ssoRecord: null,
     };
     wrapper = mount(<SingleSignOnRecordCard {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     expect(wrapper.isEmptyRender()).toBeTruthy();
   });

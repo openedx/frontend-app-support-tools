@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, DataTable, ModalDialog, ActionRow,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { formatDate } from '../../utils';
 
 export default function PasswordHistory({

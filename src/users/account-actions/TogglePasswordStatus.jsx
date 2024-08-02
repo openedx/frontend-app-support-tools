@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Input, Alert, ModalDialog, ActionRow,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { postTogglePasswordStatus } from '../data/api';
 
 import {

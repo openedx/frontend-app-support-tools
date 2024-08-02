@@ -7,7 +7,7 @@ import React, {
 import debounce from 'lodash.debounce';
 import {
   Container, DataTable, TextFilter,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
 
@@ -60,7 +60,6 @@ const CustomersPage = () => {
           }}
           renderRowSubComponent={({ row }) => <CustomerDetailRowSubComponent row={row} />}
           isPaginated
-          isSortable
           isFilterable
           defaultColumnValues={{ Filter: TextFilter }}
           itemCount={enterpriseList?.length || 0}
