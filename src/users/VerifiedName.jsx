@@ -5,7 +5,7 @@ import { camelCaseObject } from '@edx/frontend-platform';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import {
   Button, Hyperlink, OverlayTrigger, Popover, ModalDialog, ActionRow,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 
 import PageLoading from '../components/common/PageLoading';
 import Table from '../components/Table';

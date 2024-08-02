@@ -1,6 +1,6 @@
 import {
   Hyperlink,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import { getConfig } from '@edx/frontend-platform';
 import PROVISIONING_PAGE_TEXT, { DJANGO_ADMIN_RETRIEVE_CATALOG_PATH } from '../../data/constants';

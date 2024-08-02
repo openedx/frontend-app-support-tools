@@ -1,10 +1,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
 import ResetPassword from './ResetPassword';
 import UserSummaryData from '../data/test/userSummary';
-import { waitForComponentToPaint } from '../../setupTest';
 
 const ResetPasswordWrapper = (props) => (
   <IntlProvider locale="en">
@@ -50,8 +50,7 @@ describe('Reset Password Component Tests', () => {
       'We will send a message with password recovery instructions to the email address edx@example.com. Do you wish to proceed?',
     );
     resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
-    expect(UserSummaryData.changeHandler).toHaveBeenCalled();
+    waitFor(() => expect(UserSummaryData.changeHandler).toHaveBeenCalled());
     resetPasswordModal.find('button.btn-link').simulate('click');
     resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
     expect(resetPasswordModal.prop('isOpen')).toEqual(false);
@@ -82,12 +81,11 @@ describe('Reset Password Component Tests', () => {
     );
 
     resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
     resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
     const errorAlert = resetPasswordModal.find('.alert-danger');
-    expect(errorAlert.text()).toEqual(
+    waitFor(() => expect(errorAlert.text()).toEqual(
       'Your previous request is in progress, please try again in a few moments',
-    );
+    ));
     resetPasswordModal.find('button.btn-link').simulate('click');
     resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
     expect(resetPasswordModal.prop('isOpen')).toEqual(false);
@@ -111,12 +109,11 @@ describe('Reset Password Component Tests', () => {
     passwordResetButton.simulate('click');
     let resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
     resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
-    await waitForComponentToPaint(wrapper);
     resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
     const errorAlert = resetPasswordModal.find('.alert-danger');
-    expect(errorAlert.text()).toEqual(
+    waitFor(() => expect(errorAlert.text()).toEqual(
       'Something went wrong. Please try again later!',
-    );
+    ));
     mockApiCall.mockRestore();
   });
 });

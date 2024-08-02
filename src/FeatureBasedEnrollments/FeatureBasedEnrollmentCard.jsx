@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Card, Badge,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { formatDate } from '../utils';
 
 export default function FeatureBasedEnrollmentCard({ title, fbeData }) {

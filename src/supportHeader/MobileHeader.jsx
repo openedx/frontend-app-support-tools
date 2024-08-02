@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Local Components
-import { Dropdown, AvatarButton } from '@edx/paragon';
+import { Dropdown, AvatarButton } from '@openedx/paragon';
 import { Menu, MenuTrigger, MenuContent } from './Menu';
 import { LinkedLogo, Logo } from './Logo';
 

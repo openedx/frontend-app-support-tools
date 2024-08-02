@@ -4,7 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 import {
   Badge, Card, Row, Col,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import Table from '../../components/Table';
 import { formatDate } from '../../utils';
 

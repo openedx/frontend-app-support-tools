@@ -4,8 +4,8 @@ import {
   Icon,
   IconButtonWithTooltip,
   Stack,
-} from '@edx/paragon';
-import { InfoOutline } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { InfoOutline } from '@openedx/paragon/icons';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';

@@ -7,7 +7,7 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Input, Button } from '@edx/paragon';
+import { Input, Button } from '@openedx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
 import AlertList from '../userMessages/AlertList';

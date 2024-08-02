@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   ActionRow,
   Button, Input, InputSelect, ModalDialog,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 
 import AlertList from '../../userMessages/AlertList';
 import { postEnrollment } from '../data/api';
