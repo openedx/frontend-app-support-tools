@@ -113,10 +113,14 @@ export default function Header() {
   const configurationDropdown = {
     type: 'submenu',
     content: 'Enterprise Setup',
-    submenuContent:
-      getConfig().FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
-        ? (<div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}`}>Learner Credit Plans</a></div>)
-        : null,
+    submenuContent: (
+      <>
+        {getConfig().FEATURE_CUSTOMER_SUPPORT_VIEW === 'true' ? (
+          <div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.CUSTOMERS.HOME}`}>Customers</a></div>) : null}
+        {getConfig().FEATURE_CONFIGURATION_ENTERPRISE_PROVISION === 'true' ? (
+          <div className="mb-1"><a rel="noopener" href={`${config.BASE_URL}${CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}`}>Learner Credit Plans</a></div>) : null}
+      </>
+    ),
   };
   if (getConfig().FEATURE_CONFIGURATION_MANAGEMENT) {
     mainMenu.push(configurationDropdown);

@@ -19,6 +19,7 @@ import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexP
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
 import Head from './head/Head';
+import CustomersPage from './Configuration/Customers/CustomerDataTable/CustomersPage';
 
 import './index.scss';
 import ProvisioningPage from './Configuration/Provisioning/ProvisioningPage';
@@ -69,6 +70,13 @@ subscribe(APP_READY, () => {
       element={<ConfigurationPage />}
     />,
   ];
+  const customerRoutes = [
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.CUSTOMERS.HOME}
+      element={<CustomersPage />}
+    />,
+  ];
   ReactDOM.render(
     <AppProvider>
       <UserMessagesProvider>
@@ -76,6 +84,7 @@ subscribe(APP_READY, () => {
         <Header />
         <Routes>
           {/* Start: Configuration Dropdown Routes */}
+          {getConfig().FEATURE_CUSTOMER_SUPPORT_VIEW === 'true' && customerRoutes}
           {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
           {/* End: Configuration Dropdown Routes */}
           <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
@@ -102,10 +111,12 @@ initialize({
       mergeConfig({
         COMMERCE_COORDINATOR_ORDER_DETAILS_URL: process.env.COMMERCE_COORDINATOR_ORDER_DETAILS_URL || null,
         LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL || null,
+        ADMIN_PORTAL_BASE_URL: process.env.ADMIN_PORTAL_BASE_URL || null,
         ENTERPRISE_ACCESS_BASE_URL: process.env.ENTERPRISE_ACCESS_BASE_URL || null,
         FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
         FEATURE_CONFIGURATION_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION') || null,
         FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION') || null,
+        FEATURE_CUSTOMER_SUPPORT_VIEW: process.env.FEATURE_CUSTOMER_SUPPORT_VIEW || hasFeatureFlagEnabled('FEATURE_CUSTOMER_SUPPORT_VIEW') || null,
         SUBSIDY_BASE_URL: process.env.SUBSIDY_BASE_URL || null,
       });
     },

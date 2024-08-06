@@ -11,6 +11,12 @@ const ROUTES = {
   CONFIGURATION: {
     HOME: '/enterprise-configuration',
     SUB_DIRECTORY: {
+      CUSTOMERS: {
+        HOME: '/enterprise-configuration/customers',
+        SUB_DIRECTORY: {
+          VIEW: '/enterprise-configuration/customers/:id/view',
+        },
+      },
       PROVISIONING: {
         HOME: '/enterprise-configuration/learner-credit',
         SUB_DIRECTORY: {
