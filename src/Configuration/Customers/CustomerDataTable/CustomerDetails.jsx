@@ -23,7 +23,7 @@ export const CustomerDetailLink = ({ row }) => {
     <div>
       <div>
         <Hyperlink
-          destination={`${HOME}/${row.original.slug}/view`}
+          destination={`${HOME}/${row.original.uuid}/view`}
           key={row.original.uuid}
           variant="muted"
           target="_blank"
