@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Hyperlink,
   Icon,
@@ -8,15 +7,12 @@ import { getConfig } from '@edx/frontend-platform';
 import { Check, ContentCopy } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import ROUTES from '../../../data/constants/routes';
+import { useCopyToClipboard } from '../data/utils';
 
 const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.CUSTOMERS;
 
 export const CustomerDetailLink = ({ row }) => {
-  const [showToast, setShowToast] = useState(false);
-  const copyToClipboard = (id) => {
-    navigator.clipboard.writeText(id);
-    setShowToast(true);
-  };
+  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard();
   const { ADMIN_PORTAL_BASE_URL } = getConfig();
 
   return (
@@ -25,6 +21,7 @@ export const CustomerDetailLink = ({ row }) => {
         <Hyperlink
           destination={`${HOME}/${row.original.uuid}/view`}
           key={row.original.uuid}
+          rel="noopener noreferrer"
           variant="muted"
           target="_blank"
           showLaunchIcon={false}
@@ -37,6 +34,7 @@ export const CustomerDetailLink = ({ row }) => {
         <Hyperlink
           destination={`${ADMIN_PORTAL_BASE_URL}/${row.original.slug}/admin/learners`}
           key={row.original.uuid}
+          rel="noopener noreferrer"
           variant="muted"
           target="_blank"
           showLaunchIcon
@@ -61,7 +59,7 @@ export const CustomerDetailLink = ({ row }) => {
         show={showToast}
         delay={2000}
       >
-        Copied to clipboard!
+        Copied to clipboard
       </Toast>
     </div>
   );

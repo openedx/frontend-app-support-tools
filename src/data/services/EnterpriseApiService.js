@@ -12,8 +12,6 @@ class LmsApiService {
 
   static enterpriseCustomerCatalogsWriteUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_catalog/`;
 
-  static enterpriseCustomerUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise-customer/`
-
   static enterpriseCustomersBasicListUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/basic_list/`;
 
   static enterpriseCustomersSupportToolUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/support_tool/`;
@@ -43,13 +41,6 @@ class LmsApiService {
     uuid: catalogUuid,
     title,
   });
-
-  static fetchEnterpriseCustomer = (enterpriseId) => {
-    console.log(enterpriseId)
-    return LmsApiService.apiClient().get(
-      `${LmsApiService.enterpriseCustomerUrl}${enterpriseId}/`,
-    );
-  }
 
   static fetchEnterpriseCustomerSupportTool = (options) => {
     const queryParams = new URLSearchParams({

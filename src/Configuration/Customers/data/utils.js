@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform/utils';
 import EcommerceApiService from '../../../data/services/EcommerceApiService';
 import LicenseManagerApiService from '../../../data/services/LicenseManagerApiService';
@@ -29,13 +30,23 @@ export const getSubsidyAccessPolicies = async (enterpriseId) => {
   return subsidyAccessPolicies;
 };
 
-export const getEnterpriseCustomer = async (enterpriseId) => {
-  const response = await LmsApiService.fetchEnterpriseCustomer(enterpriseId)
+export const getEnterpriseCustomer = async (options) => {
+  const response = await LmsApiService.fetchEnterpriseCustomerSupportTool(options);
   const enterpriseCustomer = camelCaseObject(response.data);
-  console.log(enterpriseCustomer)
   return enterpriseCustomer;
 };
 
-export const formatDate = (date) => {
-  return dayjs(date).utc().format('MMMM DD, YYYY');
+export const formatDate = (date) => dayjs(date).utc().format('MMMM DD, YYYY');
+
+export const useCopyToClipboard = (id) => {
+  const [showToast, setShowToast] = useState(false);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(id);
+    setShowToast(true);
+  };
+  return {
+    showToast,
+    copyToClipboard,
+    setShowToast,
+  };
 };
