@@ -29,13 +29,10 @@ export const getSubsidyAccessPolicies = async (enterpriseId) => {
   return subsidyAccessPolicies;
 };
 
-export const getEnterpriseCustomer = async (enterpriseId) => {
-  const response = await LmsApiService.fetchEnterpriseCustomer(enterpriseId)
+export const getEnterpriseCustomer = async (options) => {
+  const response = await LmsApiService.fetchEnterpriseCustomerSupportTool(options);
   const enterpriseCustomer = camelCaseObject(response.data);
-  console.log(enterpriseCustomer)
   return enterpriseCustomer;
 };
 
-export const formatDate = (date) => {
-  return dayjs(date).utc().format('MMMM DD, YYYY');
-};
+export const formatDate = (date) => dayjs(date).utc().format('MMMM DD, YYYY');

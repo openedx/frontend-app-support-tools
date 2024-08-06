@@ -44,7 +44,7 @@ export const OtherSubsidies = () => (
           <div>
             <FormattedMessage
               id="configuration.customersPage.otherSubsidiesColumn.tooltip"
-              defaultMessage="Includes Offers and Codes"
+              defaultMessage="Includes offers and codes"
               description="Tooltip for the Other Subsidies column header in the Customers table"
             />
           </div>

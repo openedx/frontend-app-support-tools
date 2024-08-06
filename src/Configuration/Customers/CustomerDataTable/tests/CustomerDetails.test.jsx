@@ -107,11 +107,11 @@ describe('CustomerDetails', () => {
         <CustomerDetailLink row={row} />
       </IntlProvider>,
     );
-    expect(screen.getByRole('link', { name: 'Ash Ketchum' })).toHaveAttribute('href', '/enterprise-configuration/customers/ash-ketchum/view');
+    expect(screen.getByRole('link', { name: 'Ash Ketchum' })).toHaveAttribute('href', '/enterprise-configuration/customers/123456789/view');
     expect(screen.getByRole('link', { name: '/ash-ketchum/ in a new tab' })).toHaveAttribute('href', 'http://www.testportal.com/ash-ketchum/admin/learners');
     expect(screen.getByText('123456789')).toBeInTheDocument();
     const copy = screen.getByTestId('copy');
     userEvent.click(copy);
-    await waitFor(() => expect(screen.getByText('Copied to clipboard!')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Copied to clipboard')).toBeInTheDocument());
   });
 });

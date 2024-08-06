@@ -60,7 +60,6 @@ const CustomersPage = () => {
           }}
           renderRowSubComponent={({ row }) => <CustomerDetailRowSubComponent row={row} />}
           isPaginated
-          isSortable
           isFilterable
           defaultColumnValues={{ Filter: TextFilter }}
           itemCount={enterpriseList?.length || 0}
