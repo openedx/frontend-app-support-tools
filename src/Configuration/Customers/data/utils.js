@@ -26,3 +26,8 @@ export const getSubsidyAccessPolicies = async (enterpriseId) => {
   const subsidyAccessPolicies = camelCaseObject(response.data);
   return subsidyAccessPolicies;
 };
+
+export const copyToClipboard = (id, setShowToast) => {
+  navigator.clipboard.writeText(id);
+  setShowToast(true);
+};
