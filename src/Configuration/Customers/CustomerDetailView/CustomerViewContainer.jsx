@@ -9,6 +9,7 @@ import {
 } from '@openedx/paragon';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import CustomerCard from './CustomerCard';
+import CustomerPlanCard from './CustomerPlanCard';
 import { getEnterpriseCustomer } from '../data/utils';
 
 const CustomerViewContainer = () => {
@@ -43,18 +44,25 @@ const CustomerViewContainer = () => {
           links={[
             {
               label: intl.formatMessage({
-                id: 'lcm.budget.detail.page.breadcrumb.budgets',
-                defaultMessage: 'Budgets',
-                description: 'Breadcrumb label for the budgets page',
+                id: 'supportTool.customers.page.breadcrumb.customer',
+                defaultMessage: 'Customers',
+                description: 'Breadcrumb label for the customers page',
               }),
+              href: '/enterprise-configuration/customers'
             },
-            { label: `${enterpriseCustomer.name}`, href: 'here' },
+            { label: `${enterpriseCustomer.name}` },
           ]}
         />
       </Container>
       <Container className="mt-4">
         <Stack gap={2}>
           {!isLoading ? <CustomerCard enterpriseCustomer={enterpriseCustomer} /> : <Skeleton height={230} />}
+        </Stack>
+      </Container>
+
+      <Container className="mt-4">
+        <Stack gap={2}>
+          {!isLoading ? <CustomerPlanCard enterpriseCustomer={enterpriseCustomer} /> : <Skeleton height={230} />}
         </Stack>
       </Container>
     </div>
