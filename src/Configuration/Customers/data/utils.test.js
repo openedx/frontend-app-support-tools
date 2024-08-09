@@ -4,6 +4,8 @@ import {
   getCouponOrders,
   getCustomerAgreements,
   getSubsidyAccessPolicies,
+  getEnterpriseCustomer,
+  formatDate,
 } from './utils';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -98,5 +100,32 @@ describe('getCustomerAgreements', () => {
     }));
     const results = await getCustomerAgreements(TEST_ENTERPRISE_UUID);
     expect(results).toEqual(agreementsResults.data);
+  });
+});
+
+describe('getEnterpriseCustomer', () => {
+  it('returns the correct data', async () => {
+    const enterpriseCustomer = {
+      data: [{
+        uuid: '0b466242-75ff-4c27-8237-680dac3737f7',
+        name: 'customer-6',
+        slug: 'customer-6',
+        active: true,
+      }],
+    };
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      get: jest.fn().mockResolvedValue(enterpriseCustomer),
+    }));
+    const results = await getEnterpriseCustomer(TEST_ENTERPRISE_UUID);
+    expect(results).toEqual(enterpriseCustomer.data);
+  });
+});
+
+describe('formatDate', () => {
+  it('returns the formatted date', async () => {
+    const date = '2024-07-23T20:02:57.651943Z';
+    const formattedDate = formatDate(date);
+    const expectedFormattedDate = 'July 23, 2024';
+    expect(expectedFormattedDate).toEqual(formattedDate);
   });
 });
