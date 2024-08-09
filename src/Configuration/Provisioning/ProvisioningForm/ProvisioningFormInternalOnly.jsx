@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Form,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PROVISIONING_PAGE_TEXT from '../data/constants';
 import useProvisioningContext from '../data/hooks';
 import { selectProvisioningContext } from '../data/utils';

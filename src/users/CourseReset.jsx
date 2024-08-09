@@ -1,6 +1,6 @@
 import {
   Alert, AlertModal, Button, useToggle, ActionRow, Form,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
 import {

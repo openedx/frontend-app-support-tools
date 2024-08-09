@@ -1,4 +1,4 @@
-import { DataTable, TextFilter } from '@edx/paragon';
+import { DataTable, TextFilter } from '@openedx/paragon';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import debounce from 'lodash.debounce';

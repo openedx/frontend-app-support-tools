@@ -14,6 +14,8 @@ class LmsApiService {
 
   static enterpriseCustomersBasicListUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/basic_list/`;
 
+  static enterpriseCustomersSupportToolUrl = `${LmsApiService.baseUrl}/enterprise/api/v1/enterprise-customer/support_tool/`;
+
   static enterpriseCatalogsUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_catalogs/`;
 
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
@@ -39,6 +41,15 @@ class LmsApiService {
     uuid: catalogUuid,
     title,
   });
+
+  static fetchEnterpriseCustomerSupportTool = (options) => {
+    const queryParams = new URLSearchParams({
+      ...options,
+    });
+    return LmsApiService.apiClient().get(
+      `${LmsApiService.enterpriseCustomersSupportToolUrl}?${queryParams.toString()}`,
+    );
+  };
 
   /**
    * Retrieve one catalog (the plurality of the function name is due to the fact that this is a list endpoint).

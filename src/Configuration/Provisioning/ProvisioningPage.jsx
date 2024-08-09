@@ -1,6 +1,6 @@
 import {
   Container,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import Dashboard from './Dashboard';
 import DashboardContextProvider from './DashboardContext';
 

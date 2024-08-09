@@ -1,8 +1,8 @@
 import {
   Button,
   ActionRow,
-} from '@edx/paragon';
-import { Add } from '@edx/paragon/icons';
+} from '@openedx/paragon';
+import { Add } from '@openedx/paragon/icons';
 import { useNavigate } from 'react-router-dom';
 import PROVISIONING_PAGE_TEXT from './data/constants';
 import ROUTES from '../../data/constants/routes';

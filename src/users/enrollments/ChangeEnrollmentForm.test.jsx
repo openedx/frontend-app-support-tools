@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 
-import { waitForComponentToPaint } from '../../setupTest';
 import ChangeEnrollmentForm from './ChangeEnrollmentForm';
 import { changeEnrollmentFormData } from '../data/test/enrollments';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -52,9 +52,10 @@ describe('Enrollment Change form', () => {
       expect(wrapper.find('div.spinner-border').length).toEqual(1);
       expect(apiMock).toHaveBeenCalledTimes(1);
 
-      await waitForComponentToPaint(wrapper);
-      expect(changeEnrollmentFormData.changeHandler).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      waitFor(() => {
+        expect(changeEnrollmentFormData.changeHandler).toHaveBeenCalledTimes(1);
+        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      });
 
       apiMock.mockReset();
       const submitButton = wrapper.find('button.btn-primary');
@@ -80,10 +81,9 @@ describe('Enrollment Change form', () => {
       wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
       wrapper.find('button.btn-primary').simulate('click');
-      await waitForComponentToPaint(wrapper);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.alert').text()).toEqual('Error changing enrollment');
+      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error changing enrollment'));
     });
   });
 });

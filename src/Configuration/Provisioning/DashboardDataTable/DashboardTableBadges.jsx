@@ -1,6 +1,6 @@
 import {
   Badge,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import PropTypes from 'prop-types';
 
 const DashboardTableBadges = ({ row }) => {

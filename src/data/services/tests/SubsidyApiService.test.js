@@ -1,4 +1,4 @@
-import SubsidyApiService from './SubsidyApiService';
+import SubsidyApiService from '../SubsidyApiService';
 
 describe('getAllSubsidies', () => {
   it('returns a promise', () => {
