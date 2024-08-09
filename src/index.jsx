@@ -30,6 +30,7 @@ import ProvisioningFormContainer from './Configuration/Provisioning/Provisioning
 import SubsidyDetailViewContainer from './Configuration/Provisioning/SubsidyDetailView/SubsidyDetailViewContainer';
 import ErrorPageContainer from './Configuration/Provisioning/ErrorPage';
 import SubsidyEditViewContainer from './Configuration/Provisioning/SubsidyEditView/SubsidyEditViewContainer';
+import CustomerViewContainer from './Configuration/Customers/CustomerDetailView/CustomerViewContainer';
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 
