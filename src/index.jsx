@@ -20,7 +20,6 @@ import UserMessagesProvider from './userMessages/UserMessagesProvider';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
 import Head from './head/Head';
 import CustomersPage from './Configuration/Customers/CustomerDataTable/CustomersPage';
-import CustomerViewPage from './Configuration/Customers/CustomerDataTable/CustomerViewPage';
 
 import './index.scss';
 import ProvisioningPage from './Configuration/Provisioning/ProvisioningPage';
@@ -81,7 +80,7 @@ subscribe(APP_READY, () => {
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.CUSTOMERS.SUB_DIRECTORY.VIEW}
-      element={<CustomerViewPage />}
+      element={<CustomerViewContainer />}
     />,
   ];
   ReactDOM.render(

@@ -10,9 +10,10 @@ import {
 import { Launch, ContentCopy } from '@openedx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { formatDate, useCopyToClipboard } from '../data/utils';
+import DJANGO_ADMIN_BASE_URL from '../data/constants';
 
 const CustomerCard = ({ enterpriseCustomer }) => {
-  const { ADMIN_PORTAL_BASE_URL, LMS_BASE_URL } = getConfig();
+  const { ADMIN_PORTAL_BASE_URL } = getConfig();
   const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard();
 
   return (
@@ -25,7 +26,7 @@ const CustomerCard = ({ enterpriseCustomer }) => {
               <Button
                 className="text-dark-500"
                 as="a"
-                href={`${LMS_BASE_URL}/admin/enterprise/enterprisecustomer/${enterpriseCustomer.uuid}/change`}
+                href={`${DJANGO_ADMIN_BASE_URL}/admin/enterprise/enterprisecustomer/${enterpriseCustomer.uuid}/change`}
                 variant="inverse-primary"
                 target="_blank"
                 rel="noopener noreferrer"

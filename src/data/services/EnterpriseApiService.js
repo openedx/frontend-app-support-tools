@@ -20,7 +20,7 @@ class LmsApiService {
 
   static enterpriseSSOConfigurations = `${LmsApiService.enterpriseAPIBaseUrl}enterprise_customer_sso_configuration/`;
 
-  static integratedChannelsUrl = `${LmsApiService.baseUrl}/integrated_channels/api/v1/configs/`
+  static integratedChannelsUrl = `${LmsApiService.baseUrl}/integrated_channels/api/v1/configs/`;
 
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
 
@@ -143,10 +143,6 @@ class LmsApiService {
       `${LmsApiService.integratedChannelsUrl}?${queryParams.toString()}`,
     );
   };
-
 }
-
-
-
 
 export default LmsApiService;
