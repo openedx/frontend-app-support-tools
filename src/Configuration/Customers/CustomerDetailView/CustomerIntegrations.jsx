@@ -11,10 +11,11 @@ const CustomerIntegrations = ({
 }) => {
   const { ADMIN_PORTAL_BASE_URL } = getConfig();
   const ssoDateText = ({ sso }) => (`Created ${formatDate(sso?.created)} • Last modified ${formatDate(sso?.modifed)}`);
-  const configDateText = ({ config }) => (`Last modified ${formatDate(config?.lastModifiedAt)}`);
+  const configDateText = ({ config }) => (`Created ${formatDate(config?.created)} • Last modified ${formatDate(config?.lastModifiedAt)}`);
 
   return (
     <Container className="mt-3 pr-6 mb-5">
+      {(activeSSO || activeIntegrations || apiCredentialsEnabled) && (
       <div>
         <h2 className="pt-4">Associated Integrations</h2>
         {activeSSO && activeSSO.map((sso) => (
@@ -30,7 +31,7 @@ const CustomerIntegrations = ({
         {activeIntegrations && activeIntegrations.map((config) => (
           <CustomerViewCard
             slug={slug}
-            header="Learner platform"
+            header="Learning platform"
             title={config.channelCode[0].toUpperCase() + config.channelCode.substr(1).toLowerCase()}
             subtext={configDateText(config)}
             buttonText="Open in Admin Portal"
@@ -47,6 +48,7 @@ const CustomerIntegrations = ({
         />
         )}
       </div>
+      )}
     </Container>
   );
 };

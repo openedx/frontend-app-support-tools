@@ -53,13 +53,12 @@ describe('CustomerViewIntegrations', () => {
 
       expect(screen.getByText('SSO')).toBeInTheDocument();
       expect(screen.getByText('Orange cats rule')).toBeInTheDocument();
-      expect(screen.getByText('Created September 15, 2024 • Last modified September 15, 2024')).toBeInTheDocument();
+      expect(screen.getAllByText('Created September 15, 2024 • Last modified September 15, 2024')).toHaveLength(3);
       expect(screen.getAllByText('Open in Admin Portal')).toHaveLength(3);
 
-      expect(screen.getAllByText('LEARNER PLATFORM')).toHaveLength(2);
+      expect(screen.getAllByText('LEARNING PLATFORM')).toHaveLength(2);
       expect(screen.getByText('Moodle')).toBeInTheDocument();
       expect(screen.getByText('Canvas')).toBeInTheDocument();
-      expect(screen.getAllByText('Last modified September 15, 2024')).toHaveLength(2);
 
       expect(screen.getByText('INTEGRATION')).toBeInTheDocument();
       expect(screen.getByText('API')).toBeInTheDocument();
