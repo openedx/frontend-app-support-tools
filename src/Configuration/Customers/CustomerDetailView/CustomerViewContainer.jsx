@@ -10,6 +10,7 @@ import {
 import { useIntl } from '@edx/frontend-platform/i18n';
 import CustomerCard from './CustomerCard';
 import { getEnterpriseCustomer } from '../data/utils';
+import CustomerIntegrations from './CustomerIntegrations';
 
 const CustomerViewContainer = () => {
   const { id } = useParams();
@@ -58,6 +59,12 @@ const CustomerViewContainer = () => {
       <Container className="mt-4">
         <Stack gap={2}>
           {!isLoading ? <CustomerCard enterpriseCustomer={enterpriseCustomer} /> : <Skeleton height={230} />}
+          <CustomerIntegrations
+            slug={enterpriseCustomer.slug}
+            activeIntegrations={enterpriseCustomer.activeIntegrations}
+            activeSSO={enterpriseCustomer.activeSsoConfigurations}
+            apiCredentialsEnabled={enterpriseCustomer.enableGenerationOfApiCredentials}
+          />
         </Stack>
       </Container>
     </div>
