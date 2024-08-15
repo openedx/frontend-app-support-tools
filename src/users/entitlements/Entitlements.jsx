@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import {
   Button, TransitionReplace, Dropdown, Hyperlink,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { camelCaseObject, getConfig } from '@edx/frontend-platform';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -67,6 +67,7 @@ export default function Entitlements({
         <Hyperlink
           destination=""
           target="_blank"
+          showLaunchIcon={false}
           onClick={(event) => {
             event.preventDefault();
             setFormType(null);
@@ -139,7 +140,7 @@ export default function Entitlements({
     if (formType != null) {
       formRef.current.focus();
     }
-  });
+  }, []);
 
   const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) => (
     <a {...getToggleAllRowsExpandedProps()} className="link-primary">

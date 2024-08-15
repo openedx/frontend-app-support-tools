@@ -7,6 +7,7 @@ import { downloadableCertificate } from './test/certificates';
 import verifiedNameHistoryData from './test/verifiedNameHistory';
 import OnboardingStatusData from './test/onboardingStatus';
 import { credentials } from './test/credentials';
+import records from './test/records';
 import * as api from './api';
 import * as urls from './urls';
 import * as messages from '../../userMessages/messages';
@@ -32,6 +33,10 @@ describe('API', () => {
   const generateCertificateUrl = urls.generateCertificateUrl();
   const regenerateCertificateUrl = urls.regenerateCertificateUrl();
   const getEnterpriseCustomerUsersUrl = urls.getEnterpriseCustomerUsersUrl(testUsername);
+  const programRecordsUrl = urls.getLearnerRecordsUrl();
+  const retirementApiUrl = urls.userRetirementUrl();
+  const orderHistoryApiUrl = urls.getOrderHistoryUrl();
+  const courseResetUrl = urls.courseResetUrl(testUsername);
 
   let mockAdapter;
 
@@ -520,7 +525,35 @@ describe('API', () => {
       const response = await api.getAllUserData(testUsername);
       expect(response).toEqual({
         errors: [],
+        retirementStatus: null,
         user: { ...successDictResponse, passwordStatus: {} },
+      });
+    });
+
+    it('Retired User Data Retrieval', async () => {
+      const UserApiResponse = {
+        can_cancel_retirement: true,
+        retirement_id: 1,
+        error_msg: 'This email is associated to a retired account.',
+      };
+      const expectedError = [{
+        code: null,
+        dismissible: true,
+        text: 'This email is associated to a retired account.',
+        topic: 'general',
+        type: 'error',
+      }];
+      const retirementStatus = {
+        canCancelRetirement: true,
+        retirementId: 1,
+      };
+      mockAdapter.onGet(`${userAccountApiBaseUrl}?email=${encodeURIComponent(testEmail)}`).reply(() => throwError(404, UserApiResponse));
+
+      const response = await api.getAllUserData(testEmail);
+      expect(response).toEqual({
+        errors: expectedError,
+        retirementStatus,
+        user: null,
       });
     });
   });
@@ -542,10 +575,36 @@ describe('API', () => {
     const resetPasswordApiUrl = `${getConfig().LMS_BASE_URL}/account/password`;
 
     it('Reset Password Response', async () => {
-      const expectedResponse = { };
+      const expectedResponse = {};
       mockAdapter.onPost(resetPasswordApiUrl, `email_from_support_tools=${testEmail}`).reply(200, expectedResponse);
       const response = await api.postResetPassword(testEmail);
       expect(response).toEqual(expectedResponse);
+    });
+  });
+
+  describe('Cancel Retirement', () => {
+    const CancelRetirementUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/cancel_retirement/`;
+
+    it('Successful Cancel Retirement Response', async () => {
+      const expectedResponse = {};
+      mockAdapter.onPost(CancelRetirementUrl, 'retirement_id=3').reply(200, expectedResponse);
+      const response = await api.postCancelRetirement(3);
+      expect(response).toEqual(expectedResponse);
+    });
+
+    it('Unsuccessful Cancel Retirement Response', async () => {
+      const error = new Error();
+      error.message = 'Retirement does not exist!';
+      const expectedResponse = {
+        code: null,
+        dismissible: true,
+        text: 'Retirement does not exist!',
+        type: 'error',
+        topic: 'cancelRetirement',
+      };
+      mockAdapter.onPost(CancelRetirementUrl, 'retirement_id=3').reply(() => { throw error; });
+      const response = await api.postCancelRetirement(3);
+      expect(...response.errors).toEqual(expectedResponse);
     });
   });
 
@@ -803,7 +862,7 @@ describe('API', () => {
           code: null,
           dismissible: true,
           text:
-          'User already enrolled',
+            'User already enrolled',
           type: 'danger',
           topic: 'enrollments',
         };
@@ -1055,5 +1114,236 @@ describe('API', () => {
       const response = await api.getUserProgramCredentials(testUsername);
       expect(response).toEqual(expectedData);
     });
+  });
+
+  describe('Learner Records', () => {
+    const expectedPrograms = {
+      enrolled_programs: [
+        {
+          name: 'Tightrope walking',
+          uuid: '82d38639ccc340db8be5f0f259500dde',
+          partner: 'edX',
+          completed: false,
+          empty: false,
+        },
+      ],
+    };
+    const expectedRecord = records[0];
+    const expectedError = {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving records for the user',
+          type: 'danger',
+          topic: 'credentials',
+        },
+      ],
+    };
+
+    it('Successful Learner Records fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(200, expectedPrograms);
+      mockAdapter.onGet(`${programRecordsUrl}/${expectedRecord.uuid}/?username=${testUsername}`).reply(200, expectedRecord);
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response.length).toEqual(1);
+      expect(response).toEqual(records);
+    });
+
+    it('Empty Learner Records fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(200, { enrolled_programs: [] });
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response).toEqual([]);
+    });
+
+    it('Unsuccessful Learner Records fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(400, '');
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response).toEqual(expectedError);
+    });
+
+    it('Unsuccessful Learner Record Details fetch', async () => {
+      mockAdapter.onGet(`${programRecordsUrl}/?username=${testUsername}`).reply(200, expectedPrograms);
+      mockAdapter.onGet(`${programRecordsUrl}/${expectedRecord.uuid}/?username=${testUsername}`).reply(400, expectedRecord);
+      const response = await api.getLearnerRecords(testUsername);
+      expect(response).toEqual(expectedError);
+    });
+  });
+
+  describe('User Retirement', () => {
+    it('Successful Retirement Call', async () => {
+      const expectedSuccessResponse = {
+        failed_user_retirements: [],
+        successsful_user_retirements: ['test_username'],
+      };
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(200, expectedSuccessResponse);
+      const response = await api.postRetireUser('test_username');
+      expect(response).toEqual(expectedSuccessResponse);
+    });
+
+    it('Unsuccessful call when backend error', async () => {
+      const backendFailureResponse = {
+        failed_user_retirements: ['test_username'],
+        successsful_user_retirements: [],
+      };
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(200, backendFailureResponse);
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Server Error. The backend service(lms) failed to retire the user');
+    });
+
+    it('Unsuccessful call when user does not have appropriate permissions', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(403, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Forbidden. You do not have permissions to retire this user');
+    });
+
+    it('Unsuccessful call when user is not authenticated', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(401, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Authentication Failed');
+    });
+
+    it('Unsuccessful call with 404', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(404, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Not Found');
+    });
+
+    it('Unsuccessful call with unexpected error', async () => {
+      mockAdapter.onPost(retirementApiUrl, { usernames: 'test_username' }).reply(() => throwError(503, ''));
+      const response = await api.postRetireUser('test_username');
+      expect(response.errors[0].text).toEqual('Unable to connect to the service');
+    });
+  });
+
+  describe('getOrderHistory', () => {
+    it('should return order history data when successful', async () => {
+      const expectedData = {
+        results: [
+          {
+            status: 'completed',
+            number: '12345',
+            datePlaced: 'Jun 12, 2023 12:00 AM',
+            productTracking: 'tracking123',
+            lines: [
+              {
+                product: {
+                  url: 'https://example.com/product1',
+                  title: 'Product 1',
+                  expires: '2023-12-31',
+                  attributeValues: [
+                    { value: 'Type A' },
+                  ],
+                },
+                quantity: 1,
+                status: 'completed',
+              },
+            ],
+          },
+        ],
+      };
+
+      mockAdapter.onGet(`${orderHistoryApiUrl}/?username=${testUsername}`).reply(200, expectedData);
+
+      const result = await api.getOrderHistory(testUsername);
+
+      expect(result).toEqual(expectedData.results);
+    });
+
+    it('should return an empty array when an error occurs', async () => {
+      const expectedError = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'There was an error retrieving order history for the user',
+            type: 'danger',
+            topic: 'orderHistory',
+          },
+        ],
+      };
+      mockAdapter.onGet(`${orderHistoryApiUrl}/?username=${testUsername}`).reply(() => throwError(404, ''));
+
+      const result = await api.getOrderHistory(testUsername);
+
+      expect(result).toEqual(expectedError);
+    });
+  });
+
+  describe('Course Reset', () => {
+    it('should return course reset list for a user', async () => {
+      const expectedData = [
+        {
+          course_id: 'course-v1:edX+DemoX+Demo_Course',
+          display_name: 'Demonstration Course',
+          can_reset: false,
+          status: 'Enqueued - Created 2024-02-28 11:29:06.318091+00:00 by edx',
+        },
+        {
+          course_id: 'course-v1:EdxOrg+EDX101+2024_Q1',
+          display_name: 'Intro to edx',
+          can_reset: true,
+          status: 'Available',
+        },
+      ];
+
+      mockAdapter.onGet(courseResetUrl).reply(200, expectedData);
+
+      const result = await api.getLearnerCourseResetList(testUsername);
+
+      expect(result).toEqual(expectedData);
+    });
+
+    it('should return an empty array when an error occurs', async () => {
+      const expectedError = {
+        errors: [
+          {
+            code: null,
+            dismissible: true,
+            text: 'There was an error retrieving list of course reset for the user',
+            type: 'danger',
+            topic: 'courseReset',
+          },
+        ],
+      };
+      mockAdapter.onGet().reply(() => throwError(404, ''));
+
+      const result = await api.getLearnerCourseResetList(testUsername);
+
+      expect(result).toEqual(expectedError);
+    });
+
+    it('should post a course reset', async () => {
+      const expectedData = {
+        course_id: 'course-v1:EdxOrg+EDX101+2024_Q1',
+        display_name: 'Intro to edx',
+        can_reset: false,
+        status: 'Enqueued - Created 2024-02-28 11:29:06.318091+00:00 by edx',
+      };
+
+      mockAdapter.onPost(courseResetUrl).reply(201, expectedData);
+
+      const result = await api.postCourseReset(testUsername, 'course-v1:EdxOrg+EDX101+2024_Q1');
+
+      expect(result).toEqual(expectedData);
+    });
+  });
+
+  it('returns a 400 error', async () => {
+    const expectedError = {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'An error occurred when resetting user\'s course',
+          type: 'danger',
+          topic: 'courseReset',
+        },
+      ],
+    };
+    mockAdapter.onPost().reply(() => throwError(400, ''));
+
+    const result = await api.postCourseReset(testUsername);
+
+    expect(result).toEqual(expectedError);
   });
 });

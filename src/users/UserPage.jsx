@@ -1,8 +1,8 @@
-import { camelCaseObject, history } from '@edx/frontend-platform';
-import PropTypes from 'prop-types';
+import { camelCaseObject } from '@edx/frontend-platform';
 import React, {
   useCallback, useContext, useEffect, useState, useLayoutEffect,
 } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PageLoading from '../components/common/PageLoading';
 import AlertList from '../userMessages/AlertList';
 import { USER_IDENTIFIER_INVALID_ERROR } from '../userMessages/messages';
@@ -12,9 +12,12 @@ import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
 import LearnerInformation from './LearnerInformation';
 import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
+import CancelRetirement from './account-actions/CancelRetirement';
 
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
-export default function UserPage({ location }) {
+export default function UserPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   // converts query params from url into map e.g. ?param1=value1&param2=value2 -> {param1: value1, param2=value2}
   const params = new Map(
     location.search
@@ -38,7 +41,7 @@ export default function UserPage({ location }) {
 
   function pushHistoryIfChanged(nextUrl) {
     if (nextUrl !== location.pathname + location.search) {
-      history.push(nextUrl);
+      navigate(nextUrl);
     }
   }
 
@@ -60,7 +63,10 @@ export default function UserPage({ location }) {
   function processSearchResult(searchValue, result) {
     if (result.errors.length > 0) {
       result.errors.forEach((error) => add(error));
-      history.replace(`${TAB_PATH_MAP['learner-information']}`);
+      if (result.retirementStatus?.canCancelRetirement) {
+        setData(result.retirementStatus);
+      }
+      navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       document.title = 'Support Tools | edX';
     } else {
       pushHistoryIfChanged(getUpdatedURL(searchValue));
@@ -81,7 +87,7 @@ export default function UserPage({ location }) {
         type: 'error',
         topic: 'general',
       });
-      history.replace(`${TAB_PATH_MAP['learner-information']}`);
+      navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       return false;
     }
     return true;
@@ -102,7 +108,7 @@ export default function UserPage({ location }) {
       // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
-      history.replace(`${TAB_PATH_MAP['learner-information']}`);
+      navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       setLoading(false);
       setSearching(false);
     }
@@ -159,13 +165,12 @@ export default function UserPage({ location }) {
           changeHandler={handleUserSummaryChange}
         />
       )}
+      {!loading && data.canCancelRetirement && (
+        <CancelRetirement
+          retirementId={data.retirementId}
+          changeHandler={handleUserSummaryChange}
+        />
+      )}
     </main>
   );
 }
-
-UserPage.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

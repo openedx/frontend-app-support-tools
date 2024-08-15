@@ -12,7 +12,19 @@ temp/babel-plugin-react-intl
 ### pyenv ###
 .python-version
 
-### Emacs ###
+# IDEs and text editors
 *~
 /temp
-/.vscode
+.projectile
+*.swp
+.idea/
+.project
+.pycharm_helpers/
+.pydevproject
+.vscode/
+
+### Local dev related ###
+.env.private
+module.config.js
+
+src/i18n/messages

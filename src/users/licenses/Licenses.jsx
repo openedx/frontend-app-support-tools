@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { camelCaseObject } from '@edx/frontend-platform';
 import {
   Row, Col,
-} from '@edx/paragon';
+} from '@openedx/paragon';
 import { getLicense } from '../data/api';
 import PageLoading from '../../components/common/PageLoading';
 import LicenseCard from './LicenseCard';

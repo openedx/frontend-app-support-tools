@@ -1,7 +1,7 @@
 import { getConfig } from '@edx/frontend-platform';
 import { isEmail, isValidLMSUserID, isValidUsername } from '../../utils/index';
 
-const { LMS_BASE_URL, CREDENTIALS_BASE_URL } = getConfig();
+const { LMS_BASE_URL, CREDENTIALS_BASE_URL, ECOMMERCE_BASE_URL } = getConfig();
 
 export const getEnrollmentsUrl = username => `${
   LMS_BASE_URL
@@ -79,6 +79,13 @@ export const getResetPasswordUrl = () => `${
   LMS_BASE_URL
 }/account/password`;
 
+export const CancelRetirementUrl = () => `${
+  LMS_BASE_URL
+}/api/user/v1/accounts/cancel_retirement/`;
+
+export const userRetirementUrl = () => `${
+  LMS_BASE_URL
+}/v1/accounts/bulk_retire_users`;
 export const getAccountActivationUrl = (activationKey) => `${
   LMS_BASE_URL
 }/activate/${activationKey}`;
@@ -100,3 +107,9 @@ export const regenerateCertificateUrl = () => `${
 }/certificates/regenerate`;
 
 export const getUserCredentialsUrl = () => `${CREDENTIALS_BASE_URL}/api/v2/credentials`;
+
+export const getLearnerRecordsUrl = () => `${CREDENTIALS_BASE_URL}/records/api/v1/program_records`;
+
+export const getOrderHistoryUrl = () => `${ECOMMERCE_BASE_URL}/api/v2/orders`;
+
+export const courseResetUrl = (username) => `${LMS_BASE_URL}/support/course_reset/${username}`;

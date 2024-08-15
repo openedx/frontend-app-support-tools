@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Tabs, Tab } from '@edx/paragon';
-import { history } from '@edx/frontend-platform';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Tabs, Tab } from '@openedx/paragon';
 import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import {
   FEATURE_BASED_ENROLLMENT_TAB,
@@ -13,7 +12,10 @@ import UserPage from '../users/UserPage';
 import FeatureBasedEnrollmentIndexPage from '../FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import ProgramEnrollmentsIndexPage from '../ProgramEnrollments/ProgramEnrollmentsIndexPage';
 
-export default function SupportToolsTab({ location }) {
+export default function SupportToolsTab() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   let tabKey = LEARNER_INFO_TAB;
   switch (location.pathname) {
     case TAB_PATH_MAP[FEATURE_BASED_ENROLLMENT_TAB]:
@@ -47,7 +49,7 @@ export default function SupportToolsTab({ location }) {
           id="support-tools-tab"
           onSelect={(key) => {
             if (key in TAB_PATH_MAP) {
-              history.replace(TAB_PATH_MAP[key]);
+              navigate(TAB_PATH_MAP[key], { replace: true });
             }
           }}
           defaultActiveKey={tabKey}
@@ -73,10 +75,3 @@ export default function SupportToolsTab({ location }) {
     </div>
   );
 }
-
-SupportToolsTab.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

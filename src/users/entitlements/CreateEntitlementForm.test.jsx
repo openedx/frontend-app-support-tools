@@ -1,7 +1,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 
-import { waitForComponentToPaint } from '../../setupTest';
 import CreateEntitlementForm from './CreateEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -25,8 +25,8 @@ describe('Create Entitlement Form', () => {
   });
 
   it('Default form render', () => {
-    let createFormModal = wrapper.find('Modal#create-entitlement');
-    expect(createFormModal.prop('open')).toEqual(true);
+    let createFormModal = wrapper.find('ModalDialog#create-entitlement');
+    expect(createFormModal.prop('isOpen')).toEqual(true);
     const courseUuidInput = wrapper.find('input#courseUuid');
     const modeSelectDropdown = wrapper.find('select#mode');
     const commentsTextArea = wrapper.find('textarea#comments');
@@ -35,8 +35,8 @@ describe('Create Entitlement Form', () => {
     expect(commentsTextArea.text()).toEqual('');
 
     wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('Modal#create-entitlement');
-    expect(createFormModal.prop('open')).toEqual(false);
+    createFormModal = wrapper.find('ModalDialog#create-entitlement');
+    expect(createFormModal.prop('isOpen')).toEqual(false);
   });
 
   describe('Form Submission', () => {
@@ -58,9 +58,11 @@ describe('Create Entitlement Form', () => {
       expect(wrapper.find('div.spinner-border').length).toEqual(1);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      await waitForComponentToPaint(wrapper);
-      expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
+
+      waitFor(() => {
+        expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
+        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      });
       apiMock.mockReset();
     });
 
@@ -80,10 +82,9 @@ describe('Create Entitlement Form', () => {
 
       wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
       wrapper.find('button.btn-primary').simulate('click');
-      await waitForComponentToPaint(wrapper);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.alert').text()).toEqual('Error creating entitlement');
+      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error creating entitlement'));
     });
   });
 });

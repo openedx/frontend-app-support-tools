@@ -29,6 +29,7 @@ export default function UserMessagesProvider({ children }) {
     setMessages(currentMessages => (topic === null ? [] : currentMessages.filter(message => message.topic !== topic)));
   };
 
+  /* eslint-disable-next-line react/jsx-no-constructed-context-values */
   const value = {
     add,
     remove,

@@ -1,23 +1,18 @@
-transifex_resource = frontend-app-support
-transifex_langs = "ar,fr,es_419,zh_CN"
-
+intl_imports = ./node_modules/.bin/intl-imports.js
 transifex_utils = ./node_modules/.bin/transifex-utils.js
 i18n = ./src/i18n
 transifex_input = $(i18n)/transifex_input.json
-tx_url1 = https://www.transifex.com/api/2/project/edx-platform/resource/$(transifex_resource)/translation/en/strings/
-tx_url2 = https://www.transifex.com/api/2/project/edx-platform/resource/$(transifex_resource)/source/
 
 # This directory must match .babelrc .
-transifex_temp = ./temp/babel-plugin-react-intl
+transifex_temp = ./temp/babel-plugin-formatjs
 
-export TRANSIFEX_RESOURCE=frontend-app-support
 
 precommit:
 	npm run lint
 	npm audit
 
 requirements:
-	npm install
+	npm ci
 
 i18n.extract:
 	# Pulling display strings from .jsx files into .json files...
@@ -35,21 +30,19 @@ detect_changed_source_translations:
 	# Checking for changed translations...
 	git diff --exit-code $(i18n)
 
-# Pushes translations to Transifex.  You must run make extract_translations first.
-push_translations:
-	# Pushing strings to Transifex...
-	tx push -s
-	# Fetching hashes from Transifex...
-	./node_modules/@edx/reactifex/bash_scripts/get_hashed_strings_v3.sh
-
-	# Writing out comments to file...
-	$(transifex_utils) $(transifex_temp) --comments --v3-scripts-path
-	# Pushing comments to Transifex...
-	./node_modules/@edx/reactifex/bash_scripts/put_comments_v3.sh
-
-# Pulls translations from Transifex.
+# Experimental: OEP-58 Pulls translations using atlas
 pull_translations:
-	tx pull -f --mode reviewed --languages=$(transifex_langs)
+	rm -rf src/i18n/messages
+	mkdir src/i18n/messages
+	cd src/i18n/messages \
+	  && atlas pull $(ATLAS_OPTIONS) \
+	           translations/frontend-platform/src/i18n/messages:frontend-platform  \
+	           translations/frontend-component-header/src/i18n/messages:frontend-component-header  \
+	           translations/frontend-component-footer/src/i18n/messages:frontend-component-footer \
+	           translations/paragon/src/i18n/messages:paragon \
+	           translations/frontend-app-support-tools/src/i18n/messages:frontend-app-support-tools
+
+	$(intl_imports) frontend-platform frontend-component-header frontend-component-footer paragon frontend-app-support-tools
 
 # This target is used by CI.
 validate-no-uncommitted-package-lock-changes:

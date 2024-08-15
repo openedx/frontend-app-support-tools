@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Local Components
-import { Dropdown, AvatarButton } from '@edx/paragon';
+import { Dropdown, AvatarButton } from '@openedx/paragon';
 import { Menu, MenuTrigger, MenuContent } from './Menu';
 import { LinkedLogo, Logo } from './Logo';
 
@@ -51,17 +51,15 @@ export default class DesktopHeader extends React.Component {
     } = this.props;
 
     return (
-      <>
-        <Dropdown>
-          <Dropdown.Toggle as={AvatarButton} src={avatar}>
-            {username}
-          </Dropdown.Toggle>
+      <Dropdown>
+        <Dropdown.Toggle id="desktop-header-dropdown-toggle" as={AvatarButton} src={avatar}>
+          {username}
+        </Dropdown.Toggle>
 
-          <Dropdown.Menu alignRight>
-            {loggedIn ? this.renderUserMenuItems() : this.renderLoggedOutItems()}
-          </Dropdown.Menu>
-        </Dropdown>
-      </>
+        <Dropdown.Menu alignRight>
+          {loggedIn ? this.renderUserMenuItems() : this.renderLoggedOutItems()}
+        </Dropdown.Menu>
+      </Dropdown>
     );
   }
 
@@ -93,7 +91,7 @@ export default class DesktopHeader extends React.Component {
       <header className="site-header-desktop">
         <div className="container-fluid">
           <div className="nav-container position-relative d-flex align-items-center">
-            { logoDestination === null ? <Logo className="logo" src={logo} alt={logoAltText} /> : <LinkedLogo className="logo" {...logoProps} />}
+            {logoDestination === null ? <Logo className="logo" src={logo} alt={logoAltText} /> : <LinkedLogo className="logo" {...logoProps} />}
             <nav
               aria-label="Main"
               className="nav main-nav"

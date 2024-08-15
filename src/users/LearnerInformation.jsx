@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Tabs, Tab } from '@edx/paragon';
+import { Tabs, Tab } from '@openedx/paragon';
 import UserSummary from './UserSummary';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import Licenses from './licenses/Licenses';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
 import LearnerCredentials from './LearnerCredentials';
+import LearnerRecords from './LearnerRecords';
+import LearnerPurchases from './LearnerPurchases';
+import CourseReset from './CourseReset';
 
 export default function LearnerInformation({
   user, changeHandler,
@@ -30,6 +33,11 @@ export default function LearnerInformation({
           <EntitlementsAndEnrollmentsContainer user={user.username} />
         </Tab>
 
+        <Tab eventKey="learner-purchases" title="Learner Purchases">
+          <br />
+          <LearnerPurchases user={user.username} />
+        </Tab>
+
         <Tab eventKey="sso" title="SSO/License Info">
           <br />
           <SingleSignOnRecords
@@ -46,6 +54,14 @@ export default function LearnerInformation({
           <LearnerCredentials username={user.username} />
         </Tab>
 
+        <Tab eventKey="records" title="Learner Records">
+          <br />
+          <LearnerRecords username={user.username} />
+        </Tab>
+        <Tab eventKey="course-reset" title="Course Reset">
+          <br />
+          <CourseReset username={user.username} />
+        </Tab>
       </Tabs>
     </>
   );

@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, Modal,
-} from '@edx/paragon';
+  ActionRow,
+  Button, Input, ModalDialog,
+} from '@openedx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
 import AlertList from '../../userMessages/AlertList';
@@ -88,35 +89,48 @@ export default function ReissueEntitlementForm({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         clear('reissueEntitlement');
         closeHandler(false);
         setModalIsOpen(false);
       }}
-      title="Reissue Entitlement"
+      hasCloseButton
       id="reissue-entitlement"
-      dialogClassName="modal-lg"
-      body={(
-        reissueEntitlementForm
-      )}
-      buttons={[
-        showLoader
-          ? (<div className="spinner-border text-primary" role="status" />)
-          : (
-            <Button
-              variant="primary"
-              className="mr-3"
-              disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
-              hidden={hideSubmit}
-              onClick={submit}
-            >
-              Submit
-            </Button>
-          ),
-      ]}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-3">
+        <ModalDialog.Title className="modal-title">
+          Reissue Entitlement
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        {reissueEntitlementForm}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+          { showLoader
+            ? (<div className="spinner-border text-primary" role="status" />)
+            : (
+              <Button
+                variant="primary"
+                className="mr-3"
+                disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
+                hidden={hideSubmit}
+                onClick={submit}
+              >
+                Submit
+              </Button>
+            )}
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 

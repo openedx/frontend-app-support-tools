@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Card, Row, Col, Modal, Button,
-} from '@edx/paragon';
+  Card, Row, Col, Button, ModalDialog, ActionRow,
+} from '@openedx/paragon';
 import Table from '../components/Table';
 import { formatDate, formatUnixTimestamp } from '../utils';
 import CopyShowHyperlinks from './CopyShowHyperLinks';
@@ -61,38 +63,51 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
 
   return ssoRecord ? (
     <span>
-      <Modal
-        dialogClassName="modal-xl modal-dialog-centered"
-        open={showHistory}
-        title="SSO History"
-        body={(
-          <div>
-            <Table
-              styleName="sso-table"
-              id="sso-history-data-new"
-              data={ssoHistoryTableData}
-              columns={historyColumns}
-            />
-          </div>
-        )}
+      <ModalDialog
+        isOpen={showHistory}
         onClose={() => setShowHistory(false)}
-      />
+        hasCloseButton
+        dialogClassName="modal-xl modal-dialog-centered"
+      >
+        <ModalDialog.Header className="mb-3">
+          <ModalDialog.Title className="modal-title">
+            SSO History
+          </ModalDialog.Title>
+        </ModalDialog.Header>
+        <ModalDialog.Body>
+          <Table
+            styleName="sso-table"
+            id="sso-history-data-new"
+            data={ssoHistoryTableData}
+            columns={historyColumns}
+          />
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <ActionRow>
+            <ModalDialog.CloseButton
+              variant="link"
+            >
+              Close
+            </ModalDialog.CloseButton>
+          </ActionRow>
+        </ModalDialog.Footer>
+      </ModalDialog>
       <Card className="pt-2 px-3 mb-1 w-100">
-        <Card.Body className="p-0">
-          <Card.Title as="h3" className="btn-header mt-4">
-            {ssoRecord.provider} <span className="h5 text-muted">(Provider)</span>
-          </Card.Title>
+        <Card.Header
+          title={(
+            <span className="h3 card-title">
+              {ssoRecord.provider} <span span className="h5 text-muted">(Provider)</span>
+            </span>
+          )}
+        />
+        <Card.Section>
           <Row>
-            <Col>
-              <Card.Subtitle align="left" as="h4">
-                {ssoRecord.uid} <span className="h6 text-muted">(UID)</span>
-              </Card.Subtitle>
+            <Col className="text-left" as="h4">
+              {ssoRecord.uid} <span className="h6 text-muted">(UID)</span>
             </Col>
-            <Col>
-              <Card.Subtitle align="right" as="h4">
-                {formatDate(ssoRecord.modified)}{' '}
-                <span className="h5 text-muted">(Last Modified)</span>
-              </Card.Subtitle>
+            <Col className="text-right" as="h4">
+              {formatDate(ssoRecord.modified)}{' '}
+              <span className="h5 text-muted">(Last Modified)</span>
             </Col>
           </Row>
           <Row>
@@ -107,21 +122,28 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
             </div>
           </Row>
 
-          <Card.Title as="h5" className="btn-header mt-4">
+        </Card.Section>
+        <Card.Header title={(
+          <p
+            className="h5 card-title"
+          >
             Additional Data
-          </Card.Title>
+          </p>
+       )}
+        />
+        <Card.Section>
           <Table
             styleName="sso-table"
             id="sso-data-new"
             data={[data]}
             columns={columns}
           />
-        </Card.Body>
+        </Card.Section>
       </Card>
 
     </span>
   ) : (
-    <></>
+    null
   );
 }
 
@@ -130,10 +152,10 @@ SingleSignOnRecordCard.propTypes = {
     provider: PropTypes.string,
     uid: PropTypes.string,
     modified: PropTypes.string,
-    extraData: PropTypes.object,
+    extraData: PropTypes.shape({}),
     history: PropTypes.arrayOf(PropTypes.shape({
       created: PropTypes.string,
-      extraData: PropTypes.object,
+      extraData: PropTypes.shape({}),
       historyDate: PropTypes.string,
       modified: PropTypes.string,
       provider: PropTypes.string,

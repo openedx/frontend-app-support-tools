@@ -1,6 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
-
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import AccountActions from './AccountActions';
 import UserSummaryData from '../data/test/userSummary';
 
@@ -8,7 +8,7 @@ describe('Account Actions Component Tests', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = mount(<AccountActions {...UserSummaryData} />);
+    wrapper = mount(<IntlProvider locale="en"><AccountActions {...UserSummaryData} /> </IntlProvider>);
   });
 
   afterEach(() => {

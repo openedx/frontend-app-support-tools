@@ -351,11 +351,20 @@ export async function getOnboardingStatus(username) {
 export async function getAllUserData(userIdentifier) {
   const errors = [];
   let user = null;
+  let retirementStatus = null;
+  let errorResponse = null;
   try {
     user = await getUser(userIdentifier);
   } catch (error) {
     if (error.userError) {
       errors.push(error.userError);
+      errorResponse = JSON.parse(error.customAttributes.httpErrorResponseData);
+      if (errorResponse?.can_cancel_retirement) {
+        retirementStatus = {
+          canCancelRetirement: errorResponse.can_cancel_retirement,
+          retirementId: errorResponse.retirement_id,
+        };
+      }
     } else {
       throw error;
     }
@@ -367,6 +376,7 @@ export async function getAllUserData(userIdentifier) {
   return {
     errors,
     user,
+    retirementStatus,
   };
 }
 
@@ -404,9 +414,7 @@ export async function patchEntitlement({
   uuid, requestData,
 }) {
   try {
-    const { data } = await getAuthenticatedHttpClient().patch(
-      AppUrls.getEntitlementUrl(uuid), requestData,
-    );
+    const { data } = await getAuthenticatedHttpClient().patch(AppUrls.getEntitlementUrl(uuid), requestData);
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
@@ -435,9 +443,7 @@ export async function postEntitlement({
   requestData,
 }) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(
-      AppUrls.getEntitlementUrl(), requestData,
-    );
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.getEntitlementUrl(), requestData);
     return data;
   } catch (error) {
     if (error.customAttributes.httpErrorStatus === 400) {
@@ -552,9 +558,7 @@ export async function postTogglePasswordStatus(user, comment) {
 
 export async function postResetPassword(email) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(
-      AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`,
-    );
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.getResetPasswordUrl(), `email_from_support_tools=${email}`);
     return data;
   } catch (error) {
     return {
@@ -565,6 +569,69 @@ export async function postResetPassword(email) {
           text: (error.response && error.response.data),
           type: 'error',
           topic: 'resetPassword',
+        },
+      ],
+    };
+  }
+}
+
+export async function postRetireUser(username) {
+  let errMessage = '';
+  try {
+    const response = await getAuthenticatedHttpClient().post(
+      AppUrls.userRetirementUrl(),
+      {
+        usernames: username,
+      },
+    );
+
+    if (response.data.failed_user_retirements.length > 0) {
+      errMessage = 'Server Error. The backend service(lms) failed to retire the user';
+      throw new Error();
+    }
+    return response.data;
+  } catch (error) {
+    let errorStatus = -1;
+    if ('customAttributes' in error) {
+      errorStatus = error.customAttributes.httpErrorStatus;
+    }
+    if (errorStatus === 401) {
+      errMessage = 'Authentication Failed';
+    } else if (errorStatus === 403) {
+      errMessage = 'Forbidden. You do not have permissions to retire this user';
+    } else if (errorStatus === 404) {
+      errMessage = 'Not Found';
+    }
+
+    if (!errMessage) { errMessage = 'Unable to connect to the service'; }
+
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: errMessage,
+          type: 'error',
+          topic: 'retireUser',
+        },
+      ],
+    };
+  }
+}
+
+export async function postCancelRetirement(retirementId) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.CancelRetirementUrl(), `retirement_id=${retirementId}`);
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: error.message,
+          type: 'error',
+          topic: 'cancelRetirement',
         },
       ],
     };
@@ -662,6 +729,94 @@ export async function getUserProgramCredentials(username, page = 1) {
           text: error.text ? error.text : 'There was an error retrieving credentials for the user',
           type: 'danger',
           topic: 'credentials',
+        },
+      ],
+    };
+  }
+}
+
+export async function getLearnerRecords(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(`${AppUrls.getLearnerRecordsUrl()}/?username=${username}`);
+    const programDetails = [];
+
+    if (data.enrolled_programs.length > 0) {
+      await Promise.all(data.enrolled_programs.map(program => (
+        getAuthenticatedHttpClient().get(`${AppUrls.getLearnerRecordsUrl()}/${program.uuid}/?username=${username}`)
+          .then(response => programDetails.push(response.data))
+      )));
+    }
+
+    return programDetails;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving records for the user',
+          type: 'danger',
+          topic: 'credentials',
+        },
+      ],
+    };
+  }
+}
+
+export async function getOrderHistory(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(`${AppUrls.getOrderHistoryUrl()}/?username=${username}`);
+    return data.results;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving order history for the user',
+          type: 'danger',
+          topic: 'orderHistory',
+        },
+      ],
+    };
+  }
+}
+
+export async function getLearnerCourseResetList(username) {
+  try {
+    const { data } = await getAuthenticatedHttpClient().get(AppUrls.courseResetUrl(username));
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'There was an error retrieving list of course reset for the user',
+          type: 'danger',
+          topic: 'courseReset',
+        },
+      ],
+    };
+  }
+}
+
+export async function postCourseReset(username, courseID, comment = '') {
+  try {
+    const { data } = await getAuthenticatedHttpClient().post(AppUrls.courseResetUrl(username), {
+      course_id: courseID,
+      comment,
+    });
+    return data;
+  } catch (error) {
+    return {
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'An error occurred when resetting user\'s course',
+          type: 'danger',
+          topic: 'courseReset',
         },
       ],
     };

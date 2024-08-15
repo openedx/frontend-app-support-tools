@@ -12,7 +12,7 @@ $darkCyan: #00262b;
 
 .container-fluid {
   // Reverting the container width to 1440px to keep the support tools styling consistent
-  // See https://github.com/edx/paragon/pull/533 for paragon breaking change
+  // See https://github.com/openedx/paragon/pull/533 for paragon breaking change
   max-width: 1440px;
 }
 
@@ -94,6 +94,9 @@ $darkCyan: #00262b;
     border-bottom: none;
   }
 }
+.card-title {
+  color: #00262B !important
+}
 
 .certificate-info-table {
   @extend .sso-table;
@@ -171,3 +174,6 @@ $darkCyan: #00262b;
 .inspector-name-row{
   border-bottom: 1px solid black;
 }
+.modal-title{
+  font-size: 1.9rem !important;
+  }

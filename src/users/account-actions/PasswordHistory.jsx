@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button, DataTable } from '@edx/paragon';
+import {
+  Button, DataTable, ModalDialog, ActionRow,
+} from '@openedx/paragon';
 import { formatDate } from '../../utils';
 
 export default function PasswordHistory({
@@ -43,30 +45,45 @@ export default function PasswordHistory({
     <div>
 
       {passwordStatus.passwordToggleHistory.length > 0 && (
-      <Button
-        id="toggle-password-history"
-        variant="outline-primary"
-        onClick={() => openHistoryModal()}
-        className="mr-1 mb-2"
-      >
-        Show History
-      </Button>
+        <Button
+          id="toggle-password-history"
+          variant="outline-primary"
+          onClick={() => openHistoryModal()}
+          className="mr-1 mb-2"
+        >
+          Show History
+        </Button>
       )}
 
-      <Modal
-        open={passwordHistoryModalIsOpen}
+      <ModalDialog
+        isOpen={passwordHistoryModalIsOpen}
         onClose={() => setPasswordHistoryModalIsOpen(false)}
-        title="Enable/Disable History"
+        hasCloseButton
         id="password-history"
-        dialogClassName="modal-xl"
-        body={(
+        size="xl"
+      >
+        <ModalDialog.Header className="mb-3">
+          <ModalDialog.Title className="modal-title">
+            Enable/Disable History
+          </ModalDialog.Title>
+        </ModalDialog.Header>
+        <ModalDialog.Body className="mb-3">
           <DataTable
             data={passwordHistoryData}
             columns={userPasswordHistoryColumns}
             itemCount={passwordHistoryData.length}
           />
-          )}
-      />
+        </ModalDialog.Body>
+        <ModalDialog.Footer>
+          <ActionRow>
+            <ModalDialog.CloseButton
+              variant="link"
+            >
+              Close
+            </ModalDialog.CloseButton>
+          </ActionRow>
+        </ModalDialog.Footer>
+      </ModalDialog>
     </div>
   );
 }

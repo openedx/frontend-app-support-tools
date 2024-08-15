@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Alert, Col, Row, Button, Input,
-} from '@edx/paragon';
-import { history } from '@edx/frontend-platform';
+} from '@openedx/paragon';
 import { getSsoRecords } from '../../users/data/api';
 import EnrollmentDetails from './EnrollmentDetails';
 import SingleSignOnRecordCard from '../../users/SingleSignOnRecordCard';
@@ -14,7 +13,9 @@ import {
 import VerifiedName from '../../users/VerifiedName';
 import { extractParams } from '../../utils';
 
-export default function ProgramInspector({ location }) {
+export default function ProgramInspector() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const params = extractParams(location.search);
   const [ssoRecords, setSsoRecords] = useState([]);
   const [error, setError] = useState(undefined);
@@ -38,7 +39,7 @@ export default function ProgramInspector({ location }) {
       setExternalUserKey(undefined);
       setLearnerProgramEnrollment(undefined);
       setSsoRecords([]);
-      history.push('/programs');
+      navigate('/programs');
     } else {
       const newLink = `/programs?edx_user=${
         username || ''
@@ -46,7 +47,7 @@ export default function ProgramInspector({ location }) {
       if (newLink === location.pathname + location.search) {
         setClickEventCall(!clickEventCall);
       } else {
-        history.push(newLink);
+        navigate(newLink);
       }
     }
   };
@@ -215,10 +216,3 @@ export default function ProgramInspector({ location }) {
     </>
   );
 }
-
-ProgramInspector.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
-};

@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { waitForComponentToPaint } from '../setupTest';
 import ssoRecordsData from './data/test/ssoRecords';
 import SingleSignOnRecordCard from './SingleSignOnRecordCard';
 import { formatDate, formatUnixTimestamp } from '../utils';
@@ -21,7 +20,6 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
       ssoRecord: ssoRecordProp,
     };
     wrapper = mount(<SingleSignOnRecordCard {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   it('SSO props', () => {
@@ -34,15 +32,14 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
       ssoRecord: null,
     };
     wrapper = mount(<SingleSignOnRecordCard {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     expect(wrapper.isEmptyRender()).toBeTruthy();
   });
 
   it('SSO Record', () => {
-    const provider = wrapper.find('h3.card-title');
-    const uid = wrapper.find('h4.card-subtitle').at(0);
-    const modified = wrapper.find('h4.card-subtitle').at(1);
+    const provider = wrapper.find('.h3.card-title');
+    const uid = wrapper.find('h4.text-left');
+    const modified = wrapper.find('h4.text-right');
     const history = wrapper.find('.history button.history-button');
 
     expect(provider.text()).toEqual(`${ssoRecordProp.provider} (Provider)`);
@@ -56,11 +53,10 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     expect(historyRow.text()).toEqual('History');
 
     historyRow.simulate('click');
-
-    let modal = wrapper.find('.modal-content');
+    let modal = wrapper.find('.pgn__modal-content-container');
     expect(modal.exists()).toBeTruthy();
-    expect(modal.find('.modal-title').text()).toEqual('SSO History');
-    expect(modal.find('.modal-footer button').text()).toEqual('Close');
+    expect(modal.find('.pgn__modal-title').text()).toEqual('SSO History');
+    expect(modal.find('.pgn__modal-footer button').text()).toEqual('Close');
 
     const dataHeader = modal.find('thead tr th');
     const { history } = ssoRecordProp;
@@ -81,9 +77,9 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
         }
       });
     });
-    modal.find('.modal-footer button').simulate('click');
-    modal = wrapper.find('.modal-content');
-    expect(modal.prop('open')).not.toBeTruthy();
+    modal.find('.pgn__modal-footer button').simulate('click');
+    modal = wrapper.find('.pgn__modal-content-container');
+    expect(modal.exists()).not.toBeTruthy();
   });
 
   it('SSO Record Additional Data', () => {
@@ -108,7 +104,7 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
         expect(text).toEqual(expires);
       } else {
         expect(text).toEqual(
-          value.length > 14 ? 'Copy Show ' : value,
+          value.length > 14 ? 'Copy Show' : value,
         );
       }
     }

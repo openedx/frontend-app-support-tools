@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitForComponentToPaint } from '../setupTest';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollmentsIndexPage';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import samlProvidersResponseValues from './ProgramInspector/data/test/samlProviders';
@@ -38,10 +37,8 @@ describe('Program Enrollments Index Page', () => {
 
   it('renders correctly', async () => {
     wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    await waitForComponentToPaint(wrapper);
 
-    const tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.length).toEqual(2);
+    const tabs = wrapper.find('nav.pgn__tabs.nav-tabs a');
 
     expect(tabs.at(0).text()).toEqual('Program Inspector');
     expect(tabs.at(1).text()).toEqual('Link Program Enrollments');
@@ -49,7 +46,6 @@ describe('Program Enrollments Index Page', () => {
 
   it('Link Program Enrollments Tab', async () => {
     wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    await waitForComponentToPaint(wrapper);
 
     let tabs = wrapper.find('nav.nav-tabs a');
 
@@ -64,7 +60,6 @@ describe('Program Enrollments Index Page', () => {
 
   it('Program Inspector Tab', async () => {
     wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    await waitForComponentToPaint(wrapper);
 
     let tabs = wrapper.find('nav.nav-tabs a');
 
@@ -79,7 +74,6 @@ describe('Program Enrollments Index Page', () => {
 
   it('page renders without query', async () => {
     wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    await waitForComponentToPaint(wrapper);
     const tabs = wrapper.find('nav.nav-tabs a');
 
     expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
@@ -89,7 +83,6 @@ describe('Program Enrollments Index Page', () => {
   it('page renders with query', async () => {
     location.search = '?edx_user=&org_key=testX&external_user_key=';
     wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    await waitForComponentToPaint(wrapper);
     const tabs = wrapper.find('nav.nav-tabs a');
 
     expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));

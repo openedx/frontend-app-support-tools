@@ -1,7 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
-import { waitForComponentToPaint } from '../../setupTest';
 import licenseData from '../data/test/licenses';
 import LicenseCard from './LicenseCard';
 import { formatDate } from '../../utils';
@@ -18,7 +17,6 @@ describe.each(licenseData.results)('License Record Card', (licenseRecord) => {
       licenseRecord: licenseRecordProp,
     };
     wrapper = mount(<LicenseCard {...props} />);
-    await waitForComponentToPaint(wrapper);
   });
 
   it('License props', () => {
@@ -31,15 +29,14 @@ describe.each(licenseData.results)('License Record Card', (licenseRecord) => {
       licenseRecord: null,
     };
     wrapper = mount(<LicenseCard {...props} />);
-    await waitForComponentToPaint(wrapper);
 
     expect(wrapper.isEmptyRender()).toBeTruthy();
   });
 
   it('License Record', () => {
-    const title = wrapper.find('h3.card-title');
-    const status = wrapper.find('h4.card-subtitle').at(0);
-    const expire = wrapper.find('h4.card-subtitle').at(1);
+    const title = wrapper.find('.h3.card-title');
+    const status = wrapper.find('h4.text-left');
+    const expire = wrapper.find('h4.text-right');
 
     expect(title.text()).toEqual(licenseRecordProp.subscriptionPlanTitle);
     expect(status.text()).toEqual(licenseRecordProp.status);

@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, InputSelect, Modal,
-} from '@edx/paragon';
+  ActionRow,
+  Button, Input, InputSelect, ModalDialog,
+} from '@openedx/paragon';
 
 import AlertList from '../../userMessages/AlertList';
 import { postEnrollment } from '../data/api';
@@ -93,34 +94,47 @@ export default function CreateEnrollmentForm({
   );
 
   return (
-    <Modal
-      open={modalIsOpen}
+    <ModalDialog
+      isOpen={modalIsOpen}
       onClose={() => {
         closeHandler(false);
         setModalIsOpen(false);
         clear('createEnrollments');
       }}
-      title="Create New Enrollment"
+      hasCloseButton
       id="create-enrollment"
-      dialogClassName="modal-lg"
-      body={(
-        createEnrollmentForm
-      )}
-      buttons={[
-        showLoader
-          ? (<div className="spinner-border text-primary" role="status" />)
-          : (
-            <Button
-              variant="primary"
-              disabled={!(courseID && reason)}
-              className="mr-3"
-              onClick={submit}
-            >
-              Submit
-            </Button>
-          ),
-      ]}
-    />
+      size="lg"
+    >
+      <ModalDialog.Header className="mb-3">
+        <ModalDialog.Title className="modal-title">
+          Create New Enrollment
+        </ModalDialog.Title>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        {createEnrollmentForm}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <ActionRow>
+          <ModalDialog.CloseButton
+            variant="link"
+          >
+            Close
+          </ModalDialog.CloseButton>
+          {showLoader
+            ? (<div className="spinner-border text-primary" role="status" />)
+            : (
+              <Button
+                variant="primary"
+                disabled={!(courseID && reason)}
+                className="mr-3"
+                onClick={submit}
+              >
+                Submit
+              </Button>
+            )}
+        </ActionRow>
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 }
 
