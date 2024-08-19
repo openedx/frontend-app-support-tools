@@ -17,10 +17,10 @@ export const getCouponOrders = async (enterpriseId, options) => {
   return couponOrders;
 };
 
-export const getCustomerAgreements = async (enterpriseId) => {
-  const response = await LicenseManagerApiService.fetchCustomerAgreementData(enterpriseId);
-  const customerAgreements = camelCaseObject(response.data);
-  return customerAgreements;
+export const getCustomerSubscriptions = async (enterpriseId) => {
+  const response = await LicenseManagerApiService.fetchCustomerSubscriptions(enterpriseId);
+  const subscriptions = camelCaseObject(response.data);
+  return subscriptions;
 };
 
 export const getSubsidyAccessPolicies = async (enterpriseId) => {
@@ -35,4 +35,4 @@ export const getEnterpriseCustomer = async (options) => {
   return enterpriseCustomer;
 };
 
-export const formatDate = (date) => dayjs(date).utc().format('MMMM DD, YYYY');
+export const formatDate = (date) => dayjs(date).utc().format('MMM D, YYYY');

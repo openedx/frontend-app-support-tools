@@ -7,7 +7,7 @@ import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import useActiveAssociatedPlans from '../data/hooks/useActiveAssociatedPlans';
 
 const SubscriptionCheckIcon = ({ row }) => {
-  if (row.original.hasActiveAgreements) {
+  if (row.original.hasActiveSubscriptions) {
     return <Icon src={Check} screenReaderText="subscription check" />;
   }
   return null;
@@ -100,7 +100,7 @@ CustomerDetailRowSubComponent.propTypes = {
 SubscriptionCheckIcon.propTypes = {
   row: PropTypes.shape({
     original: PropTypes.shape({
-      hasActiveAgreements: PropTypes.bool,
+      hasActiveSubscriptions: PropTypes.bool,
     }),
   }).isRequired,
 };

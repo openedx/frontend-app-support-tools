@@ -9,7 +9,7 @@ import {
 } from '@openedx/paragon';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import CustomerCard from './CustomerCard';
-import CustomerPlanCard from './CustomerPlanCard';
+import CustomerPlanContainer from './CustomerPlanContainer';
 import { getEnterpriseCustomer } from '../data/utils';
 
 const CustomerViewContainer = () => {
@@ -48,10 +48,10 @@ const CustomerViewContainer = () => {
                 defaultMessage: 'Customers',
                 description: 'Breadcrumb label for the customers page',
               }),
-              href: '/enterprise-configuration/customers'
+              href: '/enterprise-configuration/customers',
             },
-            { label: `${enterpriseCustomer.name}` },
           ]}
+          activeLabel={enterpriseCustomer.name}
         />
       </Container>
       <Container className="mt-4">
@@ -62,7 +62,7 @@ const CustomerViewContainer = () => {
 
       <Container className="mt-4">
         <Stack gap={2}>
-          {!isLoading ? <CustomerPlanCard enterpriseCustomer={enterpriseCustomer} /> : <Skeleton height={230} />}
+          {!isLoading ? <CustomerPlanContainer slug={enterpriseCustomer.slug} /> : <Skeleton />}
         </Stack>
       </Container>
     </div>
