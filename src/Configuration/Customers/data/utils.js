@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform/utils';
 import EcommerceApiService from '../../../data/services/EcommerceApiService';
 import LicenseManagerApiService from '../../../data/services/LicenseManagerApiService';
@@ -36,3 +37,16 @@ export const getEnterpriseCustomer = async (options) => {
 };
 
 export const formatDate = (date) => dayjs(date).utc().format('MMM D, YYYY');
+
+export const useCopyToClipboard = (id) => {
+  const [showToast, setShowToast] = useState(false);
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(id);
+    setShowToast(true);
+  };
+  return {
+    showToast,
+    copyToClipboard,
+    setShowToast,
+  };
+};

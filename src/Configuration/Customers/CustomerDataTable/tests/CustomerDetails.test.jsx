@@ -21,11 +21,13 @@ jest.mock('@edx/frontend-platform', () => ({
   getConfig: jest.fn(),
 }));
 
-Object.assign(navigator, {
-  clipboard: {
-    writeText: () => {},
-  },
-});
+jest.mock('../../data/utils', () => ({
+  useCopyToClipboard: jest.fn(() => ({
+    showToast: true,
+    copyToClipboard: jest.fn(),
+    setShowToast: jest.fn(),
+  })),
+}));
 
 describe('CustomerDetails', () => {
   const row = {

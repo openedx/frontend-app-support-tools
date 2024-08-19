@@ -6,7 +6,7 @@ import useAllAssociatedPlans from '../data/hooks/useAllAssociatedPlans';
 import LearnerCreditPlanCard from './LearnerCreditPlanCard';
 import SubscriptionPlanCard from './SubscriptionPlanCard';
 
-const CustomerPlanCard = ({ slug }) => {
+const CustomerPlanContainer = ({ slug }) => {
   const { id } = useParams();
   const {
     activePolicies,
@@ -61,8 +61,8 @@ const CustomerPlanCard = ({ slug }) => {
   );
 };
 
-CustomerPlanCard.propTypes = {
+CustomerPlanContainer.propTypes = {
   slug: PropTypes.string.isRequired,
 };
 
-export default CustomerPlanCard;
+export default CustomerPlanContainer;

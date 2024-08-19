@@ -9,6 +9,11 @@ import CustomerCard from '../CustomerCard';
 jest.mock('../../data/utils', () => ({
   getEnterpriseCustomer: jest.fn(),
   formatDate: jest.fn(),
+  useCopyToClipboard: jest.fn(() => ({
+    showToast: true,
+    copyToClipboard: jest.fn(),
+    setShowToast: jest.fn(),
+  })),
 }));
 
 const mockData = {
