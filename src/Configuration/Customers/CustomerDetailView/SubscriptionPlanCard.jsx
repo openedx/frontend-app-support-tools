@@ -49,8 +49,8 @@ const SubscriptionPlanCard = ({ isActive, subscription, slug }) => {
           {!isActive ? <Chip variant="dark" className="bg-danger-500">Inactive</Chip> : null}
           <h6 className="mb-0">SUBSCRIPTION PLAN</h6>
         </Stack>
-        <p className="mt-0 mb-0 lead font-weight-bold">{startDate} - {endDate}</p>
-        <p className="x-small text-light-900">Created {createdDate}</p>
+        <h3 className="mt-0 mb-0">{startDate} - {endDate}</h3>
+        <p className="x-small text-gray-400">Created {createdDate}</p>
       </Card.Section>
     </Card>
   );

@@ -52,8 +52,8 @@ const LearnerCreditPlanCard = ({ isActive, policy, slug }) => {
           {!isActive ? <Chip variant="dark" className="bg-danger-500">Inactive</Chip> : null}
           <h6 className="mb-0">LEARNER CREDIT PLAN</h6>
         </Stack>
-        <p className="mt-0 mb-0 lead font-weight-bold">{startDate} - {endDate}</p>
-        <p className="x-small text-light-900">Created {createdDate}</p>
+        <h3 className="mt-0 mb-0 lead">{startDate} - {endDate}</h3>
+        <p className="x-small text-gray-400">Created {createdDate}</p>
       </Card.Section>
     </Card>
   );

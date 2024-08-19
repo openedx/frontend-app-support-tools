@@ -64,12 +64,11 @@ const CustomerViewContainer = () => {
       </Container>
       <Container className="mt-4">
         <Stack gap={2}>
-          {!isLoading ? <CustomerPlanContainer slug={enterpriseCustomer.slug} /> : <Skeleton />}
+          {!isLoading ? <CustomerPlanContainer slug={enterpriseCustomer.slug} /> : <Skeleton height={230} />}
         </Stack>
       </Container>
       <Container className="mt-4">
         <Stack gap={2}>
-          {!isLoading ? <CustomerCard enterpriseCustomer={enterpriseCustomer} /> : <Skeleton height={230} />}
           <CustomerIntegrations
             slug={enterpriseCustomer.slug}
             activeIntegrations={enterpriseCustomer.activeIntegrations}

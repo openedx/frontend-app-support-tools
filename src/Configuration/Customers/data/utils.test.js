@@ -123,7 +123,7 @@ describe('formatDate', () => {
   it('returns the formatted date', async () => {
     const date = '2024-07-23T20:02:57.651943Z';
     const formattedDate = formatDate(date);
-    const expectedFormattedDate = 'July 23, 2024';
+    const expectedFormattedDate = 'Jul 23, 2024';
     expect(expectedFormattedDate).toEqual(formattedDate);
   });
 });

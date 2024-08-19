@@ -1,4 +1,3 @@
-import { Container } from '@openedx/paragon';
 import { getConfig } from '@edx/frontend-platform';
 import PropTypes from 'prop-types';
 
@@ -14,10 +13,10 @@ const CustomerIntegrations = ({
   const configDateText = ({ config }) => (`Created ${formatDate(config?.created)} • Last modified ${formatDate(config?.lastModifiedAt)}`);
 
   return (
-    <Container className="mt-3 pr-6 mb-5">
+    <div>
       {(activeSSO || activeIntegrations || apiCredentialsEnabled) && (
       <div>
-        <h2 className="pt-4">Associated Integrations</h2>
+        <h2>Associated Integrations</h2>
         {activeSSO && activeSSO.map((sso) => (
           <CustomerViewCard
             slug={slug}
@@ -49,7 +48,7 @@ const CustomerIntegrations = ({
         )}
       </div>
       )}
-    </Container>
+    </div>
   );
 };
 

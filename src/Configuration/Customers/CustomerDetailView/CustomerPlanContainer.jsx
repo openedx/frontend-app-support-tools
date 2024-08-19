@@ -39,6 +39,7 @@ const CustomerPlanContainer = ({ slug }) => {
             <Form.Switch
               className="ml-2.5 mt-2.5"
               checked={showInactive}
+              disabled={countOfAllPlans === countOfActivePlans}
               onChange={() => {
                 setShowInactive(prevState => !prevState);
               }}
@@ -56,7 +57,7 @@ const CustomerPlanContainer = ({ slug }) => {
             </div>
           ) : null}
         </div>
-      ) : <Skeleton />}
+      ) : <Skeleton height={230} />}
     </div>
   );
 };
