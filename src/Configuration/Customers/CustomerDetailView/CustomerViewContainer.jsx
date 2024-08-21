@@ -11,6 +11,7 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import CustomerCard from './CustomerCard';
 import { getEnterpriseCustomer } from '../data/utils';
 import CustomerIntegrations from './CustomerIntegrations';
+import CustomerPlanContainer from './CustomerPlanContainer';
 
 const CustomerViewContainer = () => {
   const { id } = useParams();
@@ -49,16 +50,25 @@ const CustomerViewContainer = () => {
                   defaultMessage: 'Customers',
                   description: 'Breadcrumb label for the customers page',
                 }),
-                href: '/enterprise-configuration/customers/',
+                href: '/enterprise-configuration/customers',
               },
-              { label: enterpriseCustomer.name },
             ]}
+            activeLabel={enterpriseCustomer.name}
           />
         </Container>
       ) : <Skeleton />}
       <Container className="mt-4">
         <Stack gap={2}>
           {!isLoading ? <CustomerCard enterpriseCustomer={enterpriseCustomer} /> : <Skeleton height={230} />}
+        </Stack>
+      </Container>
+      <Container className="mt-4">
+        <Stack gap={2}>
+          {!isLoading ? <CustomerPlanContainer slug={enterpriseCustomer.slug} /> : <Skeleton height={230} />}
+        </Stack>
+      </Container>
+      <Container className="mt-4">
+        <Stack gap={2}>
           <CustomerIntegrations
             slug={enterpriseCustomer.slug}
             activeIntegrations={enterpriseCustomer.activeIntegrations}

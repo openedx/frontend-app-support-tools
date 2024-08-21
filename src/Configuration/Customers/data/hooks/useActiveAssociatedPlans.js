@@ -3,7 +3,7 @@ import { logError } from '@edx/frontend-platform/logging';
 import {
   getEnterpriseOffers,
   getCouponOrders,
-  getCustomerAgreements,
+  getCustomerSubscriptions,
   getSubsidyAccessPolicies,
 } from '../utils';
 
@@ -14,12 +14,12 @@ const useActiveAssociatedPlans = (enterpriseId) => {
     async () => {
       try {
         const [
-          customerAgreementsResponse,
+          customerSubscriptionsResponse,
           policiesForCustomerResponse,
           enterpriseOffersResponse,
           couponOrdersResponse,
         ] = await Promise.all([
-          getCustomerAgreements(enterpriseId),
+          getCustomerSubscriptions(enterpriseId),
           getSubsidyAccessPolicies(enterpriseId),
           getEnterpriseOffers(enterpriseId),
           getCouponOrders(enterpriseId),
@@ -45,16 +45,13 @@ const useActiveAssociatedPlans = (enterpriseId) => {
           return null;
         });
 
-        customerAgreementsResponse.results.some(agreement => {
-          agreement.subscriptions.some(subscription => {
-            if (subscription.isActive) {
-              setData(prevState => ({
-                ...prevState,
-                hasActiveAgreements: true,
-              }));
-            }
-            return null;
-          });
+        customerSubscriptionsResponse.results.some(subscription => {
+          if (subscription.isActive) {
+            setData(prevState => ({
+              ...prevState,
+              hasActiveSubscriptions: true,
+            }));
+          }
           return null;
         });
 
