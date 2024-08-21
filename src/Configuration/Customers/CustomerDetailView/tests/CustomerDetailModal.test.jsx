@@ -44,7 +44,7 @@ describe('CustomerDetailModal', () => {
     expect(screen.getByText('View only')).toBeInTheDocument();
     // null values will show as dashes
     expect(screen.getAllByText('--')).toHaveLength(4);
-    expect(screen.getByText('customer-6')).toBeInTheDocument();
+    expect(screen.getByText('/customer-6/')).toBeInTheDocument();
     expect(screen.getByText('At enrollment')).toBeInTheDocument();
     expect(screen.getByText('English')).toBeInTheDocument();
   });

@@ -3,10 +3,11 @@ import {
   ActionRow, Badge, Button, Icon, ModalDialog,
 } from '@openedx/paragon';
 import { Check, Launch } from '@openedx/paragon/icons';
+import { getConfig } from '@edx/frontend-platform';
 import classNames from 'classnames';
-import DJANGO_ADMIN_BASE_URL from '../data/constants';
 
 const CustomerDetailModal = ({ customer, isOpen, close }) => {
+  const { DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
   const DATA_SHARING_CONSENT = {
     at_enrollment: 'At enrollment',
     externally_managed: 'Externally managed',
@@ -24,10 +25,10 @@ const CustomerDetailModal = ({ customer, isOpen, close }) => {
         <h1>
           {customer.name}
         </h1>
-        <Badge variant="light" style={{ width: 'fit-content' }}>View only</Badge>
       </ModalDialog.Header>
 
       <ModalDialog.Body>
+        <Badge variant="light" style={{ width: 'fit-content' }}>View only</Badge>
         <h3 className="mb-3">Enterprise info</h3>
         <h4 className="mb-0">Name</h4>
         <p>{customer.name || '--'}</p>
@@ -42,7 +43,7 @@ const CustomerDetailModal = ({ customer, isOpen, close }) => {
           Active Admin Portal
         </p>
         <h4 className="mb-0">Slug</h4>
-        <p>{customer.slug || '--'}</p>
+        <p>/{customer.slug || '--'}/</p>
         <h4 className="mb-0">Auth org id</h4>
         <p>{customer.authOrgId || '--'}</p>
         <h4 className="mb-0">Country</h4>
@@ -159,7 +160,7 @@ const CustomerDetailModal = ({ customer, isOpen, close }) => {
           </ModalDialog.CloseButton>
           <Button
             as="a"
-            href={`${DJANGO_ADMIN_BASE_URL}/admin/enterprise/enterprisecustomer/${customer.uuid}/change`}
+            href={`${DJANGO_ADMIN_LMS_BASE_URL}/admin/enterprise/enterprisecustomer/${customer.uuid}/change`}
             target="_blank"
             rel="noopener noreferrer"
             iconAfter={Launch}
