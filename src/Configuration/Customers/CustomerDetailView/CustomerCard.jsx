@@ -1,28 +1,30 @@
 import PropTypes from 'prop-types';
 import {
-  ActionRow,
-  Button,
-  Card,
-  Icon,
-  Hyperlink,
-  Toast,
+  ActionRow, Button, Card, Icon, Hyperlink, Toast, useToggle,
 } from '@openedx/paragon';
 import { Launch, ContentCopy } from '@openedx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { formatDate, useCopyToClipboard } from '../data/utils';
 import DJANGO_ADMIN_BASE_URL from '../data/constants';
+import CustomerDetailModal from './CustomerDetailModal';
 
 const CustomerCard = ({ enterpriseCustomer }) => {
   const { ADMIN_PORTAL_BASE_URL } = getConfig();
   const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard();
+  const [isDetailsOpen, openDetails, closeDetails] = useToggle(false);
 
   return (
     <div>
+      <CustomerDetailModal
+        customer={enterpriseCustomer}
+        isOpen={isDetailsOpen}
+        close={closeDetails}
+      />
       <Card variant="dark" className="mb-0">
         <Card.Section
           actions={(
             <ActionRow>
-              <Button>View Details</Button>
+              <Button onClick={openDetails}>View Details</Button>
               <Button
                 className="text-dark-500"
                 as="a"
