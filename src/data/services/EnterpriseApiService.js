@@ -22,9 +22,18 @@ class LmsApiService {
 
   static integratedChannelsUrl = `${LmsApiService.baseUrl}/integrated_channels/api/v1/configs/`;
 
+  static enterpriseCustomerSupportUrl = `${LmsApiService.enterpriseAPIBaseUrl}enterprise-customer-support/`;
+
   static fetchEnterpriseCatalogQueries = () => LmsApiService.apiClient().get(LmsApiService.enterpriseCatalogQueriesUrl);
 
   static fetchEnterpriseCustomersBasicList = (enterpriseNameOrUuid) => LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomersBasicListUrl}${enterpriseNameOrUuid !== undefined ? `?name_or_uuid=${enterpriseNameOrUuid}` : ''}`);
+
+  static fetchEnterpriseCustomerUsers = (enterpriseUuid, options) => {
+    const queryParams = new URLSearchParams({
+      ...options,
+    });
+    return LmsApiService.apiClient().get(`${LmsApiService.enterpriseCustomerSupportUrl}${enterpriseUuid}?${queryParams}`);
+  };
 
   static postEnterpriseCustomerCatalog = (
     enterpriseCustomerUuid,

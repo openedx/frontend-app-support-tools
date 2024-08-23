@@ -14,7 +14,7 @@ import DJANGO_ADMIN_BASE_URL from '../data/constants';
 
 const CustomerCard = ({ enterpriseCustomer }) => {
   const { ADMIN_PORTAL_BASE_URL } = getConfig();
-  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard();
+  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard(enterpriseCustomer.uuid);
 
   return (
     <div>

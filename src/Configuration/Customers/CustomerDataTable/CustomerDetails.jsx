@@ -12,7 +12,7 @@ import { useCopyToClipboard } from '../data/utils';
 const { HOME } = ROUTES.CONFIGURATION.SUB_DIRECTORY.CUSTOMERS;
 
 export const CustomerDetailLink = ({ row }) => {
-  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard();
+  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard(row.original.uuid);
   const { ADMIN_PORTAL_BASE_URL } = getConfig();
 
   return (

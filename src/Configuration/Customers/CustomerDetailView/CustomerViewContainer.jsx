@@ -11,6 +11,7 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import CustomerCard from './CustomerCard';
 import { getEnterpriseCustomer } from '../data/utils';
 import CustomerIntegrations from './CustomerIntegrations';
+import EnterpriseCustomerUsersTable from './EnterpriseCustomerUsersTable';
 
 const CustomerViewContainer = () => {
   const { id } = useParams();
@@ -65,6 +66,7 @@ const CustomerViewContainer = () => {
             activeSSO={enterpriseCustomer.activeSsoConfigurations}
             apiCredentialsEnabled={enterpriseCustomer.enableGenerationOfApiCredentials}
           />
+          <EnterpriseCustomerUsersTable />
         </Stack>
       </Container>
     </div>
