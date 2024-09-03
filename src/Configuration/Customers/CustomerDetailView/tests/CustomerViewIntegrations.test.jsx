@@ -49,7 +49,7 @@ describe('CustomerViewIntegrations', () => {
       </IntlProvider>,
     );
     await waitFor(() => {
-      expect(screen.getByText('Associated Integrations')).toBeInTheDocument();
+      expect(screen.getByText('Associated integrations')).toBeInTheDocument();
 
       expect(screen.getByText('SSO')).toBeInTheDocument();
       expect(screen.getByText('Orange cats rule')).toBeInTheDocument();

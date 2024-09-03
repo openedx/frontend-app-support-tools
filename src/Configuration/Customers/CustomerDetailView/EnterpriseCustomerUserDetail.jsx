@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Icon, IconButton, Stack, Chip
+  Icon, IconButton, Stack, Chip,
 } from '@openedx/paragon';
 import { Person, Check, Timelapse } from '@openedx/paragon/icons';
 
@@ -9,7 +9,7 @@ export const EnterpriseCustomerUserDetail = ({
   row,
 }) => {
   let memberDetails;
-  let memberDetailIcon = (
+  const memberDetailIcon = (
     <IconButton
       isActive
       invertColors
@@ -31,7 +31,6 @@ export const EnterpriseCustomerUserDetail = ({
       </div>
     );
   } else {
-    console.log(row.original)
     memberDetails = (
       <p className="align-middle mb-0">
         {row.original.pendingEnterpriseCustomerUser?.userEmail}
@@ -47,20 +46,29 @@ export const EnterpriseCustomerUserDetail = ({
 };
 
 export const AdministratorCell = ({ row }) => {
+  if (row.original?.pendingEnterpriseCustomerUser?.isPendingAdmin) {
+    return (
+      <Chip
+        iconBefore={Timelapse}
+      >
+        Pending
+      </Chip>
+    );
+  }
   return (
     <div>
-      {row.original?.roleAssignments?.includes("enterprise_admin") ? <Check /> : null}
+      {row.original?.roleAssignments?.includes('enterprise_admin') ? <Check data-testid="admin check" aria-label="admin check" /> : null}
     </div>
-  )
-}
+  );
+};
 
 export const LearnerCell = ({ row }) => {
-  if (!row.original?.pendingEnterpriseCustomerUser) {
+  if (!row.original?.pendingEnterpriseCustomerUser?.isPendingLearner) {
     return (
       <div>
-        {row.original?.roleAssignments?.includes("enterprise_learner") ? <Check /> : null}
+        {row.original?.roleAssignments?.includes('enterprise_learner') ? <Check data-testid="learner check" aria-label="learner check" /> : null}
       </div>
-    )
+    );
   }
 
   return (
@@ -69,20 +77,43 @@ export const LearnerCell = ({ row }) => {
     >
       Pending
     </Chip>
-  )
+  );
 };
-
 
 EnterpriseCustomerUserDetail.propTypes = {
   row: PropTypes.shape({
     original: PropTypes.shape({
-      memberDetails: PropTypes.shape({
-        userEmail: PropTypes.string.isRequired,
-        userName: PropTypes.string,
+      enterpriseCustomerUser: PropTypes.shape({
+        email: PropTypes.string.isRequired,
+        username: PropTypes.string,
       }),
-      status: PropTypes.string,
-      recentAction: PropTypes.string.isRequired,
-      memberEnrollments: PropTypes.string,
+      pendingEnterpriseCustomerUser: PropTypes.shape({
+        isPendingAdmin: PropTypes.bool,
+        userEmail: PropTypes.string,
+      }),
+      roleAssignments: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
+  }).isRequired,
+};
+
+AdministratorCell.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      pendingEnterpriseCustomerUser: PropTypes.shape({
+        isPendingAdmin: PropTypes.bool,
+      }),
+      roleAssignments: PropTypes.arrayOf(PropTypes.string),
+    }).isRequired,
+  }).isRequired,
+};
+
+LearnerCell.propTypes = {
+  row: PropTypes.shape({
+    original: PropTypes.shape({
+      pendingEnterpriseCustomerUser: PropTypes.shape({
+        isPendingLearner: PropTypes.bool,
+      }),
+      roleAssignments: PropTypes.arrayOf(PropTypes.string),
     }).isRequired,
   }).isRequired,
 };

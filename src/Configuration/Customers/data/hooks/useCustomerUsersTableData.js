@@ -1,14 +1,13 @@
 import {
   useCallback, useMemo, useState,
 } from 'react';
-import _ from 'lodash';
 import { camelCaseObject } from '@edx/frontend-platform/utils';
 import { logError } from '@edx/frontend-platform/logging';
 import debounce from 'lodash.debounce';
 
 import LmsApiService from '../../../../data/services/EnterpriseApiService';
 
-const useEnterpriseUsersTableData = (enterpriseUuid) => {
+const useCustomerUsersTableData = (enterpriseUuid) => {
   const [isLoading, setIsLoading] = useState(true);
   const [enterpriseUsersTableData, setEnterpriseUsersTableData] = useState({
     itemCount: 0,
@@ -26,30 +25,30 @@ const useEnterpriseUsersTableData = (enterpriseUuid) => {
           if (id === 'administrator') {
             options.ordering = desc ? id : `-${id}`;
           }
-          if (id === 'userDetails') {
+          if (id === 'details') {
             options.ordering = desc ? id : `-${id}`;
           }
           if (id === 'learner') {
             options.ordering = desc ? id : `-${id}`;
-          } 
+          }
+          return null;
         });
 
         args.filters.forEach((filter) => {
           const { id, value } = filter;
-          if (id === 'username') {
+          if (id === 'details') {
             options.user_query = value;
           }
+          return null;
         });
-      
 
         options.page = args.pageIndex + 1;
         const response = await LmsApiService.fetchEnterpriseCustomerUsers(enterpriseUuid, options);
         const { data } = camelCaseObject(response);
-        console.log(args)
         setEnterpriseUsersTableData({
           itemCount: data.count,
           pageCount: data.numPages,
-          results:data.results,
+          results: data.results,
         });
       } catch (error) {
         logError(error);
@@ -74,4 +73,4 @@ const useEnterpriseUsersTableData = (enterpriseUuid) => {
   };
 };
 
-export default useEnterpriseUsersTableData;
+export default useCustomerUsersTableData;

@@ -16,7 +16,8 @@ const CustomerIntegrations = ({
     <div>
       {(activeSSO || activeIntegrations || apiCredentialsEnabled) && (
       <div>
-        <h2>Associated Integrations</h2>
+        <h2>Associated integrations</h2>
+        <hr />
         {activeSSO && activeSSO.map((sso) => (
           <CustomerViewCard
             slug={slug}
