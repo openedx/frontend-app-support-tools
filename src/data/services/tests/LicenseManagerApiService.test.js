@@ -21,10 +21,10 @@ describe('LicenseManagerApiService', () => {
     jest.clearAllMocks();
   });
 
-  test('fetchCustomerAgreementData calls the API to fetch subscriptions by enterprise customer UUID', () => {
+  test('fetchCustomerSubscriptions calls the API to fetch subscriptions by enterprise customer UUID', () => {
     const mockCustomerUUID = 'test-customer-uuid';
-    const expectedUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/customer-agreement/?enterprise_customer_uuid=${mockCustomerUUID}`;
-    LicenseManagerApiService.fetchCustomerAgreementData(mockCustomerUUID);
+    const expectedUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/subscriptions/?enterprise_customer_uuid=${mockCustomerUUID}`;
+    LicenseManagerApiService.fetchCustomerSubscriptions(mockCustomerUUID);
     expect(axios.get).toBeCalledWith(expectedUrl);
   });
 });

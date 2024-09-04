@@ -29,6 +29,7 @@ import ProvisioningFormContainer from './Configuration/Provisioning/Provisioning
 import SubsidyDetailViewContainer from './Configuration/Provisioning/SubsidyDetailView/SubsidyDetailViewContainer';
 import ErrorPageContainer from './Configuration/Provisioning/ErrorPage';
 import SubsidyEditViewContainer from './Configuration/Provisioning/SubsidyEditView/SubsidyEditViewContainer';
+import CustomerViewContainer from './Configuration/Customers/CustomerDetailView/CustomerViewContainer';
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 
@@ -75,6 +76,11 @@ subscribe(APP_READY, () => {
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.CUSTOMERS.HOME}
       element={<CustomersPage />}
+    />,
+    <Route
+      key={uuidv4()}
+      path={CONFIGURATION.SUB_DIRECTORY.CUSTOMERS.SUB_DIRECTORY.VIEW}
+      element={<CustomerViewContainer />}
     />,
   ];
   ReactDOM.render(

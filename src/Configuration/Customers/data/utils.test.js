@@ -2,8 +2,10 @@ import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import {
   getEnterpriseOffers,
   getCouponOrders,
-  getCustomerAgreements,
+  getCustomerSubscriptions,
   getSubsidyAccessPolicies,
+  getEnterpriseCustomer,
+  formatDate,
 } from './utils';
 
 jest.mock('@edx/frontend-platform/auth', () => ({
@@ -79,7 +81,7 @@ describe('getCouponOrders', () => {
   });
 });
 
-describe('getCustomerAgreements', () => {
+describe('getCustomerSubscriptions', () => {
   it('returns the correct data', async () => {
     const agreementsResults = {
       data: {
@@ -87,16 +89,41 @@ describe('getCustomerAgreements', () => {
         next: null,
         previous: null,
         results: [{
-          subscriptions: {
-            isActive: true,
-          },
+          isActive: true,
         }],
       },
     };
     getAuthenticatedHttpClient.mockImplementation(() => ({
       get: jest.fn().mockResolvedValue(agreementsResults),
     }));
-    const results = await getCustomerAgreements(TEST_ENTERPRISE_UUID);
+    const results = await getCustomerSubscriptions(TEST_ENTERPRISE_UUID);
     expect(results).toEqual(agreementsResults.data);
+  });
+});
+
+describe('getEnterpriseCustomer', () => {
+  it('returns the correct data', async () => {
+    const enterpriseCustomer = {
+      data: [{
+        uuid: '0b466242-75ff-4c27-8237-680dac3737f7',
+        name: 'customer-6',
+        slug: 'customer-6',
+        active: true,
+      }],
+    };
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      get: jest.fn().mockResolvedValue(enterpriseCustomer),
+    }));
+    const results = await getEnterpriseCustomer(TEST_ENTERPRISE_UUID);
+    expect(results).toEqual(enterpriseCustomer.data);
+  });
+});
+
+describe('formatDate', () => {
+  it('returns the formatted date', async () => {
+    const date = '2024-07-23T20:02:57.651943Z';
+    const formattedDate = formatDate(date);
+    const expectedFormattedDate = 'Jul 23, 2024';
+    expect(expectedFormattedDate).toEqual(formattedDate);
   });
 });

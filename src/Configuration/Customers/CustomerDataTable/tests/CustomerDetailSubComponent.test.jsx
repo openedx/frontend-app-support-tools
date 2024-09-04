@@ -30,7 +30,7 @@ describe('CustomerDetailRowSubComponent', () => {
     useActiveAssociatedPlans.mockReturnValue({
       isLoading: false,
       data: {
-        hasActiveAgreements: true,
+        hasActiveSubscriptions: true,
         hasActivePolicies: true,
         hasActiveOtherSubsidies: true,
       },
@@ -52,7 +52,7 @@ describe('CustomerDetailRowSubComponent', () => {
     useActiveAssociatedPlans.mockReturnValue({
       isLoading: false,
       data: {
-        hasActiveAgreements: false,
+        hasActiveSubscriptions: false,
         hasActivePolicies: true,
         hasActiveOtherSubsidies: true,
       },
@@ -74,7 +74,7 @@ describe('CustomerDetailRowSubComponent', () => {
     useActiveAssociatedPlans.mockReturnValue({
       isLoading: false,
       data: {
-        hasActiveAgreements: true,
+        hasActiveSubscriptions: true,
         hasActivePolicies: false,
         hasActiveOtherSubsidies: true,
       },
@@ -96,7 +96,7 @@ describe('CustomerDetailRowSubComponent', () => {
     useActiveAssociatedPlans.mockReturnValue({
       isLoading: false,
       data: {
-        hasActiveAgreements: true,
+        hasActiveSubscriptions: true,
         hasActivePolicies: true,
         hasActiveOtherSubsidies: false,
       },
