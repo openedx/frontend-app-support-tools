@@ -6,7 +6,10 @@ import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CustomersPage from '../CustomersPage';
 import LmsApiService from '../../../../data/services/EnterpriseApiService';
 
-const mockData = [{
+const mockData = {
+  count: 1,
+  numPages: 1,
+  results: [{
   name: 'Ubuntu',
   slug: 'test-ubuntu',
   uuid: 'test-enterprise-uuid',
@@ -24,7 +27,7 @@ const mockData = [{
     active: true,
   }],
   enableGenerationOfApiCredentials: true,
-}];
+}]};
 
 jest.mock('lodash.debounce', () => jest.fn((fn) => fn));
 jest
