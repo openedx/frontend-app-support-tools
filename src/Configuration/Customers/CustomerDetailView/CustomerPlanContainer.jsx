@@ -48,6 +48,7 @@ const CustomerPlanContainer = ({ slug }) => {
               Show inactive
             </Form.Switch>
           </div>
+          <hr />
           {renderActivePoliciesCard}
           {renderActiveSubscriptions}
           {showInactive ? (
