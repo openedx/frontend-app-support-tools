@@ -11,7 +11,7 @@ const CustomerIntegrations = ({
   const { ADMIN_PORTAL_BASE_URL } = getConfig();
   const ssoDateText = ({ sso }) => (`Created ${formatDate(sso?.created)} • Last modified ${formatDate(sso?.modifed)}`);
   const configDateText = ({ config }) => (`Created ${formatDate(config?.created)} • Last modified ${formatDate(config?.lastModifiedAt)}`);
-  let integrationCount = activeSSO?.length + activeIntegrations?.length;
+  let integrationCount = (activeSSO ? activeSSO.length : 0) + (activeIntegrations ? activeIntegrations.length : 0);
   if (apiCredentialsEnabled) {
     integrationCount++;
   }
