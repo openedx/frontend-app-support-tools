@@ -10,6 +10,11 @@ const EnterpriseCustomerUsersTable = () => {
     enterpriseUsersTableData,
     fetchEnterpriseUsersData,
   } = useCustomerUsersTableData(id);
+
+  if (!enterpriseUsersTableData.itemCount) {
+    return null;
+  }
+
   return (
     <div>
       <h2>Associated users ({enterpriseUsersTableData.itemCount})</h2>

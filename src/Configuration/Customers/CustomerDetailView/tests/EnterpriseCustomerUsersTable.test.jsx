@@ -80,4 +80,24 @@ describe('EnterpriseCustomerUsersTable', () => {
       });
     });
   });
+
+  it('does not render user table section', () => {
+    const emptyResults = {
+      isLoading: false,
+      enterpriseUsersTableData: {
+        itemCount: 0,
+        pageCount: 1,
+        results: [],
+      },
+      fetchEnterpriseUsersData: mockFetchEnterpriseUsersData,
+    };
+    useCustomerUsersTableData.mockReturnValue(emptyResults);
+    render(
+      <IntlProvider locale="en">
+        <EnterpriseCustomerUsersTable />
+      </IntlProvider>,
+    );
+    expect(screen.queryByText('Search user details')).not.toBeInTheDocument();
+    expect(screen.queryByText('Associated users (0)')).not.toBeInTheDocument();
+  });
 });

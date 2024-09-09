@@ -99,4 +99,26 @@ describe('CustomerPlanContainer', () => {
     await waitFor(() => expect(screen.getByText('Associated subsidy plans (3)')).toBeInTheDocument());
     expect(screen.getByText('Inactive')).toBeInTheDocument();
   });
+  it('does not render CustomerPlanContainer data', async () => {
+    getConfig.mockImplementation(() => ({
+      ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
+      ENTERPRISE_ACCESS_BASE_URL: 'http:www.enterprise-access.com',
+      LICENSE_MANAGER_URL: 'http:www.license-manager.com',
+    }));
+    useAllAssociatedPlans.mockReturnValue({
+      isLoading: false,
+      activePolicies: [],
+      activeSubscriptions: [],
+      countOfActivePlans: 0,
+      countOfAllPlans: 0,
+      inactiveSubscriptions: [],
+      inactivePolicies: [],
+    });
+    render(
+      <IntlProvider locale="en">
+        <CustomerPlanContainer slug={CUSTOMER_SLUG} />
+      </IntlProvider>,
+    );
+    expect(screen.queryByText('Associated subsidy plans (0)')).not.toBeInTheDocument();
+  });
 });

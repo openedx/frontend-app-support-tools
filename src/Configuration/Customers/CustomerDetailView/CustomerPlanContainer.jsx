@@ -30,23 +30,31 @@ const CustomerPlanContainer = ({ slug }) => {
   const renderInActiveSubscriptions = inactiveSubscriptions.map(subscription => (
     <SubscriptionPlanCard key={subscription.uuid} isActive={false} slug={slug} subscription={subscription} />
   ));
+
+  const hasActivePlans = activePolicies.length > 0 || renderActiveSubscriptions.length > 0;
+
+  if (!hasActivePlans) {
+    return null;
+  }
+
   return (
     <div>
       {!isLoading ? (
         <div>
           <div className="d-flex justify-content-between">
             <h2>Associated subsidy plans ({showInactive ? countOfAllPlans : countOfActivePlans})</h2>
-            <Form.Switch
-              className="ml-2.5 mt-2.5"
-              checked={showInactive}
-              disabled={countOfAllPlans === countOfActivePlans}
-              onChange={() => {
-                setShowInactive(prevState => !prevState);
-              }}
-              data-testid="show-removed-toggle"
-            >
-              Show inactive
-            </Form.Switch>
+            {(countOfAllPlans !== countOfActivePlans) && (
+              <Form.Switch
+                className="ml-2.5 mt-2.5"
+                checked={showInactive}
+                onChange={() => {
+                  setShowInactive(prevState => !prevState);
+                }}
+                data-testid="show-removed-toggle"
+              >
+                Show inactive
+              </Form.Switch>
+            )}
           </div>
           <hr />
           {renderActivePoliciesCard}
