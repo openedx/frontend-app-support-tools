@@ -49,8 +49,7 @@ describe('CustomerViewIntegrations', () => {
       </IntlProvider>,
     );
     await waitFor(() => {
-      expect(screen.getByText('Associated integrations')).toBeInTheDocument();
-
+      expect(screen.getByText('Associated integrations (4)')).toBeInTheDocument();
       expect(screen.getByText('SSO')).toBeInTheDocument();
       expect(screen.getByText('Orange cats rule')).toBeInTheDocument();
       expect(screen.getAllByText('Created September 15, 2024 • Last modified September 15, 2024')).toHaveLength(3);
