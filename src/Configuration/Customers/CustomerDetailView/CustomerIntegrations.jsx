@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import CustomerViewCard from './CustomerViewCard';
 import { formatDate } from '../data/utils';
-import DJANGO_ADMIN_BASE_URL from '../data/constants';
 
 const CustomerIntegrations = ({
   slug, activeIntegrations, activeSSO, apiCredentialsEnabled,
@@ -47,8 +46,6 @@ const CustomerIntegrations = ({
           slug={slug}
           header="Integration"
           title="API"
-          buttonText="Open in Django"
-          buttonLink={`${DJANGO_ADMIN_BASE_URL}/admin/enterprise/enterprisecustomerinvitekey/`}
         />
         )}
       </div>
