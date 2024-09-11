@@ -35,13 +35,7 @@ describe('Verified Name', () => {
       history: verifiedNameHistory.results,
     };
 
-    const idVerificationAttemptDetails = {
-      status: 'denied',
-      message: '[{"generalReasons": ["Name mismatch"]}]',
-    };
-
     jest.spyOn(api, 'getVerifiedNameHistory').mockResolvedValueOnce(verifiedNameData);
-    jest.spyOn(api, 'getVerificationAttemptDetailsById').mockResolvedValueOnce(idVerificationAttemptDetails);
     render(<VerifiedNameWrapper {...props} />);
 
     const historyButton = await screen.findByText('Show');
@@ -63,16 +57,7 @@ describe('Verified Name', () => {
       verificationType: 'Proctoring',
       history: verifiedNameHistory.results,
     };
-    const idVerificationAttemptDetails = {
-      status: 'denied',
-      message: '[{"generalReasons": ["Name mismatch"]}]',
-    };
     jest.spyOn(api, 'getVerifiedNameHistory').mockResolvedValueOnce(verifiedNameData);
-    const getVerificationAPICallSpy = jest.spyOn(
-      api,
-      'getVerificationAttemptDetailsById',
-    ).mockResolvedValueOnce(idVerificationAttemptDetails);
-
     await act(async () => {
       render(<VerifiedNameWrapper {...props} />);
     });
@@ -82,15 +67,13 @@ describe('Verified Name', () => {
       fireEvent.click(historyButton);
     });
 
-    expect(getVerificationAPICallSpy).toHaveBeenCalledWith(
-      verifiedNameHistory.results[1].verification_attempt_id,
-    );
-
     const hoverLink = await screen.getByText(verifiedNameHistory.results[1].verification_attempt_id);
     await act(async () => {
       fireEvent.mouseOver(hoverLink);
     });
 
-    await screen.getByTestId('verificationAttemptTooltip');
+    await screen.getByTestId('verificationAttemptTooltipTitle');
+
+    expect(screen.getByText('Must retry')).toBeTruthy();
   });
 });

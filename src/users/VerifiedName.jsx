@@ -10,13 +10,68 @@ import {
 import PageLoading from '../components/common/PageLoading';
 import Table from '../components/Table';
 import { formatDate } from '../utils';
-import { getVerifiedNameHistory, getVerificationAttemptDetailsById } from './data/api';
+import { getVerifiedNameHistory } from './data/api';
+
+const verifiedNameColumns = [
+  {
+    Header: 'Verified Name',
+    accessor: 'verifiedName',
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+  },
+  {
+    Header: 'Verification Type',
+    accessor: 'verificationType',
+  },
+  {
+    Header: 'History',
+    accessor: 'history',
+  },
+];
+
+const verifiedNameHistoryColumns = [
+  {
+    Header: 'Verified Name',
+    accessor: 'verifiedName',
+  },
+  {
+    Header: 'Profile Name',
+    accessor: 'profileName',
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+  },
+  {
+    Header: 'IDV Attempt ID',
+    accessor: 'idvAttemptId',
+  },
+  {
+    Header: 'Proctoring Attempt ID',
+    accessor: 'proctoringAttemptId',
+  },
+  {
+    Header: 'Created At',
+    accessor: 'createdAt',
+  },
+];
+
+// Human readable formatter for the status. Possible status list on:
+// https://github.com/edx/edx-solutions-edx-platform/blob/0ebc69f86548a44b7947decfe308032028721907/lms/djangoapps/verify_student/models.py#L104
+const idvStatusFormat = status => {
+  // Capitalize first letter
+  const properStatus = `${status.at(0).toUpperCase()}${status?.slice(1)}`;
+
+  // Replace underscores with spaces
+  return properStatus.replace('_', ' ');
+};
 
 export default function VerifiedName({ username }) {
   const [verifiedNameData, setVerifiedNameData] = useState(null);
   const [verifiedNameHistoryData, setVerifiedNameHistoryData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [verificationAttemptDetails, setVerificationAttemptDetails] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -45,10 +100,9 @@ export default function VerifiedName({ username }) {
           trigger="hover"
           overlay={(
             <Popover id={`${result.verificationAttemptId}-details-tooltip`} aria-hidden="true">
-              <Popover.Title as="h5">{verificationAttemptDetails[result.verificationAttemptId].status}</Popover.Title>
-              <Popover.Content data-testid="verificationAttemptTooltip">
-                {verificationAttemptDetails[result.verificationAttemptId].message}
-              </Popover.Content>
+              <Popover.Title data-testid="verificationAttemptTooltipTitle">
+                {result.verificationAttemptStatus ? idvStatusFormat(result.verificationAttemptStatus) : 'Missing data'}
+              </Popover.Title>
             </Popover>
           )}
         >
@@ -60,70 +114,13 @@ export default function VerifiedName({ username }) {
       proctoringAttemptId: result.proctoredExamAttemptId,
       createdAt: formatDate(result.created),
     }),
-  ), [verifiedNameHistoryData, verificationAttemptDetails]);
+  ), [verifiedNameHistoryData]);
 
   // Modal to display verified name history
   const openVerifiedNameModal = async (data) => {
-    for (let idx = 0; idx < data.length; idx++) {
-      const historyItem = data[idx];
-      if (historyItem.verificationAttemptId && !(historyItem.verificationAttemptId in verificationAttemptDetails)) {
-        // eslint-disable-next-line no-await-in-loop
-        await getVerificationAttemptDetailsById(historyItem.verificationAttemptId).then((response) => {
-          const camelCaseDetailsData = camelCaseObject(response);
-          verificationAttemptDetails[historyItem.verificationAttemptId] = camelCaseDetailsData;
-          setVerificationAttemptDetails(verificationAttemptDetails);
-        });
-      }
-    }
     setVerifiedNameHistoryData(data);
     setIsModalOpen(true);
   };
-
-  const verifiedNameColumns = useMemo(() => [
-    {
-      Header: 'Verified Name',
-      accessor: 'verifiedName',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-    {
-      Header: 'Verification Type',
-      accessor: 'verificationType',
-    },
-    {
-      Header: 'History',
-      accessor: 'history',
-    },
-  ], []);
-
-  const verifiedNameHistoryColumns = useMemo(() => [
-    {
-      Header: 'Verified Name',
-      accessor: 'verifiedName',
-    },
-    {
-      Header: 'Profile Name',
-      accessor: 'profileName',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-    {
-      Header: 'IDV Attempt ID',
-      accessor: 'idvAttemptId',
-    },
-    {
-      Header: 'Proctoring Attempt ID',
-      accessor: 'proctoringAttemptId',
-    },
-    {
-      Header: 'Created At',
-      accessor: 'createdAt',
-    },
-  ], []);
 
   const verifiedNameParsedData = useMemo(() => [{
     verifiedName: (
