@@ -9,7 +9,7 @@ import CustomerDetailModal from './CustomerDetailModal';
 
 const CustomerCard = ({ enterpriseCustomer }) => {
   const { ADMIN_PORTAL_BASE_URL, DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
-  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard();
+  const { showToast, copyToClipboard, setShowToast } = useCopyToClipboard(enterpriseCustomer.uuid);
   const [isDetailsOpen, openDetails, closeDetails] = useToggle(false);
 
   return (
@@ -64,7 +64,7 @@ const CustomerCard = ({ enterpriseCustomer }) => {
               key="ContentCopy"
               src={ContentCopy}
               data-testid="copy"
-              onClick={() => copyToClipboard(enterpriseCustomer.uuid)}
+              onClick={() => copyToClipboard()}
             />
           </div>
           <p className="small mb-1">
