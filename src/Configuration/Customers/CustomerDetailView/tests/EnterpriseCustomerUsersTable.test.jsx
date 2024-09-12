@@ -33,6 +33,7 @@ const mockData = {
     ],
   },
   fetchEnterpriseUsersData: mockFetchEnterpriseUsersData,
+  showTable: true,
 };
 
 jest.mock('../../data/hooks/useCustomerUsersTableData');

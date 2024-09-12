@@ -13,12 +13,14 @@ import { getEnterpriseCustomer } from '../data/utils';
 import CustomerIntegrations from './CustomerIntegrations';
 import EnterpriseCustomerUsersTable from './EnterpriseCustomerUsersTable';
 import CustomerPlanContainer from './CustomerPlanContainer';
+import useAllAssociatedPlans from '../data/hooks/useAllAssociatedPlans';
 
 const CustomerViewContainer = () => {
   const { id } = useParams();
   const [enterpriseCustomer, setEnterpriseCustomer] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const intl = useIntl();
+  const associatedPlans = useAllAssociatedPlans(id);
 
   const fetchData = useCallback(
     async () => {
@@ -37,6 +39,23 @@ const CustomerViewContainer = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const renderPlanContainer = () => {
+    if (!isLoading && !associatedPlans.isLoading && associatedPlans.countOfAllPlans) {
+      return (
+        <Stack gap={2}>
+          <CustomerPlanContainer slug={enterpriseCustomer.slug} {...associatedPlans} />
+        </Stack>
+      );
+    }
+    if (!associatedPlans.isLoading && !associatedPlans.countOfAllPlans) {
+      return false;
+    }
+    if (associatedPlans.isLoading) {
+      return <Skeleton height={230} />;
+    }
+    return null;
+  };
 
   return (
     <div>
@@ -64,11 +83,9 @@ const CustomerViewContainer = () => {
         </Stack>
       </Container>
       <Container className="mt-4">
-        <Stack gap={2}>
-          {!isLoading ? <CustomerPlanContainer slug={enterpriseCustomer.slug} /> : <Skeleton height={230} />}
-        </Stack>
+        {renderPlanContainer()}
       </Container>
-      <Container className="mt-4">
+      <Container className="mt-4 mb-4">
         <Stack gap={2}>
           <CustomerIntegrations
             slug={enterpriseCustomer.slug}
