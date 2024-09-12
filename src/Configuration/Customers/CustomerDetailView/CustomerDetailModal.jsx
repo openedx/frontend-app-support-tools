@@ -2,9 +2,8 @@ import PropTypes from 'prop-types';
 import {
   ActionRow, Badge, Button, Icon, ModalDialog,
 } from '@openedx/paragon';
-import { Check, Launch } from '@openedx/paragon/icons';
+import { Check, Close, Launch } from '@openedx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
-import classNames from 'classnames';
 
 const CustomerDetailModal = ({ customer, isOpen, close }) => {
   const { DJANGO_ADMIN_LMS_BASE_URL } = getConfig();
@@ -34,11 +33,8 @@ const CustomerDetailModal = ({ customer, isOpen, close }) => {
         <p>{customer.name || '--'}</p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.active },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.active ? Check : Close}
           />
           Active Admin Portal
         </p>
@@ -51,11 +47,8 @@ const CustomerDetailModal = ({ customer, isOpen, close }) => {
         <h3 className="mt-4 mb-3">Data sharing consent</h3>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.enableDataSharingConsent },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.enableDataSharingConsent ? Check : Close}
           />
           Activate data sharing consent prompt
         </p>
@@ -72,82 +65,51 @@ const CustomerDetailModal = ({ customer, isOpen, close }) => {
         <p>{customer.defaultLanguage || '--'}</p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.hideLaborMarketData },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.hideLaborMarketData ? Check : Close}
           />
           Hide labor market data
         </p>
         <h3 className="mt-4 mb-3">Integration and learner platform settings</h3>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.enablePortalReportingConfigScreen },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.enablePortalReportingConfigScreen ? Check : Close}
           />
           Display learning platform configuration screen
         </p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.enablePortalSamlConfigurationScreen },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.enablePortalSamlConfigurationScreen ? Check : Close}
           />
           Display SSO configuration screen
         </p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.enableSlugLogin },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.enableSlugLogin ? Check : Close}
           />
           Allow slug login for SSO
         </p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.replaceSensitiveSsoUsername },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.replaceSensitiveSsoUsername ? Check : Close}
           />
           Replace sensitive SSO username
         </p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.hideCourseOriginalPrice },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.hideCourseOriginalPrice ? Check : Close}
           />
           Hide course price on learning platform
         </p>
         <p className="d-flex">
           <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.hideCourseOriginalPrice },
-            )}
-            src={Check}
-          />
-          Hide course price on learning platform
-        </p>
-        <p className="d-flex">
-          <Icon
-            className={classNames(
-              'mr-3',
-              { 'text-white': !customer.enableGenerationOfApiCredentials },
-            )}
-            src={Check}
+            className="mr-3"
+            src={customer.enableGenerationOfApiCredentials ? Check : Close}
           />
           Allow generation of API credentials
         </p>

@@ -16,19 +16,24 @@ const CustomerViewCard = (
     <Card.Section className="pt-0 x-small text-gray-400">
       {subtext && <div>{subtext}</div>}
     </Card.Section>
-    <Card.Footer>
-      <Button>
-        <Hyperlink
-          destination={buttonLink}
-          rel="noopener noreferrer"
-          target="_blank"
-          className="text-white"
-          showLaunchIcon
-        >
-          {buttonText}
-        </Hyperlink>
-      </Button>
-    </Card.Footer>
+    {buttonText && (
+      <Card.Footer>
+        <Button>
+          <Hyperlink
+            destination={buttonLink}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="text-white"
+            showLaunchIcon
+          >
+            {buttonText}
+          </Hyperlink>
+        </Button>
+      </Card.Footer>
+    )}
+    {!buttonText && (
+      <p className="mb-5" />
+    )}
   </Card>
 );
 
