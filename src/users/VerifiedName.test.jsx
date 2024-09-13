@@ -74,6 +74,6 @@ describe('Verified Name', () => {
 
     await screen.getByTestId('verificationAttemptTooltipTitle');
 
-    expect(screen.getByText('Must retry')).toBeTruthy();
+    expect(screen.getByText('must_retry')).toBeTruthy();
   });
 });

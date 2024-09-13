@@ -58,16 +58,6 @@ const verifiedNameHistoryColumns = [
   },
 ];
 
-// Human readable formatter for the status. Possible status list on:
-// https://github.com/edx/edx-solutions-edx-platform/blob/0ebc69f86548a44b7947decfe308032028721907/lms/djangoapps/verify_student/models.py#L104
-const idvStatusFormat = status => {
-  // Capitalize first letter
-  const properStatus = `${status.at(0).toUpperCase()}${status?.slice(1)}`;
-
-  // Replace underscores with spaces
-  return properStatus.replace('_', ' ');
-};
-
 export default function VerifiedName({ username }) {
   const [verifiedNameData, setVerifiedNameData] = useState(null);
   const [verifiedNameHistoryData, setVerifiedNameHistoryData] = useState([]);
@@ -100,9 +90,12 @@ export default function VerifiedName({ username }) {
           trigger="hover"
           overlay={(
             <Popover id={`${result.verificationAttemptId}-details-tooltip`} aria-hidden="true">
-              <Popover.Title data-testid="verificationAttemptTooltipTitle">
-                {result.verificationAttemptStatus ? idvStatusFormat(result.verificationAttemptStatus) : 'Missing data'}
+              <Popover.Title as="h3">
+                Status
               </Popover.Title>
+              <Popover.Content data-testid="verificationAttemptTooltipTitle">
+                {result.verificationAttemptStatus ? result.verificationAttemptStatus : 'Error: Missing data'}
+              </Popover.Content>
             </Popover>
           )}
         >
