@@ -13,8 +13,8 @@ const SubscriptionCheckIcon = ({ row }) => {
   return null;
 };
 
-const PolicyCheckIcon = ({ row }) => {
-  if (row.original.hasActivePolicies) {
+const SubsidyCheckIcon = ({ row }) => {
+  if (row.original.hasActiveSubsidies) {
     return <Icon src={Check} screenReaderText="policy check" />;
   }
   return null;
@@ -73,8 +73,8 @@ const CustomerDetailRowSubComponent = ({ row }) => {
           },
           {
             Header: 'Learner Credit',
-            accessor: 'hasActivePolicies',
-            Cell: PolicyCheckIcon,
+            accessor: 'hasActiveSubsidies',
+            Cell: SubsidyCheckIcon,
           },
           {
             Header: OtherSubsidies,
@@ -105,10 +105,10 @@ SubscriptionCheckIcon.propTypes = {
   }).isRequired,
 };
 
-PolicyCheckIcon.propTypes = {
+SubsidyCheckIcon.propTypes = {
   row: PropTypes.shape({
     original: PropTypes.shape({
-      hasActivePolicies: PropTypes.bool,
+      hasActiveSubsidies: PropTypes.bool,
     }),
   }).isRequired,
 };

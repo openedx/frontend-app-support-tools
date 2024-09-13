@@ -3,7 +3,7 @@ import {
   getEnterpriseOffers,
   getCouponOrders,
   getCustomerSubscriptions,
-  getSubsidyAccessPolicies,
+  getSubsidies,
   getEnterpriseCustomer,
   formatDate,
 } from './utils';
@@ -35,25 +35,28 @@ describe('getEnterpriseOffers', () => {
   });
 });
 
-describe('getSubsidyAccessPolicies', () => {
+describe('getSubsidies', () => {
   it('returns the correct data', async () => {
-    const policiesResults = {
+    const subsidiesResults = {
       data: {
         count: 1,
         next: null,
         previous: null,
         results: [{
-          displayName: null,
-          description: 'testing policy 2',
-          active: true,
+          title: 'testing subsidy 2',
+          isActive: true,
+          uuid: 'test-uuid',
+          activeDatetime: '2022-03-16T00:00:00Z',
+          expirationDatetime: '2022-03-31T00:00:00Z',
+          created: '',
         }],
       },
     };
     getAuthenticatedHttpClient.mockImplementation(() => ({
-      get: jest.fn().mockResolvedValue(policiesResults),
+      get: jest.fn().mockResolvedValue(subsidiesResults),
     }));
-    const results = await getSubsidyAccessPolicies(TEST_ENTERPRISE_UUID);
-    expect(results).toEqual(policiesResults.data);
+    const results = await getSubsidies(TEST_ENTERPRISE_UUID);
+    expect(results).toEqual(subsidiesResults.data.results);
   });
 });
 

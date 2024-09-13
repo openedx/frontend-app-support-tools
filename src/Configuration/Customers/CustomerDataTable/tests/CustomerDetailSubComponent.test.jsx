@@ -31,7 +31,7 @@ describe('CustomerDetailRowSubComponent', () => {
       isLoading: false,
       data: {
         hasActiveSubscriptions: true,
-        hasActivePolicies: true,
+        hasActiveSubsidies: true,
         hasActiveOtherSubsidies: true,
       },
     });
@@ -53,7 +53,7 @@ describe('CustomerDetailRowSubComponent', () => {
       isLoading: false,
       data: {
         hasActiveSubscriptions: false,
-        hasActivePolicies: true,
+        hasActiveSubsidies: true,
         hasActiveOtherSubsidies: true,
       },
     });
@@ -75,7 +75,7 @@ describe('CustomerDetailRowSubComponent', () => {
       isLoading: false,
       data: {
         hasActiveSubscriptions: true,
-        hasActivePolicies: false,
+        hasActiveSubsidies: false,
         hasActiveOtherSubsidies: true,
       },
     });
@@ -97,7 +97,7 @@ describe('CustomerDetailRowSubComponent', () => {
       isLoading: false,
       data: {
         hasActiveSubscriptions: true,
-        hasActivePolicies: true,
+        hasActiveSubsidies: true,
         hasActiveOtherSubsidies: false,
       },
     });

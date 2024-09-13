@@ -9,20 +9,20 @@ import SubscriptionPlanCard from './SubscriptionPlanCard';
 const CustomerPlanContainer = ({ slug }) => {
   const { id } = useParams();
   const {
-    activePolicies,
+    activeSubsidies,
     activeSubscriptions,
     countOfActivePlans,
     countOfAllPlans,
-    inactivePolicies,
+    inactiveSubsidies,
     inactiveSubscriptions,
     isLoading,
   } = useAllAssociatedPlans(id);
   const [showInactive, setShowInactive] = useState(false);
-  const renderActivePoliciesCard = activePolicies.map(policy => (
-    <LearnerCreditPlanCard key={policy.uuid} isActive slug={slug} policy={policy} />
+  const renderActiveSubsidiesCard = activeSubsidies.map(subsidy => (
+    <LearnerCreditPlanCard key={subsidy.uuid} isActive slug={slug} subsidy={subsidy} />
   ));
-  const renderInactivePoliciesCard = inactivePolicies.map(policy => (
-    <LearnerCreditPlanCard key={policy.uuid} isActive={false} slug={slug} policy={policy} />
+  const renderInactiveSubsidiesCard = inactiveSubsidies.map(subsidy => (
+    <LearnerCreditPlanCard key={subsidy.uuid} isActive={false} slug={slug} subsidy={subsidy} />
   ));
   const renderActiveSubscriptions = activeSubscriptions.map(subscription => (
     <SubscriptionPlanCard key={subscription.uuid} isActive slug={slug} subscription={subscription} />
@@ -49,11 +49,11 @@ const CustomerPlanContainer = ({ slug }) => {
             </Form.Switch>
           </div>
           <hr />
-          {renderActivePoliciesCard}
+          {renderActiveSubsidiesCard}
           {renderActiveSubscriptions}
           {showInactive ? (
             <div>
-              {renderInactivePoliciesCard}
+              {renderInactiveSubsidiesCard}
               {renderInActiveSubscriptions}
             </div>
           ) : null}

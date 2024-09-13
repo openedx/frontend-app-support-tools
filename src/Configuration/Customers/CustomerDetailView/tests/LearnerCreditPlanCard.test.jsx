@@ -17,12 +17,11 @@ jest.mock('@edx/frontend-platform', () => ({
 
 const mockData = {
   isActive: true,
-  policy: {
-    subsidyActiveDatetime: '2024-08-23T20:02:57.651943Z',
+  subsidy: {
+    activeDatetime: '2024-08-23T20:02:57.651943Z',
     created: '2024-08-23T20:02:57.651943Z',
-    subsidyExpirationDatetime: '2024-08-23T20:02:57.651943Z',
+    expirationDatetime: '2024-08-23T20:02:57.651943Z',
     uuid: 'test-uuid',
-    policyType: 'learnerCredit',
   },
   slug: 'test-customer-slug',
 };
@@ -32,7 +31,7 @@ describe('LearnerCreditPlanCard', () => {
     formatDate.mockReturnValue('Aug 23, 2024');
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      ENTERPRISE_ACCESS_BASE_URL: 'http:www.enterprise-access.com',
+      SUBSIDY_BASE_URL: 'http://www.enterprise-subsidy.com',
     }));
     render(
       <IntlProvider locale="en">
@@ -42,8 +41,8 @@ describe('LearnerCreditPlanCard', () => {
     expect(screen.getByText('LEARNER CREDIT PLAN')).toBeInTheDocument();
     expect(screen.getByText('Aug 23, 2024 - Aug 23, 2024')).toBeInTheDocument();
     expect(screen.getByText('Created Aug 23, 2024')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'View budgets' })).toHaveAttribute('href', 'http://www.testportal.com/test-customer-slug/admin/learner-credit/test-uuid');
-    expect(screen.getByRole('link', { name: 'Open in Django' })).toHaveAttribute('href', 'http:www.enterprise-access.com/admin/subsidy_access_policy/learnercredit/test-uuid');
+    expect(screen.getByRole('link', { name: 'View budgets' })).toHaveAttribute('href', 'http://www.testportal.com/test-customer-slug/admin/learner-credit/');
+    expect(screen.getByRole('link', { name: 'Open in Django' })).toHaveAttribute('href', 'http://www.enterprise-subsidy.com/admin/subsidy/subsidy/test-uuid/change/');
   });
 
   it('renders inactive LearnerCreditPlanCard data', () => {
@@ -54,7 +53,7 @@ describe('LearnerCreditPlanCard', () => {
     formatDate.mockReturnValue('Aug 23, 2024');
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      ENTERPRISE_ACCESS_BASE_URL: 'http:www.enterprise-access.com',
+      SUBSIDY_BASE_URL: 'http://www.enterprise-subsidy.com',
     }));
     render(
       <IntlProvider locale="en">
@@ -65,7 +64,7 @@ describe('LearnerCreditPlanCard', () => {
     expect(screen.getByText('LEARNER CREDIT PLAN')).toBeInTheDocument();
     expect(screen.getByText('Aug 23, 2024 - Aug 23, 2024')).toBeInTheDocument();
     expect(screen.getByText('Created Aug 23, 2024')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'View budgets' })).toHaveAttribute('href', 'http://www.testportal.com/test-customer-slug/admin/learner-credit/test-uuid');
-    expect(screen.getByRole('link', { name: 'Open in Django' })).toHaveAttribute('href', 'http:www.enterprise-access.com/admin/subsidy_access_policy/learnercredit/test-uuid');
+    expect(screen.getByRole('link', { name: 'View budgets' })).toHaveAttribute('href', 'http://www.testportal.com/test-customer-slug/admin/learner-credit/');
+    expect(screen.getByRole('link', { name: 'Open in Django' })).toHaveAttribute('href', 'http://www.enterprise-subsidy.com/admin/subsidy/subsidy/test-uuid/change/');
   });
 });

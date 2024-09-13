@@ -10,11 +10,11 @@ import { Launch } from '@openedx/paragon/icons';
 import { getConfig } from '@edx/frontend-platform';
 import { formatDate } from '../data/utils';
 
-const LearnerCreditPlanCard = ({ isActive, policy, slug }) => {
-  const { ADMIN_PORTAL_BASE_URL, ENTERPRISE_ACCESS_BASE_URL } = getConfig();
-  const startDate = formatDate(policy.subsidyActiveDatetime);
-  const endDate = formatDate(policy.subsidyExpirationDatetime);
-  const createdDate = formatDate(policy.created);
+const LearnerCreditPlanCard = ({ isActive, subsidy, slug }) => {
+  const { ADMIN_PORTAL_BASE_URL, SUBSIDY_BASE_URL } = getConfig();
+  const startDate = formatDate(subsidy.activeDatetime);
+  const endDate = formatDate(subsidy.expirationDatetime);
+  const createdDate = formatDate(subsidy.created);
 
   return (
     <Card className="mb-4">
@@ -25,7 +25,7 @@ const LearnerCreditPlanCard = ({ isActive, policy, slug }) => {
             <Button
               data-testid="admin-portal-button"
               as="a"
-              href={`${ADMIN_PORTAL_BASE_URL}/${slug}/admin/learner-credit/${policy.uuid}`}
+              href={`${ADMIN_PORTAL_BASE_URL}/${slug}/admin/learner-credit/`}
               target="_blank"
               rel="noopener noreferrer"
               variant="inverse-primary"
@@ -34,7 +34,7 @@ const LearnerCreditPlanCard = ({ isActive, policy, slug }) => {
             <Button
               data-testid="django-button"
               as="a"
-              href={`${ENTERPRISE_ACCESS_BASE_URL}/admin/subsidy_access_policy/${policy.policyType.toLowerCase()}/${policy.uuid}`}
+              href={`${SUBSIDY_BASE_URL}/admin/subsidy/subsidy/${subsidy.uuid}/change/`}
               variant="primary"
               target="_blank"
               rel="noopener noreferrer"
@@ -61,11 +61,10 @@ const LearnerCreditPlanCard = ({ isActive, policy, slug }) => {
 
 LearnerCreditPlanCard.propTypes = {
   isActive: PropTypes.bool.isRequired,
-  policy: PropTypes.shape({
+  subsidy: PropTypes.shape({
     uuid: PropTypes.string.isRequired,
-    subsidyActiveDatetime: PropTypes.string.isRequired,
-    subsidyExpirationDatetime: PropTypes.string.isRequired,
-    policyType: PropTypes.string.isRequired,
+    activeDatetime: PropTypes.string.isRequired,
+    expirationDatetime: PropTypes.string.isRequired,
     created: PropTypes.string.isRequired,
   }).isRequired,
   slug: PropTypes.string.isRequired,

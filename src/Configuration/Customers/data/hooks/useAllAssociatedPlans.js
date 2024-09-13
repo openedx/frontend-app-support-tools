@@ -2,15 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { logError } from '@edx/frontend-platform/logging';
 import {
   getCustomerSubscriptions,
-  getSubsidyAccessPolicies,
+  getSubsidies,
 } from '../utils';
 
 const useAllAssociatedPlans = (enterpriseId) => {
   const [isLoading, setIsLoading] = useState(true);
   const [inactiveSubscriptions, setInactiveSubscriptions] = useState([]);
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
-  const [activePolicies, setActivePolicies] = useState([]);
-  const [inactivePolicies, setInactivePolicies] = useState([]);
+  const [activeSubsidies, setActiveSubsidies] = useState([]);
+  const [inactiveSubsidies, setInactiveSubsidies] = useState([]);
   const [countOfActivePlans, setCountOfActivePlans] = useState(0);
   const [countOfAllPlans, setCountOfAllPlans] = useState(0);
 
@@ -19,15 +19,15 @@ const useAllAssociatedPlans = (enterpriseId) => {
       try {
         const [
           subscriptionsResponse,
-          policiesResponse,
+          subsidiesResponse,
         ] = await Promise.all([
           getCustomerSubscriptions(enterpriseId),
-          getSubsidyAccessPolicies(enterpriseId),
+          getSubsidies(enterpriseId),
         ]);
         setActiveSubscriptions(subscriptionsResponse.results.filter(subscription => subscription.isActive === true));
         setInactiveSubscriptions(subscriptionsResponse.results.filter(subscription => subscription.isActive === false));
-        setActivePolicies(policiesResponse.results.filter(policy => policy.isSubsidyActive === true));
-        setInactivePolicies(policiesResponse.results.filter(policy => policy.isSubsidyActive === false));
+        setActiveSubsidies(subsidiesResponse.filter(subsidy => subsidy.isActive === true));
+        setInactiveSubsidies(subsidiesResponse.filter(subsidy => subsidy.isActive === false));
       } catch (error) {
         logError(error);
       } finally {
@@ -40,19 +40,19 @@ const useAllAssociatedPlans = (enterpriseId) => {
   useEffect(() => {
     fetchData();
     if (!isLoading) {
-      const activePlanCount = activeSubscriptions.length + activePolicies.length;
-      const inactivePlanCount = inactiveSubscriptions.length + inactivePolicies.length;
+      const activePlanCount = activeSubscriptions.length + activeSubsidies.length;
+      const inactivePlanCount = inactiveSubscriptions.length + inactiveSubsidies.length;
       setCountOfActivePlans(prev => prev + activePlanCount);
       setCountOfAllPlans(prev => prev + activePlanCount + inactivePlanCount);
     }
   }, [fetchData, isLoading]);
 
   return {
-    activePolicies,
+    activeSubsidies,
     activeSubscriptions,
     countOfActivePlans,
     countOfAllPlans,
-    inactivePolicies,
+    inactiveSubsidies,
     inactiveSubscriptions,
     isLoading,
   };

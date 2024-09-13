@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform/utils';
+import { logError } from '@edx/frontend-platform/logging';
+import { getConfig } from '@edx/frontend-platform';
 import EcommerceApiService from '../../../data/services/EcommerceApiService';
 import LicenseManagerApiService from '../../../data/services/LicenseManagerApiService';
-import EnterpriseAccessApiService from '../../../data/services/EnterpriseAccessApiService';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import dayjs from '../../Provisioning/data/dayjs';
+import fetchPaginatedData from '../../../data/services/utils';
 
 export const getEnterpriseOffers = async (enterpriseId) => {
   const response = await EcommerceApiService.fetchEnterpriseOffers(enterpriseId);
@@ -24,10 +26,15 @@ export const getCustomerSubscriptions = async (enterpriseId) => {
   return subscriptions;
 };
 
-export const getSubsidyAccessPolicies = async (enterpriseId) => {
-  const response = await EnterpriseAccessApiService.fetchSubsidyAccessPolicies(enterpriseId);
-  const subsidyAccessPolicies = camelCaseObject(response.data);
-  return subsidyAccessPolicies;
+export const getSubsidies = async (enterpriseUUID) => {
+  const url = `${getConfig().SUBSIDY_BASE_URL}/api/v1/subsidies/?enterprise_customer_uuid=${enterpriseUUID}`;
+  try {
+    const { results } = await fetchPaginatedData(url);
+    return results;
+  } catch (error) {
+    logError(error);
+    return [];
+  }
 };
 
 export const getEnterpriseCustomer = async (options) => {
