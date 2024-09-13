@@ -5,7 +5,6 @@ import userEvent from '@testing-library/user-event';
 import { getConfig } from '@edx/frontend-platform';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 
-import useAllAssociatedPlans from '../../data/hooks/useAllAssociatedPlans';
 import { formatDate } from '../../data/utils';
 import CustomerPlanContainer from '../CustomerPlanContainer';
 
@@ -17,11 +16,6 @@ jest.mock('../../data/utils', () => ({
 
 jest.mock('@edx/frontend-platform', () => ({
   getConfig: jest.fn(),
-}));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({ id: 'test-uuid' }),
 }));
 
 const CUSTOMER_SLUG = 'test-slug';
@@ -41,10 +35,10 @@ describe('CustomerPlanContainer', () => {
 
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      SUBSIDY_BASE_URL: 'http:www.enterprise-subsidy.com',
-      LICENSE_MANAGER_URL: 'http:www.license-manager.com',
+      SUBSIDY_BASE_DJANGO_URL: 'http:www.enterprise-subsidy.com',
+      LICENSE_MANAGER_DJANGO_URL: 'http:www.license-manager.com',
     }));
-    useAllAssociatedPlans.mockReturnValue({
+    const mockProps = {
       isLoading: false,
       activeSubsidies: [{
         activeDatetime: '2024-08-23T20:02:57.651943Z',
@@ -69,10 +63,10 @@ describe('CustomerPlanContainer', () => {
         uuid: 'test-uuid',
         isActive: false,
       }],
-    });
+    };
     render(
       <IntlProvider locale="en">
-        <CustomerPlanContainer slug={CUSTOMER_SLUG} />
+        <CustomerPlanContainer slug={CUSTOMER_SLUG} {...mockProps} />
       </IntlProvider>,
     );
     const djangoLinks = screen.getAllByRole('link', { name: 'Open in Django' });

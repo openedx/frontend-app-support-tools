@@ -11,7 +11,7 @@ import { getConfig } from '@edx/frontend-platform';
 import { formatDate } from '../data/utils';
 
 const LearnerCreditPlanCard = ({ isActive, subsidy, slug }) => {
-  const { ADMIN_PORTAL_BASE_URL, SUBSIDY_BASE_URL } = getConfig();
+  const { ADMIN_PORTAL_BASE_URL, SUBSIDY_BASE_DJANGO_URL } = getConfig();
   const startDate = formatDate(subsidy.activeDatetime);
   const endDate = formatDate(subsidy.expirationDatetime);
   const createdDate = formatDate(subsidy.created);
@@ -34,7 +34,7 @@ const LearnerCreditPlanCard = ({ isActive, subsidy, slug }) => {
             <Button
               data-testid="django-button"
               as="a"
-              href={`${SUBSIDY_BASE_URL}/admin/subsidy/subsidy/${subsidy.uuid}/change/`}
+              href={`${SUBSIDY_BASE_DJANGO_URL}/admin/subsidy/subsidy/${subsidy.uuid}/change/`}
               variant="primary"
               target="_blank"
               rel="noopener noreferrer"

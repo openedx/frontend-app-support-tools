@@ -1,23 +1,25 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Skeleton } from '@openedx/paragon';
-import useAllAssociatedPlans from '../data/hooks/useAllAssociatedPlans';
 import LearnerCreditPlanCard from './LearnerCreditPlanCard';
 import SubscriptionPlanCard from './SubscriptionPlanCard';
 
-const CustomerPlanContainer = ({ slug }) => {
-  const { id } = useParams();
-  const {
-    activeSubsidies,
-    activeSubscriptions,
-    countOfActivePlans,
-    countOfAllPlans,
-    inactiveSubsidies,
-    inactiveSubscriptions,
-    isLoading,
-  } = useAllAssociatedPlans(id);
+const CustomerPlanContainer = ({
+  slug,
+  activeSubsidies,
+  activeSubscriptions,
+  countOfActivePlans,
+  countOfAllPlans,
+  inactiveSubsidies,
+  inactiveSubscriptions,
+  isLoading,
+}) => {
   const [showInactive, setShowInactive] = useState(false);
+  useEffect(() => {
+    if (!countOfActivePlans && countOfAllPlans) {
+      setShowInactive(true);
+    }
+  }, []);
   const renderActiveSubsidiesCard = activeSubsidies.map(subsidy => (
     <LearnerCreditPlanCard key={subsidy.uuid} isActive slug={slug} subsidy={subsidy} />
   ));
@@ -30,23 +32,25 @@ const CustomerPlanContainer = ({ slug }) => {
   const renderInActiveSubscriptions = inactiveSubscriptions.map(subscription => (
     <SubscriptionPlanCard key={subscription.uuid} isActive={false} slug={slug} subscription={subscription} />
   ));
+
   return (
     <div>
       {!isLoading ? (
         <div>
           <div className="d-flex justify-content-between">
             <h2>Associated subsidy plans ({showInactive ? countOfAllPlans : countOfActivePlans})</h2>
-            <Form.Switch
-              className="ml-2.5 mt-2.5"
-              checked={showInactive}
-              disabled={countOfAllPlans === countOfActivePlans}
-              onChange={() => {
-                setShowInactive(prevState => !prevState);
-              }}
-              data-testid="show-removed-toggle"
-            >
-              Show inactive
-            </Form.Switch>
+            {(countOfAllPlans > countOfActivePlans && countOfActivePlans) ? (
+              <Form.Switch
+                className="ml-2.5 mt-2.5"
+                checked={showInactive}
+                onChange={() => {
+                  setShowInactive(prevState => !prevState);
+                }}
+                data-testid="show-removed-toggle"
+              >
+                Show inactive
+              </Form.Switch>
+            ) : null}
           </div>
           <hr />
           {renderActiveSubsidiesCard}
@@ -65,6 +69,33 @@ const CustomerPlanContainer = ({ slug }) => {
 
 CustomerPlanContainer.propTypes = {
   slug: PropTypes.string.isRequired,
+  activeSubsidies: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    activeDatetime: PropTypes.string.isRequired,
+    expirationDatetime: PropTypes.string.isRequired,
+    created: PropTypes.string.isRequired,
+  })).isRequired,
+  activeSubscriptions: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    startDate: PropTypes.string.isRequired,
+    expirationDate: PropTypes.string.isRequired,
+    created: PropTypes.string.isRequired,
+  })).isRequired,
+  countOfActivePlans: PropTypes.number.isRequired,
+  countOfAllPlans: PropTypes.number.isRequired,
+  inactiveSubsidies: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    activeDatetime: PropTypes.string.isRequired,
+    expirationDatetime: PropTypes.string.isRequired,
+    created: PropTypes.string.isRequired,
+  })).isRequired,
+  inactiveSubscriptions: PropTypes.arrayOf(PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+    startDate: PropTypes.string.isRequired,
+    expirationDate: PropTypes.string.isRequired,
+    created: PropTypes.string.isRequired,
+  })).isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default CustomerPlanContainer;

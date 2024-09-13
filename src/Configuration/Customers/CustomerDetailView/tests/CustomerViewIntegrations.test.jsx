@@ -63,4 +63,20 @@ describe('CustomerViewIntegrations', () => {
       expect(screen.getByText('API')).toBeInTheDocument();
     });
   });
+  it('does not render cards', async () => {
+    formatDate.mockReturnValue('September 15, 2024');
+    render(
+      <IntlProvider locale="en">
+        <CustomerIntegrations
+          slug="marcel-the-shell"
+          activeIntegrations={mockIntegratedChannelData}
+          activeSSO={[]}
+          apiCredentialsEnabled={false}
+        />
+      </IntlProvider>,
+    );
+    await waitFor(() => {
+      expect(screen.queryByText('Associated integrations (0)')).not.toBeInTheDocument();
+    });
+  });
 });

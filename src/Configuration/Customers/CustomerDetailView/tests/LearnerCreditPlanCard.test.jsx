@@ -31,7 +31,7 @@ describe('LearnerCreditPlanCard', () => {
     formatDate.mockReturnValue('Aug 23, 2024');
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      SUBSIDY_BASE_URL: 'http://www.enterprise-subsidy.com',
+      SUBSIDY_BASE_DJANGO_URL: 'http://www.enterprise-subsidy.com',
     }));
     render(
       <IntlProvider locale="en">
@@ -53,7 +53,7 @@ describe('LearnerCreditPlanCard', () => {
     formatDate.mockReturnValue('Aug 23, 2024');
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      SUBSIDY_BASE_URL: 'http://www.enterprise-subsidy.com',
+      SUBSIDY_BASE_DJANGO_URL: 'http://www.enterprise-subsidy.com',
     }));
     render(
       <IntlProvider locale="en">

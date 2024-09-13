@@ -15,6 +15,10 @@ const CustomerIntegrations = ({
     integrationCount++;
   }
 
+  if (!integrationCount) {
+    return null;
+  }
+
   return (
     <div>
       {(integrationCount > 0) && (

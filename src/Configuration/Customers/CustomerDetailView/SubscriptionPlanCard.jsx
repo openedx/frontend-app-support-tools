@@ -11,7 +11,7 @@ import { getConfig } from '@edx/frontend-platform';
 import { formatDate } from '../data/utils';
 
 const SubscriptionPlanCard = ({ isActive, subscription, slug }) => {
-  const { ADMIN_PORTAL_BASE_URL, LICENSE_MANAGER_URL } = getConfig();
+  const { ADMIN_PORTAL_BASE_URL, LICENSE_MANAGER_DJANGO_URL } = getConfig();
   const startDate = formatDate(subscription.startDate);
   const endDate = formatDate(subscription.expirationDate);
   const createdDate = formatDate(subscription.created);
@@ -31,7 +31,7 @@ const SubscriptionPlanCard = ({ isActive, subscription, slug }) => {
             </Button>
             <Button
               as="a"
-              href={`${LICENSE_MANAGER_URL}/admin/subscriptions/subscriptionplan/${subscription.uuid}/change`}
+              href={`${LICENSE_MANAGER_DJANGO_URL}/admin/subscriptions/subscriptionplan/${subscription.uuid}/change`}
               variant="primary"
               target="_blank"
               rel="noopener noreferrer"
