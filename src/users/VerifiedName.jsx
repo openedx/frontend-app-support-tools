@@ -10,13 +10,58 @@ import {
 import PageLoading from '../components/common/PageLoading';
 import Table from '../components/Table';
 import { formatDate } from '../utils';
-import { getVerifiedNameHistory, getVerificationAttemptDetailsById } from './data/api';
+import { getVerifiedNameHistory } from './data/api';
+
+const verifiedNameColumns = [
+  {
+    Header: 'Verified Name',
+    accessor: 'verifiedName',
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+  },
+  {
+    Header: 'Verification Type',
+    accessor: 'verificationType',
+  },
+  {
+    Header: 'History',
+    accessor: 'history',
+  },
+];
+
+const verifiedNameHistoryColumns = [
+  {
+    Header: 'Verified Name',
+    accessor: 'verifiedName',
+  },
+  {
+    Header: 'Profile Name',
+    accessor: 'profileName',
+  },
+  {
+    Header: 'Status',
+    accessor: 'status',
+  },
+  {
+    Header: 'IDV Attempt ID',
+    accessor: 'idvAttemptId',
+  },
+  {
+    Header: 'Proctoring Attempt ID',
+    accessor: 'proctoringAttemptId',
+  },
+  {
+    Header: 'Created At',
+    accessor: 'createdAt',
+  },
+];
 
 export default function VerifiedName({ username }) {
   const [verifiedNameData, setVerifiedNameData] = useState(null);
   const [verifiedNameHistoryData, setVerifiedNameHistoryData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [verificationAttemptDetails, setVerificationAttemptDetails] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -45,9 +90,11 @@ export default function VerifiedName({ username }) {
           trigger="hover"
           overlay={(
             <Popover id={`${result.verificationAttemptId}-details-tooltip`} aria-hidden="true">
-              <Popover.Title as="h5">{verificationAttemptDetails[result.verificationAttemptId].status}</Popover.Title>
-              <Popover.Content data-testid="verificationAttemptTooltip">
-                {verificationAttemptDetails[result.verificationAttemptId].message}
+              <Popover.Title as="h3">
+                Status
+              </Popover.Title>
+              <Popover.Content data-testid="verificationAttemptTooltipTitle">
+                {result.verificationAttemptStatus ? result.verificationAttemptStatus : 'Error: Missing data'}
               </Popover.Content>
             </Popover>
           )}
@@ -60,70 +107,13 @@ export default function VerifiedName({ username }) {
       proctoringAttemptId: result.proctoredExamAttemptId,
       createdAt: formatDate(result.created),
     }),
-  ), [verifiedNameHistoryData, verificationAttemptDetails]);
+  ), [verifiedNameHistoryData]);
 
   // Modal to display verified name history
   const openVerifiedNameModal = async (data) => {
-    for (let idx = 0; idx < data.length; idx++) {
-      const historyItem = data[idx];
-      if (historyItem.verificationAttemptId && !(historyItem.verificationAttemptId in verificationAttemptDetails)) {
-        // eslint-disable-next-line no-await-in-loop
-        await getVerificationAttemptDetailsById(historyItem.verificationAttemptId).then((response) => {
-          const camelCaseDetailsData = camelCaseObject(response);
-          verificationAttemptDetails[historyItem.verificationAttemptId] = camelCaseDetailsData;
-          setVerificationAttemptDetails(verificationAttemptDetails);
-        });
-      }
-    }
     setVerifiedNameHistoryData(data);
     setIsModalOpen(true);
   };
-
-  const verifiedNameColumns = useMemo(() => [
-    {
-      Header: 'Verified Name',
-      accessor: 'verifiedName',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-    {
-      Header: 'Verification Type',
-      accessor: 'verificationType',
-    },
-    {
-      Header: 'History',
-      accessor: 'history',
-    },
-  ], []);
-
-  const verifiedNameHistoryColumns = useMemo(() => [
-    {
-      Header: 'Verified Name',
-      accessor: 'verifiedName',
-    },
-    {
-      Header: 'Profile Name',
-      accessor: 'profileName',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-    {
-      Header: 'IDV Attempt ID',
-      accessor: 'idvAttemptId',
-    },
-    {
-      Header: 'Proctoring Attempt ID',
-      accessor: 'proctoringAttemptId',
-    },
-    {
-      Header: 'Created At',
-      accessor: 'createdAt',
-    },
-  ], []);
 
   const verifiedNameParsedData = useMemo(() => [{
     verifiedName: (
