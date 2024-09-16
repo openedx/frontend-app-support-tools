@@ -47,7 +47,7 @@ describe('CustomersPage', () => {
       expect(screen.getByText('SSO Check')).toBeInTheDocument();
       expect(screen.getByText('API Check')).toBeInTheDocument();
     });
-
+    expect(screen.getByText('View subsidies')).toBeInTheDocument();
     expect(screen.getByText('Customers')).toBeInTheDocument();
     expect(screen.getByText('Customer details')).toBeInTheDocument();
     expect(screen.getByText('SSO')).toBeInTheDocument();

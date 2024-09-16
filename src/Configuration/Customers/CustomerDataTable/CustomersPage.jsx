@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
 } from 'react';
+import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 import {
   Container, DataTable, TextFilter,
@@ -19,6 +20,12 @@ import {
 } from './CustomerDetails';
 import LmsApiService from '../../../data/services/EnterpriseApiService';
 import CustomerDetailRowSubComponent from './CustomerDetailSubComponent';
+
+const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps }) => (
+  <button type="button" className="btn btn-link btn-inline font-weight-bold" {...getToggleAllRowsExpandedProps()}>
+    View subsidies
+  </button>
+);
 
 const CustomersPage = () => {
   const [enterpriseList, setEnterpriseList] = useState([]);
@@ -67,7 +74,7 @@ const CustomersPage = () => {
           columns={[
             {
               id: 'expander',
-              Header: DataTable.ExpandAll,
+              Header: expandAllRowsHandler,
               Cell: DataTable.ExpandRow,
             },
             {
@@ -102,6 +109,10 @@ const CustomersPage = () => {
       </section>
     </Container>
   );
+};
+
+expandAllRowsHandler.propTypes = {
+  getToggleAllRowsExpandedProps: PropTypes.func.isRequired,
 };
 
 export default CustomersPage;
