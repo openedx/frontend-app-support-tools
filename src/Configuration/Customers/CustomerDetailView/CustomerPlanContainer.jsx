@@ -8,8 +8,6 @@ const CustomerPlanContainer = ({
   slug,
   activePolicies,
   activeSubscriptions,
-  countOfActivePlans,
-  countOfAllPlans,
   inactivePolicies,
   inactiveSubscriptions,
   isLoading,
@@ -32,6 +30,10 @@ const CustomerPlanContainer = ({
   const renderInActiveSubscriptions = inactiveSubscriptions.map(subscription => (
     <SubscriptionPlanCard key={subscription.uuid} isActive={false} slug={slug} subscription={subscription} />
   ));
+
+  const countOfActivePlans = activeSubscriptions.length + activePolicies.length;
+  const countOfInactivePlans = inactiveSubscriptions.length + inactivePolicies.length;
+  const countOfAllPlans = countOfActivePlans + countOfInactivePlans;
 
   return (
     <div>
