@@ -13,6 +13,9 @@ const CustomerPlanContainer = ({
   isLoading,
 }) => {
   const [showInactive, setShowInactive] = useState(false);
+  const countOfActivePlans = activeSubscriptions.length + activePolicies.length;
+  const countOfInactivePlans = inactiveSubscriptions.length + inactivePolicies.length;
+  const countOfAllPlans = countOfActivePlans + countOfInactivePlans;
   useEffect(() => {
     if (!countOfActivePlans && countOfAllPlans) {
       setShowInactive(true);
@@ -30,10 +33,6 @@ const CustomerPlanContainer = ({
   const renderInActiveSubscriptions = inactiveSubscriptions.map(subscription => (
     <SubscriptionPlanCard key={subscription.uuid} isActive={false} slug={slug} subscription={subscription} />
   ));
-
-  const countOfActivePlans = activeSubscriptions.length + activePolicies.length;
-  const countOfInactivePlans = inactiveSubscriptions.length + inactivePolicies.length;
-  const countOfAllPlans = countOfActivePlans + countOfInactivePlans;
 
   return (
     <div>
@@ -84,8 +83,6 @@ CustomerPlanContainer.propTypes = {
     expirationDate: PropTypes.string.isRequired,
     created: PropTypes.string.isRequired,
   })).isRequired,
-  countOfActivePlans: PropTypes.number.isRequired,
-  countOfAllPlans: PropTypes.number.isRequired,
   inactivePolicies: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string.isRequired,
     subsidyActiveDatetime: PropTypes.string.isRequired,
