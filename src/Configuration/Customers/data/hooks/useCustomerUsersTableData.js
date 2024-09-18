@@ -1,5 +1,5 @@
 import {
-  useCallback, useMemo, useState, useEffect,
+  useCallback, useMemo, useState,
 } from 'react';
 import { camelCaseObject } from '@edx/frontend-platform/utils';
 import { logError } from '@edx/frontend-platform/logging';
@@ -9,7 +9,6 @@ import LmsApiService from '../../../../data/services/EnterpriseApiService';
 
 const useCustomerUsersTableData = (enterpriseUuid) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [showTable, setShowTable] = useState(false);
   const [enterpriseUsersTableData, setEnterpriseUsersTableData] = useState({
     itemCount: 0,
     pageCount: 0,
@@ -67,23 +66,10 @@ const useCustomerUsersTableData = (enterpriseUuid) => {
     [fetchEnterpriseUsersData],
   );
 
-  useEffect(() => {
-    const args = {
-      pageIndex: 0,
-      filters: [],
-      sortBy: [],
-    };
-    fetchEnterpriseUsersData(args);
-    if (enterpriseUsersTableData.itemCount) {
-      setShowTable(true);
-    }
-  }, [fetchEnterpriseUsersData, enterpriseUsersTableData.itemCount]);
-
   return {
     isLoading,
     enterpriseUsersTableData,
     fetchEnterpriseUsersData: debouncedFetchEnterpriseUsersData,
-    showTable,
   };
 };
 

@@ -11,8 +11,6 @@ const useAllAssociatedPlans = (enterpriseId) => {
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
   const [activePolicies, setActivePolicies] = useState([]);
   const [inactivePolicies, setInactivePolicies] = useState([]);
-  const [countOfActivePlans, setCountOfActivePlans] = useState(0);
-  const [countOfAllPlans, setCountOfAllPlans] = useState(0);
 
   const fetchData = useCallback(
     async () => {
@@ -39,19 +37,11 @@ const useAllAssociatedPlans = (enterpriseId) => {
 
   useEffect(() => {
     fetchData();
-    if (!isLoading) {
-      const activePlanCount = activeSubscriptions.length + activePolicies.length;
-      const inactivePlanCount = inactiveSubscriptions.length + inactivePolicies.length;
-      setCountOfActivePlans(prev => prev + activePlanCount);
-      setCountOfAllPlans(prev => prev + activePlanCount + inactivePlanCount);
-    }
-  }, [fetchData, isLoading]);
+  }, [fetchData]);
 
   return {
     activePolicies,
     activeSubscriptions,
-    countOfActivePlans,
-    countOfAllPlans,
     inactivePolicies,
     inactiveSubscriptions,
     isLoading,

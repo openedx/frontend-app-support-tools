@@ -27,6 +27,7 @@ const CustomerIntegrations = ({
         <hr />
         {activeSSO && activeSSO.map((sso) => (
           <CustomerViewCard
+            key={sso.displayName}
             slug={slug}
             header="SSO"
             title={sso.displayName}
@@ -37,6 +38,7 @@ const CustomerIntegrations = ({
         ))}
         {activeIntegrations && activeIntegrations.map((config) => (
           <CustomerViewCard
+            key={config.channelCode[0].toUpperCase()}
             slug={slug}
             header="Learning platform"
             title={config.channelCode[0].toUpperCase() + config.channelCode.substr(1).toLowerCase()}
@@ -47,6 +49,7 @@ const CustomerIntegrations = ({
         ))}
         {apiCredentialsEnabled && (
         <CustomerViewCard
+          key="api"
           slug={slug}
           header="Integration"
           title="API"
