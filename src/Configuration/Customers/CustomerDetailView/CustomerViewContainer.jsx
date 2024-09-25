@@ -41,14 +41,16 @@ const CustomerViewContainer = () => {
   }, [fetchData]);
 
   const renderPlanContainer = () => {
-    if (!isLoading && !associatedPlans.isLoading && associatedPlans.countOfAllPlans) {
+    if (!isLoading && !associatedPlans.isLoading
+      && (associatedPlans.activeSubsidies.length > 0 || associatedPlans.activeSubscriptions.length > 0)) {
       return (
         <Stack gap={2}>
           <CustomerPlanContainer slug={enterpriseCustomer.slug} {...associatedPlans} />
         </Stack>
       );
     }
-    if (!associatedPlans.isLoading && !associatedPlans.countOfAllPlans) {
+    if (!associatedPlans.isLoading
+      && (!associatedPlans.activeSubsidies.length || !associatedPlans.activeSubscriptions.length)) {
       return false;
     }
     if (associatedPlans.isLoading) {

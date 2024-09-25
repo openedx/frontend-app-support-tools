@@ -14,7 +14,7 @@ const CustomerPlanContainer = ({
 }) => {
   const [showInactive, setShowInactive] = useState(false);
   const countOfActivePlans = activeSubscriptions.length + activeSubsidies.length;
-  const countOfInactivePlans = inactiveSubscriptions.length + activeSubsidies.length;
+  const countOfInactivePlans = inactiveSubscriptions.length + inactiveSubsidies.length;
   const countOfAllPlans = countOfActivePlans + countOfInactivePlans;
   useEffect(() => {
     if (!countOfActivePlans && countOfAllPlans) {

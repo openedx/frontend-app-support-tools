@@ -53,8 +53,6 @@ describe('CustomerPlanContainer', () => {
         expirationDate: '2024-09-02T20:02:57.651943Z',
         uuid: 'test-uuid',
       }],
-      countOfActivePlans: 2,
-      countOfAllPlans: 3,
       inactiveSubscriptions: [],
       inactiveSubsidies: [{
         activeDatetime: '2024-08-23T20:02:57.651943Z',
