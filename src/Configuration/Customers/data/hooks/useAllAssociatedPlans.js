@@ -9,8 +9,8 @@ const useAllAssociatedPlans = (enterpriseId) => {
   const [isLoading, setIsLoading] = useState(true);
   const [inactiveSubscriptions, setInactiveSubscriptions] = useState([]);
   const [activeSubscriptions, setActiveSubscriptions] = useState([]);
-  const [activePolicies, setActivePolicies] = useState([]);
-  const [inactivePolicies, setInactivePolicies] = useState([]);
+  const [activeSubsidies, setActiveSubsidies] = useState([]);
+  const [inactiveSubsidies, setInactiveSubsidies] = useState([]);
 
   const fetchData = useCallback(
     async () => {
@@ -42,7 +42,7 @@ const useAllAssociatedPlans = (enterpriseId) => {
   return {
     activeSubsidies,
     activeSubscriptions,
-    inactivePolicies,
+    inactiveSubsidies,
     inactiveSubscriptions,
     isLoading,
   };

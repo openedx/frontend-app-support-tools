@@ -40,6 +40,7 @@
     "@fortawesome/free-solid-svg-icons": "5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@openedx/paragon": "21.13.1",
+    "axios": "^1.7.7",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
     "dayjs": "1.11.9",

@@ -1,4 +1,5 @@
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import { logError } from '@edx/frontend-platform/logging';
 import {
   getEnterpriseOffers,
   getCouponOrders,
@@ -10,6 +11,11 @@ import {
 
 jest.mock('@edx/frontend-platform/auth', () => ({
   getAuthenticatedHttpClient: jest.fn(),
+}));
+
+jest.mock('@edx/frontend-platform/logging', () => ({
+  ...jest.requireActual('@edx/frontend-platform/logging'),
+  logError: jest.fn(),
 }));
 
 const TEST_ENTERPRISE_UUID = 'test-uuid';
@@ -57,6 +63,15 @@ describe('getSubsidies', () => {
     }));
     const results = await getSubsidies(TEST_ENTERPRISE_UUID);
     expect(results).toEqual(subsidiesResults.data.results);
+  });
+
+  it('returns error', async () => {
+    getAuthenticatedHttpClient.mockImplementation(() => ({
+      get: jest.fn(() => Promise.reject(new Error('Error fetching data'))),
+    }));
+    const results = await getSubsidies(TEST_ENTERPRISE_UUID);
+    expect(results).toEqual([]);
+    expect(logError).toHaveBeenCalled();
   });
 });
 
