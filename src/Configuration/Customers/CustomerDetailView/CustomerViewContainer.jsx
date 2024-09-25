@@ -38,7 +38,7 @@ const CustomerViewContainer = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const renderPlanContainer = () => {
     if (!isLoading && !associatedPlans.isLoading && associatedPlans.countOfAllPlans) {

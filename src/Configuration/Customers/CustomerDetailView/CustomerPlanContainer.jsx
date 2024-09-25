@@ -8,13 +8,14 @@ const CustomerPlanContainer = ({
   slug,
   activeSubsidies,
   activeSubscriptions,
-  countOfActivePlans,
-  countOfAllPlans,
-  inactiveSubsidies,
+  inactivePolicies,
   inactiveSubscriptions,
   isLoading,
 }) => {
   const [showInactive, setShowInactive] = useState(false);
+  const countOfActivePlans = activeSubscriptions.length + activePolicies.length;
+  const countOfInactivePlans = inactiveSubscriptions.length + inactivePolicies.length;
+  const countOfAllPlans = countOfActivePlans + countOfInactivePlans;
   useEffect(() => {
     if (!countOfActivePlans && countOfAllPlans) {
       setShowInactive(true);
@@ -81,9 +82,7 @@ CustomerPlanContainer.propTypes = {
     expirationDate: PropTypes.string.isRequired,
     created: PropTypes.string.isRequired,
   })).isRequired,
-  countOfActivePlans: PropTypes.number.isRequired,
-  countOfAllPlans: PropTypes.number.isRequired,
-  inactiveSubsidies: PropTypes.arrayOf(PropTypes.shape({
+  inactivePolicies: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string.isRequired,
     activeDatetime: PropTypes.string.isRequired,
     expirationDatetime: PropTypes.string.isRequired,

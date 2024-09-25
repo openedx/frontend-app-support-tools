@@ -40,9 +40,15 @@ const CustomerViewCard = (
 CustomerViewCard.propTypes = {
   header: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  subtext: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired,
-  buttonLink: PropTypes.string.isRequired,
+  subtext: PropTypes.string,
+  buttonText: PropTypes.string,
+  buttonLink: PropTypes.string,
+};
+
+CustomerViewCard.defaultProps = {
+  subtext: null,
+  buttonText: null,
+  buttonLink: null,
 };
 
 export default CustomerViewCard;
