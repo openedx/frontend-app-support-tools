@@ -6,26 +6,26 @@ import SubscriptionPlanCard from './SubscriptionPlanCard';
 
 const CustomerPlanContainer = ({
   slug,
-  activePolicies,
+  activeSubsidies,
   activeSubscriptions,
-  inactivePolicies,
+  inactiveSubsidies,
   inactiveSubscriptions,
   isLoading,
 }) => {
   const [showInactive, setShowInactive] = useState(false);
-  const countOfActivePlans = activeSubscriptions.length + activePolicies.length;
-  const countOfInactivePlans = inactiveSubscriptions.length + inactivePolicies.length;
+  const countOfActivePlans = activeSubscriptions.length + activeSubsidies.length;
+  const countOfInactivePlans = inactiveSubscriptions.length + activeSubsidies.length;
   const countOfAllPlans = countOfActivePlans + countOfInactivePlans;
   useEffect(() => {
     if (!countOfActivePlans && countOfAllPlans) {
       setShowInactive(true);
     }
   }, []);
-  const renderActivePoliciesCard = activePolicies.map(policy => (
-    <LearnerCreditPlanCard key={policy.uuid} isActive slug={slug} policy={policy} />
+  const renderActiveSubsidiesCard = activeSubsidies.map(subsidy => (
+    <LearnerCreditPlanCard key={subsidy.uuid} isActive slug={slug} subsidy={subsidy} />
   ));
-  const renderInactivePoliciesCard = inactivePolicies.map(policy => (
-    <LearnerCreditPlanCard key={policy.uuid} isActive={false} slug={slug} policy={policy} />
+  const renderInactiveSubsidiesCard = inactiveSubsidies.map(subsidy => (
+    <LearnerCreditPlanCard key={subsidy.uuid} isActive={false} slug={slug} subsidy={subsidy} />
   ));
   const renderActiveSubscriptions = activeSubscriptions.map(subscription => (
     <SubscriptionPlanCard key={subscription.uuid} isActive slug={slug} subscription={subscription} />
@@ -54,11 +54,11 @@ const CustomerPlanContainer = ({
             ) : null}
           </div>
           <hr />
-          {renderActivePoliciesCard}
+          {renderActiveSubsidiesCard}
           {renderActiveSubscriptions}
           {showInactive ? (
             <div>
-              {renderInactivePoliciesCard}
+              {renderInactiveSubsidiesCard}
               {renderInActiveSubscriptions}
             </div>
           ) : null}
@@ -70,11 +70,10 @@ const CustomerPlanContainer = ({
 
 CustomerPlanContainer.propTypes = {
   slug: PropTypes.string.isRequired,
-  activePolicies: PropTypes.arrayOf(PropTypes.shape({
+  activeSubsidies: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string.isRequired,
-    subsidyActiveDatetime: PropTypes.string.isRequired,
-    subsidyExpirationDatetime: PropTypes.string.isRequired,
-    policyType: PropTypes.string.isRequired,
+    activeDatetime: PropTypes.string.isRequired,
+    expirationDatetime: PropTypes.string.isRequired,
     created: PropTypes.string.isRequired,
   })).isRequired,
   activeSubscriptions: PropTypes.arrayOf(PropTypes.shape({
@@ -83,11 +82,10 @@ CustomerPlanContainer.propTypes = {
     expirationDate: PropTypes.string.isRequired,
     created: PropTypes.string.isRequired,
   })).isRequired,
-  inactivePolicies: PropTypes.arrayOf(PropTypes.shape({
+  inactiveSubsidies: PropTypes.arrayOf(PropTypes.shape({
     uuid: PropTypes.string.isRequired,
-    subsidyActiveDatetime: PropTypes.string.isRequired,
-    subsidyExpirationDatetime: PropTypes.string.isRequired,
-    policyType: PropTypes.string.isRequired,
+    activeDatetime: PropTypes.string.isRequired,
+    expirationDatetime: PropTypes.string.isRequired,
     created: PropTypes.string.isRequired,
   })).isRequired,
   inactiveSubscriptions: PropTypes.arrayOf(PropTypes.shape({

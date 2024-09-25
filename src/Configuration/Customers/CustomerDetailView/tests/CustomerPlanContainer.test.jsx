@@ -35,18 +35,17 @@ describe('CustomerPlanContainer', () => {
 
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      ENTERPRISE_ACCESS_BASE_URL: 'http:www.enterprise-access.com',
-      LICENSE_MANAGER_URL: 'http:www.license-manager.com',
+      SUBSIDY_BASE_DJANGO_URL: 'http:www.enterprise-subsidy.com',
+      LICENSE_MANAGER_DJANGO_URL: 'http:www.license-manager.com',
     }));
     const mockProps = {
       isLoading: false,
-      activePolicies: [{
-        subsidyActiveDatetime: '2024-08-23T20:02:57.651943Z',
+      activeSubsidies: [{
+        activeDatetime: '2024-08-23T20:02:57.651943Z',
         created: '2024-08-22T20:02:57.651943Z',
-        subsidyExpirationDatetime: '2024-08-24T20:02:57.651943Z',
+        expirationDatetime: '2024-08-24T20:02:57.651943Z',
         uuid: 'test-uuid',
-        policyType: 'learnerCredit',
-        isSubsidyActive: true,
+        isActive: true,
       }],
       activeSubscriptions: [{
         startDate: '2024-09-01T20:02:57.651943Z',
@@ -57,13 +56,12 @@ describe('CustomerPlanContainer', () => {
       countOfActivePlans: 2,
       countOfAllPlans: 3,
       inactiveSubscriptions: [],
-      inactivePolicies: [{
-        subsidyActiveDatetime: '2024-08-23T20:02:57.651943Z',
+      inactiveSubsidies: [{
+        activeDatetime: '2024-08-23T20:02:57.651943Z',
         created: '2024-08-23T20:02:57.651943Z',
-        subsidyExpirationDatetime: '2024-08-23T20:02:57.651943Z',
+        expirationDatetime: '2024-08-23T20:02:57.651943Z',
         uuid: 'test-uuid',
-        policyType: 'learnerCredit',
-        isSubsidyActive: false,
+        isActive: false,
       }],
     };
     render(
@@ -78,8 +76,8 @@ describe('CustomerPlanContainer', () => {
     expect(screen.getByText('LEARNER CREDIT PLAN')).toBeInTheDocument();
     expect(screen.getByText('Aug 23, 2024 - Aug 24, 2024')).toBeInTheDocument();
     expect(screen.getByText('Created Aug 22, 2024')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'View budgets' })).toHaveAttribute('href', 'http://www.testportal.com/test-slug/admin/learner-credit/test-uuid');
-    expect(djangoLinks[0]).toHaveAttribute('href', 'http:www.enterprise-access.com/admin/subsidy_access_policy/learnercredit/test-uuid');
+    expect(screen.getByRole('link', { name: 'View budgets' })).toHaveAttribute('href', 'http://www.testportal.com/test-slug/admin/learner-credit/');
+    expect(djangoLinks[0]).toHaveAttribute('href', 'http:www.enterprise-subsidy.com/admin/subsidy/subsidy/test-uuid/change/');
     // Subscription Plan
     expect(screen.getByText('SUBSCRIPTION PLAN')).toBeInTheDocument();
     expect(screen.getByText('Sep 1, 2024 - Sep 2, 2024')).toBeInTheDocument();

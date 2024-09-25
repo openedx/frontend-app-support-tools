@@ -31,7 +31,7 @@ describe('SubscriptionPlanCard', () => {
     formatDate.mockReturnValue('Aug 23, 2024');
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      LICENSE_MANAGER_URL: 'http:www.license-manager.com',
+      LICENSE_MANAGER_DJANGO_URL: 'http:www.license-manager.com',
     }));
     render(
       <IntlProvider locale="en">
@@ -53,7 +53,7 @@ describe('SubscriptionPlanCard', () => {
     };
     getConfig.mockImplementation(() => ({
       ADMIN_PORTAL_BASE_URL: 'http://www.testportal.com',
-      LICENSE_MANAGER_URL: 'http:www.license-manager.com',
+      LICENSE_MANAGER_DJANGO_URL: 'http:www.license-manager.com',
     }));
     render(
       <IntlProvider locale="en">

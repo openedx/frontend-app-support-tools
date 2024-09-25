@@ -4,7 +4,7 @@ import {
   getEnterpriseOffers,
   getCouponOrders,
   getCustomerSubscriptions,
-  getSubsidyAccessPolicies,
+  getSubsidies,
 } from '../utils';
 
 const useActiveAssociatedPlans = (enterpriseId) => {
@@ -15,12 +15,12 @@ const useActiveAssociatedPlans = (enterpriseId) => {
       try {
         const [
           customerSubscriptionsResponse,
-          policiesForCustomerResponse,
+          subsidiesForCustomerResponse,
           enterpriseOffersResponse,
           couponOrdersResponse,
         ] = await Promise.all([
           getCustomerSubscriptions(enterpriseId),
-          getSubsidyAccessPolicies(enterpriseId),
+          getSubsidies(enterpriseId),
           getEnterpriseOffers(enterpriseId),
           getCouponOrders(enterpriseId),
         ]);
@@ -35,11 +35,11 @@ const useActiveAssociatedPlans = (enterpriseId) => {
           return null;
         });
 
-        policiesForCustomerResponse.results.some(policy => {
-          if (policy.active) {
+        subsidiesForCustomerResponse.some(subsidy => {
+          if (subsidy.isActive) {
             setData(prevState => ({
               ...prevState,
-              hasActivePolicies: true,
+              hasActiveSubsidies: true,
             }));
           }
           return null;
