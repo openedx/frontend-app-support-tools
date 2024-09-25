@@ -45,12 +45,16 @@ const verifiedNameHistoryColumns = [
     accessor: 'status',
   },
   {
-    Header: 'IDV Attempt ID',
+    Header: 'Legacy Attempt ID',
     accessor: 'idvAttemptId',
   },
   {
     Header: 'Proctoring Attempt ID',
     accessor: 'proctoringAttemptId',
+  },
+  {
+    Header: 'IDV Attempt ID',
+    accessor: 'platformVerificationAttemptId',
   },
   {
     Header: 'Created At',
@@ -105,6 +109,26 @@ export default function VerifiedName({ username }) {
         </OverlayTrigger>
       ) : '',
       proctoringAttemptId: result.proctoredExamAttemptId,
+      platformVerificationAttemptId: result.platformVerificationAttemptId ? (
+        <OverlayTrigger
+          placement="right"
+          trigger="hover"
+          overlay={(
+            <Popover id={`${result.platformVerificationAttemptId}-details-tooltip`} aria-hidden="true">
+              <Popover.Title as="h3">
+                Status
+              </Popover.Title>
+              <Popover.Content data-testid="platformVerificationAttemptTooltipTitle">
+                {result.platformVerificationAttemptStatus ? result.platformVerificationAttemptStatus : 'Error: Missing data'}
+              </Popover.Content>
+            </Popover>
+          )}
+        >
+          <Button variant="link" size="inline">
+            {result.platformVerificationAttemptId}
+          </Button>
+        </OverlayTrigger>
+      ) : '',
       createdAt: formatDate(result.created),
     }),
   ), [verifiedNameHistoryData]);

@@ -46,7 +46,7 @@ describe('Verified Name', () => {
 
     // Profile name and denied verified name are visible in history modal
     const profileName = await screen.findAllByText(/jon doe/i);
-    expect(profileName.length).toEqual(2);
+    expect(profileName.length).toEqual(3);
     await screen.findByText(/j doe/i);
   });
 
@@ -75,5 +75,32 @@ describe('Verified Name', () => {
     await screen.getByTestId('verificationAttemptTooltipTitle');
 
     expect(screen.getByText('must_retry')).toBeTruthy();
+  });
+
+  it('displays hover popup to show Platform Verification Attempt details', async () => {
+    const verifiedNameData = {
+      verifiedName: 'Jonathan Doe',
+      status: 'approved',
+      verificationType: 'Proctoring',
+      history: verifiedNameHistory.results,
+    };
+    jest.spyOn(api, 'getVerifiedNameHistory').mockResolvedValueOnce(verifiedNameData);
+    await act(async () => {
+      render(<VerifiedNameWrapper {...props} />);
+    });
+
+    const historyButton = await screen.findByText('Show');
+    await act(async () => {
+      fireEvent.click(historyButton);
+    });
+
+    const hoverLink = await screen.getByText(verifiedNameHistory.results[2].platform_verification_attempt_id);
+    await act(async () => {
+      fireEvent.mouseOver(hoverLink);
+    });
+
+    await screen.getByTestId('platformVerificationAttemptTooltipTitle');
+
+    expect(screen.getByText('pending')).toBeTruthy();
   });
 });
