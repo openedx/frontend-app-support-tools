@@ -25,8 +25,8 @@ const CustomerViewContainer = () => {
   const fetchData = useCallback(
     async () => {
       try {
-        const response = await getEnterpriseCustomer({ uuid: id });
-        setEnterpriseCustomer(response[0]);
+        const { results } = await getEnterpriseCustomer({ uuid: id });
+        setEnterpriseCustomer(results[0]);
       } catch (error) {
         logError(error);
       } finally {

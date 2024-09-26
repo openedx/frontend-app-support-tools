@@ -2,7 +2,6 @@ import React, {
   useMemo,
   useState,
   useCallback,
-  useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
@@ -28,32 +27,41 @@ const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps }) => (
 );
 
 const CustomersPage = () => {
-  const [enterpriseList, setEnterpriseList] = useState([]);
+  const [enterpriseList, setEnterpriseList] = useState({
+    itemCount: 0,
+    pageCount: 0,
+    results: [],
+  });
   const [isLoading, setIsLoading] = useState(true);
-
-  const fetchData = useCallback(
-    async () => {
-      try {
-        const { data } = await LmsApiService.fetchEnterpriseCustomerSupportTool();
-        const result = camelCaseObject(data);
-        setEnterpriseList(result);
-      } catch (error) {
-        logError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [],
-  );
+  const fetchData = useCallback(async (args) => {
+    try {
+      setIsLoading(true);
+      const options = {};
+      args.filters.forEach((filter) => {
+        const { id, value } = filter;
+        if (id === 'name') {
+          options.user_query = value;
+        }
+      });
+      options.page = args.pageIndex + 1;
+      const { data } = await LmsApiService.fetchEnterpriseCustomerSupportTool(options);
+      const result = camelCaseObject(data);
+      setEnterpriseList({
+        itemCount: result.count,
+        pageCount: result.numPages,
+        results: result.results,
+      });
+    } catch (error) {
+      logError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const debouncedFetchData = useMemo(() => debounce(
     fetchData,
     300,
   ), [fetchData]);
-
-  useEffect(() => {
-    debouncedFetchData();
-  }, [debouncedFetchData]);
 
   return (
     <Container className="mt-5">
@@ -67,10 +75,14 @@ const CustomersPage = () => {
           }}
           renderRowSubComponent={({ row }) => <CustomerDetailRowSubComponent row={row} />}
           isPaginated
+          manualPagination
+          manualFilters
           isFilterable
+          fetchData={debouncedFetchData}
           defaultColumnValues={{ Filter: TextFilter }}
-          itemCount={enterpriseList?.length || 0}
-          data={enterpriseList || []}
+          itemCount={enterpriseList.itemCount}
+          pageCount={enterpriseList.pageCount}
+          data={enterpriseList.results || []}
           columns={[
             {
               id: 'expander',
@@ -78,7 +90,7 @@ const CustomersPage = () => {
               Cell: DataTable.ExpandRow,
             },
             {
-              id: 'customer details',
+              id: 'name',
               Header: 'Customer details',
               accessor: 'name',
               Cell: CustomerDetailLink,
