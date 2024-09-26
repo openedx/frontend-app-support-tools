@@ -6,25 +6,29 @@ import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CustomersPage from '../CustomersPage';
 import LmsApiService from '../../../../data/services/EnterpriseApiService';
 
-const mockData = [{
-  name: 'Ubuntu',
-  slug: 'test-ubuntu',
-  uuid: 'test-enterprise-uuid',
-  activeIntegrations: [{
-    channelCode: 'test-channel',
-    created: 'jan 1, 1992',
-    modified: 'jan 2, 1992',
-    displayName: 'test channel',
-    active: true,
+const mockData = {
+  count: 1,
+  numPages: 1,
+  results: [{
+    name: 'Ubuntu',
+    slug: 'test-ubuntu',
+    uuid: 'test-enterprise-uuid',
+    activeIntegrations: [{
+      channelCode: 'test-channel',
+      created: 'jan 1, 1992',
+      modified: 'jan 2, 1992',
+      displayName: 'test channel',
+      active: true,
+    }],
+    activeSsoConfigurations: [{
+      created: 'jan 1, 1992',
+      modified: 'jan 2, 1992',
+      displayName: 'test channel',
+      active: true,
+    }],
+    enableGenerationOfApiCredentials: true,
   }],
-  activeSsoConfigurations: [{
-    created: 'jan 1, 1992',
-    modified: 'jan 2, 1992',
-    displayName: 'test channel',
-    active: true,
-  }],
-  enableGenerationOfApiCredentials: true,
-}];
+};
 
 jest.mock('lodash.debounce', () => jest.fn((fn) => fn));
 jest

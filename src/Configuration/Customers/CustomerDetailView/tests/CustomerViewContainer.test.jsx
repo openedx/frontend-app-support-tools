@@ -23,13 +23,15 @@ jest.mock('../../data/utils', () => ({
 
 describe('CustomerViewContainer', () => {
   it('renders data', async () => {
-    getEnterpriseCustomer.mockReturnValue([{
-      uuid: 'test-id',
-      name: 'Test Customer Name',
-      slug: 'customer-6',
-      created: '2024-07-23T20:02:57.651943Z',
-      modified: '2024-07-23T20:02:57.651943Z',
-    }]);
+    getEnterpriseCustomer.mockReturnValue({
+      results: [{
+        uuid: 'test-id',
+        name: 'Test Customer Name',
+        slug: 'customer-6',
+        created: '2024-07-23T20:02:57.651943Z',
+        modified: '2024-07-23T20:02:57.651943Z',
+      }],
+    });
     formatDate.mockReturnValue('July 23, 2024');
     render(
       <IntlProvider locale="en">
