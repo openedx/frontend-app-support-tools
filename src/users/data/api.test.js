@@ -17,7 +17,6 @@ describe('API', () => {
   const testEmail = 'email@example.com';
   const testLMSUserID = '22';
   const testCourseId = 'course-v1:testX+test123+2030';
-  const testAttemptId = 12334;
   const userAccountApiBaseUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts`;
   const ssoRecordsApiUrl = `${getConfig().LMS_BASE_URL}/support/sso_records/${testUsername}`;
   const enrollmentsApiUrl = `${getConfig().LMS_BASE_URL}/support/enrollment/${testUsername}`;
@@ -26,7 +25,6 @@ describe('API', () => {
   const verificationDetailsApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verifications/`;
   const verificationStatusApiUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/${testUsername}/verification_status/`;
   const verifiedNameHistoryUrl = `${getConfig().LMS_BASE_URL}/api/edx_name_affirmation/v1/verified_name/history?username=${testUsername}`;
-  const verificationAttemptDetailsByIdUrl = `${getConfig().LMS_BASE_URL}/api/user/v1/accounts/verifications/${testAttemptId}/`;
   const licensesApiUrl = `${getConfig().LICENSE_MANAGER_URL}/api/v1/staff_lookup_licenses/`;
   const certificatesUrl = urls.getCertificateUrl(testUsername, testCourseId);
   const credentialUrl = `${getConfig().CREDENTIALS_BASE_URL}/api/v2/credentials`;
@@ -328,27 +326,6 @@ describe('API', () => {
 
       const response = await api.getVerifiedNameHistory(testUsername);
       expect(response).toEqual(expectedData);
-    });
-  });
-
-  describe('Verification Attempt Details By Id', () => {
-    const mockResponse = {
-      message: '[{"generalReasons": ["Name mismatch"]}]',
-      status: 'denied',
-      verificationType: 'softwareSecure',
-    };
-
-    it('returns empty if request experience server error', async () => {
-      mockAdapter.onGet(verificationAttemptDetailsByIdUrl).reply(() => throwError(500, '{}'));
-      const response = await api.getVerificationAttemptDetailsById(testAttemptId);
-      expect(response).toEqual({});
-    });
-
-    it('successfully fetches data', async () => {
-      mockAdapter.onGet(verificationAttemptDetailsByIdUrl).reply(200, mockResponse);
-
-      const response = await api.getVerificationAttemptDetailsById(testAttemptId);
-      expect(response).toEqual(mockResponse);
     });
   });
 

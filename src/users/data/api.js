@@ -261,22 +261,6 @@ export async function getVerifiedNameHistory(username) {
   }
 }
 
-export async function getVerificationAttemptDetailsById(attemptId) {
-  try {
-    const { data } = await getAuthenticatedHttpClient().get(
-      AppUrls.getVerificationAttemptDetailsByIdUrl(attemptId),
-    );
-    return data;
-  } catch (error) {
-    // We don't have good error handling in the app for any errors that may have come back
-    // from the API, so we log them to the console and tell the user to go look.  We would
-    // never do this in a customer-facing app.
-    // eslint-disable-next-line no-console
-    console.log(JSON.parse(error.customAttributes.httpErrorResponseData));
-    return {};
-  }
-}
-
 export async function getUserPasswordStatus(userIdentifier) {
   const { data } = await getAuthenticatedHttpClient().get(
     AppUrls.getUserPasswordStatusUrl(userIdentifier),
