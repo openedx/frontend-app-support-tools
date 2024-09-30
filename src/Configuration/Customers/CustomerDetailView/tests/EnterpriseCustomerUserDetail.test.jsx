@@ -23,6 +23,7 @@ describe('EnterpriseCustomerUserDetail', () => {
     render(<EnterpriseCustomerUserDetail row={enterpriseCustomerUser} />);
     expect(screen.getByText('ash ketchum')).toBeInTheDocument();
     expect(screen.getByText('ash@ketchum.org')).toBeInTheDocument();
+    expect(screen.getByTestId('icon-hyperlink')).toHaveAttribute('href', '/learner-information/?email=ash@ketchum.org');
   });
 
   it('renders pending enterprise customer detail', () => {
@@ -35,6 +36,7 @@ describe('EnterpriseCustomerUserDetail', () => {
     };
     render(<EnterpriseCustomerUserDetail row={pendingEnterpriseCustomerUser} />);
     expect(screen.getByText('pending@customer.org')).toBeInTheDocument();
+    expect(screen.queryByTestId('icon-hyperlink')).not.toBeInTheDocument();
   });
 
   it('renders AdministratorCell there is a pending admin', () => {

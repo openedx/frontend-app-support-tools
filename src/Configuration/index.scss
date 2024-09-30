@@ -25,3 +25,9 @@
   color: black !important;
   font-weight: bold;
 }
+
+.icon-button {
+  opacity: 1;
+  flex-shrink: 0;
+  pointer-events: none;
+}

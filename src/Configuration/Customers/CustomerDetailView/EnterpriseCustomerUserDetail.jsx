@@ -1,33 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Icon, IconButton, Stack, Chip,
+  Hyperlink, Icon, IconButton, Stack, Chip,
 } from '@openedx/paragon';
 import { Person, Check, Timelapse } from '@openedx/paragon/icons';
+import ROUTES from '../../../data/constants/routes';
 
 export const EnterpriseCustomerUserDetail = ({
   row,
 }) => {
+  const user = row.original.enterpriseCustomerUser;
   let memberDetails;
-  const memberDetailIcon = (
-    <IconButton
-      isActive
-      invertColors
-      src={Person}
-      iconAs={Icon}
-      className="border rounded-circle mr-3"
-      alt="members detail column icon"
-      style={{ opacity: 1, flexShrink: 0 }}
-    />
-  );
+  const iconLink = `${ROUTES.SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION}/?email=${user?.email}`;
+  const memberDetailIcon = () => {
+    if (user) {
+      return (
+        <Hyperlink destination={iconLink} key={user?.email} data-testId="icon-hyperlink">
+          <IconButton
+            isActive
+            invertColors
+            src={Person}
+            iconAs={Icon}
+            className="border rounded-circle mr-3"
+            alt="members detail column icon"
+            style={{ opacity: 1, flexShrink: 0 }}
+          />
+        </Hyperlink>
+      );
+    }
+    return (
+      <IconButton
+        isActive
+        invertColors
+        src={Person}
+        iconAs={Icon}
+        className="icon-button border rounded-circle mr-3"
+        alt="members detail column icon"
+      />
+    );
+  };
 
-  if (row.original.enterpriseCustomerUser?.username) {
+  if (user?.username) {
     memberDetails = (
       <div className="mb-n3">
         <p className="font-weight-bold mb-0">
-          {row.original.enterpriseCustomerUser?.username}
+          {user?.username}
         </p>
-        <p>{row.original.enterpriseCustomerUser?.email}</p>
+        <p>{user?.email}</p>
       </div>
     );
   } else {
@@ -39,7 +58,7 @@ export const EnterpriseCustomerUserDetail = ({
   }
   return (
     <Stack gap={0} direction="horizontal">
-      {memberDetailIcon}
+      {memberDetailIcon()}
       {memberDetails}
     </Stack>
   );
