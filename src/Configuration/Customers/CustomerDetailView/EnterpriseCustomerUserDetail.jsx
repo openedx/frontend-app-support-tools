@@ -15,7 +15,13 @@ export const EnterpriseCustomerUserDetail = ({
   const memberDetailIcon = () => {
     if (user) {
       return (
-        <Hyperlink destination={iconLink} key={user?.email} data-testId="icon-hyperlink">
+        <Hyperlink
+          destination={iconLink}
+          key={user?.email}
+          data-testId="icon-hyperlink"
+          target="_blank"
+          showLaunchIcon={false}
+        >
           <IconButton
             isActive
             invertColors
