@@ -6,10 +6,12 @@ import React, {
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 import {
-  Container, DataTable, TextFilter,
+  Container, DataTable, Icon, OverlayTrigger, TextFilter, Tooltip,
 } from '@openedx/paragon';
+import { FormattedMessage } from '@edx/frontend-platform/i18n';
 import { camelCaseObject } from '@edx/frontend-platform';
 import { logError } from '@edx/frontend-platform/logging';
+import { InfoOutline } from '@openedx/paragon/icons';
 
 import {
   CustomerDetailLink,
@@ -23,6 +25,23 @@ import CustomerDetailRowSubComponent from './CustomerDetailSubComponent';
 const expandAllRowsHandler = ({ getToggleAllRowsExpandedProps }) => (
   <button type="button" className="btn btn-link btn-inline font-weight-bold" {...getToggleAllRowsExpandedProps()}>
     View subsidies
+    <OverlayTrigger
+      key="other-subsidies-tooltip"
+      placement="top"
+      overlay={(
+        <Tooltip id="other-subsidies-tooltip">
+          <div>
+            <FormattedMessage
+              id="configuration.customersPage.viewSubsidiesColumn.tooltip"
+              defaultMessage="A checkmark indicates an active subsidy."
+              description="Tooltip for the View subsidies column header in the Customers table"
+            />
+          </div>
+        </Tooltip>
+      )}
+    >
+      <Icon size="xs" src={InfoOutline} className="ml-1 d-inline-flex" />
+    </OverlayTrigger>
   </button>
 );
 
