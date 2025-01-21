@@ -56,8 +56,13 @@ const useCustomerUsersTableData = (enterpriseUuid) => {
         setIsLoading(false);
       }
     };
+
     if (enterpriseUuid) {
-      fetch();
+      if (args.filters.length && args.filters[0].value.length > 2) {
+        fetch();
+      } else if (!args.filters.length) {
+        fetch();
+      }
     }
   }, [enterpriseUuid]);
 
