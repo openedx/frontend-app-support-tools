@@ -18,7 +18,7 @@ export const EnterpriseCustomerUserDetail = ({
         <Hyperlink
           destination={iconLink}
           key={user?.email}
-          data-testId="icon-hyperlink"
+          data-testid="icon-hyperlink"
           target="_blank"
           showLaunchIcon={false}
         >

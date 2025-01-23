@@ -19,7 +19,6 @@ const useCustomerUsersTableData = (enterpriseUuid) => {
       try {
         setIsLoading(true);
         const options = {};
-
         args.sortBy.filter((sort) => {
           const { id, desc } = sort;
           if (id === 'administrator') {
