@@ -10,6 +10,7 @@ metadata:
     - url: 'https://github.com/openedx/frontend-app-support-tools'
       title: 'frontend-app-support-tools GitHub Repository'
       icon: 'Web'
+  openedx.org/release: "master"    
 spec:
   owner: group:2u-phoenix
   type: 'service'
