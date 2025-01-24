@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Hyperlink, Icon, IconButton, Stack, Chip,
+  Chip, Hyperlink, Icon, IconButton, Stack,
 } from '@openedx/paragon';
-import { Person, Check, Timelapse } from '@openedx/paragon/icons';
+import { Check, Person, Timelapse } from '@openedx/paragon/icons';
+
 import ROUTES from '../../../data/constants/routes';
 
-export const EnterpriseCustomerUserDetail = ({
-  row,
-}) => {
+export const EnterpriseCustomerUserDetail = ({ row }) => {
   const user = row.original.enterpriseCustomerUser;
   let memberDetails;
   const iconLink = `${ROUTES.SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION}/?email=${user?.email}`;
@@ -48,12 +47,19 @@ export const EnterpriseCustomerUserDetail = ({
 
   if (user?.username) {
     memberDetails = (
-      <div className="mb-n3">
-        <p className="font-weight-bold mb-0">
-          {user?.username}
-        </p>
-        <p>{user?.email}</p>
-      </div>
+      <Hyperlink
+        destination={iconLink}
+        key={user?.username}
+        data-testId="username-email-hyperlink"
+        target="_blank"
+        variant="muted"
+        showLaunchIcon={false}
+      >
+        <div className="mb-n3">
+          <p className="font-weight-bold mb-0">{user?.username}</p>
+          <p>{user?.email}</p>
+        </div>
+      </Hyperlink>
     );
   } else {
     memberDetails = (
@@ -72,17 +78,13 @@ export const EnterpriseCustomerUserDetail = ({
 
 export const AdministratorCell = ({ row }) => {
   if (row.original?.pendingEnterpriseCustomerUser?.isPendingAdmin) {
-    return (
-      <Chip
-        iconBefore={Timelapse}
-      >
-        Pending
-      </Chip>
-    );
+    return <Chip iconBefore={Timelapse}>Pending</Chip>;
   }
   return (
     <div>
-      {row.original?.roleAssignments?.includes('enterprise_admin') ? <Check data-testid="admin check" aria-label="admin check" /> : null}
+      {row.original?.roleAssignments?.includes('enterprise_admin') ? (
+        <Check data-testid="admin check" aria-label="admin check" />
+      ) : null}
     </div>
   );
 };
@@ -91,18 +93,14 @@ export const LearnerCell = ({ row }) => {
   if (!row.original?.pendingEnterpriseCustomerUser?.isPendingLearner) {
     return (
       <div>
-        {row.original?.roleAssignments?.includes('enterprise_learner') ? <Check data-testid="learner check" aria-label="learner check" /> : null}
+        {row.original?.roleAssignments?.includes('enterprise_learner') ? (
+          <Check data-testid="learner check" aria-label="learner check" />
+        ) : null}
       </div>
     );
   }
 
-  return (
-    <Chip
-      iconBefore={Timelapse}
-    >
-      Pending
-    </Chip>
-  );
+  return <Chip iconBefore={Timelapse}>Pending</Chip>;
 };
 
 EnterpriseCustomerUserDetail.propTypes = {
