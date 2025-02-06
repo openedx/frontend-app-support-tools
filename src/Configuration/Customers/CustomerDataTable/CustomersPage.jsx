@@ -85,7 +85,7 @@ const CustomersPage = () => {
   return (
     <Container className="mt-5">
       <h1>Customers</h1>
-      <section className="mt-5">
+      <section className="mt-5 mb-5">
         <DataTable
           isLoading={isLoading}
           isExpandable

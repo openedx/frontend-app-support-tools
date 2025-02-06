@@ -45,7 +45,7 @@ const DashboardDataTable = () => {
   ), [fetchData]);
 
   return (
-    <section className="mt-5">
+    <section className="mt-5 mb-5">
       <DataTable
         isLoading={isLoading}
         isPaginated
