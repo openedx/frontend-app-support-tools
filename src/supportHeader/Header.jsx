@@ -14,6 +14,8 @@ import MobileHeader from './MobileHeader';
 import ROUTES from '../data/constants/routes';
 
 ensureConfig([
+  'ACCOUNT_PROFILE_URL',
+  'ACCOUNT_SETTINGS_URL',
   'LMS_BASE_URL',
   'LOGOUT_URL',
   'LOGIN_URL',
@@ -143,12 +145,12 @@ export default function Header() {
     dashboardMenuItem,
     {
       type: 'item',
-      href: `${config.LMS_BASE_URL}/u/${authenticatedUser.username}`,
+      href: `${config.ACCOUNT_PROFILE_URL}/u/${authenticatedUser.username}`,
       content: 'Profile',
     },
     {
       type: 'item',
-      href: `${config.LMS_BASE_URL}/account/settings`,
+      href: config.ACCOUNT_SETTINGS_URL,
       content: 'Account',
     },
     logoutMenuItem,
