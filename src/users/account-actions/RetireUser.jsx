@@ -44,11 +44,14 @@ export default function RetireUser({
               defaultMessage="You are about to retire {username} with the email address: {email}.{br}{br}
               This is a serious action that will revoke this user's access to edX and
               their earned certificates. Furthermore, the email address associated
-              with the retired account will not be able to be used to create a new account."
+              with the retired account will not be able to be used to create a new account.{br}{br}
+              By taking this action, you are affirming that you are following our legal/support procedures
+              {proceduresUrl}"
               values={{
                 username: <strong>{username}</strong>,
                 email: <strong>{email}</strong>,
                 br: <br />,
+                proceduresUrl: <a href={process.env.RETIREMENT_PROCEDURES_URL}>here</a>,
               }}
             />
           </Alert>
