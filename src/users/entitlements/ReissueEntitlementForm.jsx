@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, ModalDialog,
+  Button, Form, ModalDialog,
 } from '@openedx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -75,8 +75,8 @@ export default function ReissueEntitlementForm({
         </div>
       </div>
       <hr />
-      <Input
-        type="textarea"
+      <Form.Control
+        as="textarea"
         id="comments"
         name="comments"
         placeholder="Explanation"
