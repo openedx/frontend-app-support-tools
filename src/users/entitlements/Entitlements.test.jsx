@@ -14,6 +14,13 @@ const EntitlementsPageWrapper = (props) => (
   </UserMessagesProvider>
 );
 
+jest.mock('@edx/frontend-platform', () => ({
+  ...jest.requireActual('@edx/frontend-platform'),
+  getConfig: jest.fn(() => ({
+    ECOMMERCE_BASE_URL: 'http://example.com',
+  })),
+}));
+
 describe('Entitlements Listing', () => {
   let apiMock;
   let wrapper;
@@ -106,6 +113,10 @@ describe('Entitlements Listing', () => {
     wrapper = mount(<EntitlementsPageWrapper searchStr="course-1" {...props} />);
     const componentHeader = wrapper.find('h3');
     waitFor(() => expect(componentHeader.text()).toEqual('Entitlements (1)'));
+  });
+
+  it('Renders correct href for Order Number', async () => {
+    expect(/http:\/\/example.com\/dashboard\/orders\/123edX456789/.test(wrapper.html())).toBeTruthy();
   });
 
   describe('Expire Entitlement button', () => {
