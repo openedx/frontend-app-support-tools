@@ -49,7 +49,7 @@ export default function ProgramInspector() {
       if (newLink === location.search) {
         setClickEventCall(!clickEventCall);
       } else {
-        setQuery(newLink)
+        setQuery(newLink);
       }
     }
   };
@@ -68,36 +68,39 @@ export default function ProgramInspector() {
         setError(response.error);
         setActiveOrgKey(response.org_keys);
         setLearnerProgramEnrollment(response.learner_program_enrollments);
-        let name = response?.learner_program_enrollments?.user?.username;
+        const name = response?.learner_program_enrollments?.user?.username;
         return name;
-      }).then((username) => {
-        if (username) {
-          getUser(username).then(
-            res => navigate(`?edx_user_id=${res.id}`)
-          )
+      }).then((name) => {
+        if (name) {
+          getUser(name).then(
+            res => navigate(`?edx_user_id=${res.id}`),
+          );
         }
       }).catch(err => {
+        console.error(err);
         setError('An error occured while fetching user id');
-        navigate('/programs')
-      });;
+        navigate('/programs');
+      });
     }
   };
 
   useEffect(() => {
-    if (query)
+    if (query) {
       fetchInspectorData(query);
+    }
   }, [query]);
 
   useEffect(() => {
-    let userId;
-    if (userId = new URLSearchParams(location.search).get('edx_user_id')) {
+    const userId = new URLSearchParams(location.search).get('edx_user_id');
+    if (userId) {
       getUser(userId).then(res => {
         setUsername(res.username);
-        setQuery(`?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}`)
+        setQuery(`?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}`);
       }).catch(err => {
+        console.error(err);
         setError('An error occured while fetching user id');
-        navigate('/programs')
-      })
+        navigate('/programs');
+      });
     }
   }, []);
 

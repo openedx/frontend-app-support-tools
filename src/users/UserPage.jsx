@@ -1,6 +1,6 @@
 import { camelCaseObject } from '@edx/frontend-platform';
 import React, {
-  useCallback, useContext, useEffect, useState, useLayoutEffect,
+  useCallback, useContext, useEffect, useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PageLoading from '../components/common/PageLoading';
@@ -11,7 +11,7 @@ import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
 import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
 import LearnerInformation from './LearnerInformation';
-import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
+import { TAB_PATH_MAP } from '../SupportToolsTab/constants';
 import CancelRetirement from './account-actions/CancelRetirement';
 
 // Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
@@ -46,11 +46,12 @@ export default function UserPage() {
   }
 
   function getUpdatedURL(result) {
-    let lms_id = result?.user?.id;
+    const lmsId = result?.user?.id;
 
-    if (lms_id) {
-      return `${TAB_PATH_MAP['learner-information']}/?lms_user_id=${lms_id}`;
+    if (lmsId) {
+      return `${TAB_PATH_MAP['learner-information']}/?lms_user_id=${lmsId}`;
     }
+    return `${TAB_PATH_MAP['learner-information']}`;
   }
 
   function processSearchResult(searchValue, result) {

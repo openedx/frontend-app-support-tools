@@ -11,9 +11,10 @@ import {
   programInspectorErrorResponse,
 } from './data/test/programInspector';
 import ssoRecordsData from '../../users/data/test/ssoRecords';
-import * as ssoApi from '../../users/data/api';
+import * as ssoAndUserApi from '../../users/data/api';
 import samlProvidersResponseValues from './data/test/samlProviders';
 import verifiedNameHistory from '../../users/data/test/verifiedNameHistory';
+import UserSummaryData from '../../users/data/test/userSummary';
 
 const mockedNavigator = jest.fn();
 
@@ -38,6 +39,7 @@ describe('Program Inspector', () => {
   let samlMock;
   let ssoMock;
   let verifiedNameMock;
+  let getUserMock;
 
   const data = {
     username: 'verified',
@@ -47,14 +49,17 @@ describe('Program Inspector', () => {
 
   beforeEach(() => {
     ssoMock = jest
-      .spyOn(ssoApi, 'getSsoRecords')
+      .spyOn(ssoAndUserApi, 'getSsoRecords')
       .mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
     samlMock = jest
       .spyOn(api, 'getSAMLProviderList')
       .mockImplementationOnce(() => Promise.resolve(samlProvidersResponseValues));
     verifiedNameMock = jest
-      .spyOn(ssoApi, 'getVerifiedNameHistory')
+      .spyOn(ssoAndUserApi, 'getVerifiedNameHistory')
       .mockImplementationOnce(() => Promise.resolve(verifiedNameHistory));
+    getUserMock = jest
+      .spyOn(ssoAndUserApi, 'getUser')
+      .mockImplementationOnce(() => Promise.resolve(UserSummaryData.userData));
     jest.clearAllMocks();
   });
 
@@ -68,6 +73,7 @@ describe('Program Inspector', () => {
     samlMock.mockReset();
     ssoMock.mockReset();
     verifiedNameMock.mockReset();
+    getUserMock.mockReset();
   });
 
   it('default render', async () => {
@@ -86,6 +92,7 @@ describe('Program Inspector', () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
       .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     wrapper.find("input[name='username']").simulate(
@@ -98,9 +105,12 @@ describe('Program Inspector', () => {
     );
     wrapper.find('button.btn-primary').simulate('click');
 
-    expect(mockedNavigator).toHaveBeenCalledWith(
-      `/programs?edx_user=${data.username}&org_key=${data.orgKey}&external_user_key=`,
-    );
+    await waitFor(() => {
+      expect(mockedNavigator).toHaveBeenCalledWith(
+        `?edx_user_id=${UserSummaryData.userData.id}`,
+      );
+    });
+
     waitFor(() => {
       expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
         'Username',
@@ -137,9 +147,12 @@ describe('Program Inspector', () => {
     );
     wrapper.find('button.btn-primary').simulate('click');
 
-    expect(mockedNavigator).toHaveBeenCalledWith(
-      `/programs?edx_user=&org_key=${data.orgKey}&external_user_key=${data.externalKey}`,
-    );
+    await waitFor(() => {
+      expect(mockedNavigator).toHaveBeenCalledWith(
+        `?edx_user_id=${UserSummaryData.userData.id}`,
+      );
+    });
+
     waitFor(() => {
       expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
         'Username',
