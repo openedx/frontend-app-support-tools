@@ -45,19 +45,12 @@ export default function UserPage() {
     }
   }
 
-  function getUpdatedURL(value) {
-    const updatedHistory = `${TAB_PATH_MAP['learner-information']}/?PARAM_NAME=${value}`;
-    let identifierType = '';
+  function getUpdatedURL(result) {
+    let lms_id = result?.user?.id;
 
-    if (isEmail(value)) {
-      identifierType = 'email';
-    } else if (isValidLMSUserID(value)) {
-      identifierType = 'lms_user_id';
-    } else if (isValidUsername(value)) {
-      identifierType = 'username';
+    if (lms_id) {
+      return `${TAB_PATH_MAP['learner-information']}/?lms_user_id=${lms_id}`;
     }
-
-    return updatedHistory.replace('PARAM_NAME', identifierType);
   }
 
   function processSearchResult(searchValue, result) {
@@ -69,7 +62,7 @@ export default function UserPage() {
       navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       document.title = 'Support Tools | edX';
     } else {
-      pushHistoryIfChanged(getUpdatedURL(searchValue));
+      pushHistoryIfChanged(getUpdatedURL(result));
       document.title = `Support Tools | edX | ${searchValue}`;
     }
 
@@ -137,16 +130,7 @@ export default function UserPage() {
     } else if (params.get('lms_user_id') && params.get('lms_user_id') !== userIdentifier) {
       handleFetchSearchResults(params.get('lms_user_id'));
     }
-  }, [params.get('username'), params.get('email'), params.get('lms_user_id')]);
-
-  // To change the url with appropriate query param if query param info is not present in URL
-  useLayoutEffect(() => {
-    if (userIdentifier
-      && location.pathname.indexOf(TAB_PATH_MAP[LEARNER_INFO_TAB]) !== -1
-      && !(params.get('email') || params.get('username') || params.get('lms_user_id'))) {
-      pushHistoryIfChanged(getUpdatedURL(userIdentifier));
-    }
-  });
+  }, []);
 
   return (
     <main className="mt-3 mb-5">
