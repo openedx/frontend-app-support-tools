@@ -70,17 +70,14 @@ export default function ProgramInspector() {
         setLearnerProgramEnrollment(response.learner_program_enrollments);
         const name = response?.learner_program_enrollments?.user?.username;
         return name;
-      }).then((name) => {
-        if (name) {
-          getUser(name).then(
-            res => navigate(`?edx_user_id=${res.id}`),
-          );
-        }
-      }).catch(err => {
-        console.error(err);
-        setError('An error occured while fetching user id');
-        navigate('/programs');
-      });
+      }).then((name) => getUser(name)).then((res) => {
+        navigate(`?edx_user_id=${res.id}`);
+      })
+        .catch(err => {
+          console.error(err);
+          setError('Five errors occurred');
+          navigate('/programs');
+        });
     }
   };
 

@@ -21,6 +21,7 @@ const mockedNavigator = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigator,
+  useLocation: () => ({ pathname: '/programs', search: '?edx_user_id=123' }),
 }));
 
 const ProgramEnrollmentsWrapper = () => (
@@ -59,7 +60,7 @@ describe('Program Inspector', () => {
       .mockImplementationOnce(() => Promise.resolve(verifiedNameHistory));
     getUserMock = jest
       .spyOn(ssoAndUserApi, 'getUser')
-      .mockImplementationOnce(() => Promise.resolve(UserSummaryData.userData));
+      .mockImplementation(() => Promise.resolve(UserSummaryData.userData));
     jest.clearAllMocks();
   });
 
@@ -80,18 +81,18 @@ describe('Program Inspector', () => {
     wrapper = mount(<ProgramEnrollmentsWrapper />);
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorErrorResponse));
+      .mockImplementation(() => Promise.resolve(programInspectorErrorResponse));
 
     const usernameInput = wrapper.find("input[name='username']");
     const externalKeyInput = wrapper.find("input[name='externalKey']");
-    expect(usernameInput.prop('defaultValue')).toEqual('');
-    expect(externalKeyInput.prop('defaultValue')).toEqual('');
+    expect(usernameInput.prop('defaultValue')).toEqual(undefined);
+    expect(externalKeyInput.prop('defaultValue')).toEqual(undefined);
   });
 
   it('render when username', async () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
 
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
@@ -130,7 +131,7 @@ describe('Program Inspector', () => {
   it('render when external_user_key', async () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     wrapper.find(
@@ -172,7 +173,7 @@ describe('Program Inspector', () => {
   it('render nothing when no username or external_user_key', async () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     wrapper.find(
@@ -201,10 +202,40 @@ describe('Program Inspector', () => {
     expect(wrapper.find('.inspector-name-row').exists()).toBeFalsy();
   });
 
+  it('render when getUser fails', async () => {
+    apiMock = jest
+      .spyOn(api, 'getProgramEnrollmentsInspector')
+      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
+
+    getUserMock = jest
+      .spyOn(ssoAndUserApi, 'getUser')
+      .mockImplementation(() => Promise.reject(new Error('Error fetching User Info')));
+
+    wrapper = mount(<ProgramEnrollmentsWrapper />);
+
+    await new Promise((res) => { setTimeout(() => res(), 100); });
+    wrapper.update();
+
+    expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+
+    wrapper.find(
+      "input[name='username']",
+    ).simulate(
+      'change',
+      { target: { value: 'AnonyMouse' } },
+    );
+    wrapper.find('button.btn-primary').simulate('click');
+
+    await new Promise((res) => { setTimeout(() => res(), 100); });
+    wrapper.update();
+
+    expect(wrapper.find('Alert').at(0).text()).toEqual('Five errors occurred');
+  });
+
   it('check if SSO is present', async () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     wrapper.find(
