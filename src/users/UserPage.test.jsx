@@ -51,14 +51,10 @@ describe('User Page', () => {
 
   it('default render', async () => {
     wrapper = mount(<UserPageWrapper />);
-
     wrapper.find(
       "input[name='userIdentifier']",
     ).instance().value = 'ANonyMouse';
     wrapper.find('.btn.btn-primary').simulate('click');
-
-    await new Promise((res) => { setTimeout(() => res(), 500); });
-    wrapper.update();
 
     await waitFor(() => {
       expect(mockedNavigator).toHaveBeenCalledWith(

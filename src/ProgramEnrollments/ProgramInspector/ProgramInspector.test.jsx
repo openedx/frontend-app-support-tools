@@ -48,6 +48,11 @@ describe('Program Inspector', () => {
     externalKey: 'testuser',
   };
 
+  const updateWrapperState = async (w) => {
+    await new Promise((res) => { setTimeout(() => res(), 0); });
+    w.update();
+  };
+
   beforeEach(() => {
     ssoMock = jest
       .spyOn(ssoAndUserApi, 'getSsoRecords')
@@ -213,9 +218,7 @@ describe('Program Inspector', () => {
 
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
-    await new Promise((res) => { setTimeout(() => res(), 100); });
-    wrapper.update();
-
+    await updateWrapperState(wrapper);
     expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
 
     wrapper.find(
@@ -225,11 +228,8 @@ describe('Program Inspector', () => {
       { target: { value: 'AnonyMouse' } },
     );
     wrapper.find('button.btn-primary').simulate('click');
-
-    await new Promise((res) => { setTimeout(() => res(), 100); });
-    wrapper.update();
-
-    expect(wrapper.find('Alert').at(0).text()).toEqual('Five errors occurred');
+    await updateWrapperState(wrapper);
+    expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
   });
 
   it('check if SSO is present', async () => {

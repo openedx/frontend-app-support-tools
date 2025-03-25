@@ -75,7 +75,7 @@ export default function ProgramInspector() {
       })
         .catch(err => {
           console.error(err);
-          setError('Five errors occurred');
+          setError('An error occured while fetching user id');
           navigate('/programs');
         });
     }
