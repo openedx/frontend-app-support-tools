@@ -8,16 +8,25 @@ frontend-app-support-tools
 Purpose
 *******
 
-This repository contains a series of support tools for the OpenedX platform.
+This repository contains a series of support tools for the Open edX platform.
 
 ***************
 Getting Started
 ***************
 
-Prerequisite
-=============
+Developing with Tutor
+=====================
 
-`Devstack <https://edx.readthedocs.io/projects/edx-installing-configuring-and-running/en/latest/installation/index.html>`_.
+`Tutor`_ is currently recommended as a development environment for your new MFE. Please refer to the `relevant tutor-mfe documentation`_ to get started using it.
+
+.. _Tutor: https://github.com/overhangio/tutor
+.. _relevant tutor-mfe documentation: https://github.com/overhangio/tutor-mfe?tab=readme-ov-file#mfe-development
+
+Devstack (Deprecated) instructions
+==================================
+
+`Devstack <https://github.com/openedx-unsupported/devstack>`_ is no longer a supported development environment.
+
 If you start Devstack with ``make dev.up`` that should give you everything you need as a companion to this frontend.
 
 ========================
