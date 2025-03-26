@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Input } from '@openedx/paragon';
+import { Form } from '@openedx/paragon';
 import Enrollments from './enrollments/Enrollments';
 import Entitlements from './entitlements/Entitlements';
 
@@ -12,7 +12,7 @@ export default function EntitlementsAndEnrollmentsContainer({
   return (
     <div id="entitlementsAndEnrollmentsContainer">
       <div className="mb-2 p-2 background-light-gray">
-        <Input name="courseId" className="mr-1 col-sm-4" type="text" placeholder="Course ID or Name" defaultValue={searchValue} onChange={(e) => { setSearchValue(e.target.value.toLowerCase()); }} />
+        <Form.Control name="courseId" className="mr-1 col-sm-4" placeholder="Course ID or Name" defaultValue={searchValue} onChange={(e) => { setSearchValue(e.target.value.toLowerCase()); }} />
       </div>
       <Entitlements
         user={user}

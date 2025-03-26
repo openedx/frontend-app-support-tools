@@ -1,4 +1,4 @@
-import { Input, Button } from '@openedx/paragon';
+import { Form, Button } from '@openedx/paragon';
 import React, { useState, useCallback } from 'react';
 import getLinkProgramEnrollmentDetails from './data/api';
 import LinkProgramEnrollmentsTable from './LinkProgramEnrollmentsTable';
@@ -47,14 +47,15 @@ export default function LinkProgramEnrollments() {
       <section className="my-3">
         <form>
           <div className="my-2">
-            <label htmlFor="programUUID">Program UUID</label>
-            <Input
-              className="mr-1 col-sm-12"
-              name="programUUID"
-              type="text"
-              defaultValue={programID}
-              onChange={onProgramChange}
-            />
+            <Form.Group>
+              <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
+              <Form.Control
+                className="mr-1 col-sm-12"
+                name="programUUID"
+                defaultValue={programID}
+                onChange={onProgramChange}
+              />
+            </Form.Group>
           </div>
           <div className="my-4">
             <label
@@ -63,10 +64,10 @@ export default function LinkProgramEnrollments() {
             >
               List of External key and username pairings (one per line)
             </label>
-            <Input
+            <Form.Control
               className="mr-1 col-sm-12"
               name="usernamePairText"
-              type="textarea"
+              as="textarea"
               rows="10"
               onChange={onUserTextChange}
               defaultValue={usernamePairText}

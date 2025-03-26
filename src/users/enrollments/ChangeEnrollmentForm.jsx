@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, InputSelect, ModalDialog,
+  Button, Form, ModalDialog,
 } from '@openedx/paragon';
 import AlertList from '../../userMessages/AlertList';
 import { patchEnrollment } from '../data/api';
@@ -99,29 +99,32 @@ export default function ChangeEnrollmentForm({
         </div>
         <hr />
 
-        <InputSelect
+        <Form.Control
           className="mb-n3"
-          type="select"
+          as="select"
           options={getModes()}
           value=""
           id="mode"
           name="mode"
           onChange={(event) => setMode(event)}
           disabled={hideOnSubmit}
-        />
-        <InputSelect
+        >
+          {getModes().map(({ label, value, disabled }) => <option value={value} disabled={disabled}>{label}</option>)}
+        </Form.Control>
+        <Form.Control
           className="mb-4"
-          type="select"
-          options={reasons}
+          as="select"
           id="reason"
           name="reason"
           value=""
           onChange={(event) => setReason(event)}
           disabled={hideOnSubmit}
-        />
-        <Input
+        >
+          {reasons.map(({ label, value, disabled }) => <option value={value} disabled={disabled}>{label}</option>)}
+        </Form.Control>
+        <Form.Control
           placeholder="Explanation"
-          type="textarea"
+          as="textarea"
           id="comments"
           name="comments"
           defaultValue=""

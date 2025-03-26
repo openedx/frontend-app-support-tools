@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, ModalDialog,
+  Button, Form, ModalDialog,
 } from '@openedx/paragon';
 
 import UserMessagesContext from '../../userMessages/UserMessagesContext';
@@ -60,9 +60,8 @@ export default function CreateEntitlementForm({
   const createEntitlementForm = (
     <form>
       <AlertList topic="createEntitlement" className="mb-3" />
-      <Input
+      <Form.Control
         className="mb-4"
-        type="text"
         id="courseUuid"
         name="courseUuid"
         placeholder="Course UUID"
@@ -70,23 +69,24 @@ export default function CreateEntitlementForm({
         onChange={(event) => setCourseUuid(event.target.value)}
         ref={forwardedRef}
       />
-      <Input
+      <Form.Control
         className="mb-4"
-        type="select"
+        as="select"
         id="mode"
         name="mode"
         defaultValue=""
-        options={[
+        onChange={(event) => setMode(event.target.value)}
+      >
+        {[
           { label: 'Mode', value: '', disabled: true },
           { label: 'Verified', value: 'verified' },
           { label: 'Professional', value: 'professional' },
           { label: 'No ID Professional', value: 'no-id-professional' },
-        ]}
-        onChange={(event) => setMode(event.target.value)}
-      />
-      <Input
+        ].map(({ label, value, disabled }) => <option value={value} disabled={disabled}>{label}</option>)}
+      </Form.Control>
+      <Form.Control
         placeholder="Explanation"
-        type="textarea"
+        as="textarea"
         id="comments"
         name="comments"
         defaultValue=""
