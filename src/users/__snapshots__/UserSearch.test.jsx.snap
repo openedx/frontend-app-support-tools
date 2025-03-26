@@ -12,12 +12,17 @@ exports[`User Search Page renders correctly matches snapshot 1`] = `
     >
       Username, Email or LMS User ID
     </label>
-    <input
-      className="form-control flex-grow-1 ml-1 mr-1"
-      defaultValue=""
-      name="userIdentifier"
-      type="text"
-    />
+    <div
+      className="pgn__form-control-decorator-group flex-grow-1 ml-1 mr-1"
+    >
+      <input
+        className="form-control"
+        defaultValue=""
+        name="userIdentifier"
+        onBlur={[Function]}
+        onChange={[Function]}
+      />
+    </div>
     <button
       className="btn btn-primary"
       disabled={false}

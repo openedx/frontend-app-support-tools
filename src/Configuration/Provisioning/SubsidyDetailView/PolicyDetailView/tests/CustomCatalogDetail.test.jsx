@@ -2,6 +2,8 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import '@testing-library/jest-dom/extend-expect';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
+
 import CustomCatalogDetail from '../CustomCatalogDetail';
 
 const mockCatalogTitle = 'Foo Bar Catalog';
@@ -9,7 +11,7 @@ const mockCatalogTitle = 'Foo Bar Catalog';
 describe('CustomCatalogDetail', () => {
   it('renders the component with content', () => {
     renderWithRouter(
-      <CustomCatalogDetail catalogTitle={mockCatalogTitle} />,
+      <IntlProvider locale="en"><CustomCatalogDetail catalogTitle={mockCatalogTitle} /></IntlProvider>,
     );
     expect(screen.getByText(mockCatalogTitle)).toBeInTheDocument();
   });
