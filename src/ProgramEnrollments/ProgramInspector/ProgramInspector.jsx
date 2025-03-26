@@ -136,13 +136,13 @@ export default function ProgramInspector() {
                 <Form.Control
                   className="col-sm-12"
                   name="orgKey"
-                  type="select"
+                  as="select"
                   defaultValue={activeOrgKey}
                   onChange={(e) => setActiveOrgKey(e.target.value)}
                 >
                   {
-                    getOrgKeyList()
-                      .map(({ label, value, disabled }) => <option value={value} disabled={disabled}>{label}</option>)
+                    getOrgKeyList() && getOrgKeyList()
+                      .map(({ label, value, disabled }) => <option key={value} value={value} disabled={disabled}>{label}</option>)
                   }
                 </Form.Control>
               </Form.Group>
