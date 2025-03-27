@@ -14,7 +14,6 @@ import LearnerInformation from './LearnerInformation';
 import { TAB_PATH_MAP } from '../SupportToolsTab/constants';
 import CancelRetirement from './account-actions/CancelRetirement';
 
-// Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage() {
   const location = useLocation();
   const navigate = useNavigate();

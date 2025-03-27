@@ -21,11 +21,10 @@ const mockedNavigator = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigator,
-  useLocation: () => ({ pathname: '/programs', search: '?edx_user_id=123' }),
 }));
 
 const ProgramEnrollmentsWrapper = () => (
-  <MemoryRouter initialEntries={['/programs?edx_user=&org_key=&external_user_key=']}>
+  <MemoryRouter initialEntries={['/programs?edx_user_id=123']}>
     <IntlProvider locale="en">
       <UserMessagesProvider>
         <ProgramInspector />
@@ -46,11 +45,6 @@ describe('Program Inspector', () => {
     username: 'verified',
     orgKey: samlProvidersResponseValues[0],
     externalKey: 'testuser',
-  };
-
-  const updateWrapperState = async (w) => {
-    await new Promise((res) => { setTimeout(() => res(), 0); });
-    w.update();
   };
 
   beforeEach(() => {
@@ -86,7 +80,7 @@ describe('Program Inspector', () => {
     wrapper = mount(<ProgramEnrollmentsWrapper />);
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementation(() => Promise.resolve(programInspectorErrorResponse));
+      .mockImplementationOnce(() => Promise.resolve(programInspectorErrorResponse));
 
     const usernameInput = wrapper.find("input[name='username']");
     const externalKeyInput = wrapper.find("input[name='externalKey']");
@@ -178,7 +172,7 @@ describe('Program Inspector', () => {
   it('render nothing when no username or external_user_key', async () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     wrapper.find(
@@ -218,8 +212,10 @@ describe('Program Inspector', () => {
 
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
-    await updateWrapperState(wrapper);
-    expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+    await waitFor(() => {
+      wrapper.update();
+      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+    });
 
     wrapper.find(
       "input[name='username']",
@@ -228,14 +224,18 @@ describe('Program Inspector', () => {
       { target: { value: 'AnonyMouse' } },
     );
     wrapper.find('button.btn-primary').simulate('click');
-    await updateWrapperState(wrapper);
-    expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+
+    await waitFor(() => {
+      wrapper.update();
+      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+      expect(mockedNavigator).toHaveBeenCalledTimes(2);
+    });
   });
 
   it('check if SSO is present', async () => {
     apiMock = jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
     wrapper = mount(<ProgramEnrollmentsWrapper />);
 
     wrapper.find(
