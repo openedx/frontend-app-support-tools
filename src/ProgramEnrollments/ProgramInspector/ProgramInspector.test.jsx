@@ -214,7 +214,7 @@ describe('Program Inspector', () => {
 
     await waitFor(() => {
       wrapper.update();
-      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occurred while fetching user id');
     });
 
     wrapper.find(
@@ -227,7 +227,7 @@ describe('Program Inspector', () => {
 
     await waitFor(() => {
       wrapper.update();
-      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occured while fetching user id');
+      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occurred while fetching user id');
       expect(mockedNavigator).toHaveBeenCalledTimes(2);
     });
   });

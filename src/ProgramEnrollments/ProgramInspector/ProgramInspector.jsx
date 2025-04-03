@@ -24,7 +24,6 @@ export default function ProgramInspector() {
   const [activeOrgKey, setActiveOrgKey] = useState(params.get('org_key'));
   const [orgKeyList, setOrgKeyList] = useState(undefined);
   const [externalUserKey, setExternalUserKey] = useState(params.get('external_user_key'));
-  const [clickEventCall, setClickEventCall] = useState(false);
 
   const [query, setQuery] = useState(null);
 
@@ -43,14 +42,10 @@ export default function ProgramInspector() {
       setSsoRecords([]);
       navigate('/programs');
     } else {
-      const newLink = `?edx_user=${
+      const newQuery = `?edx_user=${
         username || ''
       }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
-      if (newLink === location.search) {
-        setClickEventCall(!clickEventCall);
-      } else {
-        setQuery(newLink);
-      }
+      setQuery(newQuery);
     }
   };
 
@@ -75,7 +70,7 @@ export default function ProgramInspector() {
       })
         .catch(err => {
           console.error(err);
-          setError('An error occured while fetching user id');
+          setError('An error occurred while fetching user id');
           navigate('/programs');
         });
     }
@@ -95,7 +90,7 @@ export default function ProgramInspector() {
         setQuery(`?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}`);
       }).catch(err => {
         console.error(err);
-        setError('An error occured while fetching user id');
+        setError('An error occurred while fetching user id');
         navigate('/programs');
       });
     }

@@ -34,9 +34,9 @@ const UserPageWrapper = () => (
 
 describe('User Page', () => {
   let wrapper;
-
+  let mockedGetUserData;
   beforeEach(() => {
-    jest.spyOn(ssoAndUserApi, 'getAllUserData').mockImplementation(() => Promise.resolve({ user: UserSummaryData.userData, errors: [] }));
+    mockedGetUserData = jest.spyOn(ssoAndUserApi, 'getAllUserData').mockImplementation(() => Promise.resolve({ user: UserSummaryData.userData, errors: [] }));
     jest.spyOn(ssoAndUserApi, 'getVerifiedNameHistory').mockImplementation(() => Promise.resolve(verifiedNameHistoryData));
     jest.spyOn(ssoAndUserApi, 'getEnrollments').mockImplementation(() => Promise.resolve(enrollmentsData));
     jest.spyOn(ssoAndUserApi, 'getOnboardingStatus').mockImplementation(() => Promise.resolve(onboardingStatusData));
@@ -53,13 +53,14 @@ describe('User Page', () => {
     wrapper = mount(<UserPageWrapper />);
     wrapper.find(
       "input[name='userIdentifier']",
-    ).instance().value = 'ANonyMouse';
+    ).instance().value = 'AnonyMouse';
     wrapper.find('.btn.btn-primary').simulate('click');
 
     await waitFor(() => {
       expect(mockedNavigator).toHaveBeenCalledWith(
         `/learner_information/?lms_user_id=${UserSummaryData.userData.id}`,
       );
+      expect(mockedGetUserData).toHaveBeenCalled();
     });
   });
 });
