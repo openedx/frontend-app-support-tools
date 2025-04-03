@@ -43,7 +43,6 @@ describe('User Page', () => {
     jest.spyOn(ssoAndUserApi, 'getSsoRecords').mockImplementation(() => Promise.resolve(ssoRecordsData));
     jest.spyOn(ssoAndUserApi, 'getLicense').mockImplementation(() => Promise.resolve(licensesData));
     jest.spyOn(ssoAndUserApi, 'getEntitlements').mockImplementation(() => Promise.resolve(entitlementsData));
-    jest.spyOn(ssoAndUserApi, 'getEnrollments').mockImplementation(() => Promise.resolve(enrollmentsData));
     jest.spyOn(ssoAndUserApi, 'getEnterpriseCustomerUsers').mockImplementation(() => Promise.resolve(enterpriseCustomerUsersData));
 
     jest.clearAllMocks();
