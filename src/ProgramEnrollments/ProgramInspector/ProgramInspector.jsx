@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Alert, Col, Row, Button, Input,
 } from '@openedx/paragon';
-import { getSsoRecords } from '../../users/data/api';
+import { getSsoRecords, getUser } from '../../users/data/api';
 import EnrollmentDetails from './EnrollmentDetails';
 import SingleSignOnRecordCard from '../../users/SingleSignOnRecordCard';
 import {
@@ -24,7 +24,8 @@ export default function ProgramInspector() {
   const [activeOrgKey, setActiveOrgKey] = useState(params.get('org_key'));
   const [orgKeyList, setOrgKeyList] = useState(undefined);
   const [externalUserKey, setExternalUserKey] = useState(params.get('external_user_key'));
-  const [clickEventCall, setClickEventCall] = useState(false);
+
+  const [query, setQuery] = useState(null);
 
   const getOrgKeyList = () => (orgKeyList
     ? orgKeyList.map((data) => ({
@@ -41,14 +42,10 @@ export default function ProgramInspector() {
       setSsoRecords([]);
       navigate('/programs');
     } else {
-      const newLink = `/programs?edx_user=${
+      const newQuery = `?edx_user=${
         username || ''
       }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
-      if (newLink === location.pathname + location.search) {
-        setClickEventCall(!clickEventCall);
-      } else {
-        navigate(newLink);
-      }
+      setQuery(newQuery);
     }
   };
 
@@ -66,13 +63,38 @@ export default function ProgramInspector() {
         setError(response.error);
         setActiveOrgKey(response.org_keys);
         setLearnerProgramEnrollment(response.learner_program_enrollments);
-      });
+        const name = response?.learner_program_enrollments?.user?.username;
+        return name;
+      }).then((name) => getUser(name)).then((res) => {
+        navigate(`?edx_user_id=${res.id}`);
+      })
+        .catch(err => {
+          console.error(err);
+          setError('An error occurred while fetching user id');
+          navigate('/programs');
+        });
     }
   };
 
   useEffect(() => {
-    fetchInspectorData(location.search);
-  }, [location.search, clickEventCall]);
+    if (query) {
+      fetchInspectorData(query);
+    }
+  }, [query]);
+
+  useEffect(() => {
+    const userId = new URLSearchParams(location.search).get('edx_user_id');
+    if (userId) {
+      getUser(userId).then(res => {
+        setUsername(res.username);
+        setQuery(`?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}`);
+      }).catch(err => {
+        console.error(err);
+        setError('An error occurred while fetching user id');
+        navigate('/programs');
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!orgKeyList) {

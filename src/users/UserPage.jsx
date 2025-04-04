@@ -1,6 +1,6 @@
 import { camelCaseObject } from '@edx/frontend-platform';
 import React, {
-  useCallback, useContext, useEffect, useState, useLayoutEffect,
+  useCallback, useContext, useEffect, useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PageLoading from '../components/common/PageLoading';
@@ -11,10 +11,9 @@ import { isEmail, isValidUsername, isValidLMSUserID } from '../utils/index';
 import { getAllUserData } from './data/api';
 import UserSearch from './UserSearch';
 import LearnerInformation from './LearnerInformation';
-import { LEARNER_INFO_TAB, TAB_PATH_MAP } from '../SupportToolsTab/constants';
+import { TAB_PATH_MAP } from '../SupportToolsTab/constants';
 import CancelRetirement from './account-actions/CancelRetirement';
 
-// Supports urls such as /users/?username={username}, /users/?email={email} and /users/?lms_user_id={lms_user_id}
 export default function UserPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -45,19 +44,13 @@ export default function UserPage() {
     }
   }
 
-  function getUpdatedURL(value) {
-    const updatedHistory = `${TAB_PATH_MAP['learner-information']}/?PARAM_NAME=${value}`;
-    let identifierType = '';
+  function getUpdatedURL(result) {
+    const lmsId = result?.user?.id;
 
-    if (isEmail(value)) {
-      identifierType = 'email';
-    } else if (isValidLMSUserID(value)) {
-      identifierType = 'lms_user_id';
-    } else if (isValidUsername(value)) {
-      identifierType = 'username';
+    if (lmsId) {
+      return `${TAB_PATH_MAP['learner-information']}/?lms_user_id=${lmsId}`;
     }
-
-    return updatedHistory.replace('PARAM_NAME', identifierType);
+    return `${TAB_PATH_MAP['learner-information']}`;
   }
 
   function processSearchResult(searchValue, result) {
@@ -69,7 +62,7 @@ export default function UserPage() {
       navigate(`${TAB_PATH_MAP['learner-information']}`, { replace: true });
       document.title = 'Support Tools | edX';
     } else {
-      pushHistoryIfChanged(getUpdatedURL(searchValue));
+      pushHistoryIfChanged(getUpdatedURL(result));
       document.title = `Support Tools | edX | ${searchValue}`;
     }
 
@@ -137,16 +130,7 @@ export default function UserPage() {
     } else if (params.get('lms_user_id') && params.get('lms_user_id') !== userIdentifier) {
       handleFetchSearchResults(params.get('lms_user_id'));
     }
-  }, [params.get('username'), params.get('email'), params.get('lms_user_id')]);
-
-  // To change the url with appropriate query param if query param info is not present in URL
-  useLayoutEffect(() => {
-    if (userIdentifier
-      && location.pathname.indexOf(TAB_PATH_MAP[LEARNER_INFO_TAB]) !== -1
-      && !(params.get('email') || params.get('username') || params.get('lms_user_id'))) {
-      pushHistoryIfChanged(getUpdatedURL(userIdentifier));
-    }
-  });
+  }, []);
 
   return (
     <main className="mt-3 mb-5">
