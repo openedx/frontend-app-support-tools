@@ -7,7 +7,7 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Input, Button } from '@openedx/paragon';
+import { Form, Button } from '@openedx/paragon';
 
 import UserMessagesContext from '../userMessages/UserMessagesContext';
 import AlertList from '../userMessages/AlertList';
@@ -96,8 +96,10 @@ export default function FeatureBasedEnrollmentIndexPage() {
 
       <section className="mb-3">
         <form className="form-inline">
-          <label htmlFor="courseId">Course ID</label>
-          <Input ref={searchRef} className="mr-1 ml-1 col-sm-4" name="courseId" type="text" defaultValue={searchValue} />
+          <Form.Group>
+            <Form.Label htmlFor="courseId">Course ID</Form.Label>
+            <Form.Control ref={searchRef} className="mr-1 ml-1 col-sm-4" name="courseId" defaultValue={searchValue} />
+          </Form.Group>
           <Button type="submit" onClick={submit} className="ml-1 col-sm-1" variant="primary">Search</Button>
         </form>
       </section>
