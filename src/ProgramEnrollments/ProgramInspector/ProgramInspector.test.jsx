@@ -228,7 +228,7 @@ describe('Program Inspector', () => {
     await waitFor(() => {
       wrapper.update();
       expect(wrapper.find('Alert').at(0).text()).toEqual('An error occurred while fetching user id');
-      expect(mockedNavigator).toHaveBeenCalledTimes(2);
+      expect(mockedNavigator).toHaveBeenCalledTimes(3);
     });
   });
 

@@ -24,7 +24,6 @@ export default function ProgramInspector() {
   const [activeOrgKey, setActiveOrgKey] = useState(params.get('org_key'));
   const [orgKeyList, setOrgKeyList] = useState(undefined);
   const [externalUserKey, setExternalUserKey] = useState(params.get('external_user_key'));
-
   const [query, setQuery] = useState(null);
 
   const getOrgKeyList = () => (orgKeyList
@@ -45,7 +44,8 @@ export default function ProgramInspector() {
       const newQuery = `?edx_user=${
         username || ''
       }&org_key=${activeOrgKey}&external_user_key=${externalUserKey || ''}`;
-      setQuery(newQuery);
+      navigate('/programs');
+      setQuery({ uri: newQuery });
     }
   };
 
@@ -65,20 +65,24 @@ export default function ProgramInspector() {
         setLearnerProgramEnrollment(response.learner_program_enrollments);
         const name = response?.learner_program_enrollments?.user?.username;
         return name;
-      }).then((name) => getUser(name)).then((res) => {
-        navigate(`?edx_user_id=${res.id}`);
-      })
-        .catch(err => {
+      }).then((name) => {
+        if (!name) {
+          return null;
+        }
+        return getUser(name).then((res) => {
+          navigate(`?edx_user_id=${res.id}`);
+        }).catch(err => {
           console.error(err);
           setError('An error occurred while fetching user id');
           navigate('/programs');
         });
+      });
     }
   };
 
   useEffect(() => {
     if (query) {
-      fetchInspectorData(query);
+      fetchInspectorData(query.uri);
     }
   }, [query]);
 
@@ -87,7 +91,7 @@ export default function ProgramInspector() {
     if (userId) {
       getUser(userId).then(res => {
         setUsername(res.username);
-        setQuery(`?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}`);
+        setQuery({ uri: `?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}` });
       }).catch(err => {
         console.error(err);
         setError('An error occurred while fetching user id');
