@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, cleanup } from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import ErrorPageContainer from '../ErrorPageContainer';
 import { ERROR_PAGE_TEXT } from '../data/constants';
 
@@ -16,12 +17,13 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('<ErrorPageContainerWrapper>', () => {
+  afterEach(cleanup);
   it('Displays the passed error message', () => {
-    renderWithRouter(<ErrorPageContainer to="/" />);
+    renderWithRouter(<IntlProvider locale="en"><ErrorPageContainer to="/" /></IntlProvider>);
     expect(screen.getByText('Test Error Message', { exact: false })).toBeTruthy();
   });
   it('Redirects on button click', () => {
-    renderWithRouter(<ErrorPageContainer to="/" />);
+    renderWithRouter(<IntlProvider locale="en"><ErrorPageContainer to="/" /></IntlProvider>);
     const button = screen.getByText(ERROR_PAGE_TEXT.BUTTON);
     expect(button).toBeTruthy();
     fireEvent.click(button);
