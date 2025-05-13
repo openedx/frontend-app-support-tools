@@ -45,27 +45,22 @@ export default function LinkProgramEnrollments() {
     <>
       <h3>Link Program Enrollments</h3>
       <section className="my-3">
-        <form>
-          <div className="my-2">
-            <Form.Group>
-              <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
-              <Form.Control
-                className="mr-1 col-sm-12"
-                name="programUUID"
-                defaultValue={programID}
-                onChange={onProgramChange}
-              />
-            </Form.Group>
-          </div>
-          <div className="my-4">
-            <label
-              className="d-flex align-items-start"
+        <Form>
+          <Form.Group className="my-2">
+            <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
+            <Form.Control
+              name="programUUID"
+              defaultValue={programID}
+              onChange={onProgramChange}
+            />
+          </Form.Group>
+          <Form.Group className="my-4">
+            <Form.Label
               htmlFor="usernamePairText"
             >
               List of External key and username pairings (one per line)
-            </label>
+            </Form.Label>
             <Form.Control
-              className="mr-1 col-sm-12"
               name="usernamePairText"
               as="textarea"
               rows="10"
@@ -73,7 +68,7 @@ export default function LinkProgramEnrollments() {
               defaultValue={usernamePairText}
               placeholder="external_user_key,lms_username"
             />
-          </div>
+          </Form.Group>
           <Button
             type="submit"
             onClick={submit}
@@ -81,7 +76,7 @@ export default function LinkProgramEnrollments() {
           >
             Submit
           </Button>
-        </form>
+        </Form>
       </section>
       {((errorMessage && errorMessage.length > 0)
       || (successMessage && successMessage.length > 0)) && (

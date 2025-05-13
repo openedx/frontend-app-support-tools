@@ -94,14 +94,14 @@ export default function FeatureBasedEnrollmentIndexPage() {
 
       <AlertList topic="featureBasedEnrollmentGeneral" className="mb-3" />
 
-      <section className="mb-3">
-        <form className="form-inline">
-          <Form.Group>
-            <Form.Label htmlFor="courseId">Course ID</Form.Label>
-            <Form.Control ref={searchRef} className="mr-1 ml-1 col-sm-4" name="courseId" defaultValue={searchValue} />
-          </Form.Group>
-          <Button type="submit" onClick={submit} className="ml-1 col-sm-1" variant="primary">Search</Button>
-        </form>
+      <section className="mb-3 px-2">
+        <Form>
+          <Form.Row>
+            <Form.Label htmlFor="courseId" className="my-auto">Course ID</Form.Label>
+            <Form.Control ref={searchRef} name="courseId" className="mr-1 ml-1 col-sm-4" defaultValue={searchValue} />
+            <Button type="submit" onClick={submit} className="ml-1 col-sm-1" variant="primary">Search</Button>
+          </Form.Row>
+        </Form>
       </section>
 
       {searchValue && <FeatureBasedEnrollment courseId={searchValue} apiFetchSignal={apiFetchSignal} />}

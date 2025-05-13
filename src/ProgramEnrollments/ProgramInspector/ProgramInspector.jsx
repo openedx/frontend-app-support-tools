@@ -120,7 +120,6 @@ export default function ProgramInspector() {
               <Form.Group>
                 <Form.Label htmlFor="username">edX username or email</Form.Label>
                 <Form.Control
-                  className="col-sm-12"
                   name="username"
                   defaultValue={username}
                   onChange={(e) => (e.target.value
@@ -134,7 +133,6 @@ export default function ProgramInspector() {
               <Form.Group>
                 <Form.Label htmlFor="orgKey">Identity-providing institution</Form.Label>
                 <Form.Control
-                  className="col-sm-12"
                   name="orgKey"
                   as="select"
                   defaultValue={activeOrgKey}
@@ -152,7 +150,6 @@ export default function ProgramInspector() {
               <Form.Group>
                 <Form.Label htmlFor="externalKey">Institution user key</Form.Label>
                 <Form.Control
-                  className="col-sm-12"
                   name="externalKey"
                   defaultValue={externalUserKey}
                   onChange={(e) => (e.target.value

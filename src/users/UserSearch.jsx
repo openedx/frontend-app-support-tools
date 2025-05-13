@@ -15,12 +15,14 @@ export default function UserSearch({ userIdentifier, searchHandler }) {
   });
 
   return (
-    <section className="mb-3">
-      <form className="form-inline">
-        <label htmlFor="userIdentifier">Username, Email or LMS User ID</label>
-        <Form.Control ref={searchRef} className="flex-grow-1 ml-1 mr-1" name="userIdentifier" defaultValue={userIdentifier} />
-        <Button type="submit" onClick={submit} variant="primary">Search</Button>
-      </form>
+    <section className="mb-3 px-2">
+      <Form>
+        <Form.Row>
+          <Form.Label htmlFor="userIdentifier" className="my-auto">Username, Email or LMS User ID</Form.Label>
+          <Form.Control ref={searchRef} className="flex-grow-1 ml-1 mr-1" name="userIdentifier" defaultValue={userIdentifier} />
+          <Button type="submit" onClick={submit} variant="primary">Search</Button>
+        </Form.Row>
+      </Form>
     </section>
   );
 }
