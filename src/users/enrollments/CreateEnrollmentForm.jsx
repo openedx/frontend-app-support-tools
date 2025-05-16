@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   ActionRow,
-  Button, Input, InputSelect, ModalDialog,
+  Button, Form, ModalDialog,
 } from '@openedx/paragon';
 
 import AlertList from '../../userMessages/AlertList';
@@ -55,35 +55,36 @@ export default function CreateEnrollmentForm({
     <form>
       <AlertList topic="createEnrollments" className="mb-3" />
       <div className="form-group">
-        <Input
-          type="text"
+        <Form.Control
           id="courseID"
           name="courseID"
           placeholder="Course Run ID"
           onChange={(event) => setCourseID(event.target.value)}
           ref={forwardedRef}
         />
-        <InputSelect
+        <Form.Control
           className="mb-n3 small"
-          type="select"
-          options={modes}
+          as="select"
           id="mode"
           name="mode"
           value=""
           onChange={(event) => setMode(event)}
-        />
-        <InputSelect
+        >
+          {modes.map(({ label, value, disabled }) => <option value={value} disabled={disabled}>{label}</option>)}
+        </Form.Control>
+        <Form.Control
           className="mb-4 small"
-          type="select"
-          options={reasons}
+          as="select"
           id="reason"
           name="reason"
           value=""
           onChange={(event) => setReason(event)}
-        />
-        <Input
+        >
+          {reasons.map(({ label, value, disabled }) => <option value={value} disabled={disabled}>{label}</option>)}
+        </Form.Control>
+        <Form.Control
           placeholder="Explanation"
-          type="textarea"
+          as="textarea"
           id="comments"
           name="comments"
           defaultValue=""

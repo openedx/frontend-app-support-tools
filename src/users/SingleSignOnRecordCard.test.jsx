@@ -1,9 +1,16 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import ssoRecordsData from './data/test/ssoRecords';
 import SingleSignOnRecordCard from './SingleSignOnRecordCard';
 import { formatDate, formatUnixTimestamp } from '../utils';
+
+const SingleSignOnRecordCardWrapper = (props) => (
+  <IntlProvider locale="en">
+    <SingleSignOnRecordCard {...props} />
+  </IntlProvider>
+);
 
 describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
   // prepare data
@@ -19,7 +26,7 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     props = {
       ssoRecord: ssoRecordProp,
     };
-    wrapper = mount(<SingleSignOnRecordCard {...props} />);
+    wrapper = mount(<SingleSignOnRecordCardWrapper {...props} />);
   });
 
   it('SSO props', () => {
@@ -31,7 +38,7 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     props = {
       ssoRecord: null,
     };
-    wrapper = mount(<SingleSignOnRecordCard {...props} />);
+    wrapper = mount(<SingleSignOnRecordCardWrapper {...props} />);
 
     expect(wrapper.isEmptyRender()).toBeTruthy();
   });

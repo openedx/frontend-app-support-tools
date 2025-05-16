@@ -3,6 +3,7 @@ import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { DashboardContext, initialStateValue } from '../../../testData/Dashboard';
 import DashboardDataTable from '../DashboardDataTable';
 import { sampleDataTableData } from '../../../testData/constants';
@@ -31,9 +32,11 @@ jest.mock('../../../../data/services/EnterpriseApiService', () => ({
 const DashboardDatatableWrapper = ({
   value = initialStateValue,
 }) => (
-  <DashboardContext value={value}>
-    <DashboardDataTable />
-  </DashboardContext>
+  <IntlProvider locale="en">
+    <DashboardContext value={value}>
+      <DashboardDataTable />
+    </DashboardContext>
+  </IntlProvider>
 );
 
 describe('DashboardDatatable', () => {

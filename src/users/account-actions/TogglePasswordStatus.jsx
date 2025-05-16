@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, Input, Alert, ModalDialog, ActionRow,
+  Button, Form, Alert, ModalDialog, ActionRow,
 } from '@openedx/paragon';
 import { postTogglePasswordStatus } from '../data/api';
 
@@ -52,9 +52,8 @@ export default function TogglePasswordStatus({
               </p>
             </Alert>
             <label htmlFor="comment">Reason: </label>
-            <Input
+            <Form.Control
               name="comment"
-              type="text"
               value={comment}
               onChange={(event) => setComment(event.target.value)}
             />

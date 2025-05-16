@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Alert, Col, Row, Button, Input,
+  Alert, Col, Row, Button, Form,
 } from '@openedx/paragon';
 import { getSsoRecords, getUser } from '../../users/data/api';
 import EnrollmentDetails from './EnrollmentDetails';
@@ -143,41 +143,47 @@ export default function ProgramInspector() {
         <form>
           <div className="d-flex">
             <div className="col-sm-4 pl-0">
-              <label htmlFor="username">edX username or email</label>
-              <Input
-                className="col-sm-12"
-                name="username"
-                type="text"
-                defaultValue={username}
-                onChange={(e) => (e.target.value
-                  ? setUsername(e.target.value)
-                  : setUsername(undefined))}
-                placeholder="edx@example.com"
-              />
+              <Form.Group>
+                <Form.Label htmlFor="username">edX username or email</Form.Label>
+                <Form.Control
+                  name="username"
+                  defaultValue={username}
+                  onChange={(e) => (e.target.value
+                    ? setUsername(e.target.value)
+                    : setUsername(undefined))}
+                  placeholder="edx@example.com"
+                />
+              </Form.Group>
             </div>
             <div className="col-sm-4">
-              <label htmlFor="orgKey">Identity-providing institution</label>
-              <Input
-                className="col-sm-12"
-                name="orgKey"
-                type="select"
-                defaultValue={activeOrgKey}
-                options={getOrgKeyList()}
-                onChange={(e) => setActiveOrgKey(e.target.value)}
-              />
+              <Form.Group>
+                <Form.Label htmlFor="orgKey">Identity-providing institution</Form.Label>
+                <Form.Control
+                  name="orgKey"
+                  as="select"
+                  defaultValue={activeOrgKey}
+                  onChange={(e) => setActiveOrgKey(e.target.value)}
+                >
+                  { getOrgKeyList() && getOrgKeyList().map(
+                    (
+                      { label, value, disabled },
+                    ) => <option key={value} value={value} disabled={disabled}>{label}</option>,
+                  )}
+                </Form.Control>
+              </Form.Group>
             </div>
             <div className="col-sm-4 pr-0">
-              <label htmlFor="externalKey">Institution user key</label>
-              <Input
-                className="col-sm-12"
-                name="externalKey"
-                type="text"
-                defaultValue={externalUserKey}
-                onChange={(e) => (e.target.value
-                  ? setExternalUserKey(e.target.value)
-                  : setExternalUserKey(undefined))}
-                placeholder="ex. GTPersonDirectoryID for GT Students"
-              />
+              <Form.Group>
+                <Form.Label htmlFor="externalKey">Institution user key</Form.Label>
+                <Form.Control
+                  name="externalKey"
+                  defaultValue={externalUserKey}
+                  onChange={(e) => (e.target.value
+                    ? setExternalUserKey(e.target.value)
+                    : setExternalUserKey(undefined))}
+                  placeholder="ex. GTPersonDirectoryID for GT Students"
+                />
+              </Form.Group>
             </div>
           </div>
           <Button type="submit" className="mt-4" onClick={submit}>
