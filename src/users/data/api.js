@@ -542,7 +542,15 @@ export async function postTogglePasswordStatus(user, comment) {
 
 export async function postResetPassword(email) {
   try {
-    const { data } = await getAuthenticatedHttpClient().post(AppUrls.getResetPasswordUrl(), `email_from_support_tools=${encodeURIComponent(email)}`);
+    const { data } = await getAuthenticatedHttpClient().post(
+      AppUrls.getResetPasswordUrl(),
+      { email_from_support_tools: email },
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
     return data;
   } catch (error) {
     return {

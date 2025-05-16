@@ -551,10 +551,17 @@ describe('API', () => {
   describe('Reset Password', () => {
     const resetPasswordApiUrl = `${getConfig().LMS_BASE_URL}/account/password`;
 
-    it('Reset Password Response', async () => {
+    test.each([
+      'email@example.com',
+      'email.name+test@example.com',
+      'email_name-test@example.com',
+    ])('Reset Password Response for %s', async (email) => {
       const expectedResponse = {};
-      mockAdapter.onPost(resetPasswordApiUrl, `email_from_support_tools=${encodeURIComponent(testEmail)}`).reply(200, expectedResponse);
-      const response = await api.postResetPassword(testEmail);
+      mockAdapter.onPost(
+        resetPasswordApiUrl,
+        `email_from_support_tools=${encodeURIComponent(email)}`,
+      ).reply(200, expectedResponse);
+      const response = await api.postResetPassword(email);
       expect(response).toEqual(expectedResponse);
     });
   });
