@@ -5,12 +5,12 @@ import {
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { StrictMode } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
 import { v4 as uuidv4 } from 'uuid';
+import { createRoot } from 'react-dom/client';
 import Header from './supportHeader';
 import messages from './i18n';
 import SupportToolsTab from './SupportToolsTab/SupportToolsTab';
@@ -33,10 +33,11 @@ import CustomerViewContainer from './Configuration/Customers/CustomerDetailView/
 
 const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 
+const rootNode = createRoot(document.getElementById('root'));
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();
   if (!administrator) {
-    ReactDOM.render(<ErrorPage message="You do not have access to this page." />, document.getElementById('root'));
+    rootNode.render(<ErrorPage message="You do not have access to this page." />);
     return;
   }
   const configurationRoutes = [
@@ -83,32 +84,33 @@ subscribe(APP_READY, () => {
       element={<CustomerViewContainer />}
     />,
   ];
-  ReactDOM.render(
-    <AppProvider>
-      <UserMessagesProvider>
-        <Head />
-        <Header />
-        <Routes>
-          {/* Start: Configuration Dropdown Routes */}
-          {getConfig().FEATURE_CUSTOMER_SUPPORT_VIEW === 'true' && customerRoutes}
-          {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
-          {/* End: Configuration Dropdown Routes */}
-          <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} element={<FBEIndexPage />} />
-          <Route
-            path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS}
-            element={<ProgramEnrollmentsIndexPage />}
-          />
-        </Routes>
-      </UserMessagesProvider>
-    </AppProvider>,
-    document.getElementById('root'),
+  rootNode.render(
+    <StrictMode>
+      <AppProvider>
+        <UserMessagesProvider>
+          <Head />
+          <Header />
+          <Routes>
+            {/* Start: Configuration Dropdown Routes */}
+            {getConfig().FEATURE_CUSTOMER_SUPPORT_VIEW === 'true' && customerRoutes}
+            {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
+            {/* End: Configuration Dropdown Routes */}
+            <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
+            <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
+            <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} element={<FBEIndexPage />} />
+            <Route
+              path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS}
+              element={<ProgramEnrollmentsIndexPage />}
+            />
+          </Routes>
+        </UserMessagesProvider>
+      </AppProvider>
+    </StrictMode>,
   );
 });
 
 subscribe(APP_INIT_ERROR, (error) => {
-  ReactDOM.render(<ErrorPage message={error.message} />, document.getElementById('root'));
+  rootNode.render(<StrictMode><ErrorPage message={error.message} /></StrictMode>);
 });
 
 initialize({

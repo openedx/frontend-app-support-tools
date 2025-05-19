@@ -92,7 +92,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
           </ActionRow>
         </ModalDialog.Footer>
       </ModalDialog>
-      <Card className="pt-2 px-3 mb-1 w-100">
+      <Card data-testid="singleSignOnCard" className="pt-2 px-3 mb-1 w-100">
         <Card.Header
           title={(
             <span className="h3 card-title">

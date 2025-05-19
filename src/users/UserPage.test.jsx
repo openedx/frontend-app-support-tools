@@ -1,8 +1,9 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
-import { waitFor } from '@testing-library/react';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import UserPage from './UserPage';
 import * as ssoAndUserApi from './data/api';
@@ -33,7 +34,6 @@ const UserPageWrapper = () => (
 );
 
 describe('User Page', () => {
-  let wrapper;
   let mockedGetUserData;
   beforeEach(() => {
     mockedGetUserData = jest.spyOn(ssoAndUserApi, 'getAllUserData').mockImplementation(() => Promise.resolve({ user: UserSummaryData.userData, errors: [] }));
@@ -49,12 +49,11 @@ describe('User Page', () => {
   });
 
   it('default render', async () => {
-    wrapper = mount(<UserPageWrapper />);
-    wrapper.find(
-      "input[name='userIdentifier']",
-    ).instance().value = 'AnonyMouse';
-    wrapper.find('.btn.btn-primary').simulate('click');
-
+    render(<UserPageWrapper />);
+    const userSearchInput = await screen.findByTestId('userSearchInput');
+    fireEvent.change(userSearchInput, { target: { value: 'AnonyMouse' } });
+    const btnToClick = await screen.findByTestId('userSearchSubmitButton');
+    fireEvent.click(btnToClick);
     await waitFor(() => {
       expect(mockedNavigator).toHaveBeenCalledWith(
         `/learner_information/?lms_user_id=${UserSummaryData.userData.id}`,
