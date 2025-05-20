@@ -54,7 +54,7 @@ export default function ReissueEntitlementForm({
   });
 
   const reissueEntitlementForm = (
-    <form>
+    <form data-testid="reissue-entitlement-form">
       <AlertList topic="reissueEntitlement" className="mb-3" />
       <div className="row small">
         <div className="col-sm-6">
@@ -101,7 +101,7 @@ export default function ReissueEntitlementForm({
       size="lg"
     >
       <ModalDialog.Header className="mb-3">
-        <ModalDialog.Title className="modal-title">
+        <ModalDialog.Title data-testid="reissue-entitlement-modal-title" className="modal-title">
           Reissue Entitlement
         </ModalDialog.Title>
       </ModalDialog.Header>
@@ -112,6 +112,7 @@ export default function ReissueEntitlementForm({
         <ActionRow>
           <ModalDialog.CloseButton
             variant="link"
+            data-testid="reissue-entitlement-modal-close-button"
           >
             Close
           </ModalDialog.CloseButton>

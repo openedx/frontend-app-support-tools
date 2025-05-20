@@ -1,6 +1,8 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 import CreateEntitlementForm from './CreateEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
@@ -14,54 +16,54 @@ const CreateEntitlementFormWrapper = (props) => (
 );
 
 describe('Create Entitlement Form', () => {
-  let wrapper;
+  let unmountComponent;
 
   beforeEach(() => {
-    wrapper = mount(<CreateEntitlementFormWrapper {...entitlementFormData} />);
+    const { unmount } = render(<CreateEntitlementFormWrapper {...entitlementFormData} />);
+    unmountComponent = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountComponent();
   });
 
-  it('Default form render', () => {
-    let createFormModal = wrapper.find('ModalDialog#create-entitlement');
-    expect(createFormModal.prop('isOpen')).toEqual(true);
-    const courseUuidInput = wrapper.find('input#courseUuid');
-    const modeSelectDropdown = wrapper.find('select#mode');
-    const commentsTextArea = wrapper.find('textarea#comments');
-    expect(courseUuidInput.prop('value')).toEqual(entitlementFormData.entitlement.courseUuid);
-    expect(modeSelectDropdown.find('option')).toHaveLength(4);
-    expect(commentsTextArea.text()).toEqual('');
+  it('Default form render', async () => {
+    let createFormModal = await screen.findByTestId('create-entitlement-form');
+    expect(createFormModal).toBeInTheDocument();
+    const courseUuidInput = document.querySelector('input#courseUuid');
+    const modeSelectDropdown = document.querySelector('select#mode');
+    const commentsTextArea = document.querySelector('textarea#comments');
+    expect(courseUuidInput.value).toEqual(entitlementFormData.entitlement.courseUuid);
+    expect(modeSelectDropdown.querySelectorAll('option')).toHaveLength(4);
+    expect(commentsTextArea.textContent).toEqual('');
 
-    wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('ModalDialog#create-entitlement');
-    expect(createFormModal.prop('isOpen')).toEqual(false);
+    fireEvent.click(document.querySelector('button.btn-link'));
+    createFormModal = await screen.queryByTestId('create-entitlement-form');
+    expect(createFormModal).not.toBeInTheDocument();
   });
 
   describe('Form Submission', () => {
     it('Submit button disabled by default', () => {
-      expect(wrapper.find('button.btn-primary').prop('disabled')).toBeTruthy();
+      expect(document.querySelector('button.btn-primary').disabled).toBeTruthy();
     });
 
     it('Successful form submission', async () => {
       const apiMock = jest.spyOn(api, 'postEntitlement').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('input#courseUuid').simulate('change', { target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'professional' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
-      const submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton.prop('disabled')).toBeFalsy();
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      submitButton.simulate('click');
-      expect(wrapper.find('div.spinner-border').length).toEqual(1);
+      fireEvent.change(document.querySelector('input#courseUuid'), { target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' } });
+      fireEvent.change(document.querySelector('select#mode'), { target: { value: 'professional' } });
+      fireEvent.change(document.querySelector('textarea#comments'), { target: { value: 'creating new entitlement' } });
+      const submitButton = document.querySelector('button.btn-primary');
+      expect(submitButton.disabled).toBeFalsy();
+      expect(document.querySelectorAll('div.spinner-border').length).toEqual(0);
+      fireEvent.click(submitButton);
+      expect(document.querySelectorAll('div.spinner-border').length).toEqual(1);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-
-      waitFor(() => {
+      await waitFor(() => {
         expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
-        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+        expect(document.querySelectorAll('div.spinner-border').length).toEqual(0);
       });
       apiMock.mockReset();
     });
@@ -80,11 +82,11 @@ describe('Create Entitlement Form', () => {
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
-      wrapper.find('button.btn-primary').simulate('click');
+      fireEvent.change(document.querySelector('textarea#comments'), { target: { value: 'creating new entitlement' } });
+      fireEvent.click(document.querySelector('button.btn-primary'));
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error creating entitlement'));
+      await waitFor(() => expect(document.querySelector('.alert').textContent).toEqual('Error creating entitlement'));
     });
   });
 });

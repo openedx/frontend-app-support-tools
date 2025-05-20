@@ -88,7 +88,7 @@ export default function CourseSummary({
   }
 
   const courseSummaryInfo = (
-    <section ref={courseSummaryRef}>
+    <section data-testid="course-summary-info" ref={courseSummaryRef}>
       {!courseSummaryData && !courseSummaryErrors && <PageLoading srMessage="Loading" />}
       {courseSummaryErrors && <AlertList topic="course-summary" className="m-3" />}
 
@@ -168,6 +168,7 @@ export default function CourseSummary({
       <ModalDialog.Footer>
         <ActionRow>
           <ModalDialog.CloseButton
+            data-testid="course-summary-modal-close-button"
             id="closeBtnTest"
             variant="link"
           >

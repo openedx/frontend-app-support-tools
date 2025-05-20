@@ -52,7 +52,7 @@ export default function CreateEnrollmentForm({
   });
 
   const createEnrollmentForm = (
-    <form>
+    <form data-testid="create-enrollment-form">
       <AlertList topic="createEnrollments" className="mb-3" />
       <div className="form-group">
         <Input
@@ -106,7 +106,7 @@ export default function CreateEnrollmentForm({
       size="lg"
     >
       <ModalDialog.Header className="mb-3">
-        <ModalDialog.Title className="modal-title">
+        <ModalDialog.Title data-testid="create-enrollment-form-heading" className="modal-title">
           Create New Enrollment
         </ModalDialog.Title>
       </ModalDialog.Header>
@@ -116,6 +116,7 @@ export default function CreateEnrollmentForm({
       <ModalDialog.Footer>
         <ActionRow>
           <ModalDialog.CloseButton
+            data-testid="close-button-create-enrollment-modal"
             variant="link"
           >
             Close

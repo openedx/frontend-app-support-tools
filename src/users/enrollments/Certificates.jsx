@@ -110,7 +110,7 @@ export default function Certificates({
   }
 
   const certificateInfo = (
-    <section ref={certificateRef}>
+    <section data-testid="certificates" ref={certificateRef}>
       {!certificate && !displayCertErrors && <PageLoading srMessage="Loading" /> }
       {displayCertErrors && <AlertList topic="certificates" />}
 
