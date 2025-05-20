@@ -80,6 +80,7 @@ export default function CourseSummary({
   function renderCourseRuns() {
     return (
       <Table
+        dataTestId="course-runs-table"
         columns={courseRunsColumn}
         data={tableData}
         styleName="course-runs-table"
@@ -154,7 +155,7 @@ export default function CourseSummary({
       size="lg"
     >
       <ModalDialog.Header className="mb-3">
-        <ModalDialog.Title className="mb-3">
+        <ModalDialog.Title data-testid="course-summary-modal-title" className="mb-3">
           {
             courseSummaryData && !courseSummaryErrors
               ? `Course Summary: ${courseSummaryData.title}`

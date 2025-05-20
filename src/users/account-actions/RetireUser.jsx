@@ -75,23 +75,25 @@ export default function RetireUser({
         size="lg"
       >
         <ModalDialog.Header className="mb-3 mt-1">
-          <ModalDialog.Title className="modal-title">
+          <ModalDialog.Title data-testid="user-account-retire-modal-title" className="modal-title">
             Retire User Confirmation
           </ModalDialog.Title>
         </ModalDialog.Header>
-        <ModalDialog.Body className="mb-3">
+        <ModalDialog.Body data-testid="user-account-retire-modal-body" className="mb-3">
           {modalBody}
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <ActionRow>
             <ModalDialog.CloseButton
               variant="link"
+              data-testid="user-account-retire-modal-close-button"
             >
               Close
             </ModalDialog.CloseButton>
             {errorMessage ? null
               : (
                 <Button
+                  data-testid="retire-user-account-confirmation-button"
                   variant="danger"
                   onClick={retireUser}
                 >

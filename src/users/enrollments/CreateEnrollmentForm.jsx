@@ -125,6 +125,7 @@ export default function CreateEnrollmentForm({
             ? (<div className="spinner-border text-primary" role="status" />)
             : (
               <Button
+                data-testid="create-enrollment-form-submit-button"
                 variant="primary"
                 disabled={!(courseID && reason)}
                 className="mr-3"
