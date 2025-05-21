@@ -1,5 +1,6 @@
 import { mount } from 'enzyme';
 import React from 'react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CopyShowHyperlinks from './CopyShowHyperLinks';
 
 describe('Copy Show Hyperlinks', () => {
@@ -11,7 +12,7 @@ describe('Copy Show Hyperlinks', () => {
     props = {
       text,
     };
-    wrapper = mount(<CopyShowHyperlinks {...props} />);
+    wrapper = mount(<IntlProvider locale="en"><CopyShowHyperlinks {...props} /></IntlProvider>);
   });
   it('Text Value', () => {
     const copy = wrapper.find('a').at(0);

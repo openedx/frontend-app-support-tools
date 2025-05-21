@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
 import * as api from './data/api';
@@ -7,9 +8,11 @@ import { enrollmentsData } from './data/test/enrollments';
 import { entitlementsData } from './data/test/entitlements';
 
 const EntitlementsAndEnrollmentsContainerWrapper = (props) => (
-  <UserMessagesProvider>
-    <EntitlementsAndEnrollmentsContainer {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <EntitlementsAndEnrollmentsContainer {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Entitlements and Enrollments component', () => {

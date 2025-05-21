@@ -2,6 +2,7 @@ import React from 'react';
 import {
   render, waitFor, act, fireEvent,
 } from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import OrderHistory from './OrderHistory';
 import { getOrderHistory } from '../data/api';
 import '@testing-library/jest-dom/extend-expect';
@@ -10,9 +11,11 @@ import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 jest.mock('../data/api');
 
 const OrderHistoryWrapper = (props) => (
-  <UserMessagesProvider>
-    <OrderHistory {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <OrderHistory {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('OrderHistory', () => {

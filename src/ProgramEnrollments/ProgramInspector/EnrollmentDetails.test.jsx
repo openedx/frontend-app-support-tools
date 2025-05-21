@@ -1,16 +1,19 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import EnrollmentDetails from './EnrollmentDetails';
 import { programInspectorSuccessResponse } from './data/test/programInspector';
 
 const EnrollmentDetailsWrapper = (props) => (
-  <MemoryRouter>
-    <UserMessagesProvider>
-      <EnrollmentDetails {...props} />
-    </UserMessagesProvider>
-  </MemoryRouter>
+  <IntlProvider locale="en">
+    <MemoryRouter>
+      <UserMessagesProvider>
+        <EnrollmentDetails {...props} />
+      </UserMessagesProvider>
+    </MemoryRouter>
+  </IntlProvider>
 );
 
 describe('Enrollment Details', () => {
