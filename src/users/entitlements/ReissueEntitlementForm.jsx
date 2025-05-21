@@ -105,7 +105,7 @@ export default function ReissueEntitlementForm({
           Reissue Entitlement
         </ModalDialog.Title>
       </ModalDialog.Header>
-      <ModalDialog.Body>
+      <ModalDialog.Body data-testid="reissue-entitlement-modal-body">
         {reissueEntitlementForm}
       </ModalDialog.Body>
       <ModalDialog.Footer>
@@ -121,6 +121,7 @@ export default function ReissueEntitlementForm({
             : (
               <Button
                 variant="primary"
+                data-testid="reissue-entitlement-submit-button"
                 className="mr-3"
                 disabled={!(entitlement.courseUuid && entitlement.mode && comments)}
                 hidden={hideSubmit}

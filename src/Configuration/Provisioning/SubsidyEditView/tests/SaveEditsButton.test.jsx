@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import '@testing-library/jest-dom/extend-expect';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import SaveEditsButton from '../SaveEditsButton';

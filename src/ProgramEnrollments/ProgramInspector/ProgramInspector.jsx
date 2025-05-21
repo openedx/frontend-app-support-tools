@@ -218,7 +218,7 @@ export default function ProgramInspector() {
                 </div>
               )}
             </div>
-            <div className="col-sm-6 sso-records ml-1">
+            <div data-testid="sso-records" className="col-sm-6 sso-records ml-1">
               <h4>SSO Records</h4>
               {ssoRecords && ssoRecords.length ? (
                 ssoRecords.map((ssoRecord) => (

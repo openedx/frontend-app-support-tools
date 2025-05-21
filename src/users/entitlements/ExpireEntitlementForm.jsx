@@ -107,7 +107,7 @@ export default function ExpireEntitlementForm({
           Expire Entitlement
         </ModalDialog.Title>
       </ModalDialog.Header>
-      <ModalDialog.Body>
+      <ModalDialog.Body data-testid="expire-entitlement-modal-body">
         {expireEntitlementForm}
       </ModalDialog.Body>
       <ModalDialog.Footer>

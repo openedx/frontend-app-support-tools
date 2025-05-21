@@ -1,7 +1,7 @@
-import { mount } from 'enzyme';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
+import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
 import LinkProgramEnrollments from './LinkProgramEnrollments';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import {
@@ -24,7 +24,6 @@ const LinkProgramEnrollmentsWrapper = (props) => (
 );
 
 describe('Link Program Enrollments', () => {
-  let wrapper;
   let apiMock;
   const data = {
     programID: '8bee627e-d85e-4a76-be41-d58921da666e',
@@ -38,15 +37,15 @@ describe('Link Program Enrollments', () => {
   });
 
   it('default page render', async () => {
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    const programIdInput = wrapper.find("input[name='programUUID']");
-    const usernamePairInput = wrapper.find("textarea[name='usernamePairText']");
-    const submitButton = wrapper.find('button.btn-primary');
+    const programIdInput = document.querySelector("input[name='programUUID']");
+    const usernamePairInput = document.querySelector("textarea[name='usernamePairText']");
+    const submitButton = document.querySelector('button.btn-primary');
 
-    expect(programIdInput.prop('defaultValue')).toEqual(undefined);
-    expect(usernamePairInput.prop('defaultValue')).toEqual(undefined);
-    expect(submitButton.text()).toEqual('Submit');
+    expect(programIdInput.defaultValue).toEqual('');
+    expect(usernamePairInput.defaultValue).toEqual('');
+    expect(submitButton.textContent).toEqual('Submit');
   });
 
   it('valid search value', async () => {
@@ -54,11 +53,11 @@ describe('Link Program Enrollments', () => {
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeSuccessResponse));
 
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = data.programID;
+    document.querySelector('textarea[name="usernamePairText"]').value = data.usernamePairText;
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
     expect(apiMock).toHaveBeenCalledTimes(1);
   });
@@ -68,16 +67,16 @@ describe('Link Program Enrollments', () => {
       .spyOn(api, 'default')
       .mockImplementation(() => Promise.resolve(lpeSuccessResponse));
 
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = data.programID;
+    document.querySelector('textarea[name="usernamePairText"]').value = data.usernamePairText;
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(apiMock).toHaveBeenCalledTimes(1);
 
-      wrapper.find('button.btn-primary').simulate('click');
+      fireEvent.click(document.querySelector('button.btn-primary'));
       expect(apiMock).toHaveBeenCalledTimes(2);
     });
   });
@@ -86,16 +85,16 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseEmptyValues));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = '';
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = '';
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = '';
+    document.querySelector('textarea[name="usernamePairText"]').value = '';
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
     expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    await waitFor(() => {
+      expect(document.querySelector('.error-message')).toBeInTheDocument();
+      expect(document.querySelector('.success-message')).not.toBeInTheDocument();
     });
   });
 
@@ -103,16 +102,16 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidUUID));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = data.programID;
+    document.querySelector('textarea[name="usernamePairText"]').value = data.usernamePairText;
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+      expect(document.querySelector('.error-message')).toBeInTheDocument();
+      expect(document.querySelector('.success-message')).not.toBeInTheDocument();
     });
   });
 
@@ -120,16 +119,16 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidUsername));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = data.programID;
+    document.querySelector('textarea[name="usernamePairText"]').value = data.usernamePairText;
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+      expect(document.querySelector('.error-message')).toBeInTheDocument();
+      expect(document.querySelector('.success-message')).not.toBeInTheDocument();
     });
   });
 
@@ -137,16 +136,16 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidExternalKey));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = data.programID;
+    document.querySelector('textarea[name="usernamePairText"]').value = data.usernamePairText;
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
     expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    await waitFor(() => {
+      expect(document.querySelector('.error-message')).toBeInTheDocument();
+      expect(document.querySelector('.success-message')).not.toBeInTheDocument();
     });
   });
 
@@ -154,16 +153,16 @@ describe('Link Program Enrollments', () => {
     apiMock = jest
       .spyOn(api, 'default')
       .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseAlreadyLinked));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    document.querySelector('input[name="programUUID"]').value = data.programID;
+    document.querySelector('textarea[name="usernamePairText"]').value = data.usernamePairText;
+    fireEvent.click(document.querySelector('button.btn-primary'));
 
     expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    await waitFor(() => {
+      expect(document.querySelector('.error-message')).toBeInTheDocument();
+      expect(document.querySelector('.success-message')).not.toBeInTheDocument();
     });
   });
 });

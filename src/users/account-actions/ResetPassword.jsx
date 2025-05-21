@@ -63,23 +63,25 @@ export default function ResetPassword({
         size="lg"
       >
         <ModalDialog.Header className="mb-3 mt-1">
-          <ModalDialog.Title className="modal-title">
+          <ModalDialog.Title data-testid="user-account-reset-password-modal-title" className="modal-title">
             Reset Password
           </ModalDialog.Title>
         </ModalDialog.Header>
-        <ModalDialog.Body className="mb-3">
+        <ModalDialog.Body data-testid="user-account-reset-password-modal-body" className="mb-3">
           {modalBody}
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <ActionRow>
             <ModalDialog.CloseButton
               variant="link"
+              data-testid="user-account-reset-password-modal-close-button"
             >
               Close
             </ModalDialog.CloseButton>
             {errorMessage ? null
               : (
                 <Button
+                  data-testid="user-account-reset-password-confirmation-button"
                   variant="danger"
                   onClick={resetPassword}
                 >

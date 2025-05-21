@@ -50,7 +50,7 @@ describe('Retire User Component Tests', () => {
     expect(retireUserModalBody).toBeInTheDocument();
     const title = await screen.findByTestId('user-account-retire-modal-title');
     expect(title.textContent).toEqual('Retire User Confirmation');
-    const confirmAlert = document.querySelector('.alert-warning');
+    const confirmAlert = await screen.findByTestId('retire-user-alert');
     expect(confirmAlert.textContent).toEqual(
       "You are about to retire edx with the email address: edx@example.com. This is a serious action that will revoke this user's access to edX and their earned certificates. Furthermore, the email address associated with the retired account will not be able to be used to create a new account.",
     );
@@ -81,13 +81,13 @@ describe('Retire User Component Tests', () => {
     fireEvent.click(retireUserButton);
 
     const retireUserConfirmationButton = await screen.findByTestId('retire-user-account-confirmation-button');
-    await waitFor(() => fireEvent.click(retireUserConfirmationButton));
+    fireEvent.click(retireUserConfirmationButton);
     const retireUserModalBody = await screen.queryByTestId('user-account-retire-modal-body');
 
     const confirmAlert = document.querySelector('.alert-danger');
-    expect(confirmAlert.textContent).toEqual(
+    waitFor(() => expect(confirmAlert.textContent).toEqual(
       'Something went wrong. Please try again later!',
-    );
+    ));
     expect(retireUserModalBody).toBeInTheDocument();
 
     mockApiCall.mockRestore();
