@@ -116,7 +116,7 @@ describe('Reset Password Component Tests', () => {
     fireEvent.click(passwordResetButton);
     const confirmButton = await screen.findByTestId('user-account-reset-password-confirmation-button');
     await waitFor(() => fireEvent.click(confirmButton));
-    const errorAlert = document.querySelector('.alert-danger');
+    const errorAlert = await screen.findByTestId('reset-password-alert-danger');
     await waitFor(() => expect(errorAlert.textContent).toEqual(
       'Something went wrong. Please try again later!',
     ));

@@ -36,7 +36,7 @@ export default function RetireUser({
     errorMessage ? <Alert variant="danger">{errorMessage}</Alert>
       : (
         <div>
-          <Alert variant="warning">
+          <Alert data-testid="retire-user-alert" variant="warning">
             <FormattedMessage
               id="supportTools.accountActions.retireUser"
               tagName="p"

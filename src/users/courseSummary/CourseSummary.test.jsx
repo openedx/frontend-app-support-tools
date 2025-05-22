@@ -1,5 +1,5 @@
 import {
-  fireEvent, render, screen,
+  fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
@@ -30,8 +30,8 @@ describe('Course Summary', () => {
   });
 
   it('Default component render with Modal', async () => {
-    const { unmount } = await render(<CourseSummaryWrapper {...props} />);
-    const dataRows = document.querySelectorAll('table.course-summary-table tbody')[0].children;
+    const { unmount } = render(<CourseSummaryWrapper {...props} />);
+    const dataRows = (await screen.findByTestId('course-summary-table-body')).children;
     expect(dataRows.length).toEqual(5);
 
     let courseSummaryModal = await screen.findByTestId('course-summary-info');
@@ -62,7 +62,7 @@ describe('Course Summary', () => {
   it('Render loading page correctly', async () => {
     const { unmount } = render(<CourseSummaryWrapper {...props} />);
     apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
-    render(<CourseSummaryWrapper {...props} />);
+    await waitFor(() => render(<CourseSummaryWrapper {...props} />));
     const loadingComponent = await screen.findByTestId('page-loading');
     expect(loadingComponent.textContent).toEqual('Loading');
     unmount();
@@ -80,10 +80,10 @@ describe('Course Summary', () => {
         },
       ],
     }));
-    const { unmount } = render(<CourseSummaryWrapper {...props} />);
+    const { unmount } = await waitFor(() => render(<CourseSummaryWrapper {...props} />));
     const title = await screen.findByTestId('course-summary-modal-title');
     expect(title.textContent).toEqual('Course Summary');
-    const alert = document.querySelector('.alert');
+    const alert = await screen.findByTestId('alert');
     expect(alert.textContent).toEqual('No Course Summary Data found');
     unmount();
   });

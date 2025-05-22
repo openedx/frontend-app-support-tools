@@ -72,6 +72,7 @@ export default function ProgramInspector() {
         return getUser(name).then((res) => {
           navigate(`?edx_user_id=${res.id}`);
         }).catch(err => {
+          // eslint-disable-next-line no-console
           console.error(err);
           setError('An error occurred while fetching user id');
           navigate('/programs');
@@ -93,6 +94,7 @@ export default function ProgramInspector() {
         setUsername(res.username);
         setQuery({ uri: `?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}` });
       }).catch(err => {
+        // eslint-disable-next-line no-console
         console.error(err);
         setError('An error occurred while fetching user id');
         navigate('/programs');

@@ -1,5 +1,5 @@
 import {
-  fireEvent, render, screen, waitFor,
+  fireEvent, render, screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
@@ -24,7 +24,7 @@ const EnrollmentPageWrapper = (props) => (
 );
 
 describe('Course Enrollments Listing', () => {
-  let wrapper; let unmountComponent;
+  let unmountComponent;
   const props = {
     user: 'edX',
     changeHandler: jest.fn(() => {}),
@@ -32,8 +32,7 @@ describe('Course Enrollments Listing', () => {
 
   beforeEach(async () => {
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
-    const { unmount, container } = render(<EnrollmentPageWrapper {...props} />);
-    wrapper = container;
+    const { unmount } = render(<EnrollmentPageWrapper {...props} />);
     unmountComponent = unmount;
   });
 

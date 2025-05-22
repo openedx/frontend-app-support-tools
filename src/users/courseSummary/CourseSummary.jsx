@@ -96,7 +96,7 @@ export default function CourseSummary({
       {courseSummaryData && !courseSummaryErrors && (
         <div>
           <table className="course-summary-table">
-            <tbody>
+            <tbody data-testid="course-summary-table-body">
 
               <tr>
                 <th>UUID</th>

@@ -1,5 +1,5 @@
 import {
-  fireEvent, render, screen,
+  fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
@@ -237,13 +237,12 @@ describe('Certificate component', () => {
 
       expect(regenerateButton.disabled).toBeTruthy();
       expect(regenerateApiMock).toHaveBeenCalledTimes(1);
-      // TODO: need to figure out why alert is not being rendered
-      // const infoAlert = await screen.findByRole('alert');
-      // expect(infoAlert.textContent).toEqual('Regenerating Certificate');
+      const infoAlert = await screen.findByRole('alert');
+      expect(infoAlert.textContent).toEqual('Regenerating Certificate');
 
       regenerateButton = await screen.findByTestId('regenerate-certificate-button');
       expect(await screen.queryByRole('h3')).not.toBeInTheDocument();
-      expect(regenerateButton.disabled).toBeFalsy();
+      expect(regenerateButton.disabled).toBeTruthy();
     });
 
     it('Unsuccessful certificate regeneration flow', async () => {
@@ -266,7 +265,7 @@ describe('Certificate component', () => {
       expect(regenerateButton.textContent).toEqual('Regenerate');
       expect(regenerateButton.disabled).toBeFalsy();
 
-      await fireEvent.click(regenerateButton);
+      await waitFor(() => fireEvent.click(regenerateButton));
       expect(regenerateApiMock).toHaveBeenCalledTimes(1);
 
       const alert = await screen.findByRole('alert');

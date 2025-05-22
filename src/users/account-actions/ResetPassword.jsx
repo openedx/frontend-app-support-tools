@@ -28,7 +28,7 @@ export default function ResetPassword({
   };
 
   const modalBody = (
-    errorMessage ? <Alert variant="danger">{errorMessage}</Alert>
+    errorMessage ? <Alert data-testid="reset-password-alert-danger" variant="danger">{errorMessage}</Alert>
       : (
         <div>
           <Alert variant="warning">

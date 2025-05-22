@@ -52,7 +52,7 @@ export default function FeatureBasedEnrollment({ courseId, apiFetchSignal }) {
                 </Row>
               </>
             )
-            : (<p className="my-4">No Feature Based Enrollment Configurations were found.</p>)
+            : (<p data-testid="no-enrollment-configuration-message" className="my-4">No Feature Based Enrollment Configurations were found.</p>)
           )
         )
         : (

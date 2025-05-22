@@ -52,7 +52,7 @@ describe('Feature Based Enrollment', () => {
     render(<FeatureBasedEnrollmentWrapper {...props} />);
 
     const cardList = await screen.queryAllByTestId('feature-based-enrollment-card');
-    const noRecordMessage = document.querySelector('p');
+    const noRecordMessage = await screen.findByTestId('no-enrollment-configuration-message');
 
     expect(cardList).toHaveLength(0);
     expect(document.querySelector('h3#fbe-title-header').textContent).toEqual('Feature Based Enrollment Configuration');
