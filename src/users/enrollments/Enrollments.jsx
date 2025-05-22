@@ -287,8 +287,9 @@ export default function Enrollments({
   return (
     <section className="mb-3">
       <div className="row">
-        <h3 className="ml-4 mr-auto">Enrollments ({tableData.length})</h3>
+        <h3 data-testid="enrollments-heading3" className="ml-4 mr-auto">Enrollments ({tableData.length})</h3>
         <Button
+          data-testid="create-enrollment-button"
           id="create-enrollment-button"
           type="button"
           variant="outline-primary mr-4"

@@ -1,10 +1,6 @@
 import 'babel-polyfill';
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { initialize, mergeConfig } from '@edx/frontend-platform';
 import { MockAuthService } from '@edx/frontend-platform/auth';
-
-Enzyme.configure({ adapter: new Adapter() });
 
 mergeConfig({
   COMMERCE_COORDINATOR_ORDER_DETAILS_URL: process.env.COMMERCE_COORDINATOR_ORDER_DETAILS_URL || null,

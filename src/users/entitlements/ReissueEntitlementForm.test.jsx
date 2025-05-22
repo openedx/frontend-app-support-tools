@@ -1,7 +1,8 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-
+import '@testing-library/jest-dom';
 import ReissueEntitlementForm from './ReissueEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -14,53 +15,55 @@ const ReissueEntitlementFormWrapper = (props) => (
 );
 
 describe('Reissue Entitlement Form', () => {
-  let wrapper;
+  let unmountComponent;
 
   beforeEach(() => {
-    wrapper = mount(<ReissueEntitlementFormWrapper {...entitlementFormData} />);
+    const { unmount } = render(<ReissueEntitlementFormWrapper {...entitlementFormData} />);
+    unmountComponent = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountComponent();
   });
 
-  it('Default form render', () => {
-    let reissueFormModal = wrapper.find('ModalDialog#reissue-entitlement');
-    expect(reissueFormModal.prop('isOpen')).toEqual(true);
-    const commentsTextArea = wrapper.find('textarea#comments');
-    expect(commentsTextArea.text()).toEqual('');
+  it('Default form render', async () => {
+    let reissueFormModal = await screen.findByTestId('reissue-entitlement-modal-body');
+    expect(reissueFormModal).toBeInTheDocument();
+    const commentsTextArea = document.querySelector('textarea#comments');
+    expect(commentsTextArea.textContent).toEqual('');
 
-    wrapper.find('button.btn-link').simulate('click');
-    reissueFormModal = wrapper.find('ModalDialog#reissue-entitlement');
-    expect(reissueFormModal.prop('isOpen')).toEqual(false);
+    const modalCloseButton = await screen.findByTestId('reissue-entitlement-modal-close-button');
+    fireEvent.click(modalCloseButton);
+    reissueFormModal = await screen.queryByTestId('reissue-entitlement-modal-body');
+    expect(reissueFormModal).not.toBeInTheDocument();
   });
 
   describe('Form Submission', () => {
     it('Submit button disabled by default', () => {
-      expect(wrapper.find('button.btn-primary').prop('disabled')).toBeTruthy();
+      expect(document.querySelector('button.btn-primary').disabled).toBeTruthy();
     });
 
     it('Successful form submission', async () => {
       const apiMock = jest.spyOn(api, 'patchEntitlement').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'reissue the expired entitlement' } });
-      let submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton.prop('disabled')).toBeFalsy();
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      submitButton.simulate('click');
-      expect(wrapper.find('div.spinner-border').length).toEqual(1);
+      fireEvent.change(document.querySelector('textarea#comments'), { target: { value: 'reissue the expired entitlement' } });
+      let submitButton = await screen.findByTestId('reissue-entitlement-submit-button');
+      expect(submitButton.disabled).toBeFalsy();
+      expect(document.querySelector('div.spinner-border')).not.toBeInTheDocument();
+      fireEvent.click(submitButton);
+      expect(document.querySelector('div.spinner-border')).toBeInTheDocument();
 
       expect(apiMock).toHaveBeenCalledTimes(1);
 
       waitFor(() => {
         expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
-        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+        expect(document.querySelector('div.spinner-border')).not.toBeInTheDocument();
       });
       apiMock.mockReset();
 
-      submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton).toEqual({});
+      submitButton = await screen.queryByTestId('reissue-entitlement-submit-button');
+      expect(submitButton).not.toBeInTheDocument();
     });
 
     it('Unsuccessful form submission', async () => {
@@ -77,11 +80,11 @@ describe('Reissue Entitlement Form', () => {
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'reissue the expired entitlement' } });
-      wrapper.find('button.btn-primary').simulate('click');
+      fireEvent.change(document.querySelector('textarea#comments'), { target: { value: 'reissue the expired entitlement' } });
+      fireEvent.click(document.querySelector('button.btn-primary'));
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error during reissue of entitlement'));
+      waitFor(() => expect(document.querySelector('.alert').textContent).toEqual('Error during reissue of entitlement'));
     });
   });
 });

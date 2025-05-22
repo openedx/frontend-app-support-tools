@@ -63,7 +63,7 @@ function LearnerRecords({ username, intl }) {
           records.map(({ record, uuid }, idx) => (
             <section key={uuid} className={`${idx % 2 ? 'bg-light-100' : 'bg-light-200'} p-4`}>
               <div className="d-flex align-items-center justify-content-between">
-                <div>
+                <div data-testid="learner-records-program-information">
                   <h4>{record.program.name}</h4>
                   <p>{record.program.type_name}</p>
                   <p>{renderStatus(record.program)}</p>
@@ -71,18 +71,20 @@ function LearnerRecords({ username, intl }) {
                 </div>
                 {record.shared_program_record_uuid ? (
                   <Button
+                    data-testid="learner-records-button"
                     variant="primary"
                     onClick={() => handleCopyButton(record.shared_program_record_uuid.replaceAll('-', ''))}
                   >
                     {intl.formatMessage(messages.copyPublicRecordLinkButton)}
                   </Button>
                 ) : (
-                  <Alert variant="warning" className="no-public-link">
+                  <Alert data-testid="no-public-link" variant="warning" className="no-public-link">
                     {intl.formatMessage(messages.noPublicLink)}
                   </Alert>
                 )}
               </div>
               <Table
+                dataTestId="learner-records-table"
                 columns={[
                   {
                     Header: intl.formatMessage(messages.recordTableHeaderCourseName),

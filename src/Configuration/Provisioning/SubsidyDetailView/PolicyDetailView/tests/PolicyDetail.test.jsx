@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import PolicyDetail from '../PolicyDetail';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
 import { sampleSinglePolicyPredefinedCatalogQueryFormData } from '../../../../testData/constants';
+import '@testing-library/jest-dom';
 
 const PolicyDetailWrapper = ({
   // eslint-disable-next-line react/prop-types

@@ -56,7 +56,7 @@ export default function ExpireEntitlementForm({
   });
 
   const expireEntitlementForm = (
-    <form>
+    <form data-testid="expire-entitlement-form">
       <AlertList topic="expireEntitlement" className="mb-3" />
       <div className="row small">
         <div className="col-sm-6">
@@ -103,17 +103,18 @@ export default function ExpireEntitlementForm({
       size="lg"
     >
       <ModalDialog.Header className="mb-3">
-        <ModalDialog.Title className="modal-title">
+        <ModalDialog.Title data-testid="expire-entitlement-modal-title" className="modal-title">
           Expire Entitlement
         </ModalDialog.Title>
       </ModalDialog.Header>
-      <ModalDialog.Body>
+      <ModalDialog.Body data-testid="expire-entitlement-modal-body">
         {expireEntitlementForm}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <ActionRow>
           <ModalDialog.CloseButton
             variant="link"
+            data-testid="expire-entitlement-modal-close-button"
           >
             Close
           </ModalDialog.CloseButton>

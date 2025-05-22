@@ -11,12 +11,13 @@ export default function UserSummary({
   userData,
   changeHandler,
 }) {
+  const DATA_TEST_ID = 'userSummaryTable';
   return (
     <section className="mb-3">
       <div className="d-flex flex-row flex-wrap">
         <div className="col-sm-6">
 
-          <div id="account-table" className="flex-column pr-4 m-3 card account-info">
+          <div data-testid={DATA_TEST_ID} id="account-table" className="flex-column pr-4 m-3 card account-info">
             <h3>Account Details</h3>
             <table>
               <tbody>
@@ -88,7 +89,7 @@ export default function UserSummary({
           </div>
         </div>
         <div className="col-sm-6">
-          <div className="row p-4 m-3 account-actions" id="account-actions">
+          <div data-testid="account-action" className="row p-4 m-3 account-actions" id="account-actions">
             <AccountActions userData={userData} changeHandler={changeHandler} />
           </div>
           <div className="flex-column">

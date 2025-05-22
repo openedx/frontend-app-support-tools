@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
@@ -33,87 +33,84 @@ SupportToolsTabWrapper.defaultProps = {
 };
 
 describe('Support Tools Main tab', () => {
-  let wrapper;
-
-  afterEach(() => {
-    wrapper.unmount();
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('default page render', () => {
-    wrapper = mount(<SupportToolsTabWrapper />);
+    const { unmount } = render(<SupportToolsTabWrapper />);
+    const tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
+    expect(tabs[0].textContent).toEqual('Learner Information');
+    expect(tabs[1].textContent).toEqual('Feature Based Enrollment');
+    expect(tabs[2].textContent).toEqual('Program Information');
 
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    expect(tabs.at(0).text()).toEqual('Learner Information');
-    expect(tabs.at(1).text()).toEqual('Feature Based Enrollment');
-    expect(tabs.at(2).text()).toEqual('Program Information');
-
-    expect(wrapper.find('h2').text()).toEqual('Support Tools');
-    expect(wrapper.find('p').text()).toEqual(
+    expect(document.querySelector('h2').textContent).toEqual('Support Tools');
+    expect(document.querySelector('p').textContent).toEqual(
       'Suite of tools used by support team to help triage and resolve select learner issues.',
     );
+    unmount();
   });
 
   it('Path changes on Tab switch', () => {
-    wrapper = mount(<SupportToolsTabWrapper />);
+    const { unmount } = render(<SupportToolsTabWrapper />);
+    let tabs = document.querySelectorAll('nav.nav-tabs a');
 
-    let tabs = wrapper.find('nav.nav-tabs a');
-
-    tabs.at(1).simulate('click');
-    tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    const fbeTab = wrapper.find('div.tab-content div#support-tools-tab-tabpane-feature-based-enrollment');
+    fireEvent.click(tabs[1]);
+    tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
+    const fbeTab = document.querySelector('div.tab-content div#support-tools-tab-tabpane-feature-based-enrollment');
     expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP['feature-based-enrollment'], { replace: true });
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(fbeTab.html()).toEqual(expect.stringContaining('active'));
-    expect(fbeTab.find('label').text()).toEqual('Course ID');
+    expect(tabs[0].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[2].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(fbeTab.outerHTML).toEqual(expect.stringContaining('active'));
+    expect(fbeTab.querySelector('label').textContent).toEqual('Course ID');
 
-    tabs.at(0).simulate('click');
-    tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    const learnerTab = wrapper.find('div.tab-content div#support-tools-tab-tabpane-learner-information');
+    fireEvent.click(tabs[0]);
+    tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
+    const learnerTab = document.querySelector('div.tab-content div#support-tools-tab-tabpane-learner-information');
     expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP['learner-information'], { replace: true });
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(learnerTab.html()).toEqual(expect.stringContaining('active'));
-    expect(learnerTab.find('label').text()).toEqual('Username, Email or LMS User ID');
+    expect(tabs[0].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[2].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(learnerTab.outerHTML).toEqual(expect.stringContaining('active'));
+    expect(learnerTab.querySelector('label').textContent).toEqual('Username, Email or LMS User ID');
 
-    tabs.at(2).simulate('click');
-    tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
+    fireEvent.click(tabs[2]);
+    tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
     expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP.programs, { replace: true });
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
+    expect(tabs[0].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[2].outerHTML).toEqual(expect.stringContaining('active'));
+    unmount();
   });
 
   it('default tab changes based on feature-based-enrollment pathname', () => {
-    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['feature-based-enrollment']}`} />);
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
+    const { unmount } = render(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['feature-based-enrollment']}`} />);
+    const tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
 
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[0].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[2].outerHTML).not.toEqual(expect.stringContaining('active'));
+    unmount();
   });
 
   it('default tab changes based on learner-information pathname', () => {
-    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['learner-information']}`} />);
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
+    const { unmount } = render(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['learner-information']}`} />);
+    const tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
 
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[0].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[2].outerHTML).not.toEqual(expect.stringContaining('active'));
+    unmount();
   });
 
   it('default tab changes based on programs pathname', () => {
-    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP.programs}`} />);
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
+    const { unmount } = render(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP.programs}`} />);
+    const tabs = document.querySelectorAll('nav.support-tools-tab.nav-tabs a');
 
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
+    expect(tabs[0].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[2].outerHTML).toEqual(expect.stringContaining('active'));
+    unmount();
   });
 });

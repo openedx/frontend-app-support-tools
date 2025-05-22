@@ -18,8 +18,8 @@ export default function UserSearch({ userIdentifier, searchHandler }) {
     <section className="mb-3">
       <form className="form-inline">
         <label htmlFor="userIdentifier">Username, Email or LMS User ID</label>
-        <Input ref={searchRef} className="flex-grow-1 ml-1 mr-1" name="userIdentifier" type="text" defaultValue={userIdentifier} />
-        <Button type="submit" onClick={submit} variant="primary">Search</Button>
+        <Input data-testid="userSearchInput" ref={searchRef} className="flex-grow-1 ml-1 mr-1" name="userIdentifier" type="text" defaultValue={userIdentifier} />
+        <Button data-testid="userSearchSubmitButton" type="submit" onClick={submit} variant="primary">Search</Button>
       </form>
     </section>
   );

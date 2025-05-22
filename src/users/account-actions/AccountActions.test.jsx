@@ -1,34 +1,35 @@
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import AccountActions from './AccountActions';
 import UserSummaryData from '../data/test/userSummary';
 
 describe('Account Actions Component Tests', () => {
-  let wrapper;
+  let unmountComponent;
 
   beforeEach(() => {
-    wrapper = mount(<IntlProvider locale="en"><AccountActions {...UserSummaryData} /> </IntlProvider>);
+    const { unmount } = render(<IntlProvider locale="en"><AccountActions {...UserSummaryData} /> </IntlProvider>);
+    unmountComponent = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountComponent();
   });
 
   it('Action Buttons rendered', () => {
-    const passwordHistoryButton = wrapper.find('button#toggle-password-history');
-    const toggleUserStatusButton = wrapper.find('button#toggle-password');
-    const passwordResetEmailButton = wrapper.find('button#reset-password');
+    const passwordHistoryButton = document.querySelector('button#toggle-password-history');
+    const toggleUserStatusButton = document.querySelector('button#toggle-password');
+    const passwordResetEmailButton = document.querySelector('button#reset-password');
 
-    expect(passwordHistoryButton.text()).toEqual('Show History');
+    expect(passwordHistoryButton.textContent).toEqual('Show History');
     expect(passwordHistoryButton.disabled).toBeFalsy();
 
-    expect(toggleUserStatusButton.text()).toEqual('Disable User');
+    expect(toggleUserStatusButton.textContent).toEqual('Disable User');
     expect(toggleUserStatusButton.disabled).toBeFalsy();
 
-    expect(passwordResetEmailButton.text()).toEqual('Reset Password');
+    expect(passwordResetEmailButton.textContent).toEqual('Reset Password');
     expect(passwordResetEmailButton.disabled).toBeFalsy();
 
-    expect(wrapper.find('h3').text()).toEqual('Account Actions');
+    expect(document.querySelector('h3').textContent).toEqual('Account Actions');
   });
 });

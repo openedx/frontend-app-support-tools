@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import PolicyDetailHeader from '../PolicyDetailHeader';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
+import '@testing-library/jest-dom';
 
 const PolicyDetailHeaderWrapper = ({
   // eslint-disable-next-line react/prop-types

@@ -17,10 +17,11 @@ export default function LearnerInformation({
     <>
       <br />
       <Tabs
+        data-testid="learnerInformationTabs"
         id="learner-information"
         className="learner-information"
       >
-        <Tab eventKey="account" title="Account Information">
+        <Tab data-testid="learnerInformationAccountPane" eventKey="account" title="Account Information">
           <br />
           <UserSummary
             userData={user}
@@ -28,17 +29,17 @@ export default function LearnerInformation({
           />
         </Tab>
 
-        <Tab eventKey="enrollments-entitlements" title="Enrollments/Entitlements">
+        <Tab data-testid="learnerInformationEnrollmentsPane" eventKey="enrollments-entitlements" title="Enrollments/Entitlements">
           <br />
           <EntitlementsAndEnrollmentsContainer user={user.username} />
         </Tab>
 
-        <Tab eventKey="learner-purchases" title="Learner Purchases">
+        <Tab data-testid="learnerInformationPurchasePane" eventKey="learner-purchases" title="Learner Purchases">
           <br />
           <LearnerPurchases user={user.username} />
         </Tab>
 
-        <Tab eventKey="sso" title="SSO/License Info">
+        <Tab data-testid="learnerInformationSSOPane" eventKey="sso" title="SSO/License Info">
           <br />
           <SingleSignOnRecords
             username={user.username}
@@ -49,16 +50,16 @@ export default function LearnerInformation({
           />
         </Tab>
 
-        <Tab eventKey="credentials" title="Learner Credentials">
+        <Tab data-testid="learnerInformationCredentialsPane" eventKey="credentials" title="Learner Credentials">
           <br />
           <LearnerCredentials username={user.username} />
         </Tab>
 
-        <Tab eventKey="records" title="Learner Records">
+        <Tab data-testid="learnerInformationRecordsPane" eventKey="records" title="Learner Records">
           <br />
           <LearnerRecords username={user.username} />
         </Tab>
-        <Tab eventKey="course-reset" title="Course Reset">
+        <Tab data-testid="learnerInformationResetPane" eventKey="course-reset" title="Course Reset">
           <br />
           <CourseReset username={user.username} />
         </Tab>

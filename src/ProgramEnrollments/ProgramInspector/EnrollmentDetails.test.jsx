@@ -1,24 +1,27 @@
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
+import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import EnrollmentDetails from './EnrollmentDetails';
 import { programInspectorSuccessResponse } from './data/test/programInspector';
 
 const EnrollmentDetailsWrapper = (props) => (
   <MemoryRouter>
-    <UserMessagesProvider>
-      <EnrollmentDetails {...props} />
-    </UserMessagesProvider>
+    <IntlProvider locale="en">
+      <UserMessagesProvider>
+        <EnrollmentDetails {...props} />
+      </UserMessagesProvider>
+    </IntlProvider>
   </MemoryRouter>
 );
 
 describe('Enrollment Details', () => {
-  let wrapper;
   const data = programInspectorSuccessResponse.learner_program_enrollments.enrollments[0];
 
   it('Enrollment Details render', async () => {
-    wrapper = mount(
+    render(
       <EnrollmentDetailsWrapper
         enrollments={
           programInspectorSuccessResponse.learner_program_enrollments.enrollments
@@ -26,8 +29,8 @@ describe('Enrollment Details', () => {
       />,
     );
 
-    const heading = wrapper.find('.enrollments h3');
-    expect(heading.text()).toEqual(
+    const heading = document.querySelector('.enrollments h3');
+    expect(heading.textContent).toEqual(
       `Program: ${data.program_name} (${data.program_uuid})`,
     );
   });
@@ -35,15 +38,15 @@ describe('Enrollment Details', () => {
   it.each([{ enrollment: null }, { enrollment: undefined }])(
     'Enrollment Details do not render',
     async ({ enrollment }) => {
-      wrapper = mount(<EnrollmentDetailsWrapper enrollments={enrollment} />);
+      render(<EnrollmentDetailsWrapper enrollments={enrollment} />);
 
-      const heading = wrapper.find('.enrollments h3');
-      expect(heading.exists()).toBeFalsy();
+      const heading = document.querySelector('.enrollments h3');
+      expect(heading).not.toBeInTheDocument();
     },
   );
 
   it('Enrollment details table render', async () => {
-    wrapper = mount(
+    render(
       <EnrollmentDetailsWrapper
         enrollments={
           programInspectorSuccessResponse.learner_program_enrollments.enrollments
@@ -51,11 +54,11 @@ describe('Enrollment Details', () => {
       />,
     );
 
-    const row = wrapper.find('.enrollment-details tbody tr');
-    expect(row.find('td').at(0).text()).toEqual(data.status);
-    expect(row.find('td').at(1).text()).toEqual(data.created);
-    expect(row.find('td').at(2).text()).toEqual(data.modified);
-    expect(row.find('td').at(3).text()).toEqual(data.external_user_key);
+    const row = document.querySelector('.enrollment-details tbody tr');
+    expect(row.querySelectorAll('td')[0].textContent).toEqual(data.status);
+    expect(row.querySelectorAll('td')[1].textContent).toEqual(data.created);
+    expect(row.querySelectorAll('td')[2].textContent).toEqual(data.modified);
+    expect(row.querySelectorAll('td')[3].textContent).toEqual(data.external_user_key);
   });
 
   it.each([
@@ -64,7 +67,7 @@ describe('Enrollment Details', () => {
   ])(
     'Program course enrollments table render Audit',
     async ({ audit, index }) => {
-      wrapper = mount(
+      render(
         <EnrollmentDetailsWrapper
           enrollments={
             programInspectorSuccessResponse.learner_program_enrollments.enrollments
@@ -72,27 +75,27 @@ describe('Enrollment Details', () => {
         />,
       );
       const programCourseEnrollments = data.program_course_enrollments[index];
-      expect(wrapper.find('.enrollments h5').text()).toEqual(
+      expect(document.querySelector('.enrollments h5').textContent).toEqual(
         'Program Course Enrollments',
       );
-      const row = wrapper.find('.course-enrollment-details tbody tr').at(index);
-      expect(row.find('td').at(0).find('a').text()).toEqual(
+      const row = document.querySelectorAll('.course-enrollment-details tbody tr')[index];
+      expect(row.querySelectorAll('td')[0].querySelector('a').textContent).toEqual(
         programCourseEnrollments.course_key,
       );
-      expect(row.find('td').at(1).text()).toEqual(
+      expect(row.querySelectorAll('td')[1].textContent).toEqual(
         programCourseEnrollments.status,
       );
-      expect(row.find('td').at(2).text()).toEqual(
+      expect(row.querySelectorAll('td')[2].textContent).toEqual(
         programCourseEnrollments.created,
       );
-      expect(row.find('td').at(3).text()).toEqual(
+      expect(row.querySelectorAll('td')[3].textContent).toEqual(
         programCourseEnrollments.modified,
       );
-      expect(row.find('td').at(4).text()).toEqual(
+      expect(row.querySelectorAll('td')[4].textContent).toEqual(
         programCourseEnrollments.course_enrollment.course_id,
       );
-      expect(row.find('td').at(5).text()).toEqual(audit);
-      expect(row.find('td').at(6).text()).toEqual(
+      expect(row.querySelectorAll('td')[5].textContent).toEqual(audit);
+      expect(row.querySelectorAll('td')[6].textContent).toEqual(
         programCourseEnrollments.course_enrollment.mode,
       );
     },

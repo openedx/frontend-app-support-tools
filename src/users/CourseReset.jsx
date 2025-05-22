@@ -110,6 +110,7 @@ function CourseReset({ username, intl }) {
       updatedData.action = (
         <>
           <Button
+            data-testid="course-reset-button"
             variant="outline-primary"
             className="reset-btn"
             onClick={open}

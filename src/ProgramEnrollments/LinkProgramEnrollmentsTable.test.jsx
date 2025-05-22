@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import LinkProgramEnrollmentsTable from './LinkProgramEnrollmentsTable';
 import {
@@ -11,112 +11,112 @@ import {
 } from './data/test/linkProgramEnrollment';
 
 describe('Link Program Enrollment Tables component', () => {
-  let wrapper;
-
-  afterEach(() => {
-    wrapper.unmount();
-  });
-
   describe('Success Table', () => {
     it('Success Table exists', () => {
-      wrapper = mount(
+      const { unmount } = render(
         <LinkProgramEnrollmentsTable
           successMessage={lpeSuccessResponse.successes}
         />,
       );
 
-      const header = wrapper.find('.success-message h4');
-      const dataTable = wrapper.find('table.success-table tr');
-      const headingRow = dataTable.at(0);
-      const dataRow = dataTable.at(1);
+      const header = document.querySelector('.success-message h4');
+      const dataTable = document.querySelectorAll('table.success-table tr');
+      const headingRow = dataTable[0];
+      const dataRow = dataTable[1];
 
-      expect(header.text()).toEqual('Successes');
+      expect(header.textContent).toEqual('Successes');
 
-      expect(headingRow.find('th').at(0).text()).toEqual('External User Key');
-      expect(headingRow.find('th').at(1).text()).toEqual('LMS Username');
-      expect(headingRow.find('th').at(2).text()).toEqual('Message');
+      expect(headingRow.querySelectorAll('th')[0].textContent).toEqual('External User Key');
+      expect(headingRow.querySelectorAll('th')[1].textContent).toEqual('LMS Username');
+      expect(headingRow.querySelectorAll('th')[2].textContent).toEqual('Message');
 
-      expect(dataRow.find('td').at(0).text()).toEqual('testuser');
-      expect(dataRow.find('td').at(1).text()).toEqual('verified');
-      expect(dataRow.find('td').at(2).text()).toEqual('Linkage Successfully Created');
+      expect(dataRow.querySelectorAll('td')[0].textContent).toEqual('testuser');
+      expect(dataRow.querySelectorAll('td')[1].textContent).toEqual('verified');
+      expect(dataRow.querySelectorAll('td')[2].textContent).toEqual('Linkage Successfully Created');
+      unmount();
     });
   });
 
   describe('Error Table', () => {
     it('Error when empty value', () => {
-      wrapper = mount(
+      const { unmount } = render(
         <LinkProgramEnrollmentsTable
           errorMessage={lpeErrorResponseEmptyValues.errors}
         />,
       );
-      const header = wrapper.find('.error-message h4');
-      const dataTable = wrapper.find('table.error-table tr');
-      const headingRow = dataTable.at(0);
-      const dataRow = dataTable.at(1);
+      const header = document.querySelector('.error-message h4');
+      const dataTable = document.querySelectorAll('table.error-table tr');
+      const headingRow = dataTable[0];
+      const dataRow = dataTable[1];
 
-      expect(header.text()).toEqual('Errors');
-      expect(headingRow.find('th').at(0).text()).toEqual('Error Messages');
-      expect(dataRow.find('td').at(0).text()).toEqual("You must provide both a program uuid and a series of lines with the format 'external_user_key,lms_username'.");
+      expect(header.textContent).toEqual('Errors');
+      expect(headingRow.querySelectorAll('th')[0].textContent).toEqual('Error Messages');
+      expect(dataRow.querySelectorAll('td')[0].textContent).toEqual("You must provide both a program uuid and a series of lines with the format 'external_user_key,lms_username'.");
+      unmount();
     });
     it('Error when Invalid Program ID', () => {
-      wrapper = mount(
+      const { unmount } = render(
         <LinkProgramEnrollmentsTable
           errorMessage={lpeErrorResponseInvalidUUID.errors}
         />,
       );
-      const header = wrapper.find('.error-message h4');
-      const dataTable = wrapper.find('table.error-table tr');
-      const headingRow = dataTable.at(0);
-      const dataRow = dataTable.at(1);
+      const header = document.querySelector('.error-message h4');
+      const dataTable = document.querySelectorAll('table.error-table tr');
+      const headingRow = dataTable[0];
+      const dataRow = dataTable[1];
 
-      expect(header.text()).toEqual('Errors');
-      expect(headingRow.find('th').at(0).text()).toEqual('Error Messages');
-      expect(dataRow.find('td').at(0).text()).toEqual("Supplied program UUID '8bee627e-d85e-4a76-be41-d58921da666e' is not a valid UUID.");
+      expect(header.textContent).toEqual('Errors');
+      expect(headingRow.querySelectorAll('th')[0].textContent).toEqual('Error Messages');
+      expect(dataRow.querySelectorAll('td')[0].textContent).toEqual("Supplied program UUID '8bee627e-d85e-4a76-be41-d58921da666e' is not a valid UUID.");
+      unmount();
     });
     it('Error when Invalid Username', () => {
-      wrapper = mount(
+      const { unmount } = render(
         <LinkProgramEnrollmentsTable
           errorMessage={lpeErrorResponseInvalidUsername.errors}
         />,
       );
-      const header = wrapper.find('.error-message h4');
-      const dataTable = wrapper.find('table.error-table tr');
-      const headingRow = dataTable.at(0);
-      const dataRow = dataTable.at(1);
+      const header = document.querySelector('.error-message h4');
+      const dataTable = document.querySelectorAll('table.error-table tr');
+      const headingRow = dataTable[0];
+      const dataRow = dataTable[1];
 
-      expect(header.text()).toEqual('Errors');
-      expect(headingRow.find('th').at(0).text()).toEqual('Error Messages');
-      expect(dataRow.find('td').at(0).text()).toEqual('No user found with username verified');
+      expect(header.textContent).toEqual('Errors');
+      expect(headingRow.querySelectorAll('th')[0].textContent).toEqual('Error Messages');
+      expect(dataRow.querySelectorAll('td')[0].textContent).toEqual('No user found with username verified');
+      unmount();
     });
     it('Error when Invalid External Key', () => {
-      wrapper = mount(
+      const { unmount } = render(
         <LinkProgramEnrollmentsTable
           errorMessage={lpeErrorResponseInvalidExternalKey.errors}
         />,
       );
-      const header = wrapper.find('.error-message h4');
-      const dataTable = wrapper.find('table.error-table tr');
-      const headingRow = dataTable.at(0);
-      const dataRow = dataTable.at(1);
+      const header = document.querySelector('.error-message h4');
+      const dataTable = document.querySelectorAll('table.error-table tr');
+      const headingRow = dataTable[0];
+      const dataRow = dataTable[1];
 
-      expect(header.text()).toEqual('Errors');
-      expect(headingRow.find('th').at(0).text()).toEqual('Error Messages');
-      expect(dataRow.find('td').at(0).text()).toEqual('No program enrollment found for program uuid=8bee627e-d85e-4a76-be41-d58921da666e and external student key=testuser');
+      expect(header.textContent).toEqual('Errors');
+      expect(headingRow.querySelectorAll('th')[0].textContent).toEqual('Error Messages');
+      expect(dataRow.querySelectorAll('td')[0].textContent).toEqual('No program enrollment found for program uuid=8bee627e-d85e-4a76-be41-d58921da666e and external student key=testuser');
+      unmount();
     });
     it('Error when Already Linked ID', () => {
-      wrapper = mount(
+      const { unmount } = render(
         <LinkProgramEnrollmentsTable
           errorMessage={lpeErrorResponseAlreadyLinked.errors}
         />,
       );
-      const header = wrapper.find('.error-message h4');
-      const dataTable = wrapper.find('table.error-table tr');
-      const headingRow = dataTable.at(0);
-      const dataRow = dataTable.at(1);
+      const header = document.querySelector('.error-message h4');
+      const dataTable = document.querySelectorAll('table.error-table tr');
+      const headingRow = dataTable[0];
+      const dataRow = dataTable[1];
 
-      expect(header.text()).toEqual('Errors');
-      expect(headingRow.find('th').at(0).text()).toEqual('Error Messages');
-      expect(dataRow.find('td').at(0).text()).toEqual('Program enrollment with external_student_key=testuser1 is already linked to target account username=verified');
+      expect(header.textContent).toEqual('Errors');
+      expect(headingRow.querySelectorAll('th')[0].textContent).toEqual('Error Messages');
+      expect(dataRow.querySelectorAll('td')[0].textContent).toEqual('Program enrollment with external_student_key=testuser1 is already linked to target account username=verified');
+      unmount();
     });
   });
 });

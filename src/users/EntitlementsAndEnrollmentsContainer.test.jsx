@@ -1,5 +1,6 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
 import * as api from './data/api';
@@ -7,13 +8,15 @@ import { enrollmentsData } from './data/test/enrollments';
 import { entitlementsData } from './data/test/entitlements';
 
 const EntitlementsAndEnrollmentsContainerWrapper = (props) => (
-  <UserMessagesProvider>
-    <EntitlementsAndEnrollmentsContainer {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <EntitlementsAndEnrollmentsContainer {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Entitlements and Enrollments component', () => {
-  let wrapper;
+  let unmountWrapper;
   const props = {
     user: 'edx',
   };
@@ -21,23 +24,25 @@ describe('Entitlements and Enrollments component', () => {
   beforeEach(async () => {
     jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
-    wrapper = mount(<EntitlementsAndEnrollmentsContainerWrapper {...props} />);
+    const { unmount } = render(<EntitlementsAndEnrollmentsContainerWrapper {...props} />);
+    unmountWrapper = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountWrapper();
   });
 
-  it('renders correctly', () => {
-    const enrollmentsEntitlements = wrapper.find('#entitlementsAndEnrollmentsContainer');
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Entitlements (2)'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Enrollments (2)'));
+  it('renders correctly', async () => {
+    const enrollmentsEntitlements = await screen.findByTestId('entitlementsAndEnrollmentsContainer');
+    expect(enrollmentsEntitlements.textContent).toContain('Entitlements (2)');
+    expect(enrollmentsEntitlements.textContent).toContain('Enrollments (2)');
   });
 
-  it('filter entitlements and enrollments on the basis of search key', () => {
-    wrapper.find('input[name="courseId"]').simulate('change', { target: { value: 'course-v1' } });
-    const enrollmentsEntitlements = wrapper.find('#entitlementsAndEnrollmentsContainer');
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Entitlements (1)'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Enrollments (2)'));
+  it('filter entitlements and enrollments on the basis of search key', async () => {
+    const courseIdInput = await screen.findByTestId('courseIdInput');
+    fireEvent.change(courseIdInput, { target: { value: 'course-v1' } });
+    const enrollmentsEntitlements = await screen.findByTestId('entitlementsAndEnrollmentsContainer');
+    expect(enrollmentsEntitlements.textContent).toContain('Entitlements (1)');
+    expect(enrollmentsEntitlements.textContent).toContain('Enrollments (2)');
   });
 });

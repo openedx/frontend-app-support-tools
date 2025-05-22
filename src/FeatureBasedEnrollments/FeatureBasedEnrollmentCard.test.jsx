@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
 import FeatureBasedEnrollmentCard from './FeatureBasedEnrollmentCard';
 import {
@@ -9,43 +9,39 @@ import {
 } from './data/test/featureBasedEnrollment';
 
 describe('Feature Based Enrollment Card Component', () => {
-  let wrapper;
-
-  afterEach(() => {
-    wrapper.unmount();
-  });
-
   describe('Gating config', () => {
     const title = 'Gating Config';
 
     it('Gating config enabled', () => {
-      wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigEnabled} />);
-      const header = wrapper.find('.card-title');
-      const dataTable = wrapper.find('table.fbe-table tr');
-      const dateRow = dataTable.at(0);
-      const reasonRow = dataTable.at(1);
+      const { unmount } = render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigEnabled} />);
+      const header = document.querySelector('.card-title');
+      const dataTable = document.querySelectorAll('table.fbe-table tr');
+      const dateRow = dataTable[0];
+      const reasonRow = dataTable[1];
 
-      expect(header.text()).toEqual('Gating Config Enabled');
-      expect(dateRow.find('th').at(0).text()).toEqual('Enabled As Of');
-      expect(dateRow.find('td').at(0).text()).toEqual('Jan 1, 2020 12:00 AM');
+      expect(header.textContent).toEqual('Gating Config Enabled');
+      expect(dateRow.querySelectorAll('th')[0].textContent).toEqual('Enabled As Of');
+      expect(dateRow.querySelectorAll('td')[0].textContent).toEqual('Jan 1, 2020 12:00 AM');
 
-      expect(reasonRow.find('th').at(0).text()).toEqual('Reason');
-      expect(reasonRow.find('td').at(0).text()).toEqual('Site');
+      expect(reasonRow.querySelectorAll('th')[0].textContent).toEqual('Reason');
+      expect(reasonRow.querySelectorAll('td')[0].textContent).toEqual('Site');
+      unmount();
     });
 
     it('Gating config disabled', () => {
-      wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigDisabled} />);
-      const header = wrapper.find('.card-title');
-      const dataTable = wrapper.find('table.fbe-table tr');
-      const dateRow = dataTable.at(0);
-      const reasonRow = dataTable.at(1);
+      const { unmount } = render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigDisabled} />);
+      const header = document.querySelector('.card-title');
+      const dataTable = document.querySelectorAll('table.fbe-table tr');
+      const dateRow = dataTable[0];
+      const reasonRow = dataTable[1];
 
-      expect(header.text()).toEqual('Gating Config Disabled');
-      expect(dateRow.find('th').at(0).text()).toEqual('Enabled As Of');
-      expect(dateRow.find('td').at(0).text()).toEqual('N/A');
+      expect(header.textContent).toEqual('Gating Config Disabled');
+      expect(dateRow.querySelectorAll('th')[0].textContent).toEqual('Enabled As Of');
+      expect(dateRow.querySelectorAll('td')[0].textContent).toEqual('N/A');
 
-      expect(reasonRow.find('th').at(0).text()).toEqual('Reason');
-      expect(reasonRow.find('td').at(0).text()).toEqual('');
+      expect(reasonRow.querySelectorAll('th')[0].textContent).toEqual('Reason');
+      expect(reasonRow.querySelectorAll('td')[0].textContent).toEqual('');
+      unmount();
     });
   });
 
@@ -53,33 +49,35 @@ describe('Feature Based Enrollment Card Component', () => {
     const title = 'Duration Config';
 
     it('Duration config enabled', () => {
-      wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigEnabled} />);
-      const header = wrapper.find('.card-title');
-      const dataTable = wrapper.find('table.fbe-table tr');
-      const dateRow = dataTable.at(0);
-      const reasonRow = dataTable.at(1);
+      const { unmount } = render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigEnabled} />);
+      const header = document.querySelector('.card-title');
+      const dataTable = document.querySelectorAll('table.fbe-table tr');
+      const dateRow = dataTable[0];
+      const reasonRow = dataTable[1];
 
-      expect(header.text()).toEqual('Duration Config Enabled');
-      expect(dateRow.find('th').at(0).text()).toEqual('Enabled As Of');
-      expect(dateRow.find('td').at(0).text()).toEqual('Feb 1, 2020 12:00 AM');
+      expect(header.textContent).toEqual('Duration Config Enabled');
+      expect(dateRow.querySelectorAll('th')[0].textContent).toEqual('Enabled As Of');
+      expect(dateRow.querySelectorAll('td')[0].textContent).toEqual('Feb 1, 2020 12:00 AM');
 
-      expect(reasonRow.find('th').at(0).text()).toEqual('Reason');
-      expect(reasonRow.find('td').at(0).text()).toEqual('Site Config');
+      expect(reasonRow.querySelectorAll('th')[0].textContent).toEqual('Reason');
+      expect(reasonRow.querySelectorAll('td')[0].textContent).toEqual('Site Config');
+      unmount();
     });
 
     it('Duration config disabled', () => {
-      wrapper = mount(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigDisabled} />);
-      const header = wrapper.find('.card-title');
-      const dataTable = wrapper.find('table.fbe-table tr');
-      const dateRow = dataTable.at(0);
-      const reasonRow = dataTable.at(1);
+      const { unmount } = render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigDisabled} />);
+      const header = document.querySelector('.card-title');
+      const dataTable = document.querySelectorAll('table.fbe-table tr');
+      const dateRow = dataTable[0];
+      const reasonRow = dataTable[1];
 
-      expect(header.text()).toEqual('Duration Config Disabled');
-      expect(dateRow.find('th').at(0).text()).toEqual('Enabled As Of');
-      expect(dateRow.find('td').at(0).text()).toEqual('N/A');
+      expect(header.textContent).toEqual('Duration Config Disabled');
+      expect(dateRow.querySelectorAll('th')[0].textContent).toEqual('Enabled As Of');
+      expect(dateRow.querySelectorAll('td')[0].textContent).toEqual('N/A');
 
-      expect(reasonRow.find('th').at(0).text()).toEqual('Reason');
-      expect(reasonRow.find('td').at(0).text()).toEqual('');
+      expect(reasonRow.querySelectorAll('th')[0].textContent).toEqual('Reason');
+      expect(reasonRow.querySelectorAll('td')[0].textContent).toEqual('');
+      unmount();
     });
   });
 });

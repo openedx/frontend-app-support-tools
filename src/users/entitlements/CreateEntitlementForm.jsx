@@ -58,7 +58,7 @@ export default function CreateEntitlementForm({
   });
 
   const createEntitlementForm = (
-    <form>
+    <form data-testid="create-entitlement-form">
       <AlertList topic="createEntitlement" className="mb-3" />
       <Input
         className="mb-4"
@@ -108,7 +108,7 @@ export default function CreateEntitlementForm({
       size="lg"
     >
       <ModalDialog.Header className="mb-3">
-        <ModalDialog.Title className="modal-title">
+        <ModalDialog.Title data-testid="create-new-entitlement-modal-title" className="modal-title">
           Create New Entitlement
         </ModalDialog.Title>
       </ModalDialog.Header>
@@ -118,6 +118,7 @@ export default function CreateEntitlementForm({
       <ModalDialog.Footer>
         <ActionRow>
           <ModalDialog.CloseButton
+            data-testid="create-entitlement-modal-close-button"
             variant="link"
           >
             Close

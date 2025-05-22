@@ -14,6 +14,7 @@ export default class PageLoading extends Component {
     return (
       <div>
         <div
+          data-testid="page-loading"
           className="d-flex justify-content-center align-items-center flex-column"
           style={{
             height: '20vh',

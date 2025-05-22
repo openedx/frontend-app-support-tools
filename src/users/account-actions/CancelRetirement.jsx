@@ -30,7 +30,7 @@ export default function CancelRetirement({
   const modalBody = (
     errorMessage ? <Alert variant="danger">{errorMessage}</Alert>
       : (
-        <div>
+        <div data-testid="cancel-retirement-modal-body">
           <Alert variant="warning">
             <FormattedMessage
               id="supportTools.accountActions.cancelRetirement"
@@ -60,7 +60,7 @@ export default function CancelRetirement({
         size="lg"
       >
         <ModalDialog.Header className="mb-3">
-          <ModalDialog.Title className="modal-title">
+          <ModalDialog.Title data-testid="cancel-retirement-modal-title" className="modal-title">
             Cancel Retirement
           </ModalDialog.Title>
         </ModalDialog.Header>
@@ -71,6 +71,7 @@ export default function CancelRetirement({
           <ActionRow>
             <ModalDialog.CloseButton
               variant="link"
+              data-testid="cancel-retirement-modal-close-button"
             >
               Close
             </ModalDialog.CloseButton>
@@ -78,6 +79,7 @@ export default function CancelRetirement({
               errorMessage ? null
                 : (
                   <Button
+                    data-testid="cancel-retirement-confirmation-button"
                     variant="danger"
                     onClick={cancelRetirement}
                   >

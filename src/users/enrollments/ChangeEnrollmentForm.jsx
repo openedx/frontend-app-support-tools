@@ -65,7 +65,7 @@ export default function ChangeEnrollmentForm({
   });
 
   const changeEnrollmentForm = (
-    <form>
+    <form data-testid="change-enrollment-form">
       <AlertList topic="changeEnrollments" className="mb-3" />
       <div className="form-group">
 
@@ -157,6 +157,7 @@ export default function ChangeEnrollmentForm({
         <ActionRow>
           <ModalDialog.CloseButton
             variant="link"
+            data-testid="close-button-change-enrollment-modal"
           >
             Close
           </ModalDialog.CloseButton>

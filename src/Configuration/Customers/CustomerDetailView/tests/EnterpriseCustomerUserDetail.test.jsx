@@ -4,6 +4,7 @@ import {
   render,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import {
   EnterpriseCustomerUserDetail,
   AdministratorCell,
@@ -20,7 +21,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         },
       },
     };
-    render(<EnterpriseCustomerUserDetail row={enterpriseCustomerUser} />);
+    render(<IntlProvider locale="en"><EnterpriseCustomerUserDetail row={enterpriseCustomerUser} /></IntlProvider>);
     expect(screen.getByText('ash ketchum')).toBeInTheDocument();
     expect(screen.getByText('ash@ketchum.org')).toBeInTheDocument();
     expect(screen.getByTestId('icon-hyperlink')).toHaveAttribute('href', '/learner-information/?email=ash@ketchum.org');

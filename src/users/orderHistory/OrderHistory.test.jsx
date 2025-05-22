@@ -4,7 +4,6 @@ import {
 } from '@testing-library/react';
 import OrderHistory from './OrderHistory';
 import { getOrderHistory } from '../data/api';
-import '@testing-library/jest-dom/extend-expect';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 
 jest.mock('../data/api');

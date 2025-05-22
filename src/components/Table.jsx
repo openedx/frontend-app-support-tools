@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
 export default function Table({
-  columns, data, renderRowSubComponent, styleName, isResponsive, defaultSortColumn,
+  columns, data, renderRowSubComponent, styleName, isResponsive, defaultSortColumn, dataTestId,
 }) {
   const {
     getTableProps,
@@ -28,10 +28,10 @@ export default function Table({
 
   return (
     <div className={isResponsive ? 'table-responsive' : ''}>
-      <table {...getTableProps()} className={styleName}>
+      <table data-testid={dataTestId} {...getTableProps()} className={styleName}>
         <thead>
           {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr data-testid={`${dataTestId}-row`} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
                 <th {...column.getHeaderProps(column.sortable && column.getSortByToggleProps())}>
                   {column.render('Header')}
@@ -53,7 +53,7 @@ export default function Table({
             prepareRow(row);
             return (
               <React.Fragment key={row.id}>
-                <tr>
+                <tr data-testid={`${dataTestId}-row`}>
                   {row.cells.map(cell => (
                     <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                   ))}
@@ -63,7 +63,7 @@ export default function Table({
                     column that fills the entire length of the table.
                   */}
                 {row.isExpanded ? (
-                  <tr>
+                  <tr data-testid={`${dataTestId}-row`}>
                     <td colSpan={visibleColumns.length}>
                       {/*
                           Inside it, call our renderRowSubComponent function. In reality,
@@ -87,6 +87,7 @@ export default function Table({
 }
 
 Table.propTypes = {
+  dataTestId: PropTypes.string,
   columns: PropTypes.arrayOf(PropTypes.shape({
     Header: PropTypes.string.isRequired,
     accessor: PropTypes.string.isRequired,

@@ -1,7 +1,9 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen,
+} from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import * as api from './data/api';
 import { credentials, noCredentials } from './data/test/credentials';
@@ -9,14 +11,15 @@ import LearnerCredentials from './LearnerCredentials';
 
 const LearnerCredentialsWrapper = (props) => (
   <MemoryRouter>
-    <UserMessagesProvider>
-      <LearnerCredentials {...props} />
-    </UserMessagesProvider>
+    <IntlProvider locale="en">
+      <UserMessagesProvider>
+        <LearnerCredentials {...props} />
+      </UserMessagesProvider>
+    </IntlProvider>
   </MemoryRouter>
 );
 
 describe('Learner Credentials Tests', () => {
-  let wrapper;
   let apiMock;
   const data = {
     username: 'edx',
@@ -29,14 +32,15 @@ describe('Learner Credentials Tests', () => {
   });
 
   it('default page render', async () => {
-    wrapper = mount(<LearnerCredentialsWrapper username={data.username} />);
+    const { unmount } = render(<LearnerCredentialsWrapper username={data.username} />);
     apiMock = jest
       .spyOn(api, 'getUserProgramCredentials')
       .mockImplementationOnce(() => Promise.resolve(noCredentials));
-
-    expect(wrapper.find('h3').text()).toEqual('Learner Credentials');
-    expect(wrapper.find('p').text()).toEqual('No Credentials were Found.');
-    wrapper.unmount();
+    const heading = await screen.findByTestId('learnerCredentialsHeading');
+    expect(heading.textContent).toEqual('Learner Credentials');
+    const noCredentialsMessage = await screen.findByTestId('noCredentialsFoundMesaage');
+    expect(noCredentialsMessage.textContent).toEqual('No Credentials were Found.');
+    unmount();
   });
 
   it('Error render', async () => {
@@ -54,9 +58,10 @@ describe('Learner Credentials Tests', () => {
     apiMock = jest
       .spyOn(api, 'getUserProgramCredentials')
       .mockImplementationOnce(() => Promise.resolve(expectedError));
-    wrapper = mount(<LearnerCredentialsWrapper username={data.username} />);
-    waitFor(() => expect(wrapper.find('.alert').text()).toEqual(expectedError.errors[0].text));
-    wrapper.unmount();
+    const { unmount } = render(<LearnerCredentialsWrapper username={data.username} />);
+    const errorAlert = await screen.findByTestId('noCredentialsErrorAlert');
+    expect(errorAlert.textContent).toEqual(expectedError.errors[0].text);
+    unmount();
   });
 
   it('Credentials Exist', async () => {
@@ -64,32 +69,30 @@ describe('Learner Credentials Tests', () => {
       .spyOn(api, 'getUserProgramCredentials')
       .mockImplementationOnce(() => Promise.resolve(credentials));
 
-    wrapper = mount(<LearnerCredentialsWrapper username={data.username} />);
+    const { unmount } = render(<LearnerCredentialsWrapper username={data.username} />);
 
-    const dataTable = wrapper.find('table.custom-table tr');
-    const headingRow = dataTable.at(0);
-    const dataRow = dataTable.at(1);
+    // const dataTable = await screen.findByTestId('learnerCredentialsTable');
+    const dataTableRows = await screen.findAllByTestId('learnerCredentialsTable-row');
+    const headingRow = dataTableRows[0];
+    const dataRow = dataTableRows[1];
+    expect(headingRow.children[0].textContent).toEqual('Credential Type');
+    expect(headingRow.children[1].textContent).toEqual('Program ID');
+    expect(headingRow.children[2].textContent).toEqual('Status');
+    expect(headingRow.children[3].textContent).toEqual('Certificate Link');
+    expect(headingRow.children[4].textContent).toEqual('Attributes');
 
-    waitFor(() => {
-      expect(headingRow.find('th').at(0).text()).toEqual('Credential Type');
-      expect(headingRow.find('th').at(1).text()).toEqual('Program ID');
-      expect(headingRow.find('th').at(2).text()).toEqual('Status');
-      expect(headingRow.find('th').at(3).text()).toEqual('Certificate Link');
-      expect(headingRow.find('th').at(4).text()).toEqual('Attributes');
-
-      const row = credentials.results[0];
-      expect(dataRow.find('td').at(0).text()).toEqual(row.credential.type);
-      expect(dataRow.find('td').at(1).text()).toEqual(
-        row.credential.program_uuid,
-      );
-      expect(dataRow.find('td').at(2).text()).toEqual(row.status);
-      expect(dataRow.find('td').at(3).find('a').text()).toEqual(row.uuid);
-      expect(dataRow.find('td').at(3).find('a').prop('href')).toEqual(
-        row.certificate_url,
-      );
-      expect(dataRow.find('td').at(4).find('button').text()).toEqual('Show');
-    });
-    wrapper.unmount();
+    const row = credentials.results[0];
+    expect(dataRow.children[0].textContent).toEqual(row.credential.type);
+    expect(dataRow.children[1].textContent).toEqual(
+      row.credential.program_uuid,
+    );
+    expect(dataRow.children[2].textContent).toEqual(row.status);
+    expect(dataRow.children[3].textContent).toEqual(row.uuid);
+    expect(dataRow.children[3].children[0].href).toEqual(
+      row.certificate_url,
+    );
+    expect(dataRow.children[4].querySelector('button').textContent).toEqual('Show');
+    unmount();
   });
 
   it('Attributes Table', async () => {
@@ -97,48 +100,34 @@ describe('Learner Credentials Tests', () => {
       .spyOn(api, 'getUserProgramCredentials')
       .mockImplementationOnce(() => Promise.resolve(credentials));
 
-    wrapper = mount(<LearnerCredentialsWrapper username={data.username} />);
+    const { unmount } = render(<LearnerCredentialsWrapper username={data.username} />);
 
-    const attributeCell = wrapper
-      .find('table.custom-table tr')
-      .at(1)
-      .find('td')
-      .at(4);
+    const attributeCell = (await screen.findAllByTestId('learnerCredentialsTable-row'))[1].children[4];
     const row = credentials.results[0];
-    waitFor(() => {
-      expect(attributeCell.find('button').text()).toEqual('Show');
-      attributeCell.find('button').simulate('click');
-      attributeCell.update();
+    const showButton = attributeCell.querySelector('button');
+    expect(showButton.textContent).toEqual('Show');
+    fireEvent.click(showButton);
 
-      const updatedAttributeCell = wrapper
-        .find('table.custom-table tr')
-        .at(1)
-        .find('td')
-        .at(4);
-      expect(updatedAttributeCell.find('button').text()).toEqual('Hide');
+    const updatedAttributeCell = (await screen.findAllByTestId('learnerCredentialsTable-row'))[1].children[4];
+    expect(updatedAttributeCell.querySelector('button').textContent).toEqual('Hide');
 
-      const attributeTable = updatedAttributeCell.find('table.custom-table tr');
-      expect(attributeTable.at(0).find('th').at(0).text()).toEqual('Name');
-      expect(attributeTable.at(0).find('th').at(1).text()).toEqual('Value');
-      expect(attributeTable.at(1).find('td').at(0).text()).toEqual(
-        row.attributes[0].name,
-      );
-      expect(attributeTable.at(1).find('td').at(1).text()).toEqual(
-        row.attributes[0].value,
-      );
+    const attributeTable = updatedAttributeCell.querySelectorAll('tr');
+    // querying second index as the first one would be table heading
+    expect(attributeTable[0].querySelectorAll('th')[0].textContent).toEqual('Name');
+    expect(attributeTable[0].querySelectorAll('th')[1].textContent).toEqual('Value');
+    expect(attributeTable[1].querySelectorAll('td')[0].textContent).toEqual(
+      row.attributes[0].name,
+    );
+    expect(attributeTable[1].querySelectorAll('td')[1].textContent).toEqual(
+      row.attributes[0].value,
+    );
 
-      updatedAttributeCell.find('button').simulate('click');
-      updatedAttributeCell.update();
-      expect(
-        wrapper
-          .find('table.custom-table tr')
-          .at(1)
-          .find('td')
-          .at(4)
-          .find('button')
-          .text(),
-      ).toEqual('Show');
-    });
-    wrapper.unmount();
+    const cellButton = updatedAttributeCell.querySelector('button');
+    fireEvent.click(cellButton);
+
+    expect((await screen.findAllByTestId('learnerCredentialsTable-row'))[1]
+      .querySelectorAll('td')[4]
+      .querySelector('button').textContent).toEqual('Show');
+    unmount();
   });
 });

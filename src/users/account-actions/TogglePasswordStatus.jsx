@@ -40,12 +40,12 @@ export default function TogglePasswordStatus({
         id="user-account-status-toggle"
       >
         <ModalDialog.Header className="mb-3 mt-1 ">
-          <ModalDialog.Title className="modal-title">
+          <ModalDialog.Title data-testid="user-account-status-toggle-modal-title" className="modal-title">
             {`${passwordStatus.status === PASSWORD_STATUS.USABLE ? DISABLE_USER_CONFIRMATION : ENABLE_USER_CONFIRMATION}`}
           </ModalDialog.Title>
         </ModalDialog.Header>
         <ModalDialog.Body className="mb-3">
-          <div>
+          <div data-testid="user-account-status-toggle">
             <Alert variant="warning">
               <p>
                 Please provide the reason for {`${passwordStatus.status === PASSWORD_STATUS.USABLE ? 'disabling' : 'enabling'}`} the user <b>{username}</b>.
@@ -64,10 +64,12 @@ export default function TogglePasswordStatus({
           <ActionRow>
             <ModalDialog.CloseButton
               variant="link"
+              data-testid="user-account-status-toggle-modal-close-button"
             >
               Close
             </ModalDialog.CloseButton>
             <Button
+              data-testid="user-account-status-toggle-modal-confirm-button"
               variant="danger"
               onClick={togglePasswordStatus}
             >

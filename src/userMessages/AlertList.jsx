@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import UserMessagesContext from './UserMessagesContext';
 import Alert from './Alert';
 
-export default function AlertList({ topic, className, customAlerts }) {
+export default function AlertList({
+  topic, className, customAlerts, dataTestId,
+}) {
   const { remove, messages } = useContext(UserMessagesContext);
   const getAlertComponent = useCallback(
     (code) => (customAlerts[code] !== undefined ? customAlerts[code] : Alert),
@@ -17,7 +19,7 @@ export default function AlertList({ topic, className, customAlerts }) {
   }
 
   return (
-    <div className={className}>
+    <div data-testid={dataTestId} className={className}>
       {topicMessages.map(message => {
         const AlertComponent = getAlertComponent(message.code);
         return (
@@ -39,6 +41,7 @@ export default function AlertList({ topic, className, customAlerts }) {
 AlertList.propTypes = {
   className: PropTypes.string,
   topic: PropTypes.string,
+  dataTestId: PropTypes.string,
   customAlerts: PropTypes.objectOf(
     PropTypes.oneOfType([
       PropTypes.object,

@@ -29,13 +29,13 @@ export default function SingleSignOnRecords({ username }) {
 
   return (
     <section className="mb-3">
-      <AlertList topic="ssoRecords" className="mb-3" />
+      <AlertList dataTestId="singleSignOnAlertList" topic="ssoRecords" className="mb-3" />
       <FormattedMessage
         id="supportTools.learnerInformation.ssoHeader"
         defaultMessage="Single Sign-on Records"
         description="Single Sign-On Listing Title"
       >
-        {text => <h3 id="sso-title-header" className="ml-4">{text}</h3>}
+        {text => <h3 data-testid="ssoTitleHeader" id="sso-title-header" className="ml-4">{text}</h3>}
       </FormattedMessage>
       {/* eslint-disable-next-line no-nested-ternary */}
       {ssoRecords ? (
@@ -48,7 +48,11 @@ export default function SingleSignOnRecords({ username }) {
             ))}
           </Row>
         ) : (
-          <p className="ml-4">No SSO Records were Found.</p>
+          <p
+            data-testid="noSSORecordsMessage"
+            className="ml-4"
+          >No SSO Records were Found.
+          </p>
         ))
         : (
           <PageLoading srMessage="Loading" />

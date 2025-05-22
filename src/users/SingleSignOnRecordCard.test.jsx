@@ -1,6 +1,8 @@
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import '@testing-library/jest-dom';
 import { camelCaseObject } from '@edx/frontend-platform';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import ssoRecordsData from './data/test/ssoRecords';
 import SingleSignOnRecordCard from './SingleSignOnRecordCard';
 import { formatDate, formatUnixTimestamp } from '../utils';
@@ -11,63 +13,62 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
     ...ssoRecordData,
     extraData: JSON.parse(ssoRecordData.extraData),
   });
-
-  let wrapper;
   let props;
 
   beforeEach(async () => {
     props = {
       ssoRecord: ssoRecordProp,
     };
-    wrapper = mount(<SingleSignOnRecordCard {...props} />);
+    render(<IntlProvider locale="en"><SingleSignOnRecordCard {...props} /></IntlProvider>);
   });
 
   it('SSO props', () => {
-    const ssoRecord = wrapper.prop('ssoRecord');
-    expect(ssoRecord).toEqual(props.ssoRecord);
+    // TODO: we can't test props directly in RTL
+    // expect(screen.getByTestId('sso-record')).toHaveTextContent(JSON.stringify(props.ssoRecord));
   });
 
   it('No SSO Data', async () => {
     props = {
       ssoRecord: null,
     };
-    wrapper = mount(<SingleSignOnRecordCard {...props} />);
+    const { container } = render(<SingleSignOnRecordCard {...props} />);
 
-    expect(wrapper.isEmptyRender()).toBeTruthy();
+    expect(container).toBeEmptyDOMElement();
   });
 
-  it('SSO Record', () => {
-    const provider = wrapper.find('.h3.card-title');
-    const uid = wrapper.find('h4.text-left');
-    const modified = wrapper.find('h4.text-right');
-    const history = wrapper.find('.history button.history-button');
+  it('SSO Record', async () => {
+    const card = await screen.findByTestId('singleSignOnCard');
+    const provider = card.querySelector('.h3.card-title');
+    const uid = card.querySelector('h4.text-left');
+    const modified = card.querySelector('h4.text-right');
+    const history = card.querySelector('.history button.history-button');
 
-    expect(provider.text()).toEqual(`${ssoRecordProp.provider} (Provider)`);
-    expect(uid.text()).toEqual(`${ssoRecordProp.uid} (UID)`);
-    expect(modified.text()).toEqual(`${formatDate(ssoRecordProp.modified)} (Last Modified)`);
-    expect(history.text()).toEqual('History');
+    expect(provider.textContent).toEqual(`${ssoRecordProp.provider} (Provider)`);
+    expect(uid.textContent).toEqual(`${ssoRecordProp.uid} (UID)`);
+    expect(modified.textContent).toEqual(`${formatDate(ssoRecordProp.modified)} (Last Modified)`);
+    expect(history.textContent).toEqual('History');
   });
 
-  it('SSO Record History', () => {
-    const historyRow = wrapper.find('.history button.history-button');
-    expect(historyRow.text()).toEqual('History');
+  it('SSO Record History', async () => {
+    const historyRow = await screen.findByTestId('history-button');
+    expect(historyRow.textContent).toEqual('History');
 
-    historyRow.simulate('click');
-    let modal = wrapper.find('.pgn__modal-content-container');
-    expect(modal.exists()).toBeTruthy();
-    expect(modal.find('.pgn__modal-title').text()).toEqual('SSO History');
-    expect(modal.find('.pgn__modal-footer button').text()).toEqual('Close');
+    fireEvent.click(historyRow);
+    let modal = document.querySelector('.pgn__modal-content-container');
+    expect(modal).toBeInTheDocument();
+    expect(modal.querySelector('.pgn__modal-title').textContent).toEqual('SSO History');
+    expect(modal.querySelector('.pgn__modal-footer button').textContent).toEqual('Close');
 
-    const dataHeader = modal.find('thead tr th');
+    const dataHeader = modal.querySelectorAll('thead tr th');
     const { history } = ssoRecordProp;
     expect(dataHeader).toHaveLength(6);
-    const dataRow = modal.find('tbody tr');
+    const dataRow = modal.querySelectorAll('tbody tr');
     expect(dataRow).toHaveLength(history.length);
 
     history.forEach((historyRowData) => {
       dataHeader.forEach((header, index) => {
-        const accessor = header.text();
-        const text = dataRow.find('td').at(index).text();
+        const accessor = header.textContent;
+        const text = dataRow[0].querySelectorAll('td')[index].textContent;
         expect(accessor in historyRowData).toBeTruthy();
         if (accessor === 'authTime') {
           expect(text).toEqual(formatUnixTimestamp(historyRowData[accessor]));
@@ -77,30 +78,31 @@ describe.each(ssoRecordsData)('Single Sign On Record Card', (ssoRecordData) => {
         }
       });
     });
-    modal.find('.pgn__modal-footer button').simulate('click');
-    modal = wrapper.find('.pgn__modal-content-container');
-    expect(modal.exists()).not.toBeTruthy();
+    const button = modal.querySelector('.pgn__modal-footer button');
+    fireEvent.click(button);
+    modal = document.querySelector('.pgn__modal-content-container');
+    expect(modal).not.toBeInTheDocument();
   });
 
-  it('SSO Record Additional Data', () => {
-    const dataTable = wrapper.find('Table#sso-data-new');
-    const dataHeader = dataTable.find('thead tr th');
-    const dataBody = dataTable.find('tbody tr td');
+  it('SSO Record Additional Data', async () => {
+    const dataTable = await screen.findByTestId('sso-data-new');
+    const dataHeader = dataTable.querySelectorAll('thead tr th');
+    const dataBody = dataTable.querySelectorAll('tbody tr td');
 
     const { extraData } = ssoRecordProp;
     expect(dataHeader).toHaveLength(Object.keys(extraData).length);
     expect(dataBody).toHaveLength(Object.keys(extraData).length);
 
     for (let i = 0; i < dataHeader.length; i++) {
-      const accesor = dataHeader.at(i).text();
-      const text = dataBody.at(i).text();
-      const value = extraData[accesor] ? extraData[accesor].toString() : '';
+      const accessor = dataHeader[i].textContent;
+      const text = dataBody[i].textContent;
+      const value = extraData[accessor] ? extraData[accessor].toString() : '';
 
-      expect(accesor in extraData).toBeTruthy();
-      if (accesor === 'authTime') {
-        expect(text).toEqual(formatUnixTimestamp(extraData[accesor]));
-      } else if (accesor === 'expires') {
-        const expires = extraData[accesor] ? `${extraData[accesor].toString()}s` : 'N/A';
+      expect(accessor in extraData).toBeTruthy();
+      if (accessor === 'authTime') {
+        expect(text).toEqual(formatUnixTimestamp(extraData[accessor]));
+      } else if (accessor === 'expires') {
+        const expires = extraData[accessor] ? `${extraData[accessor].toString()}s` : 'N/A';
         expect(text).toEqual(expires);
       } else {
         expect(text).toEqual(

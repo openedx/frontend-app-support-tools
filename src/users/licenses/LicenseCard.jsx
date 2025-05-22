@@ -53,10 +53,10 @@ export default function LicenseCard({
 
   return (
     tableData && tableData.length ? (
-      <Card className="pt-2 px-3 mb-1 w-100">
+      <Card data-testid="license-card" className="pt-2 px-3 mb-1 w-100">
         <Card.Header
           title={(
-            <span className="h3 card-title">
+            <span data-testid="license-card-title" className="h3 card-title">
               {licenseRecord.subscriptionPlanTitle}
             </span>
           )}
@@ -64,7 +64,7 @@ export default function LicenseCard({
         <Card.Section>
           <Row>
             <Col className="text-left" as="h4">
-              <Badge variant={statusMapping[licenseRecord.status]} className="badge-status">{licenseRecord.status}</Badge>
+              <Badge data-testid="license-card-status" variant={statusMapping[licenseRecord.status]} className="badge-status">{licenseRecord.status}</Badge>
 
             </Col>
             <Col className="text-right" as="h4">
@@ -82,6 +82,7 @@ export default function LicenseCard({
         />
         <Card.Section>
           <Table
+            dataTestId="license-card-table"
             data={tableData}
             columns={columns}
             styleName="sso-table"

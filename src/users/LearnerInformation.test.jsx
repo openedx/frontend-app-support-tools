@@ -1,5 +1,6 @@
-import { mount } from 'enzyme';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
+import '@testing-library/jest-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import * as api from './data/api';
@@ -23,7 +24,7 @@ const LearnerInformationWrapper = (props) => (
 );
 
 describe('Learners and Enrollments component', () => {
-  let wrapper;
+  let unmountWrapper;
   const props = {
     user: UserSummaryData.userData,
     changeHandler: jest.fn(() => { }),
@@ -43,162 +44,145 @@ describe('Learners and Enrollments component', () => {
       extraData: JSON.parse(entry.extraData),
     }));
     jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecords));
-    wrapper = mount(<LearnerInformationWrapper {...props} />);
+    const { unmount } = render(<LearnerInformationWrapper {...props} />);
+    unmountWrapper = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountWrapper();
   });
 
-  it('renders correctly', () => {
-    const tabs = wrapper.find('nav.nav-tabs a');
+  it('renders correctly', async () => {
+    const tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    expect(tabs.at(0).text()).toEqual('Account Information');
-    expect(tabs.at(1).text()).toEqual('Enrollments/Entitlements');
-    expect(tabs.at(2).text()).toEqual('Learner Purchases');
-    expect(tabs.at(3).text()).toEqual('SSO/License Info');
-    expect(tabs.at(4).text()).toEqual('Learner Credentials');
-    expect(tabs.at(5).text()).toEqual('Learner Records');
-    expect(tabs.at(6).text()).toEqual('Course Reset');
+    expect(tabs[0].textContent).toEqual('Account Information');
+    expect(tabs[1].textContent).toEqual('Enrollments/Entitlements');
+    expect(tabs[2].textContent).toEqual('Learner Purchases');
+    expect(tabs[3].textContent).toEqual('SSO/License Info');
+    expect(tabs[4].textContent).toEqual('Learner Credentials');
+    expect(tabs[5].textContent).toEqual('Learner Records');
+    expect(tabs[6].textContent).toEqual('Course Reset');
   });
 
-  it('Account Information Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Account Information Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(0).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[0]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).toHaveClass('active');
+    expect(tabs[1]).not.toHaveClass('active');
+    expect(tabs[2]).not.toHaveClass('active');
+    expect(tabs[3]).not.toHaveClass('active');
+    expect(tabs[4]).not.toHaveClass('active');
+    expect(tabs[5]).not.toHaveClass('active');
 
-    const accountInfo = wrapper.find('.tab-content div#learner-information-tabpane-account');
-    expect(accountInfo.html()).toEqual(expect.stringContaining('active'));
-    expect(accountInfo.find('#account-table h3').text()).toEqual('Account Details');
+    const accountInfo = await screen.findByTestId('learnerInformationAccountPane');
+    expect(accountInfo).toHaveClass('active');
+    expect(accountInfo.querySelector('#account-table h3').textContent).toEqual('Account Details');
   });
 
-  it('Enrollments/Entitlements Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Enrollments/Entitlements Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(1).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[1]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).not.toHaveClass('active');
+    expect(tabs[1]).toHaveClass('active');
+    expect(tabs[2]).not.toHaveClass('active');
+    expect(tabs[3]).not.toHaveClass('active');
+    expect(tabs[4]).not.toHaveClass('active');
+    expect(tabs[5]).not.toHaveClass('active');
 
-    const enrollmentsEntitlements = wrapper.find('.tab-content div#learner-information-tabpane-enrollments-entitlements');
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('active'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Entitlements (2)'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Enrollments (2)'));
+    const enrollmentsEntitlements = await screen.findByTestId('learnerInformationEnrollmentsPane');
+    expect(enrollmentsEntitlements).toHaveClass('active');
+    expect(enrollmentsEntitlements.textContent).toEqual(expect.stringContaining('Entitlements (2)'));
+    expect(enrollmentsEntitlements.textContent).toEqual(expect.stringContaining('Enrollments (2)'));
   });
 
-  it('Learner Purchases Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Learner Purchases Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(2).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[2]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).not.toHaveClass('active');
+    expect(tabs[1]).not.toHaveClass('active');
+    expect(tabs[2]).toHaveClass('active');
+    expect(tabs[3]).not.toHaveClass('active');
+    expect(tabs[4]).not.toHaveClass('active');
+    expect(tabs[5]).not.toHaveClass('active');
 
-    const learnerPurchases = wrapper.find('.tab-content div#learner-information-tabpane-learner-purchases');
-    expect(learnerPurchases.html()).toEqual(expect.stringContaining('active'));
-    expect(learnerPurchases.html()).toEqual(
-      expect.stringContaining('Order History'),
-    );
+    const learnerPurchases = await screen.findByTestId('learnerInformationPurchasePane');
+    expect(learnerPurchases).toHaveClass('active');
+    expect(learnerPurchases.textContent).toContain('Order History');
   });
 
-  it('SSO Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('SSO Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(3).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[3]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).not.toHaveClass('active');
+    expect(tabs[1]).not.toHaveClass('active');
+    expect(tabs[2]).not.toHaveClass('active');
+    expect(tabs[3]).toHaveClass('active');
+    expect(tabs[4]).not.toHaveClass('active');
+    expect(tabs[5]).not.toHaveClass('active');
 
-    const ssoRecords = wrapper.find('.tab-content div#learner-information-tabpane-sso');
-    expect(ssoRecords.html()).toEqual(expect.stringContaining('active'));
-    expect(ssoRecords.html()).toEqual(
-      expect.stringContaining('Single Sign-on Records'),
-    );
-    expect(ssoRecords.html()).toEqual(
-      expect.stringContaining('Licenses Subscription'),
-    );
+    const ssoRecords = await screen.findByTestId('learnerInformationSSOPane');
+    expect(ssoRecords).toHaveClass('active');
+    expect(ssoRecords.textContent).toContain('Single Sign-on Records');
+    expect(ssoRecords.textContent).toContain('Licenses Subscription');
   });
 
-  it('Learner Credentials Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Learner Credentials Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(4).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[4]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).not.toHaveClass('active');
+    expect(tabs[1]).not.toHaveClass('active');
+    expect(tabs[2]).not.toHaveClass('active');
+    expect(tabs[3]).not.toHaveClass('active');
+    expect(tabs[4]).toHaveClass('active');
+    expect(tabs[5]).not.toHaveClass('active');
 
-    const credentials = wrapper.find(
-      '.tab-content div#learner-information-tabpane-credentials',
-    );
-    expect(credentials.html()).toEqual(expect.stringContaining('active'));
-    expect(credentials.html()).toEqual(
-      expect.stringContaining('Learner Credentials'),
-    );
+    const credentials = await screen.findByTestId('learnerInformationCredentialsPane');
+    expect(credentials).toHaveClass('active');
+    expect(credentials.textContent).toContain('Learner Credentials');
   });
 
-  it('Learner Records Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Learner Records Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(5).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[5]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).not.toHaveClass('active');
+    expect(tabs[1]).not.toHaveClass('active');
+    expect(tabs[2]).not.toHaveClass('active');
+    expect(tabs[3]).not.toHaveClass('active');
+    expect(tabs[4]).not.toHaveClass('active');
+    expect(tabs[5]).toHaveClass('active');
 
-    const records = wrapper.find(
-      '.tab-content div#learner-information-tabpane-records',
-    );
-    expect(records.html()).toEqual(expect.stringContaining('active'));
-    expect(records.html()).toEqual(
-      expect.stringContaining('Learner Records'),
-    );
+    const records = await screen.findByTestId('learnerInformationRecordsPane');
+    expect(records).toHaveClass('active');
+    expect(records.textContent).toContain('Learner Records');
   });
 
-  it('Course Reset Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Course Reset Tab', async () => {
+    let tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
 
-    tabs.at(6).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(6).html()).toEqual(expect.stringContaining('active'));
+    fireEvent.click(tabs[6]);
+    tabs = (await screen.findByTestId('learnerInformationTabs')).querySelectorAll('a');
+    expect(tabs[0]).not.toHaveClass('active');
+    expect(tabs[1]).not.toHaveClass('active');
+    expect(tabs[2]).not.toHaveClass('active');
+    expect(tabs[3]).not.toHaveClass('active');
+    expect(tabs[4]).not.toHaveClass('active');
+    expect(tabs[5]).not.toHaveClass('active');
+    expect(tabs[6]).toHaveClass('active');
 
-    const records = wrapper.find(
-      '.tab-content div#learner-information-tabpane-course-reset',
-    );
-    expect(records.html()).toEqual(expect.stringContaining('active'));
-    expect(records.html()).toEqual(
-      expect.stringContaining('Course Reset'),
-    );
+    const records = await screen.findByTestId('learnerInformationResetPane');
+    expect(records).toHaveClass('active');
+    expect(records.textContent).toContain('Course Reset');
   });
 });

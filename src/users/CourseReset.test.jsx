@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  act, fireEvent, render, waitFor,
+  fireEvent, render, waitFor, screen,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -42,12 +42,11 @@ describe('CourseReset', () => {
     const postRequest = apiDataMocks();
 
     const user = 'John Doe';
-    let screen;
 
     await waitFor(() => {
-      screen = render(<CourseResetWrapper username={user} />);
+      render(<CourseResetWrapper username={user} />);
     });
-    const btn = screen.getByText('Reset', { selector: 'button' });
+    const btn = await screen.findByTestId('course-reset-button');
     userEvent.click(btn);
     await waitFor(() => {
       const submitButton = screen.getByText(/Yes/);
@@ -84,10 +83,7 @@ describe('CourseReset', () => {
       .mockImplementationOnce(() => Promise.resolve(data))
       .mockImplementationOnce(() => Promise.resolve(updatedData));
     const user = 'John Doe';
-    let screen;
-    await act(async () => {
-      screen = render(<CourseResetWrapper username={user} />);
-    });
+    render(<CourseResetWrapper username={user} />);
 
     const inProgressText = screen.getByText(/in progress/i);
     expect(inProgressText).toBeInTheDocument();
@@ -111,19 +107,14 @@ describe('CourseReset', () => {
           },
         ],
       });
-
-    let screen;
     const user = 'john';
-    await act(async () => {
-      screen = render(<CourseResetWrapper username={user} />);
-    });
+    render(<CourseResetWrapper username={user} />);
     const alertText = screen.getByText(/An error occurred fetching course reset list for user/);
     expect(alertText).toBeInTheDocument();
   });
 
   it('returns an error when resetting a course', async () => {
     const user = 'John Doe';
-    let screen;
 
     jest.spyOn(api, 'getLearnerCourseResetList').mockResolvedValueOnce(expectedGetData);
     jest
@@ -140,9 +131,7 @@ describe('CourseReset', () => {
         ],
       });
 
-    await act(async () => {
-      screen = render(<CourseResetWrapper username={user} />);
-    });
+    render(<CourseResetWrapper username={user} />);
 
     await waitFor(() => {
       const btn = screen.getByText('Reset', { selector: 'button' });
@@ -173,18 +162,11 @@ describe('CourseReset', () => {
 
   it('asserts different comment state', async () => {
     const postRequest = apiDataMocks();
-
     const user = 'John Doe';
-    let screen;
-
-    await waitFor(() => {
-      screen = render(<CourseResetWrapper username={user} />);
-    });
-    const resetButton = screen.getByText('Reset', { selector: 'button' });
-    fireEvent.click(resetButton);
-
-    const submitButton = screen.getByText(/Yes/);
-    expect(submitButton).toBeInTheDocument();
+    render(<CourseResetWrapper username={user} />);
+    const resetButton = await screen.getByTestId('course-reset-container');
+    await waitFor(() => fireEvent.click(resetButton));
+    await waitFor(() => expect(screen.getByText(/Yes/)).toBeInTheDocument());
 
     // Get the comment textarea and make assertions
     const commentInput = screen.getByRole('textbox');

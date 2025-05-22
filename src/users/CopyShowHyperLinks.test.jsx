@@ -1,5 +1,6 @@
-import { mount } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CopyShowHyperlinks from './CopyShowHyperLinks';
 
 describe('Copy Show Hyperlinks', () => {
@@ -11,15 +12,16 @@ describe('Copy Show Hyperlinks', () => {
     props = {
       text,
     };
-    wrapper = mount(<CopyShowHyperlinks {...props} />);
+    const { container } = render(<IntlProvider locale="en"><CopyShowHyperlinks {...props} /></IntlProvider>);
+    wrapper = container;
   });
   it('Text Value', () => {
-    const copy = wrapper.find('a').at(0);
-    const show = wrapper.find('a').at(1);
+    const copy = wrapper.querySelectorAll('a')[0];
+    const show = wrapper.querySelectorAll('a')[1];
 
-    expect(copy.text()).toEqual('Copy ');
-    expect(show.text()).toEqual('Show');
-    expect(wrapper.text()).toEqual('Copy Show');
+    expect(copy.textContent).toEqual('Copy ');
+    expect(show.textContent).toEqual('Show');
+    expect(wrapper.textContent).toEqual('Copy Show');
   });
   it('Click Copy', () => {
     Object.assign(navigator, {
@@ -28,17 +30,17 @@ describe('Copy Show Hyperlinks', () => {
       },
     });
     jest.spyOn(navigator.clipboard, 'writeText');
-    const copyLink = wrapper.find('a').at(0);
-    copyLink.simulate('click');
+    const copyLink = wrapper.querySelectorAll('a')[0];
+    fireEvent.click((copyLink));
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(text);
-    expect(copyLink.text()).toEqual('Copy\u2713');
+    expect(copyLink.textContent).toEqual('Copy\u2713');
     setInterval(() => expect(copyLink.text()).toEqual('Copy '), 3000);
   });
   it('Click Show', () => {
     window.alert = jest.fn();
-    const showLink = wrapper.find('a').at(1);
-    showLink.simulate('click');
+    const showLink = wrapper.querySelectorAll('a')[1];
+    fireEvent.click(showLink);
 
     expect(window.alert).toHaveBeenCalledWith(text);
     window.alert.mockClear();

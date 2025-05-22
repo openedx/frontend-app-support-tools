@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import licenseData from '../data/test/licenses';
@@ -16,37 +16,40 @@ describe.each(licenseData.results)('License Record Card', (licenseRecord) => {
     props = {
       licenseRecord: licenseRecordProp,
     };
-    wrapper = mount(<LicenseCard {...props} />);
+    const { container } = render(<LicenseCard {...props} />);
+    wrapper = container;
   });
 
-  it('License props', () => {
-    const licenseRecordProps = wrapper.prop('licenseRecord');
-    expect(licenseRecordProps).toEqual(props.licenseRecord);
+  it('License props', async () => {
+    const licenseRecordTitle = await screen.findByTestId('license-card-title');
+    const licenseRecordStatus = await screen.findByTestId('license-card-status');
+    expect(licenseRecordTitle.textContent).toEqual(props.licenseRecord.subscriptionPlanTitle);
+    expect(licenseRecordStatus.textContent).toEqual(props.licenseRecord.status);
   });
 
   it('No License Data', async () => {
     props = {
       licenseRecord: null,
     };
-    wrapper = mount(<LicenseCard {...props} />);
+    const { container } = render(<LicenseCard {...props} />);
 
-    expect(wrapper.isEmptyRender()).toBeTruthy();
+    expect(container.firstChild).toBeNull();
   });
 
   it('License Record', () => {
-    const title = wrapper.find('.h3.card-title');
-    const status = wrapper.find('h4.text-left');
-    const expire = wrapper.find('h4.text-right');
+    const title = wrapper.querySelector('.h3.card-title');
+    const status = wrapper.querySelector('h4.text-left');
+    const expire = wrapper.querySelector('h4.text-right');
 
-    expect(title.text()).toEqual(licenseRecordProp.subscriptionPlanTitle);
-    expect(status.text()).toEqual(licenseRecordProp.status);
-    expect(expire.text()).toEqual(`Plan Expiration: ${formatDate(licenseRecordProp.subscriptionPlanExpirationDate)}`);
+    expect(title.textContent).toEqual(licenseRecordProp.subscriptionPlanTitle);
+    expect(status.textContent).toEqual(licenseRecordProp.status);
+    expect(expire.textContent).toEqual(`Plan Expiration: ${formatDate(licenseRecordProp.subscriptionPlanExpirationDate)}`);
   });
 
-  it('License Record Additional Data', () => {
-    const dataTable = wrapper.find('Table#license-data-new');
-    const dataHeader = dataTable.find('thead tr th');
-    const dataBody = dataTable.find('tbody tr td');
+  it('License Record Additional Data', async () => {
+    const dataTable = await screen.findByTestId('license-card-table');
+    const dataHeader = dataTable.querySelectorAll('thead tr th');
+    const dataBody = dataTable.querySelectorAll('tbody tr td');
 
     expect(dataHeader).toHaveLength(Object.keys(licenseRecordProp).length - 3);
     expect(dataBody).toHaveLength(Object.keys(licenseRecordProp).length - 3);

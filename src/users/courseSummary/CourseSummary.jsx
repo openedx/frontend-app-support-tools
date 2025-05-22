@@ -80,6 +80,7 @@ export default function CourseSummary({
   function renderCourseRuns() {
     return (
       <Table
+        dataTestId="course-runs-table"
         columns={courseRunsColumn}
         data={tableData}
         styleName="course-runs-table"
@@ -88,14 +89,14 @@ export default function CourseSummary({
   }
 
   const courseSummaryInfo = (
-    <section ref={courseSummaryRef}>
+    <section data-testid="course-summary-info" ref={courseSummaryRef}>
       {!courseSummaryData && !courseSummaryErrors && <PageLoading srMessage="Loading" />}
       {courseSummaryErrors && <AlertList topic="course-summary" className="m-3" />}
 
       {courseSummaryData && !courseSummaryErrors && (
         <div>
           <table className="course-summary-table">
-            <tbody>
+            <tbody data-testid="course-summary-table-body">
 
               <tr>
                 <th>UUID</th>
@@ -154,7 +155,7 @@ export default function CourseSummary({
       size="lg"
     >
       <ModalDialog.Header className="mb-3">
-        <ModalDialog.Title className="mb-3">
+        <ModalDialog.Title data-testid="course-summary-modal-title" className="mb-3">
           {
             courseSummaryData && !courseSummaryErrors
               ? `Course Summary: ${courseSummaryData.title}`
@@ -168,6 +169,7 @@ export default function CourseSummary({
       <ModalDialog.Footer>
         <ActionRow>
           <ModalDialog.CloseButton
+            data-testid="course-summary-modal-close-button"
             id="closeBtnTest"
             variant="link"
           >

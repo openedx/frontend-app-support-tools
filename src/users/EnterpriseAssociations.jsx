@@ -37,7 +37,7 @@ export default function EnterpriseAssociations({ username }) {
   return (
     <div className="enterprise-associations">
       <h3 className="my-3">Enterprise Associations {tableData && `(${tableData.length})`}</h3>
-      {error && <Alert variant="danger">Failed to retrieve enterprise associations.</Alert>}
+      {error && <Alert data-testid="enterpriseAssociationAlert" variant="danger">Failed to retrieve enterprise associations.</Alert>}
       {!error && enterpriseCustomerUsers ? (
         <Table
           styleName="custom-table"

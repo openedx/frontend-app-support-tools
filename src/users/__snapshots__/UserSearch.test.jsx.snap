@@ -1,31 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User Search Page renders correctly matches snapshot 1`] = `
-<section
-  className="mb-3"
->
-  <form
-    className="form-inline"
+<div>
+  <section
+    class="mb-3"
   >
-    <label
-      htmlFor="userIdentifier"
+    <form
+      class="form-inline"
     >
-      Username, Email or LMS User ID
-    </label>
-    <input
-      className="form-control flex-grow-1 ml-1 mr-1"
-      defaultValue=""
-      name="userIdentifier"
-      type="text"
-    />
-    <button
-      className="btn btn-primary"
-      disabled={false}
-      onClick={[Function]}
-      type="submit"
-    >
-      Search
-    </button>
-  </form>
-</section>
+      <label
+        for="userIdentifier"
+      >
+        Username, Email or LMS User ID
+      </label>
+      <input
+        class="form-control flex-grow-1 ml-1 mr-1"
+        data-testid="userSearchInput"
+        name="userIdentifier"
+        type="text"
+        value=""
+      />
+      <button
+        class="btn btn-primary"
+        data-testid="userSearchSubmitButton"
+        type="submit"
+      >
+        Search
+      </button>
+    </form>
+  </section>
+</div>
 `;
