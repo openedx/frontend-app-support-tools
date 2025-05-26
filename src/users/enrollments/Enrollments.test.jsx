@@ -1,5 +1,5 @@
 import {
-  fireEvent, render, screen,
+  fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
@@ -41,8 +41,10 @@ describe('Course Enrollments Listing', () => {
   });
 
   it('default enrollment data', async () => {
-    const componentHeader = await screen.findByTestId('enrollments-heading3');
-    expect(componentHeader.textContent).toEqual('Enrollments (2)');
+    await waitFor(() => {
+      const componentHeader = screen.getByTestId('enrollments-heading3');
+      expect(componentHeader.textContent).toEqual('Enrollments (2)');
+    });
   });
 
   it('No Enrollment Data', async () => {
@@ -89,11 +91,13 @@ describe('Course Enrollments Listing', () => {
   });
 
   it('Enrollment change form is rendered for individual enrollment', async () => {
-    let dataRow = document.querySelectorAll('table tbody tr')[0];
+    let dataTable = await screen.findByTestId('enrollments-data-table');
+    let dataRow = dataTable.querySelector('tbody').querySelectorAll('tr')[0];
     const courseId = dataRow.querySelectorAll('td')[1].textContent;
     fireEvent.click(dataRow.querySelector('.dropdown button'));
     // eslint-disable-next-line prefer-destructuring
-    dataRow = document.querySelectorAll('table tbody tr')[0];
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    dataRow = dataTable.querySelector('tbody').querySelectorAll('tr')[0];
     fireEvent.click(dataRow.querySelectorAll('.dropdown-menu.show a')[0]);
 
     const changeFormModal = await screen.findByTestId('change-enrollment-form');
@@ -105,17 +109,23 @@ describe('Course Enrollments Listing', () => {
     expect(await screen.queryByTestId('change-enrollment-form')).not.toBeInTheDocument();
   });
 
-  it('Enrollment extra data and enterprise course enrollments are rendered for individual enrollment', () => {
-    let expandable = document.querySelectorAll('table tbody tr')[0].querySelectorAll('td div span')[0];
+  it('Enrollment extra data and enterprise course enrollments are rendered for individual enrollment', async () => {
+    let dataTable = await screen.findByTestId('enrollments-data-table');
+    let dataRows = dataTable.querySelector('tbody').querySelectorAll('tr');
+    let expandable = dataRows[0].querySelectorAll('td div span')[0];
     expect(expandable.innerHTML).toContain('plus');
 
     fireEvent.click(expandable);
 
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    dataRows = dataTable.querySelector('tbody').querySelectorAll('tr');
     // eslint-disable-next-line prefer-destructuring
-    expandable = document.querySelectorAll('table tbody tr')[0].querySelectorAll('td div span')[0];
+    expandable = dataRows[0].querySelectorAll('td div span')[0];
     expect(expandable.innerHTML).toContain('minus');
 
-    const extraTables = document.querySelectorAll('table tbody tr')[1].querySelectorAll('table');
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    dataRows = dataTable.querySelector('tbody').querySelectorAll('tr');
+    const extraTables = dataRows[1].querySelectorAll('table');
     expect(extraTables.length).toEqual(2);
 
     const extraDataTable = extraTables[0];
@@ -159,10 +169,12 @@ describe('Course Enrollments Listing', () => {
 
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(mockEnrollments));
 
-    await render(<EnrollmentPageWrapper {...props} />);
+    render(<EnrollmentPageWrapper {...props} />);
 
-    mockEnrollments.forEach((_, index) => {
-      const expandable = document.querySelectorAll('table tbody tr')[index].querySelectorAll('td div span')[0];
+    mockEnrollments.forEach(async (_, index) => {
+      const dataTable = await screen.getByTestId('enrollments-data-table');
+      const dataRows = dataTable.querySelector('tbody').querySelectorAll('tr');
+      const expandable = dataRows[index].querySelectorAll('td div span')[0];
       fireEvent.click(expandable);
 
       const extraTables = document.querySelectorAll('table tbody tr')[1].querySelectorAll('table');
@@ -177,31 +189,39 @@ describe('Course Enrollments Listing', () => {
     });
   });
 
-  it('Expand all button shows extra data for all enrollments', () => {
-    let expandable = document.querySelectorAll('table tbody tr')[0].querySelectorAll('td div span');
+  it('Expand all button shows extra data for all enrollments', async () => {
+    let dataTable = await screen.findByTestId('enrollments-data-table');
+    let expandable = dataTable.querySelector('tbody').querySelectorAll(('td div span'));
+    // document.querySelectorAll('table tbody tr')[0].querySelectorAll('td div span');
     expect(expandable[0].innerHTML).toContain('plus');
 
-    const expandAll = document.querySelectorAll('table thead tr th a')[0];
+    const expandAll = dataTable.querySelector('thead').querySelectorAll('tr th a')[0];
     fireEvent.click(expandAll);
 
-    expandable = document.querySelectorAll('table tbody tr')[0].querySelectorAll('td div span');
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    expandable = dataTable.querySelector('tbody').querySelectorAll(('td div span'));
     expect(expandable[0].innerHTML).toContain('minus');
     fireEvent.click(expandAll);
 
-    expandable = document.querySelectorAll('table tbody tr')[0].querySelectorAll('td div span');
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    expandable = dataTable.querySelector('tbody').querySelectorAll(('td div span'));
     expect(expandable[0].innerHTML).toContain('plus');
   });
 
-  it('Expand All and Collapse All', () => {
-    let expandAll = document.querySelector('table thead tr th a.link-primary');
+  it('Expand All and Collapse All', async () => {
+    let dataTable = await screen.findByTestId('enrollments-data-table');
+    let expandAll = (dataTable.querySelector('th')).querySelector('a.link-primary');
+    // document.querySelector('table thead tr th a.link-primary');
     expect(expandAll.textContent).toEqual('Expand All');
     fireEvent.click(expandAll);
 
-    expandAll = document.querySelector('table thead tr th a.link-primary');
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    expandAll = (dataTable.querySelector('th')).querySelector('a.link-primary');
     expect(expandAll.textContent).toEqual('Collapse All');
     fireEvent.click(expandAll);
 
-    expandAll = document.querySelector('table thead tr th a.link-primary');
+    dataTable = await screen.findByTestId('enrollments-data-table');
+    expandAll = (dataTable.querySelector('th')).querySelector('a.link-primary');
     expect(expandAll.textContent).toEqual('Expand All');
   });
 
@@ -210,21 +230,23 @@ describe('Course Enrollments Listing', () => {
      * Testing the certificate fetch on first row only. Async painting in the loop was causing
      * the test to pass data across the loop, causing inconsistent behavior..
      */
-    let dataRow = document.querySelectorAll('table tbody tr')[0];
+    let dataTable = await screen.findByTestId('enrollments-data-table');
+    let dataRow = dataTable.querySelector('tbody').querySelectorAll('tr')[0];
     const courseName = dataRow.querySelectorAll('td')[2].textContent;
     const apiMock = jest.spyOn(api, 'getCertificate').mockImplementationOnce(() => Promise.resolve({ courseKey: courseName }));
     fireEvent.click(dataRow.querySelector('.dropdown button'));
+    dataTable = await screen.findByTestId('enrollments-data-table');
     // eslint-disable-next-line prefer-destructuring
-    dataRow = document.querySelectorAll('table tbody tr')[0];
-    fireEvent.click(dataRow.querySelectorAll('.dropdown-menu.show a')[1]);
-
-    const certificates = await screen.findByTestId('certificates');
-    expect(certificates.textContent).toContain(courseName);
-
+    dataRow = dataTable.querySelector('tbody').querySelectorAll('tr')[0];
+    const linkToClick = dataRow.querySelectorAll('.dropdown-menu.show a')[1];
+    fireEvent.click(linkToClick);
+    await waitFor(() => {
+      const certificate = screen.getByTestId('certificates');
+      expect((certificate).textContent).toContain(courseName);
+    });
     expect(apiMock).toHaveBeenCalledTimes(1);
     fireEvent.click(await screen.findByTestId('certificates-btn-link'));
     expect(await screen.queryByTestId('certificates')).not.toBeInTheDocument();
-
     apiMock.mockReset();
   });
 
@@ -232,7 +254,9 @@ describe('Course Enrollments Listing', () => {
     unmountComponent();
     jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
     render(<EnrollmentPageWrapper searchStr="test123+2040" {...props} />);
-    const componentHeader = await screen.findByTestId('enrollments-heading3');
-    expect(componentHeader.textContent).toEqual('Enrollments (1)');
+    await waitFor(() => {
+      const componentHeader = screen.getByTestId('enrollments-heading3');
+      expect(componentHeader.textContent).toEqual('Enrollments (1)');
+    });
   });
 });

@@ -271,6 +271,7 @@ export default function Entitlements({
         ? <PageLoading srMessage="Loading" />
         : (
           <Table
+            dataTestId="entitlements-data-table"
             columns={columns}
             data={tableData}
             renderRowSubComponent={renderRowSubComponent}

@@ -305,6 +305,7 @@ export default function Enrollments({
       {enrollmentData
         ? (
           <Table
+            dataTestId="enrollments-data-table"
             columns={columns}
             data={tableData}
             renderRowSubComponent={renderRowSubComponent}

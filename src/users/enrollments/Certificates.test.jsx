@@ -210,8 +210,10 @@ describe('Certificate component', () => {
       await fireEvent.click(generateButton);
       expect(generateApiMock).toHaveBeenCalledTimes(1);
 
-      const alert = await screen.findByRole('alert');
-      expect(alert.textContent).toEqual('Error generating certificate');
+      await waitFor(() => {
+        const alert = screen.getByRole('alert');
+        expect(alert.textContent).toEqual('Error generating certificate');
+      });
     });
   });
 
@@ -258,18 +260,17 @@ describe('Certificate component', () => {
         ],
       }));
       apiMock = jest.spyOn(api, 'getCertificate').mockImplementation(() => Promise.resolve(regeneratableCertificate));
-
       render(<CertificateWrapper {...props} />);
-
       const regenerateButton = await screen.findByTestId('regenerate-certificate-button');
       expect(regenerateButton.textContent).toEqual('Regenerate');
       expect(regenerateButton.disabled).toBeFalsy();
-
-      await waitFor(() => fireEvent.click(regenerateButton));
+      fireEvent.click(regenerateButton);
       expect(regenerateApiMock).toHaveBeenCalledTimes(1);
 
-      const alert = await screen.findByRole('alert');
-      expect(alert.textContent).toEqual('Error regenerating certificate');
+      await waitFor(() => {
+        const alert = screen.getByRole('alert');
+        expect(alert.textContent).toEqual('Error regenerating certificate');
+      });
     });
   });
 });

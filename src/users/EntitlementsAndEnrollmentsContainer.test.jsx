@@ -1,5 +1,7 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import EntitlementsAndEnrollmentsContainer from './EntitlementsAndEnrollmentsContainer';
@@ -33,9 +35,11 @@ describe('Entitlements and Enrollments component', () => {
   });
 
   it('renders correctly', async () => {
-    const enrollmentsEntitlements = await screen.findByTestId('entitlementsAndEnrollmentsContainer');
-    expect(enrollmentsEntitlements.textContent).toContain('Entitlements (2)');
-    expect(enrollmentsEntitlements.textContent).toContain('Enrollments (2)');
+    await waitFor(() => {
+      const enrollmentsEntitlements = screen.getByTestId('entitlementsAndEnrollmentsContainer');
+      expect(enrollmentsEntitlements.textContent).toContain('Entitlements (2)');
+      expect(enrollmentsEntitlements.textContent).toContain('Enrollments (2)');
+    });
   });
 
   it('filter entitlements and enrollments on the basis of search key', async () => {
