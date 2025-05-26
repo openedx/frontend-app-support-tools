@@ -1,6 +1,8 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
 import ResetPassword from './ResetPassword';
@@ -13,47 +15,51 @@ const ResetPasswordWrapper = (props) => (
 );
 
 describe('Reset Password Component Tests', () => {
-  let wrapper;
+  let unmountComponent;
 
   beforeEach(() => {
     const data = {
       email: UserSummaryData.userData.email,
       changeHandler: UserSummaryData.changeHandler,
     };
-    wrapper = mount(<ResetPasswordWrapper {...data} />);
+    const { unmount } = render(<ResetPasswordWrapper {...data} />);
+    unmountComponent = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountComponent();
   });
 
   it('Reset Password button for a User', () => {
-    const passwordResetButton = wrapper.find('#reset-password').hostNodes();
-    expect(passwordResetButton.text()).toEqual('Reset Password');
+    const passwordResetButton = document.querySelector('#reset-password');
+    expect(passwordResetButton.textContent).toEqual('Reset Password');
   });
 
   it('Reset Password Modal', async () => {
     const mockApiCall = jest.spyOn(api, 'postResetPassword').mockImplementationOnce(() => Promise.resolve({}));
-    const passwordResetButton = wrapper.find('#reset-password').hostNodes();
-    let resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
+    const passwordResetButton = document.querySelector('#reset-password');
+    let resetPasswordModal = await screen.queryByTestId('user-account-reset-password-modal-body');
 
-    expect(resetPasswordModal.prop('isOpen')).toEqual(false);
-    expect(passwordResetButton.text()).toEqual('Reset Password');
+    expect(resetPasswordModal).not.toBeInTheDocument();
+    expect(passwordResetButton.textContent).toEqual('Reset Password');
 
-    passwordResetButton.simulate('click');
-    resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
+    fireEvent.click(passwordResetButton);
+    resetPasswordModal = await screen.queryByTestId('user-account-reset-password-modal-body');
 
-    expect(resetPasswordModal.prop('isOpen')).toEqual(true);
-    expect(resetPasswordModal.find('h2.pgn__modal-title').text()).toEqual('Reset Password');
-    const confirmAlert = resetPasswordModal.find('.alert-warning');
-    expect(confirmAlert.text()).toEqual(
+    expect(resetPasswordModal).toBeInTheDocument();
+    const modalTitle = await screen.findByTestId('user-account-reset-password-modal-title');
+    expect(modalTitle.textContent).toEqual('Reset Password');
+    const confirmAlert = document.querySelector('.alert-warning');
+    expect(confirmAlert.textContent).toEqual(
       'We will send a message with password recovery instructions to the email address edx@example.com. Do you wish to proceed?',
     );
-    resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
+    const confirmButton = await screen.findByTestId('user-account-reset-password-confirmation-button');
+    fireEvent.click(confirmButton);
     waitFor(() => expect(UserSummaryData.changeHandler).toHaveBeenCalled());
-    resetPasswordModal.find('button.btn-link').simulate('click');
-    resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
-    expect(resetPasswordModal.prop('isOpen')).toEqual(false);
+    const closeButton = await screen.findByTestId('user-account-reset-password-modal-close-button');
+    await waitFor(() => fireEvent.click(closeButton));
+    resetPasswordModal = await screen.queryByTestId('user-account-reset-password-modal-body');
+    expect(resetPasswordModal).not.toBeInTheDocument();
 
     mockApiCall.mockRestore();
   });
@@ -71,24 +77,25 @@ describe('Reset Password Component Tests', () => {
       ],
     };
     const mockApiCall = jest.spyOn(api, 'postResetPassword').mockImplementationOnce(() => Promise.resolve(resetPasswordErrors));
-    const passwordResetButton = wrapper.find('#reset-password').hostNodes();
-    passwordResetButton.simulate('click');
-    let resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
-    expect(resetPasswordModal.prop('isOpen')).toEqual(true);
-    const confirmAlert = resetPasswordModal.find('.alert-warning');
-    expect(confirmAlert.text()).toEqual(
+    const passwordResetButton = document.querySelector('#reset-password');
+    fireEvent.click(passwordResetButton);
+    let resetPasswordModal = await screen.queryByTestId('user-account-reset-password-modal-body');
+    expect(resetPasswordModal).toBeInTheDocument();
+    const confirmAlert = document.querySelector('.alert-warning');
+    expect(confirmAlert.textContent).toEqual(
       'We will send a message with password recovery instructions to the email address edx@example.com. Do you wish to proceed?',
     );
 
-    resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
-    resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
-    const errorAlert = resetPasswordModal.find('.alert-danger');
+    const confirmButton = await screen.findByTestId('user-account-reset-password-confirmation-button');
+    fireEvent.click(confirmButton);
+    const errorAlert = document.querySelector('.alert-danger');
     waitFor(() => expect(errorAlert.text()).toEqual(
       'Your previous request is in progress, please try again in a few moments',
     ));
-    resetPasswordModal.find('button.btn-link').simulate('click');
-    resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
-    expect(resetPasswordModal.prop('isOpen')).toEqual(false);
+    const closeButton = await screen.findByTestId('user-account-reset-password-modal-close-button');
+    await waitFor(() => fireEvent.click(closeButton));
+    resetPasswordModal = await screen.queryByTestId('user-account-reset-password-modal-body');
+    expect(resetPasswordModal).not.toBeInTheDocument();
     mockApiCall.mockRestore();
   });
 
@@ -105,13 +112,12 @@ describe('Reset Password Component Tests', () => {
       ],
     };
     const mockApiCall = jest.spyOn(api, 'postResetPassword').mockImplementationOnce(() => Promise.resolve(resetPasswordErrors));
-    const passwordResetButton = wrapper.find('#reset-password').hostNodes();
-    passwordResetButton.simulate('click');
-    let resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
-    resetPasswordModal.find('button.btn-danger').hostNodes().simulate('click');
-    resetPasswordModal = wrapper.find('ModalDialog#user-account-reset-password');
-    const errorAlert = resetPasswordModal.find('.alert-danger');
-    waitFor(() => expect(errorAlert.text()).toEqual(
+    const passwordResetButton = document.querySelector('#reset-password');
+    fireEvent.click(passwordResetButton);
+    const confirmButton = await screen.findByTestId('user-account-reset-password-confirmation-button');
+    await waitFor(() => fireEvent.click(confirmButton));
+    const errorAlert = await screen.findByTestId('reset-password-alert-danger');
+    await waitFor(() => expect(errorAlert.textContent).toEqual(
       'Something went wrong. Please try again later!',
     ));
     mockApiCall.mockRestore();

@@ -250,8 +250,9 @@ export default function Entitlements({
   return (
     <section className="mb-3">
       <div className="row">
-        <h3 className="ml-4 mr-auto">Entitlements ({tableData.length})</h3>
+        <h3 data-testid="create-new-entitlement-title" className="ml-4 mr-auto">Entitlements ({tableData.length})</h3>
         <Button
+          data-testid="create-new-entitlement-button"
           id="create-enrollment-button"
           type="button"
           variant="outline-primary mr-4"
@@ -270,6 +271,7 @@ export default function Entitlements({
         ? <PageLoading srMessage="Loading" />
         : (
           <Table
+            dataTestId="entitlements-data-table"
             columns={columns}
             data={tableData}
             renderRowSubComponent={renderRowSubComponent}

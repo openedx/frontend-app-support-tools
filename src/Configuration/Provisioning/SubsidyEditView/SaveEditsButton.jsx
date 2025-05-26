@@ -246,6 +246,7 @@ const SaveEditsButton = () => {
   };
   return (
     <StatefulButton
+      data-testid="save-edits-stateful-button"
       className="mr-1"
       labels={buttonLabels}
       variant={submitButtonState === 'error' ? 'danger' : 'primary'}

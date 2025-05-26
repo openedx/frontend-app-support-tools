@@ -1,7 +1,8 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import * as api from './data/api';
@@ -19,7 +20,6 @@ const LearnerRecordsWrapper = (props) => (
 );
 
 describe('Learner Records Tests', () => {
-  let wrapper;
   let apiMock;
   const data = {
     username: 'edx',
@@ -31,17 +31,14 @@ describe('Learner Records Tests', () => {
     }
   });
 
-  afterEach(() => {
-    wrapper.unmount();
-  });
-
   it('renders a message with no results', async () => {
-    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
+    const { container, unmount } = render(<LearnerRecordsWrapper username={data.username} />);
     apiMock = jest
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve([]));
 
-    expect(wrapper.find('p').text()).toEqual(`No results found for username: ${data.username}`);
+    expect(container.querySelector('p').textContent).toEqual(`No results found for username: ${data.username}`);
+    unmount();
   });
 
   it('renders an error message', async () => {
@@ -59,9 +56,9 @@ describe('Learner Records Tests', () => {
     apiMock = jest
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve(expectedError));
-    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
-
-    waitFor(() => expect(wrapper.find('.alert').text()).toEqual(expectedError.errors[0].text));
+    const { container, unmount } = render(<LearnerRecordsWrapper username={data.username} />);
+    waitFor(() => expect(container.querySelector('.alert').textContent).toEqual(expectedError.errors[0].text));
+    unmount();
   });
 
   it('renders metadata for a program record', async () => {
@@ -69,16 +66,15 @@ describe('Learner Records Tests', () => {
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve(records));
 
-    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
+    const { unmount } = render(<LearnerRecordsWrapper username={data.username} />);
+    const programInformation = await screen.findByTestId('learner-records-program-information');
 
     const { program } = records[0].record;
-
-    waitFor(() => {
-      expect(wrapper.find('h4').text()).toEqual(program.name);
-      expect(wrapper.find('p').at(0).text()).toEqual(program.type_name);
-      expect(wrapper.find('p').at(1).text()).toEqual('Partially Completed');
-      expect(wrapper.find('p').at(2).text()).toEqual(`Last updated: ${new Date(program.last_updated).toLocaleDateString()}`);
-    });
+    expect(programInformation.querySelector('h4').textContent).toEqual(program.name);
+    expect(programInformation.querySelectorAll('p')[0].textContent).toEqual(program.type_name);
+    expect(programInformation.querySelectorAll('p')[1].textContent).toEqual('Partially Completed');
+    expect(programInformation.querySelectorAll('p')[2].textContent).toEqual(`Last updated: ${new Date(program.last_updated).toLocaleDateString()}`);
+    unmount();
   });
 
   it('copies a link to the clipboard when the "Copy Program Record link" button is clicked', async () => {
@@ -86,7 +82,7 @@ describe('Learner Records Tests', () => {
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve(records));
 
-    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
+    render(<LearnerRecordsWrapper username={data.username} />);
 
     Object.assign(navigator, {
       clipboard: {
@@ -95,13 +91,10 @@ describe('Learner Records Tests', () => {
     });
     jest.spyOn(navigator.clipboard, 'writeText');
 
-    const copyButton = wrapper.find('button').at(0);
-    waitFor(() => {
-      expect(copyButton.text()).toEqual('Copy public record link');
-      copyButton.simulate('click');
-
-      expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
-    });
+    const copyButton = await screen.findByTestId('learner-records-button');
+    expect(copyButton.textContent).toEqual('Copy public record link');
+    fireEvent.click(copyButton);
+    expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
   });
 
   it('renders an alert when there is no public instance of a record', async () => {
@@ -111,9 +104,9 @@ describe('Learner Records Tests', () => {
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve(privateRecords));
 
-    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
-
-    waitFor(() => expect(wrapper.find('div.no-public-link').text()).toEqual('There is no public instance for this record. Learners must create a public link on their own.'));
+    render(<LearnerRecordsWrapper username={data.username} />);
+    const noPublicLinkAlert = await screen.findByTestId('no-public-link');
+    expect(noPublicLinkAlert.textContent).toEqual('There is no public instance for this record. Learners must create a public link on their own.');
   });
 
   it('renders a table for a program record', async () => {
@@ -121,31 +114,28 @@ describe('Learner Records Tests', () => {
       .spyOn(api, 'getLearnerRecords')
       .mockImplementationOnce(() => Promise.resolve(records));
 
-    wrapper = mount(<LearnerRecordsWrapper username={data.username} />);
+    render(<LearnerRecordsWrapper username={data.username} />);
 
-    const dataTable = wrapper.find('table.custom-table').at(0);
-    const firstDataRow = dataTable.find('tr').at(1);
+    const dataTable = await screen.findByTestId('learner-records-table');
+    const firstDataRow = dataTable.querySelectorAll('tr')[1];
+    expect(dataTable.querySelectorAll('th')[0].textContent).toEqual('Course Name');
+    expect(dataTable.querySelectorAll('th')[1].textContent).toEqual('School');
+    expect(dataTable.querySelectorAll('th')[2].textContent).toEqual('Course ID');
+    expect(dataTable.querySelectorAll('th')[3].textContent).toEqual('Highest grade earned');
+    expect(dataTable.querySelectorAll('th')[4].textContent).toEqual('Letter Grade');
+    expect(dataTable.querySelectorAll('th')[5].textContent).toEqual('Verified Attempts');
+    expect(dataTable.querySelectorAll('th')[6].textContent).toEqual('Date Earned');
+    expect(dataTable.querySelectorAll('th')[7].textContent).toEqual('Status');
 
-    waitFor(() => {
-      expect(dataTable.find('th').at(0).text()).toEqual('Course Name');
-      expect(dataTable.find('th').at(1).text()).toEqual('School');
-      expect(dataTable.find('th').at(2).text()).toEqual('Course ID');
-      expect(dataTable.find('th').at(3).text()).toEqual('Highest grade earned');
-      expect(dataTable.find('th').at(4).text()).toEqual('Letter Grade');
-      expect(dataTable.find('th').at(5).text()).toEqual('Verified Attempts');
-      expect(dataTable.find('th').at(6).text()).toEqual('Date Earned');
-      expect(dataTable.find('th').at(7).text()).toEqual('Status');
+    const grade = records[0].record.grades[0];
 
-      const grade = records[0].record.grades[0];
-
-      expect(firstDataRow.find('td').at(0).text()).toEqual(grade.name);
-      expect(firstDataRow.find('td').at(1).text()).toEqual(grade.school);
-      expect(firstDataRow.find('td').at(2).text()).toEqual(grade.course_id.split(':')[1]);
-      expect(firstDataRow.find('td').at(3).text()).toEqual(`${parseInt(Math.round(grade.percent_grade * 100), 10).toString()}%`);
-      expect(firstDataRow.find('td').at(4).text()).toEqual(grade.letter_grade);
-      expect(firstDataRow.find('td').at(5).text()).toEqual(grade.attempts.toString());
-      expect(firstDataRow.find('td').at(6).text()).toEqual(new Date(grade.issue_date).toLocaleDateString());
-      expect(firstDataRow.find('td').at(7).text()).toEqual('Earned');
-    });
+    expect(firstDataRow.querySelectorAll('td')[0].textContent).toEqual(grade.name);
+    expect(firstDataRow.querySelectorAll('td')[1].textContent).toEqual(grade.school);
+    expect(firstDataRow.querySelectorAll('td')[2].textContent).toEqual(grade.course_id.split(':')[1]);
+    expect(firstDataRow.querySelectorAll('td')[3].textContent).toEqual(`${parseInt(Math.round(grade.percent_grade * 100), 10).toString()}%`);
+    expect(firstDataRow.querySelectorAll('td')[4].textContent).toEqual(grade.letter_grade);
+    expect(firstDataRow.querySelectorAll('td')[5].textContent).toEqual(grade.attempts.toString());
+    expect(firstDataRow.querySelectorAll('td')[6].textContent).toEqual(new Date(grade.issue_date).toLocaleDateString());
+    expect(firstDataRow.querySelectorAll('td')[7].textContent).toEqual('Earned');
   });
 });

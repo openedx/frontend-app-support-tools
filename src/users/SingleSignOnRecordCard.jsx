@@ -62,7 +62,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
   }, [ssoRecord]);
 
   return ssoRecord ? (
-    <span>
+    <span data-testid="sso-record">
       <ModalDialog
         isOpen={showHistory}
         onClose={() => setShowHistory(false)}
@@ -92,7 +92,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
           </ActionRow>
         </ModalDialog.Footer>
       </ModalDialog>
-      <Card className="pt-2 px-3 mb-1 w-100">
+      <Card data-testid="singleSignOnCard" className="pt-2 px-3 mb-1 w-100">
         <Card.Header
           title={(
             <span className="h3 card-title">
@@ -113,6 +113,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
           <Row>
             <div className="history">
               <Button
+                data-testid="history-button"
                 className="history-button"
                 onClick={() => setShowHistory(true)}
                 variant="link"
@@ -133,6 +134,7 @@ export default function SingleSignOnRecordCard({ ssoRecord }) {
         />
         <Card.Section>
           <Table
+            dataTestId="sso-data-new"
             styleName="sso-table"
             id="sso-data-new"
             data={[data]}

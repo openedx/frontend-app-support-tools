@@ -2,23 +2,22 @@
 
 exports[`<PageLoading /> snapshot matches correctly 1`] = `
 <div>
-  <div
-    className="d-flex justify-content-center align-items-center flex-column"
-    style={
-      {
-        "height": "20vh",
-      }
-    }
-  >
+  <div>
     <div
-      className="spinner-border text-primary"
-      role="status"
+      class="d-flex justify-content-center align-items-center flex-column"
+      data-testid="page-loading"
+      style="height: 20vh;"
     >
-      <span
-        className="sr-only"
+      <div
+        class="spinner-border text-primary"
+        role="status"
       >
-        Loading
-      </span>
+        <span
+          class="sr-only"
+        >
+          Loading
+        </span>
+      </div>
     </div>
   </div>
 </div>

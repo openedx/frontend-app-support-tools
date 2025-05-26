@@ -57,21 +57,23 @@ export default function OnboardingStatus({
           <h3>Verified In</h3>
           { onboardingData.verifiedIn ? (
             <Table
+              dataTestId="verified-in-data"
               id="verified-in-data"
               data={formatData(onboardingData.verifiedIn)}
               columns={proctoringColumns}
               styleName="idv-table"
             />
-          ) : <div className="no-record-text" id="verified-in-no-data">{ onboardingData.error ? onboardingData.error : 'No Record Found' }</div> }
+          ) : <div data-testid="verified-in-no-data" className="no-record-text" id="verified-in-no-data">{ onboardingData.error ? onboardingData.error : 'No Record Found' }</div> }
           <h4>Current Status</h4>
           { onboardingData.currentStatus ? (
             <Table
+              dataTestId="current-status-data"
               id="current-status-data"
               data={formatData(onboardingData.currentStatus)}
               columns={proctoringColumns}
               styleName="idv-table"
             />
-          ) : <div className="no-record-text" id="current-status-no-data">{ onboardingData.error ? onboardingData.error : 'No Record Found' }</div>}
+          ) : <div data-testid="current-status-no-data" className="no-record-text" id="current-status-no-data">{ onboardingData.error ? onboardingData.error : 'No Record Found' }</div>}
         </div>
       ) : <PageLoading srMessage="Loading.." /> }
     </div>

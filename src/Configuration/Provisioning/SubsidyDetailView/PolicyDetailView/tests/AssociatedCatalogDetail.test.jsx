@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import AssociatedCatalogDetail from '../AssociatedCatalogDetail';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';
 import { PREDEFINED_QUERIES_ENUM, PREDEFINED_QUERY_DISPLAY_NAMES } from '../../../data/constants';
+import '@testing-library/jest-dom';
 
 const AssociatedCatalogDetailWrapper = ({
   // eslint-disable-next-line react/prop-types

@@ -67,7 +67,7 @@ export default function PasswordHistory({
             Enable/Disable History
           </ModalDialog.Title>
         </ModalDialog.Header>
-        <ModalDialog.Body className="mb-3">
+        <ModalDialog.Body data-testid="password-history-modal-body" className="mb-3">
           <DataTable
             data={passwordHistoryData}
             columns={userPasswordHistoryColumns}
@@ -78,6 +78,7 @@ export default function PasswordHistory({
           <ActionRow>
             <ModalDialog.CloseButton
               variant="link"
+              data-testid="password-history-modal-close-button"
             >
               Close
             </ModalDialog.CloseButton>

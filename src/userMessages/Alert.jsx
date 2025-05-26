@@ -37,7 +37,7 @@ function Alert({
   type, dismissible, children, onDismiss,
 }) {
   return (
-    <div className={classNames('alert', { 'alert-dismissible': dismissible }, getAlertClass(type))}>
+    <div data-testid="alert" className={classNames('alert', { 'alert-dismissible': dismissible }, getAlertClass(type))}>
       <div className="d-flex align-items-start">
         <div className="mr-2">
           <FontAwesomeIcon icon={getAlertIcon(type)} />

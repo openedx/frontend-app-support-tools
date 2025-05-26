@@ -110,6 +110,7 @@ function CourseReset({ username, intl }) {
       updatedData.action = (
         <>
           <Button
+            data-testid="course-reset-button"
             variant="outline-primary"
             className="reset-btn"
             onClick={open}
@@ -125,6 +126,7 @@ function CourseReset({ username, intl }) {
             footerNode={(
               <ActionRow>
                 <Button
+                  data-testid="slfjlkgf"
                   variant="primary"
                   onClick={() => handleSubmit(data.course_id)}
                   disabled={!!commentError.length}

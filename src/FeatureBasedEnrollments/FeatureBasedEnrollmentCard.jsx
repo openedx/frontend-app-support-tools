@@ -7,7 +7,7 @@ import { formatDate } from '../utils';
 
 export default function FeatureBasedEnrollmentCard({ title, fbeData }) {
   return (
-    <Card>
+    <Card data-testid="feature-based-enrollment-card">
       <Card.Header
         title={(
           <span

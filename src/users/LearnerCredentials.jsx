@@ -13,9 +13,9 @@ export default function LearnerCredentials({ username }) {
 
   const noCredentials = (
     error ? (
-      <Alert variant="danger">{error.text}</Alert>
+      <Alert data-testid="noCredentialsErrorAlert" variant="danger">{error.text}</Alert>
     ) : (
-      <p className="ml-4">No Credentials were Found.</p>
+      <p data-testid="noCredentialsFoundMesaage" className="ml-4">No Credentials were Found.</p>
     )
   );
   // eslint-disable-next-line react/no-unstable-nested-components
@@ -31,6 +31,7 @@ export default function LearnerCredentials({ username }) {
             Hide
           </Button>
           <Table
+            dataTestId="learnerCredentialsTable"
             columns={[
               {
                 Header: 'Name',
@@ -80,9 +81,11 @@ export default function LearnerCredentials({ username }) {
   return (
 
     <section className="mb-3">
-      <h3>Learner Credentials</h3>
+      <h3 data-testid="learnerCredentialsHeading">Learner Credentials
+      </h3>
       {credentials ? (
         <Table
+          dataTestId="learnerCredentialsTable"
           columns={[
             {
               Header: 'Credential Type',

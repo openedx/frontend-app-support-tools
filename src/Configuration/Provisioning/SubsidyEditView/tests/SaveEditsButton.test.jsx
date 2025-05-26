@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import '@testing-library/jest-dom/extend-expect';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent, screen, waitFor, render,
+} from '@testing-library/react';
 import { renderWithRouter } from '@edx/frontend-enterprise-utils';
 import SaveEditsButton from '../SaveEditsButton';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
@@ -12,6 +13,7 @@ import {
   sampleSinglePolicyCustomCatalogQueryFormData,
   sampleSinglePolicyPredefinedCatalogQueryFormData,
 } from '../../../testData/constants';
+import '@testing-library/jest-dom';
 
 const { SAVE_BUTTON } = PROVISIONING_PAGE_TEXT.FORM;
 
@@ -69,12 +71,11 @@ describe('Save edits button', () => {
     expect(screen.getByText(SAVE_BUTTON.submit)).toBeTruthy();
   });
   it('calls handleSubmit error state when clicked with no data', async () => {
-    renderWithRouter(<SaveEditsButtonWrapper />);
-
+    const { rerender } = render(<SaveEditsButtonWrapper />);
     const submitButton = screen.getByText(SAVE_BUTTON.submit);
-    fireEvent.click(submitButton);
-
-    await waitFor(() => expect(screen.getByText(SAVE_BUTTON.error)).toBeTruthy());
+    await waitFor(() => fireEvent.click(submitButton));
+    rerender(<SaveEditsButtonWrapper />);
+    await waitFor(() => expect(screen.getByText(SAVE_BUTTON.error)).toBeInTheDocument());
   });
   for (let i = 0; i < sampleDataSet.length; i++) {
     it(`calls handleSubmit complete state when clicked with ${Object.keys(sampleDataSet[i])} data`, async () => {

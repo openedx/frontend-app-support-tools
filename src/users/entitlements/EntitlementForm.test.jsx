@@ -1,6 +1,6 @@
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-
+import '@testing-library/jest-dom';
 import EntitlementForm from './EntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
@@ -13,26 +13,24 @@ const EntitlementFormWrapper = (props) => (
 );
 
 describe('Entitlement forms', () => {
-  let wrapper;
-
-  it('Create Entitlement form render', () => {
-    wrapper = mount(<EntitlementFormWrapper {...entitlementFormData} formType={CREATE} />);
-    expect(wrapper.find('CreateEntitlementForm').length).toEqual(1);
-    expect(wrapper.find('ReissueEntitlementForm').length).toEqual(0);
-    expect(wrapper.find('ExpireEntitlementForm').length).toEqual(0);
+  it('Create Entitlement form render', async () => {
+    render(<EntitlementFormWrapper {...entitlementFormData} formType={CREATE} />);
+    expect(await screen.queryByTestId('create-entitlement-form')).toBeInTheDocument();
+    expect(await screen.queryByTestId('reissue-entitlement-form')).not.toBeInTheDocument();
+    expect(await screen.queryByTestId('expire-entitlement-form')).not.toBeInTheDocument();
   });
 
-  it('Reissue Entitlement form render', () => {
-    wrapper = mount(<EntitlementFormWrapper {...entitlementFormData} formType={REISSUE} />);
-    expect(wrapper.find('ReissueEntitlementForm').length).toEqual(1);
-    expect(wrapper.find('CreateEntitlementForm').length).toEqual(0);
-    expect(wrapper.find('ExpireEntitlementForm').length).toEqual(0);
+  it('Reissue Entitlement form render', async () => {
+    render(<EntitlementFormWrapper {...entitlementFormData} formType={REISSUE} />);
+    expect(await screen.queryByTestId('create-entitlement-form')).not.toBeInTheDocument();
+    expect(await screen.queryByTestId('reissue-entitlement-form')).toBeInTheDocument();
+    expect(await screen.queryByTestId('expire-entitlement-form')).not.toBeInTheDocument();
   });
 
-  it('Expire Entitlement form render', () => {
-    wrapper = mount(<EntitlementFormWrapper {...entitlementFormData} formType={EXPIRE} />);
-    expect(wrapper.find('ExpireEntitlementForm').length).toEqual(1);
-    expect(wrapper.find('CreateEntitlementForm').length).toEqual(0);
-    expect(wrapper.find('ReissueEntitlementForm').length).toEqual(0);
+  it('Expire Entitlement form render', async () => {
+    render(<EntitlementFormWrapper {...entitlementFormData} formType={EXPIRE} />);
+    expect(await screen.queryByTestId('create-entitlement-form')).not.toBeInTheDocument();
+    expect(await screen.queryByTestId('reissue-entitlement-form')).not.toBeInTheDocument();
+    expect(await screen.queryByTestId('expire-entitlement-form')).toBeInTheDocument();
   });
 });

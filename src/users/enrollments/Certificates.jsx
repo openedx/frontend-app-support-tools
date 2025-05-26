@@ -28,6 +28,7 @@ export default function Certificates({
   // eslint-disable-next-line no-use-before-define
   const oldCourseId = usePrevious(courseId);
   const certificateRef = useRef(null);
+  const TABLE_DATA_TEST_ID = 'certificate-info-table';
 
   useEffect(() => {
     setCertificate(undefined);
@@ -109,7 +110,7 @@ export default function Certificates({
   }
 
   const certificateInfo = (
-    <section ref={certificateRef}>
+    <section data-testid="certificates" ref={certificateRef}>
       {!certificate && !displayCertErrors && <PageLoading srMessage="Loading" /> }
       {displayCertErrors && <AlertList topic="certificates" />}
 
@@ -117,46 +118,47 @@ export default function Certificates({
 
       <div>
         {status && (<Alert variant="info">{status}</Alert>)}
-        <table className="certificate-info-table">
+        <table data-testid={TABLE_DATA_TEST_ID} className="certificate-info-table">
           <tbody>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Course ID</th>
               <td>{certificate.courseKey}</td>
             </tr>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Certificate Type</th>
               <td>{certificate.type ? certificate.type : 'Not Available'}</td>
             </tr>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Status</th>
               <td>{certificate.status ? certificate.status : 'Not Available'}</td>
             </tr>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Grade</th>
               <td>{certificate.grade ? certificate.grade : 'Not Available'}</td>
             </tr>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Last Updated</th>
               <td>{formatDate(certificate.modified)}</td>
             </tr>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Download URL</th>
               <td>{certificate.downloadUrl ? <a href={certificateDownloadUrl(certificate)}>Download</a> : 'Not Available'}</td>
             </tr>
 
-            <tr>
+            <tr data-testid={`${TABLE_DATA_TEST_ID}-row`}>
               <th>Actions</th>
               <td>
                 {
                     certificate.regenerate
                       ? (
                         <Button
+                          data-testid="regenerate-certificate-button"
                           onClick={postRegenerateCertificate}
                           id="regenerate-certificate"
                           variant="outline-danger"
@@ -167,6 +169,7 @@ export default function Certificates({
                       )
                       : (
                         <Button
+                          data-testid="generate-certificate-button"
                           onClick={postGenerateCertificate}
                           id="generate-certificate"
                           variant="outline-danger"
@@ -189,6 +192,7 @@ export default function Certificates({
 
   return (
     <ModalDialog
+      data-testid="certificate-modal-dialogue"
       isOpen={modalIsOpen}
       onClose={() => {
         closeHandler();
@@ -209,6 +213,7 @@ export default function Certificates({
       <ModalDialog.Footer>
         <ActionRow>
           <ModalDialog.CloseButton
+            data-testid="certificates-btn-link"
             variant="link"
           >
             Close

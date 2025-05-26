@@ -1,6 +1,5 @@
-import { mount } from 'enzyme';
+import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
 import FeatureBasedEnrollment from './FeatureBasedEnrollment';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
@@ -19,52 +18,54 @@ describe('Feature Based Enrollment', () => {
     apiFetchSignal: true,
   };
 
-  let wrapper;
+  let unmountComponent; let apiMock;
 
   beforeEach(async () => {
     // api file has only one default export, so that will be spied-on
-    jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-    wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
+    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
+    const { unmount } = render(<FeatureBasedEnrollmentWrapper {...props} />);
+    unmountComponent = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountComponent();
   });
 
   it('default props', () => {
-    const courseId = wrapper.prop('courseId');
-    expect(courseId).toEqual(props.courseId);
+    expect(apiMock).toBeCalledWith(props.courseId);
   });
 
   it('Successful fetch for FBE data', async () => {
-    const cardList = wrapper.find('Card');
-    const courseTitle = wrapper.find('h4');
+    const cardList = await screen.findAllByTestId('feature-based-enrollment-card');
+    const courseTitle = document.querySelector('h4');
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(cardList).toHaveLength(2);
-      expect(wrapper.find('h3#fbe-title-header').text()).toEqual('Feature Based Enrollment Configuration');
-      expect(courseTitle.text()).toEqual('Course Title: test course');
+      expect(document.querySelector('h3#fbe-title-header').textContent).toEqual('Feature Based Enrollment Configuration');
+      expect(courseTitle.textContent).toEqual('Course Title: test course');
     });
   });
 
   it('No FBE Data', async () => {
+    unmountComponent();
     jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
-    wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
+    render(<FeatureBasedEnrollmentWrapper {...props} />);
 
-    const cardList = wrapper.find('Card');
-    const noRecordMessage = wrapper.find('p');
+    const cardList = await screen.queryAllByTestId('feature-based-enrollment-card');
+    const noRecordMessage = await screen.findByTestId('no-enrollment-configuration-message');
 
     expect(cardList).toHaveLength(0);
-    expect(wrapper.find('h3#fbe-title-header').text()).toEqual('Feature Based Enrollment Configuration');
-    waitFor(() => expect(noRecordMessage.text()).toEqual('No Feature Based Enrollment Configurations were found.'));
+    expect(document.querySelector('h3#fbe-title-header').textContent).toEqual('Feature Based Enrollment Configuration');
+    await waitFor(() => expect(noRecordMessage.textContent).toEqual('No Feature Based Enrollment Configurations were found.'));
   });
 
   it('Page Loading component render', async () => {
-    wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
-    expect(wrapper.find('PageLoading').html()).toEqual(expect.stringContaining('Loading'));
+    render(<FeatureBasedEnrollmentWrapper {...props} />);
+    expect((await screen.findByTestId('page-loading')).textContent).toEqual(expect.stringContaining('Loading'));
   });
 
   it('Error fetching FBE data', async () => {
+    unmountComponent();
     const fbeErrors = {
       errors: [
         {
@@ -77,9 +78,9 @@ describe('Feature Based Enrollment', () => {
       ],
     };
     jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeErrors));
-    wrapper = mount(<FeatureBasedEnrollmentWrapper {...props} />);
+    render(<FeatureBasedEnrollmentWrapper {...props} />);
 
-    const alert = wrapper.find('.alert');
-    waitFor(() => expect(alert.text()).toEqual('Error fetching FBE Data'));
+    const alert = document.querySelector('.alert');
+    waitFor(() => expect(alert.textContent).toEqual('Error fetching FBE Data'));
   });
 });

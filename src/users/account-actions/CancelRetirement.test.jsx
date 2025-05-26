@@ -1,6 +1,8 @@
-import { mount } from 'enzyme';
+import {
+  fireEvent, render, screen, waitFor,
+} from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
 import CancelRetirement from './CancelRetirement';
@@ -12,7 +14,7 @@ const CancelRetirementWrapper = (props) => (
 );
 
 describe('Cancel Retirement Component Tests', () => {
-  let wrapper;
+  let unmountComponent;
   const changeHandler = jest.fn(() => { });
 
   beforeEach(() => {
@@ -20,41 +22,41 @@ describe('Cancel Retirement Component Tests', () => {
       retirement_id: 1,
       changeHandler,
     };
-    wrapper = mount(<CancelRetirementWrapper {...data} />);
+    const { unmount } = render(<CancelRetirementWrapper {...data} />);
+    unmountComponent = unmount;
   });
 
   afterEach(() => {
-    wrapper.unmount();
+    unmountComponent();
   });
 
   it('Cancel Retirement button for a User', () => {
-    const cancelRetirementButton = wrapper.find('#cancel-retirement').hostNodes();
-    expect(cancelRetirementButton.text()).toEqual('Cancel Retirement');
+    const cancelRetirementButton = document.querySelector('#cancel-retirement');
+    expect(cancelRetirementButton.textContent).toEqual('Cancel Retirement');
   });
 
   it('Cancel Retirement Modal', async () => {
     const mockApiCall = jest.spyOn(api, 'postCancelRetirement').mockImplementationOnce(() => Promise.resolve({}));
-    const cancelRetirementButton = wrapper.find('#cancel-retirement').hostNodes();
-    let cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
+    const cancelRetirementButton = document.querySelector('#cancel-retirement');
+    // modal dialogue can't be queried hence we are querying modal body
+    let cancelRetirementModalBody = await screen.queryByTestId('cancel-retirement-modal-body');
+    expect(cancelRetirementModalBody).not.toBeInTheDocument();
 
-    expect(cancelRetirementModal.prop('isOpen')).toEqual(false);
-    expect(cancelRetirementButton.text()).toEqual('Cancel Retirement');
+    fireEvent.click(cancelRetirementButton);
+    cancelRetirementModalBody = await screen.findByTestId('cancel-retirement-modal-body');
+    expect(cancelRetirementModalBody).toBeInTheDocument();
+    const modalTitle = await screen.findByTestId('cancel-retirement-modal-title');
+    expect(modalTitle.textContent).toEqual('Cancel Retirement');
+    const confirmAlert = document.querySelector('.alert-warning');
+    expect(confirmAlert.textContent).toEqual('This will cancel retirement for the requested user. Do you wish to proceed?');
 
-    cancelRetirementButton.simulate('click');
-    cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-
-    expect(cancelRetirementModal.prop('isOpen')).toEqual(true);
-    expect(cancelRetirementModal.find('h2.pgn__modal-title').text()).toEqual('Cancel Retirement');
-    const confirmAlert = cancelRetirementModal.find('.alert-warning');
-    expect(confirmAlert.text()).toEqual('This will cancel retirement for the requested user. Do you wish to proceed?');
-
-    cancelRetirementModal.find('button.btn-danger').hostNodes().simulate('click');
-    waitFor(() => {
-      expect(changeHandler).toHaveBeenCalled();
-      cancelRetirementModal.find('button.btn-link').simulate('click');
-      cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-      expect(cancelRetirementModal.prop('isOpen')).toEqual(false);
-    });
+    const cancelConfirmationButton = await screen.findByTestId('cancel-retirement-confirmation-button');
+    await waitFor(() => fireEvent.click(cancelConfirmationButton));
+    expect(changeHandler).toHaveBeenCalled();
+    const closeButton = await screen.findByTestId('cancel-retirement-modal-close-button');
+    fireEvent.click(closeButton);
+    cancelRetirementModalBody = await screen.queryByTestId('cancel-retirement-modal-body');
+    expect(cancelRetirementModalBody).not.toBeInTheDocument(false);
 
     mockApiCall.mockRestore();
   });
@@ -72,23 +74,24 @@ describe('Cancel Retirement Component Tests', () => {
       ],
     };
     const mockApiCall = jest.spyOn(api, 'postCancelRetirement').mockImplementationOnce(() => Promise.resolve(cancelRetirementErrors));
-    const cancelRetirementButton = wrapper.find('#cancel-retirement').hostNodes();
-    cancelRetirementButton.simulate('click');
-    let cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-    expect(cancelRetirementModal.prop('isOpen')).toEqual(true);
-    const confirmAlert = cancelRetirementModal.find('.alert-warning');
-    expect(confirmAlert.text()).toEqual(
+    const cancelRetirementButton = document.querySelector('#cancel-retirement');
+    fireEvent.click(cancelRetirementButton);
+    let cancelRetirementModalBody = await screen.queryByTestId('cancel-retirement-modal-body');
+    expect(cancelRetirementModalBody).toBeInTheDocument();
+    const confirmAlert = document.querySelector('.alert-warning');
+    expect(confirmAlert.textContent).toEqual(
       'This will cancel retirement for the requested user. Do you wish to proceed?',
     );
 
-    cancelRetirementModal.find('button.btn-danger').hostNodes().simulate('click');
-    cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-    const errorAlert = cancelRetirementModal.find('.alert-danger');
-    waitFor(() => expect(errorAlert.text()).toEqual('Retirement does not exist!'));
+    const cancelConfirmationButton = await screen.findByTestId('cancel-retirement-confirmation-button');
+    await waitFor(() => fireEvent.click(cancelConfirmationButton));
+    const errorAlert = document.querySelector('.alert-danger');
+    waitFor(() => expect(errorAlert.textContent).toEqual('Retirement does not exist!'));
 
-    cancelRetirementModal.find('button.btn-link').simulate('click');
-    cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-    expect(cancelRetirementModal.prop('isOpen')).toEqual(false);
+    const closeButton = await screen.findByTestId('cancel-retirement-modal-close-button');
+    fireEvent.click(closeButton);
+    cancelRetirementModalBody = await screen.queryByTestId('cancel-retirement-modal-body');
+    expect(cancelRetirementModalBody).not.toBeInTheDocument();
     mockApiCall.mockRestore();
   });
 
@@ -105,13 +108,14 @@ describe('Cancel Retirement Component Tests', () => {
       ],
     };
     const mockApiCall = jest.spyOn(api, 'postCancelRetirement').mockImplementationOnce(() => Promise.resolve(cancelRetirementErrors));
-    const cancelRetirementButton = wrapper.find('#cancel-retirement').hostNodes();
-    cancelRetirementButton.simulate('click');
-    let cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-    cancelRetirementModal.find('button.btn-danger').hostNodes().simulate('click');
-    cancelRetirementModal = wrapper.find('ModalDialog#user-account-cancel-retirement');
-    const errorAlert = cancelRetirementModal.find('.alert-danger');
-    waitFor(() => expect(errorAlert.text()).toEqual(
+    const cancelRetirementButton = document.querySelector('#cancel-retirement');
+    fireEvent.click(cancelRetirementButton);
+    const cancelRetirementModalBody = await screen.queryByTestId('cancel-retirement-modal-body');
+    expect(cancelRetirementModalBody).toBeInTheDocument();
+    const cancelConfirmationButton = await screen.findByTestId('cancel-retirement-confirmation-button');
+    await waitFor(() => fireEvent.click(cancelConfirmationButton));
+    const errorAlert = document.querySelector('.alert-danger');
+    waitFor(() => expect(errorAlert.textContent).toEqual(
       'Something went wrong. Please try again later!',
     ));
     mockApiCall.mockRestore();

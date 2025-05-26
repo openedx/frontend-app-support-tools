@@ -1,4 +1,4 @@
-import { mount } from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollmentsIndexPage';
@@ -36,56 +36,60 @@ describe('Program Enrollments Index Page', () => {
   });
 
   it('renders correctly', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const { unmount } = render(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const tabs = document.querySelectorAll('nav.pgn__tabs.nav-tabs a');
 
-    const tabs = wrapper.find('nav.pgn__tabs.nav-tabs a');
-
-    expect(tabs.at(0).text()).toEqual('Program Inspector');
-    expect(tabs.at(1).text()).toEqual('Link Program Enrollments');
+    expect(tabs[0].textContent).toEqual('Program Inspector');
+    expect(tabs[1].textContent).toEqual('Link Program Enrollments');
+    unmount();
   });
 
   it('Link Program Enrollments Tab', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const { unmount } = render(<ProgramEnrollmentsIndexPageWrapper location={location} />);
 
-    let tabs = wrapper.find('nav.nav-tabs a');
+    let tabs = document.querySelectorAll('nav.nav-tabs a');
 
-    tabs.at(0).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(wrapper.find('h3').at(1).text()).toEqual(
+    fireEvent.click(tabs[0]);
+    tabs = document.querySelectorAll('nav.nav-tabs a');
+    expect(tabs[0].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(document.querySelectorAll('h3')[1].textContent).toEqual(
       'Link Program Enrollments',
     );
+    unmount();
   });
 
   it('Program Inspector Tab', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const { unmount } = render(<ProgramEnrollmentsIndexPageWrapper location={location} />);
 
-    let tabs = wrapper.find('nav.nav-tabs a');
+    let tabs = document.querySelectorAll('nav.nav-tabs a');
 
-    tabs.at(1).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(wrapper.find('h3').at(0).text()).toEqual(
+    fireEvent.click(tabs[1]);
+    tabs = document.querySelectorAll('nav.nav-tabs a');
+    expect(tabs[0].outerHTML).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(document.querySelectorAll('h3')[0].textContent).toEqual(
       'Program Enrollments Inspector',
     );
+    unmount();
   });
 
   it('page renders without query', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    const tabs = wrapper.find('nav.nav-tabs a');
+    const { unmount } = render(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const tabs = document.querySelectorAll('nav.nav-tabs a');
 
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[0].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    unmount();
   });
 
   it('page renders with query', async () => {
     location.search = '?edx_user=&org_key=testX&external_user_key=';
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    const tabs = wrapper.find('nav.nav-tabs a');
+    const { unmount } = render(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const tabs = document.querySelectorAll('nav.nav-tabs a');
 
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    expect(tabs[0].outerHTML).toEqual(expect.stringContaining('active'));
+    expect(tabs[1].outerHTML).not.toEqual(expect.stringContaining('active'));
+    unmount();
   });
 });

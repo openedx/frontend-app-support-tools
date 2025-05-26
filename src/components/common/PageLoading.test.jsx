@@ -1,26 +1,26 @@
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import PageLoading from './PageLoading';
+import '@testing-library/jest-dom';
 
 describe('<PageLoading />', () => {
   it('does not render without message', () => {
-    const wrapper = shallow(<PageLoading srMessage="" />);
+    render(<PageLoading srMessage="" />);
 
-    expect(wrapper.find('.sr-only')).toHaveLength(0);
+    expect(document.querySelector('.sr-only')).not.toBeInTheDocument();
   });
   it('renders expected message', () => {
     const message = 'Loading...';
 
-    const wrapper = shallow(<PageLoading srMessage={message} />);
-    const srElement = wrapper.find('.sr-only');
+    render(<PageLoading srMessage={message} />);
+    const srElement = document.querySelector('.sr-only');
 
-    expect(srElement).toHaveLength(1);
-    expect(srElement.text()).toEqual(message);
+    expect(srElement).toBeInTheDocument();
+    expect(srElement.textContent).toEqual(message);
   });
   it('snapshot matches correctly', () => {
-    const tree = renderer.create(<PageLoading srMessage="Loading" />).toJSON();
+    const { container } = render(<PageLoading srMessage="Loading" />);
 
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  render, waitFor, act, fireEvent,
+  render, waitFor, fireEvent, screen,
 } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import OrderHistory from './OrderHistory';
 import { getOrderHistory } from '../data/api';
-import '@testing-library/jest-dom/extend-expect';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 
 jest.mock('../data/api');
@@ -47,55 +48,41 @@ describe('OrderHistory', () => {
     ];
 
     getOrderHistory.mockImplementation(() => Promise.resolve(orderHistoryData));
-
-    await act(async () => {
-      const { getByText, getAllByText } = render(<OrderHistoryWrapper username={username} />);
-
-      await waitFor(() => {
-        expect(getOrderHistory).toHaveBeenCalledWith(username);
-      });
-
-      expect(getByText('Order History (1)')).toBeInTheDocument();
-      expect(getByText('Order Status')).toBeInTheDocument();
-      expect(getByText('Order Number')).toBeInTheDocument();
-      expect(getByText('Date Placed')).toBeInTheDocument();
-      expect(getByText('Product Tracking')).toBeInTheDocument();
-      expect(getByText('Expand All')).toBeInTheDocument();
-
-      const expandAllLink = getByText('Expand All');
-      fireEvent.click(expandAllLink);
-
-      expect(getAllByText('completed')[0]).toBeInTheDocument();
-      expect(getAllByText('completed')[1]).toBeInTheDocument();
-      expect(getByText('12345')).toBeInTheDocument();
-      expect(getByText('Jun 12, 2023 12:00 AM')).toBeInTheDocument();
-      expect(getByText('tracking123')).toBeInTheDocument();
-      expect(getByText('Product 1')).toBeInTheDocument();
-      expect(getByText('Type A')).toBeInTheDocument();
+    render(<IntlProvider locale="en"><OrderHistoryWrapper username={username} /></IntlProvider>);
+    await waitFor(() => {
+      expect(getOrderHistory).toHaveBeenCalledWith(username);
     });
+    expect(await screen.findByText('Order History (1)')).toBeInTheDocument();
+    expect(screen.getByText('Order Status')).toBeInTheDocument();
+    expect(screen.getByText('Order Number')).toBeInTheDocument();
+    expect(screen.getByText('Date Placed')).toBeInTheDocument();
+    expect(screen.getByText('Product Tracking')).toBeInTheDocument();
+    const expandAllLink = screen.getByText('Expand All');
+    expect(screen.getByText('Expand All')).toBeInTheDocument();
+    fireEvent.click(expandAllLink);
+    expect(screen.getAllByText('completed')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('completed')[1]).toBeInTheDocument();
+    expect(screen.getByText('12345')).toBeInTheDocument();
+    expect(screen.getByText('Jun 12, 2023 12:00 AM')).toBeInTheDocument();
+    expect(screen.getByText('tracking123')).toBeInTheDocument();
+    expect(screen.getByText('Product 1')).toBeInTheDocument();
+    expect(screen.getByText('Type A')).toBeInTheDocument();
   });
 
   it('should render loading indicator while fetching data', async () => {
     getOrderHistory.mockImplementation(() => Promise.resolve([]));
-
-    await act(async () => {
-      const { getByText } = render(<OrderHistoryWrapper username={username} />);
-
-      expect(getByText('Loading')).toBeInTheDocument();
+    render(<OrderHistoryWrapper username={username} />);
+    await waitFor(() => {
+      expect(screen.getByText('Loading')).toBeInTheDocument();
     });
   });
 
   it('should handle empty order history data', async () => {
     getOrderHistory.mockImplementation(() => Promise.resolve([]));
-
-    await act(async () => {
-      const { getByText } = render(<OrderHistoryWrapper username={username} />);
-
-      await waitFor(() => {
-        expect(getOrderHistory).toHaveBeenCalledWith(username);
-      });
-
-      expect(getByText('Order History (0)')).toBeInTheDocument();
+    render(<OrderHistoryWrapper username={username} />);
+    await waitFor(() => {
+      expect(getOrderHistory).toHaveBeenCalledWith(username);
+      expect(screen.getByText('Order History (0)')).toBeInTheDocument();
     });
   });
 
@@ -111,18 +98,12 @@ describe('OrderHistory', () => {
         },
       ],
     };
-
     getOrderHistory.mockImplementation(() => Promise.resolve(mockErrors));
-
-    await act(async () => {
-      const { getByText } = render(<OrderHistoryWrapper username={username} />);
-
-      await waitFor(() => {
-        expect(getOrderHistory).toHaveBeenCalledWith(username);
-      });
-
-      expect(getByText('Order History (0)')).toBeInTheDocument();
-      expect(getByText('There was an error retrieving order history for the user')).toBeInTheDocument();
+    render(<OrderHistoryWrapper username={username} />);
+    expect(getOrderHistory).toHaveBeenCalledWith(username);
+    await waitFor(() => {
+      expect(screen.getByText('Order History (0)')).toBeInTheDocument();
+      expect(screen.getByText('There was an error retrieving order history for the user')).toBeInTheDocument();
     });
   });
 });
