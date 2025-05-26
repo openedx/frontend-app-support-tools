@@ -95,8 +95,8 @@ describe('Course Enrollments Listing', () => {
     let dataRow = dataTable.querySelector('tbody').querySelectorAll('tr')[0];
     const courseId = dataRow.querySelectorAll('td')[1].textContent;
     fireEvent.click(dataRow.querySelector('.dropdown button'));
-    // eslint-disable-next-line prefer-destructuring
     dataTable = await screen.findByTestId('enrollments-data-table');
+    // eslint-disable-next-line prefer-destructuring
     dataRow = dataTable.querySelector('tbody').querySelectorAll('tr')[0];
     fireEvent.click(dataRow.querySelectorAll('.dropdown-menu.show a')[0]);
 
