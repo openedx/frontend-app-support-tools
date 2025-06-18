@@ -4,6 +4,7 @@ import {
   render,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import {
   EnterpriseCustomerUserDetail,
   AdministratorCell,
@@ -20,7 +21,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         },
       },
     };
-    render(<EnterpriseCustomerUserDetail row={enterpriseCustomerUser} />);
+    render(<IntlProvider locale="en"><EnterpriseCustomerUserDetail row={enterpriseCustomerUser} /></IntlProvider>);
     expect(screen.getByText('ash ketchum')).toBeInTheDocument();
     expect(screen.getByText('ash@ketchum.org')).toBeInTheDocument();
     expect(screen.getByTestId('icon-hyperlink')).toHaveAttribute('href', '/learner-information/?email=ash@ketchum.org');
@@ -35,7 +36,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         },
       },
     };
-    render(<EnterpriseCustomerUserDetail row={pendingEnterpriseCustomerUser} />);
+    render(<IntlProvider locale="en"><EnterpriseCustomerUserDetail row={pendingEnterpriseCustomerUser} /></IntlProvider>);
     expect(screen.getByText('pending@customer.org')).toBeInTheDocument();
     expect(screen.queryByTestId('icon-hyperlink')).not.toBeInTheDocument();
     expect(screen.queryByTestId('username-email-hyperlink')).not.toBeInTheDocument();
@@ -50,7 +51,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         roleAssignments: ['enterprise_learner'],
       },
     };
-    render(<AdministratorCell row={pendingAdmin} />);
+    render(<IntlProvider locale="en"><AdministratorCell row={pendingAdmin} /></IntlProvider>);
     expect(screen.getByText('Pending')).toBeInTheDocument();
   });
 
@@ -63,7 +64,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         roleAssignments: ['enterprise_admin'],
       },
     };
-    render(<AdministratorCell row={adminRow} />);
+    render(<IntlProvider locale="en"><AdministratorCell row={adminRow} /></IntlProvider>);
     expect(screen.queryByText('Pending')).not.toBeInTheDocument();
   });
 
@@ -78,7 +79,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         roleAssignments: ['enterprise_learner'],
       },
     };
-    render(<LearnerCell row={learnerRow} />);
+    render(<IntlProvider locale="en"><LearnerCell row={learnerRow} /></IntlProvider>);
     expect(screen.queryByText('Pending')).not.toBeInTheDocument();
   });
 
@@ -92,7 +93,7 @@ describe('EnterpriseCustomerUserDetail', () => {
         enterpriseCustomerUser: null,
       },
     };
-    render(<LearnerCell row={pendingLearnerRow} />);
+    render(<IntlProvider locale="en"><LearnerCell row={pendingLearnerRow} /></IntlProvider>);
     expect(screen.queryByText('Pending')).toBeInTheDocument();
   });
 });

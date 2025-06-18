@@ -1,4 +1,4 @@
-import { Input, Button } from '@openedx/paragon';
+import { Form, Button } from '@openedx/paragon';
 import React, { useState, useCallback } from 'react';
 import getLinkProgramEnrollmentDetails from './data/api';
 import LinkProgramEnrollmentsTable from './LinkProgramEnrollmentsTable';
@@ -45,34 +45,30 @@ export default function LinkProgramEnrollments() {
     <>
       <h3>Link Program Enrollments</h3>
       <section className="my-3">
-        <form>
-          <div className="my-2">
-            <label htmlFor="programUUID">Program UUID</label>
-            <Input
-              className="mr-1 col-sm-12"
+        <Form>
+          <Form.Group className="my-2">
+            <Form.Label htmlFor="programUUID">Program UUID</Form.Label>
+            <Form.Control
               name="programUUID"
-              type="text"
               defaultValue={programID}
               onChange={onProgramChange}
             />
-          </div>
-          <div className="my-4">
-            <label
-              className="d-flex align-items-start"
+          </Form.Group>
+          <Form.Group className="my-4">
+            <Form.Label
               htmlFor="usernamePairText"
             >
               List of External key and username pairings (one per line)
-            </label>
-            <Input
-              className="mr-1 col-sm-12"
+            </Form.Label>
+            <Form.Control
               name="usernamePairText"
-              type="textarea"
+              as="textarea"
               rows="10"
               onChange={onUserTextChange}
               defaultValue={usernamePairText}
               placeholder="external_user_key,lms_username"
             />
-          </div>
+          </Form.Group>
           <Button
             type="submit"
             onClick={submit}
@@ -80,7 +76,7 @@ export default function LinkProgramEnrollments() {
           >
             Submit
           </Button>
-        </form>
+        </Form>
       </section>
       {((errorMessage && errorMessage.length > 0)
       || (successMessage && successMessage.length > 0)) && (

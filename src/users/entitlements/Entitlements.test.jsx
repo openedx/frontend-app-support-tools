@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { waitFor } from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import Entitlements from './Entitlements';
 import { entitlementsData, entitlementsErrors } from '../data/test/entitlements';
@@ -9,9 +10,11 @@ import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
 const EntitlementsPageWrapper = (props) => (
-  <UserMessagesProvider>
-    <Entitlements {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <Entitlements {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 jest.mock('@edx/frontend-platform', () => ({
