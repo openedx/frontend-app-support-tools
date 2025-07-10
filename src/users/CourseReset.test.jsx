@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  fireEvent, render, waitFor, screen,
+  fireEvent, render, waitFor, screen, act,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
@@ -62,7 +62,7 @@ describe('CourseReset', () => {
     expect(postRequest).toHaveBeenCalled();
   });
 
-  it.skip('polls new data', async () => {
+  it('polls new data', async () => {
     jest.useFakeTimers();
     const data = [{
       course_id: 'course-v1:edX+DemoX+Demo_Course',
@@ -82,21 +82,34 @@ describe('CourseReset', () => {
       .spyOn(api, 'getLearnerCourseResetList')
       .mockImplementationOnce(() => Promise.resolve(data))
       .mockImplementationOnce(() => Promise.resolve(updatedData));
+    
     const user = 'John Doe';
-    render(<CourseResetWrapper username={user} />);
+    
+    await act(async () => {
+      render(<CourseResetWrapper username={user} />);
+    });
 
+    // Check initial state
     await waitFor(() => {
       const inProgressText = screen.getByText(/in progress/i);
       expect(inProgressText).toBeInTheDocument();
+    });
 
+    // Fast-forward time to trigger polling
+    await act(async () => {
       jest.advanceTimersByTime(10000);
+    });
 
+    // Check updated state
+    await waitFor(() => {
       const completedText = screen.getByText(/Completed by/i);
       expect(completedText).toBeInTheDocument();
     });
+    
+    jest.useRealTimers();
   });
 
-  it.skip('returns an empty table if it cannot fetch course reset list', async () => {
+  it('returns an empty table if it cannot fetch course reset list', async () => {
     jest
       .spyOn(api, 'getLearnerCourseResetList')
       .mockResolvedValueOnce({
@@ -110,9 +123,15 @@ describe('CourseReset', () => {
         ],
       });
     const user = 'john';
-    render(<CourseResetWrapper username={user} />);
-    const alertText = screen.getByText(/An error occurred fetching course reset list for user/);
-    expect(alertText).toBeInTheDocument();
+    
+    await act(async () => {
+      render(<CourseResetWrapper username={user} />);
+    });
+    
+    await waitFor(() => {
+      const alertText = screen.getByText(/An error occurred fetching course reset list for user/);
+      expect(alertText).toBeInTheDocument();
+    });
   });
 
   it('returns an error when resetting a course', async () => {
@@ -162,13 +181,22 @@ describe('CourseReset', () => {
     });
   });
 
-  it.skip('asserts different comment state', async () => {
+  it('asserts different comment state', async () => {
     const postRequest = apiDataMocks();
     const user = 'John Doe';
-    render(<CourseResetWrapper username={user} />);
-    const resetButton = await screen.getByTestId('course-reset-container');
-    await waitFor(() => {
+    
+    await act(async () => {
+      render(<CourseResetWrapper username={user} />);
+    });
+    
+    // Click the reset button to open the modal
+    const resetButton = await screen.findByTestId('course-reset-button');
+    
+    await act(async () => {
       fireEvent.click(resetButton);
+    });
+
+    await waitFor(() => {
       const yesButton = screen.getByText(/Yes/);
       expect(yesButton).toBeInTheDocument();
     });
@@ -178,18 +206,32 @@ describe('CourseReset', () => {
     expect(commentInput).toBeInTheDocument();
 
     // Assert that an error occurs when the characters length of comment text is more than 255
-    fireEvent.change(commentInput, { target: { value: 'hello world'.repeat(200) } });
-    expect(commentInput).toHaveValue('hello world'.repeat(200));
-    const commentErrorText = screen.getByText('Maximum length allowed for comment is 255 characters');
-    expect(commentErrorText).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.change(commentInput, { target: { value: 'hello world'.repeat(25) } });
+    });
+    
+    expect(commentInput).toHaveValue('hello world'.repeat(25));
+    
+    await waitFor(() => {
+      const commentErrorText = screen.getByText('Maximum length allowed for comment is 255 characters');
+      expect(commentErrorText).toBeInTheDocument();
+    });
 
     // check that no error occurs with comment length less than 256 characters
-    fireEvent.change(commentInput, { target: { value: 'hello world' } });
+    await act(async () => {
+      fireEvent.change(commentInput, { target: { value: 'hello world' } });
+    });
+    
     expect(commentInput).toHaveValue('hello world');
-    const errorText = screen.queryByText('Maximum length allowed for comment is 255 characters');
-    expect(errorText).not.toBeInTheDocument();
+    
+    await waitFor(() => {
+      const errorText = screen.queryByText('Maximum length allowed for comment is 255 characters');
+      expect(errorText).not.toBeInTheDocument();
+    });
 
-    fireEvent.click(screen.getByText(/Yes/));
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Yes/));
+    });
 
     await waitFor(() => expect(postRequest).toHaveBeenCalled());
   });

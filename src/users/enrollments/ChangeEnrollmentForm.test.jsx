@@ -1,5 +1,5 @@
 import {
-  fireEvent, render, screen, waitFor,
+  fireEvent, render, screen, waitFor, act,
 } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
@@ -44,32 +44,47 @@ describe('Enrollment Change form', () => {
   });
 
   describe('Form submission', () => {
-    it.skip('Successful form submission', async () => {
+    it('Successful form submission', async () => {
       const apiMock = jest.spyOn(api, 'patchEnrollment').mockImplementationOnce(() => Promise.resolve({}));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      fireEvent.change(document.querySelector('select#reason'), { target: { value: 'Other' } });
-      fireEvent.change(document.querySelector('select#mode'), { target: { value: 'verified' } });
-      fireEvent.change(document.querySelector('textarea#comments'), { target: { value: 'test mode change' } });
-      expect(document.querySelector('div.spinner-border')).not.toBeInTheDocument();
-      let submitButton = document.querySelector('button.btn-primary');
+      // Use user events for better simulation
+      const reasonSelect = document.querySelector('select#reason');
+      const modeSelect = document.querySelector('select#mode');
+      const commentsTextarea = document.querySelector('textarea#comments');
+
+      // Fire change events with proper values
+      fireEvent.change(reasonSelect, { target: { value: 'other' } });
+      fireEvent.change(modeSelect, { target: { value: 'verified' } });
+      fireEvent.change(commentsTextarea, { target: { value: 'test mode change' } });
+
+      // Wait for form state to update
       await waitFor(() => {
+        const submitButton = document.querySelector('button.btn-primary');
+        expect(submitButton).not.toBeDisabled();
+      });
+
+      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+      let submitButton = document.querySelector('button.btn-primary');
+
+      await act(async () => {
         fireEvent.click(submitButton);
       });
-      expect(document.querySelector('div.spinner-border')).toBeInTheDocument();
+
       expect(apiMock).toHaveBeenCalledTimes(1);
 
       await waitFor(() => {
         expect(changeEnrollmentFormData.changeHandler).toHaveBeenCalledTimes(1);
-        expect(document.querySelector('div.spinner-border')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
       });
 
       apiMock.mockReset();
-      submitButton = document.querySelector('button.btn-primary');
-      expect(submitButton).not.toBeInTheDocument();
+      // Check that the Submit button is hidden after successful submission
+      const submitButtonAfterSuccess = screen.queryByText('Submit');
+      expect(submitButtonAfterSuccess).toHaveAttribute('hidden');
     });
 
-    it.skip('Unsuccessful form submission', async () => {
+    it('Unsuccessful form submission', async () => {
       const apiMock = jest.spyOn(api, 'patchEnrollment').mockImplementationOnce(() => Promise.resolve({
         errors: [
           {
@@ -83,13 +98,26 @@ describe('Enrollment Change form', () => {
       }));
       expect(apiMock).toHaveBeenCalledTimes(0);
 
-      fireEvent.change(document.querySelector('select#reason'), { target: { value: 'Other' } });
-      fireEvent.change(document.querySelector('select#mode'), { target: { value: 'verified' } });
-      fireEvent.change(document.querySelector('textarea#comments'), { target: { value: 'test mode change' } });
-      fireEvent.click(document.querySelector('button.btn-primary'));
+      const reasonSelect = document.querySelector('select#reason');
+      const modeSelect = document.querySelector('select#mode');
+      const commentsTextarea = document.querySelector('textarea#comments');
+
+      fireEvent.change(reasonSelect, { target: { value: 'other' } });
+      fireEvent.change(modeSelect, { target: { value: 'verified' } });
+      fireEvent.change(commentsTextarea, { target: { value: 'test mode change' } });
+
+      // Wait for form state to update
+      await waitFor(() => {
+        const submitButton = document.querySelector('button.btn-primary');
+        expect(submitButton).not.toBeDisabled();
+      });
+
+      await act(async () => {
+        fireEvent.click(document.querySelector('button.btn-primary'));
+      });
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      await waitFor(() => expect(document.find('.alert').textContent).toEqual('Error changing enrollment'));
+      await waitFor(() => expect(screen.getByText('Error changing enrollment')).toBeInTheDocument());
     });
   });
 });

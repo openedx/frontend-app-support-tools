@@ -1,5 +1,5 @@
 import {
-  fireEvent, render, screen, waitFor,
+  fireEvent, render, screen, waitFor, act,
 } from '@testing-library/react';
 import React from 'react';
 import '@testing-library/jest-dom';
@@ -21,15 +21,21 @@ describe('Course Summary', () => {
     closeHandler: jest.fn(() => {}),
   };
 
-  beforeEach(async () => {
-    apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
+  beforeEach(() => {
+    // Reset any previous mocks
+    if (apiMock) {
+      apiMock.mockRestore();
+    }
   });
 
   afterEach(() => {
-    apiMock.mockRestore();
+    if (apiMock) {
+      apiMock.mockRestore();
+    }
   });
 
   it('Default component render with Modal', async () => {
+    apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
     const { unmount } = render(<CourseSummaryWrapper {...props} />);
     const dataRows = (await screen.findByTestId('course-summary-table-body')).children;
     expect(dataRows.length).toEqual(5);
@@ -69,8 +75,7 @@ describe('Course Summary', () => {
     unmount();
   });
 
-  // TODO: need to figure out why alert is not rendering
-  it.skip('Course Summary Fetch Errors', async () => {
+  it('Course Summary Fetch Errors', async () => {
     apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve({
       errors: [
         {
@@ -82,13 +87,24 @@ describe('Course Summary', () => {
         },
       ],
     }));
-    const { unmount } = await waitFor(() => render(<CourseSummaryWrapper {...props} />));
-    const title = await screen.findByTestId('course-summary-modal-title');
-    expect(title.textContent).toEqual('Course Summary');
+    
+    let unmount;
+    await act(async () => {
+      const renderResult = render(<CourseSummaryWrapper {...props} />);
+      unmount = renderResult.unmount;
+    });
+    
+    await waitFor(() => {
+      const title = screen.getByTestId('course-summary-modal-title');
+      expect(title.textContent).toEqual('Course Summary');
+    });
+    
+    // Wait for error message to appear
     await waitFor(() => {
       const alert = screen.getByRole('alert');
-      expect(alert.textContent).toEqual('No Course Summary Data found');
-      unmount();
+      expect(alert).toHaveTextContent('No Course Summary Data found');
     });
+    
+    unmount();
   });
 });
