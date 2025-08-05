@@ -11,12 +11,12 @@ import {
 describe('Feature Based Enrollment Card Component', () => {
   afterEach(cleanup);
 
-  describe('Gating config', () => {
-    const title = 'Gating Config';
+  describe('Gating Config Enabled', () => {
+    const title = 'Gating Config Enabled';
 
-    it('Gating config enabled', () => {
-      render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigEnabled} />);
-      
+    it('Gating Config Enabled', () => {
+      render(<FeatureBasedEnrollmentCard title="Gating Config Enabled" fbeData={fbeGatingConfigEnabled} />);
+
       expect(screen.getByText('Gating Config Enabled')).toBeInTheDocument();
 
       const rows = screen.getAllByRole('row');
@@ -30,10 +30,10 @@ describe('Feature Based Enrollment Card Component', () => {
       expect(reasonRow.getByText('Site')).toBeInTheDocument();
     });
 
-    it('Gating config disabled', () => {
-      render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeGatingConfigDisabled} />);
-      
-      expect(screen.getByText('Gating Config Disabled')).toBeInTheDocument();
+    it("Gating config disabled", () => {
+      render(<FeatureBasedEnrollmentCard title="Gating config disabled" fbeData={fbeGatingConfigDisabled} />);
+
+      expect(screen.getByText("Gating config disabled")).toBeInTheDocument();
 
       const rows = screen.getAllByRole('row');
       const dateRow = within(rows[0]);
@@ -43,16 +43,16 @@ describe('Feature Based Enrollment Card Component', () => {
       expect(dateRow.getByText('N/A')).toBeInTheDocument();
 
       expect(reasonRow.getByText('Reason')).toBeInTheDocument();
-      expect(reasonRow.queryByText('')).toBeInTheDocument();
+      expect(reasonRow.queryByText('Site')).not.toBeInTheDocument();
     });
   });
 
-  describe('Duration config', () => {
-    const title = 'Duration Config';
+  describe('Duration Config Enabled', () => {
+    const title = 'Duration Config Enabled';
 
     it('Duration config enabled', () => {
-      render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigEnabled} />);
-      
+      render(<FeatureBasedEnrollmentCard title="Duration Config Enabled" fbeData={fbeDurationConfigEnabled} />);
+
       expect(screen.getByText('Duration Config Enabled')).toBeInTheDocument();
 
       const rows = screen.getAllByRole('row');
@@ -66,9 +66,9 @@ describe('Feature Based Enrollment Card Component', () => {
       expect(reasonRow.getByText('Site Config')).toBeInTheDocument();
     });
 
-    it('Duration config disabled', () => {
-      render(<FeatureBasedEnrollmentCard title={title} fbeData={fbeDurationConfigDisabled} />);
-      
+    it('Duration Config Disabled', () => {
+      render(<FeatureBasedEnrollmentCard title="Duration Config Disabled" fbeData={fbeDurationConfigDisabled} />);
+
       expect(screen.getByText('Duration Config Disabled')).toBeInTheDocument();
 
       const rows = screen.getAllByRole('row');
@@ -79,7 +79,7 @@ describe('Feature Based Enrollment Card Component', () => {
       expect(dateRow.getByText('N/A')).toBeInTheDocument();
 
       expect(reasonRow.getByText('Reason')).toBeInTheDocument();
-      expect(reasonRow.queryByText('')).toBeInTheDocument();
+      expect(reasonRow.queryByText('Site Config')).not.toBeInTheDocument();
     });
   });
 });

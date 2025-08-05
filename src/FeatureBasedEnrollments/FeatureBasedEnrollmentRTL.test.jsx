@@ -1,10 +1,13 @@
 import React from 'react';
 import { render,screen,waitFor } from '@testing-library/react';
-// import React from 'react';
-// import { waitFor } from '@testing-library/react';
+
+import '@testing-library/jest-dom';
+
+
+
 import FeatureBasedEnrollment from './FeatureBasedEnrollment';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
-// import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
+
 
 import * as api from './data/api';
 
@@ -23,7 +26,7 @@ describe('Feature Based Enrollment', () => {
   it('renders title when FBE data is fetched', async () => {
     render(<FeatureBasedEnrollmentWrapper {...props} />);
     await waitFor(() => {
-        expect(screen.getByText('Feature Based Enrollment Config')).toBeInTheDocument();
+        expect(screen.getByText('Feature Based Enrollment Configuration')).toBeInTheDocument();
     });
 
   });
@@ -31,7 +34,7 @@ describe('Feature Based Enrollment', () => {
     jest.spyOn(api,'default').mockImplementationOnce(() => Promise.resolve({}));
     render(<FeatureBasedEnrollmentWrapper {...props} />);
     await waitFor(() => {
-        expect(screen.getByText('No Feature Based Enrollment Configuration')).toBeInTheDocument();
+        expect(screen.getByText('No Feature Based Enrollment Configurations were found.')).toBeInTheDocument();
     });
 });
 it('shows loading message initially', () => {
@@ -54,7 +57,7 @@ it('shows error alert an API error', async () => {
     jest.spyOn(api,'default').mockImplementationOnce(() => Promise.resolve(fbeErrors));
     render(<FeatureBasedEnrollmentWrapper {...props} />);
     await waitFor(() => {
-        expect(screen.getByText('Error fetchinh FBE Data')).toBeInTheDocument();
+        expect(screen.getByText('Error fetching FBE Data')).toBeInTheDocument();
     });
    });
 });

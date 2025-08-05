@@ -16,7 +16,7 @@
     "lint:fix": "fedx-scripts eslint --fix --ext .js --ext .jsx .",
     "start": "fedx-scripts webpack-dev-server --progress",
     "debug-test": "node --inspect-brk node_modules/.bin/jest --coverage --runInBand",
-    "test":  "fedx-scripts jest --coverage --maxWorkers=2",
+    "test": "fedx-scripts jest --coverage --maxWorkers=2",
     "test:watch": "npm run test -- --watch",
     "snapshot": "fedx-scripts jest --updateSnapshot"
   },
@@ -64,18 +64,16 @@
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.0",
     "@edx/reactifex": "^1.0.3",
+    "@emotion/jest": "^11.13.0",
     "@openedx/frontend-build": "^14.3.3",
-  
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^14.3.1",
-    
     "@testing-library/user-event": "^14.6.1",
     "@types/react-table": "^7.7.2",
-    
     "axios-mock-adapter": "^1.19.0",
-   
     "glob": "7.1.6",
     "jest": "^29.7.0",
+    "jest-emotion": "^11.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "react-test-renderer": "^18.3.1",
     "reactifex": "1.1.1"
