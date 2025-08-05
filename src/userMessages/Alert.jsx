@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {
-  faExclamationTriangle, faInfoCircle, faCheckCircle, faMinusCircle, faTimes,
+  faExclamationTriangle, faInfoCircle, faCheckCircle, faMinusCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '@openedx/paragon';
@@ -45,8 +45,8 @@ function Alert({
         <div role="alert" className="flex-grow-1">
           {children}
         </div>
+        {dismissible && <Button variant="link" size="inline" className="dismiss-button" onClick={onDismiss}>Dismiss</Button>}
       </div>
-      {dismissible && <Button className="close" onClick={onDismiss}><FontAwesomeIcon size="sm" icon={faTimes} /></Button>}
     </div>
   );
 }

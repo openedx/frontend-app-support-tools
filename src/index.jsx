@@ -18,6 +18,7 @@ import UserPage from './users/UserPage';
 import FBEIndexPage from './FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from './userMessages/UserMessagesProvider';
 import ProgramEnrollmentsIndexPage from './ProgramEnrollments/ProgramEnrollmentsIndexPage';
+import CourseTeamManagementIndexPage from './CourseTeamManagement/CourseTeamManagementIndexPage';
 import Head from './head/Head';
 import CustomersPage from './Configuration/Customers/CustomerDataTable/CustomersPage';
 
@@ -99,6 +100,10 @@ subscribe(APP_READY, () => {
           <Route
             path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS}
             element={<ProgramEnrollmentsIndexPage />}
+          />
+          <Route
+            path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.COURSE_TEAM_MANAGEMENT}
+            element={<CourseTeamManagementIndexPage />}
           />
         </Routes>
       </UserMessagesProvider>

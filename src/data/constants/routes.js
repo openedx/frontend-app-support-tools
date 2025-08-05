@@ -6,6 +6,7 @@ const ROUTES = {
       LEARNER_INFORMATION: '/learner-information',
       FEATURE_BASED_ENROLLMENTS: '/feature-based-enrollments',
       PROGRAM_ENROLLMENTS: '/program-enrollments',
+      COURSE_TEAM_MANAGEMENT: '/course_team_management',
     },
   },
   CONFIGURATION: {

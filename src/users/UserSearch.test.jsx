@@ -45,5 +45,11 @@ describe('User Search Page', () => {
 
       expect(tree).toMatchSnapshot();
     });
+    it('matches snapshot for course team page', () => {
+      const courseTeamWrapper = renderer
+        .create(<UserSearch {...props} isOnCourseTeamPage />)
+        .toJSON();
+      expect(courseTeamWrapper).toMatchSnapshot();
+    });
   });
 });
