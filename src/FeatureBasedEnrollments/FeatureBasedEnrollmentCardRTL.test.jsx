@@ -65,6 +65,7 @@ describe('Feature Based Enrollment Card Component', () => {
       expect(reasonRow.getByText('Reason')).toBeInTheDocument();
       expect(reasonRow.getByText('Site Config')).toBeInTheDocument();
     });
+
     
 
     it('Duration Config Disabled', () => {

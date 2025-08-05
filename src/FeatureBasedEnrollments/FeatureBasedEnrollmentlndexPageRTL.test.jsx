@@ -37,6 +37,7 @@ FeatureBasedEnrollmentIndexPageWrapper.defaultProps = {
   searchQuery: '',
 };
 
+
 describe('Feature Based Enrollment Index Page', () => {
   
   const courseId = 'course-v1:testX+test123+2030';
@@ -44,7 +45,7 @@ describe('Feature Based Enrollment Index Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
 
   it('default page render',async () => {
     render(<FeatureBasedEnrollmentIndexPageWrapper   courseId ={courseId} />);
