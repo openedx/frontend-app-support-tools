@@ -44,6 +44,7 @@ describe('Feature Based Enrollment Index Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  
 
   it('default page render',async () => {
     render(<FeatureBasedEnrollmentIndexPageWrapper   courseId ={courseId} />);

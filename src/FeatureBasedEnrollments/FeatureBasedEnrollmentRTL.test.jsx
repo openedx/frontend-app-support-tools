@@ -54,6 +54,7 @@ it('shows error alert an API error', async () => {
             },
         ],
     };
+    
     jest.spyOn(api,'default').mockImplementationOnce(() => Promise.resolve(fbeErrors));
     render(<FeatureBasedEnrollmentWrapper {...props} />);
     await waitFor(() => {
