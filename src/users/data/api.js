@@ -62,7 +62,7 @@ export async function getSsoRecords(username) {
       AppUrls.getSSORecordsUrl(username),
     );
     let parsedData = [];
-    if (data.length > 0) {
+    if (Array.isArray(data) && data.length > 0) {
       parsedData = data.map((entry) => {
         const extraData = JSON.parse(entry.extraData);
 
@@ -80,12 +80,24 @@ export async function getSsoRecords(username) {
     }
     return parsedData;
   } catch (error) {
+    let message = 'Not Available';
+
+    try {
+      if (error.customAttributes?.httpErrorResponseData) {
+        const parsed = JSON.parse(error.customAttributes.httpErrorResponseData);
+        message = parsed.errors?.[0]?.text || message;
+      } else if (error.message) {
+        message = error.message;
+      }
+    } catch (parseError) {
+      message = error.message || 'Not Available';
+    }
     return {
       errors: [
         {
           code: null,
           dismissible: true,
-          text: JSON.parse(error.customAttributes.httpErrorResponseData),
+          text: message,
           type: 'danger',
           topic: 'ssoRecords',
         },

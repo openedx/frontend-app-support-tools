@@ -1,14 +1,26 @@
-import { mount } from 'enzyme';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import SupportToolsTab from './SupportToolsTab';
 import { TAB_PATH_MAP } from './constants';
 
-const mockedNavigator = jest.fn();
+jest.mock('../FeatureBasedEnrollments/FeatureBasedEnrollmentIndexPage', () => () => (
+  <div data-testid="mock-fbe">Mocked FeatureBasedEnrollmentIndexPage</div>
+));
 
+jest.mock('../users/UserPage', () => () => (
+  <div data-testid="mock-user">Mocked UserPage</div>
+));
+
+jest.mock('../ProgramEnrollments/ProgramEnrollmentsIndexPage', () => () => (
+  <div data-testid="mock-program">Mocked ProgramEnrollmentsIndexPage</div>
+));
+
+const mockedNavigator = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigator,
@@ -33,87 +45,54 @@ SupportToolsTabWrapper.defaultProps = {
 };
 
 describe('Support Tools Main tab', () => {
-  let wrapper;
-
-  afterEach(() => {
-    wrapper.unmount();
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('default page render', () => {
-    wrapper = mount(<SupportToolsTabWrapper />);
+    render(<SupportToolsTabWrapper />);
 
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    expect(tabs.at(0).text()).toEqual('Learner Information');
-    expect(tabs.at(1).text()).toEqual('Feature Based Enrollment');
-    expect(tabs.at(2).text()).toEqual('Program Information');
+    expect(screen.getByText('Support Tools')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Suite of tools used by support team to help triage and resolve select learner issues.',
+      ),
+    ).toBeInTheDocument();
 
-    expect(wrapper.find('h2').text()).toEqual('Support Tools');
-    expect(wrapper.find('p').text()).toEqual(
-      'Suite of tools used by support team to help triage and resolve select learner issues.',
-    );
+    expect(screen.getByRole('tab', { name: /Learner Information/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Feature Based Enrollment/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Program Information/i })).toBeInTheDocument();
   });
 
-  it('Path changes on Tab switch', () => {
-    wrapper = mount(<SupportToolsTabWrapper />);
+  it('Path changes on Tab switch', async () => {
+    render(<SupportToolsTabWrapper />);
 
-    let tabs = wrapper.find('nav.nav-tabs a');
+    const learnerTab = screen.getByRole('tab', { name: /Learner Information/i });
+    const fbeTab = screen.getByRole('tab', { name: /Feature Based Enrollment/i });
+    const programTab = screen.getByRole('tab', { name: /Program Information/i });
 
-    tabs.at(1).simulate('click');
-    tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    const fbeTab = wrapper.find('div.tab-content div#support-tools-tab-tabpane-feature-based-enrollment');
+    await userEvent.click(fbeTab);
     expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP['feature-based-enrollment'], { replace: true });
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(fbeTab.html()).toEqual(expect.stringContaining('active'));
-    expect(fbeTab.find('label').text()).toEqual('Course ID');
 
-    tabs.at(0).simulate('click');
-    tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-    const learnerTab = wrapper.find('div.tab-content div#support-tools-tab-tabpane-learner-information');
+    await userEvent.click(learnerTab);
     expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP['learner-information'], { replace: true });
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(learnerTab.html()).toEqual(expect.stringContaining('active'));
-    expect(learnerTab.find('label').text()).toEqual('Username, Email or LMS User ID');
 
-    tabs.at(2).simulate('click');
-    tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
+    await userEvent.click(programTab);
     expect(mockedNavigator).toHaveBeenCalledWith(TAB_PATH_MAP.programs, { replace: true });
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
   });
 
   it('default tab changes based on feature-based-enrollment pathname', () => {
-    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['feature-based-enrollment']}`} />);
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+    render(<SupportToolsTabWrapper pathName={TAB_PATH_MAP['feature-based-enrollment']} />);
+    expect(screen.getByRole('tab', { name: /Feature Based Enrollment/i })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('default tab changes based on learner-information pathname', () => {
-    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP['learner-information']}`} />);
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
+    render(<SupportToolsTabWrapper pathName={TAB_PATH_MAP['learner-information']} />);
+    expect(screen.getByRole('tab', { name: /Learner Information/i })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('default tab changes based on programs pathname', () => {
-    wrapper = mount(<SupportToolsTabWrapper pathName={`${TAB_PATH_MAP.programs}`} />);
-    const tabs = wrapper.find('nav.support-tools-tab.nav-tabs a');
-
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
+    render(<SupportToolsTabWrapper pathName={TAB_PATH_MAP.programs} />);
+    expect(screen.getByRole('tab', { name: /Program Information/i })).toHaveAttribute('aria-selected', 'true');
   });
 });

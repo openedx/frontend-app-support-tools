@@ -1,11 +1,9 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import SingleSignOnRecords from './SingleSignOnRecords';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import ssoRecordsData from './data/test/ssoRecords';
-
 import * as api from './data/api';
 
 const SingleSignOnRecordsWrapper = (props) => (
@@ -17,48 +15,55 @@ const SingleSignOnRecordsWrapper = (props) => (
 );
 
 describe('Single Sign On Records', () => {
-  // prepare data
   const ssoRecords = ssoRecordsData.map((entry) => ({
     ...entry,
     extraData: JSON.parse(entry.extraData),
   }));
 
-  let wrapper;
   const props = {
     username: 'edX',
   };
 
-  beforeEach(async () => {
-    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecords));
-    wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('SSO props', () => {
-    const username = wrapper.prop('username');
-    expect(username).toEqual(props.username);
+    render(<SingleSignOnRecordsWrapper {...props} />);
+    expect(props.username).toEqual('edX');
   });
 
-  it('SSO Data', () => {
-    const cardList = wrapper.find('Card');
-    waitFor(() => {
-      expect(cardList).toHaveLength(ssoRecords.length);
-      expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
-    });
+  it('SSO Data', async () => {
+    jest.spyOn(api, 'getSsoRecords').mockResolvedValueOnce(ssoRecords);
+
+    const { container } = render(<SingleSignOnRecordsWrapper {...props} />);
+
+    expect(
+      await screen.findByRole('heading', { name: /single sign-on records/i }),
+    ).toBeInTheDocument();
+
+    const cards = container.querySelectorAll('.card');
+    expect(cards).toHaveLength(ssoRecords.length);
   });
 
   it('No SSO Data', async () => {
-    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve([]));
-    wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
+    jest.spyOn(api, 'getSsoRecords').mockResolvedValueOnce([]);
 
-    expect(wrapper.find('h3#sso-title-header').text()).toEqual('Single Sign-on Records');
-    const cardList = wrapper.find('Card');
-    expect(cardList).toHaveLength(0);
+    render(<SingleSignOnRecordsWrapper {...props} />);
 
-    const noRecordMessage = wrapper.find('p');
-    waitFor(() => expect(noRecordMessage.text()).toEqual('No SSO Records were Found.'));
+    expect(
+      screen.getByRole('heading', { name: /single sign-on records/i }),
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/no sso records were found\./i),
+      ).toBeInTheDocument();
+    });
   });
 
   it('Error fetching sso data', async () => {
+    // Mock the API returning an error object (not throwing)
     const ssoErrors = {
       errors: [
         {
@@ -70,10 +75,13 @@ describe('Single Sign On Records', () => {
         },
       ],
     };
-    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoErrors));
-    wrapper = mount(<SingleSignOnRecordsWrapper {...props} />);
 
-    const alert = wrapper.find('div.alert');
-    waitFor(() => expect(alert.text()).toEqual(ssoErrors.errors[0].text));
+    jest.spyOn(api, 'getSsoRecords').mockResolvedValueOnce(ssoErrors);
+
+    render(<SingleSignOnRecordsWrapper {...props} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/test error/i)).toBeInTheDocument();
+    });
   });
 });

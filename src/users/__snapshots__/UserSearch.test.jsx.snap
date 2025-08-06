@@ -1,41 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`User Search Page renders correctly matches snapshot 1`] = `
-<section
-  className="mb-3 px-2"
->
-  <form
-    className=""
+<DocumentFragment>
+  <section
+    class="mb-3 px-2"
   >
-    <div
-      className="form-row"
+    <form
+      class=""
     >
-      <label
-        className="pgn__form-label my-auto"
-        htmlFor="userIdentifier"
-      >
-        Username, Email or LMS User ID
-      </label>
       <div
-        className="pgn__form-control-decorator-group flex-grow-1 ml-1 mr-1"
+        class="form-row"
       >
-        <input
-          className="form-control"
-          defaultValue=""
-          name="userIdentifier"
-          onBlur={[Function]}
-          onChange={[Function]}
-        />
+        <label
+          class="pgn__form-label my-auto"
+          for="userIdentifier"
+        >
+          Username, Email or LMS User ID
+        </label>
+        <div
+          class="pgn__form-control-decorator-group flex-grow-1 ml-1 mr-1"
+        >
+          <input
+            class="form-control"
+            name="userIdentifier"
+            value=""
+          />
+        </div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+        >
+          Search
+        </button>
       </div>
-      <button
-        className="btn btn-primary"
-        disabled={false}
-        onClick={[Function]}
-        type="submit"
-      >
-        Search
-      </button>
-    </div>
-  </form>
-</section>
+    </form>
+  </section>
+</DocumentFragment>
 `;

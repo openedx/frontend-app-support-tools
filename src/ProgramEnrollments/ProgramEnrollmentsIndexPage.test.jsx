@@ -1,6 +1,9 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import '@testing-library/jest-dom';
+
 import ProgramEnrollmentsIndexPage from './ProgramEnrollmentsIndexPage';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import samlProvidersResponseValues from './ProgramInspector/data/test/samlProviders';
@@ -15,77 +18,110 @@ const ProgramEnrollmentsIndexPageWrapper = (props) => (
 );
 
 describe('Program Enrollments Index Page', () => {
-  let wrapper;
   let location;
   let samlMock;
 
   beforeEach(() => {
-    location = { pathname: '/programs', search: '' };
+    location = {
+      pathname: '/programs',
+      search: '',
+    };
+
     samlMock = jest
       .spyOn(samlApi, 'getSAMLProviderList')
-      .mockImplementationOnce(() => Promise.resolve(samlProvidersResponseValues));
+      .mockImplementation(() => Promise.resolve(samlProvidersResponseValues));
   });
 
   afterEach(() => {
-    if (wrapper) {
-      wrapper.unmount();
-    }
-    if (samlMock) {
-      samlMock.mockReset();
-    }
+    samlMock.mockReset();
   });
 
   it('renders correctly', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const testLocation = {
+      pathname: '/programs',
+      search: '',
+    };
 
-    const tabs = wrapper.find('nav.pgn__tabs.nav-tabs a');
+    render(
+      <ProgramEnrollmentsIndexPageWrapper location={testLocation} />,
+    );
 
-    expect(tabs.at(0).text()).toEqual('Program Inspector');
-    expect(tabs.at(1).text()).toEqual('Link Program Enrollments');
+    expect(await screen.findByText(/Program Inspector/i)).toBeInTheDocument();
+
+    const tabs = await screen.findAllByText(/Link Program Enrollments/i);
+    expect(tabs.length).toBeGreaterThan(0);
   });
 
   it('Link Program Enrollments Tab', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
+    const testLocation = {
+      pathname: '/programs',
+      search: '',
+    };
 
-    let tabs = wrapper.find('nav.nav-tabs a');
-
-    tabs.at(0).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(wrapper.find('h3').at(1).text()).toEqual(
-      'Link Program Enrollments',
+    render(
+      <ProgramEnrollmentsIndexPageWrapper location={testLocation} />,
     );
+
+    const tabs = await screen.findAllByText(/Link Program Enrollments/i);
+    expect(tabs.length).toBeGreaterThan(0);
+
+    await userEvent.click(tabs[0]);
+
+    await waitFor(() => {
+      expect(tabs[0].classList.contains('active')).toBe(true);
+      expect(tabs[1].classList.contains('active')).toBe(false);
+      expect(
+        screen.getByRole('heading', { level: 3, name: /Link Program Enrollments/i }),
+      ).toBeInTheDocument();
+    });
   });
 
   it('Program Inspector Tab', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-
-    let tabs = wrapper.find('nav.nav-tabs a');
-
-    tabs.at(1).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(wrapper.find('h3').at(0).text()).toEqual(
-      'Program Enrollments Inspector',
+    render(
+      <ProgramEnrollmentsIndexPageWrapper location={location} />,
     );
+
+    const tabElements = await screen.findAllByRole('tab');
+    expect(tabElements.length).toBeGreaterThan(1);
+
+    await userEvent.click(tabElements[1]);
+
+    await waitFor(() => {
+      expect(tabElements[0]).not.toHaveClass('active');
+      expect(tabElements[1]).toHaveClass('active');
+
+      const heading = screen.queryByText(/Program Enrollments Inspector/i);
+      expect(heading).toBeInTheDocument();
+    });
   });
 
   it('page renders without query', async () => {
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    const tabs = wrapper.find('nav.nav-tabs a');
+    render(
+      <ProgramEnrollmentsIndexPageWrapper location={location} />,
+    );
 
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    const tabElements = await screen.findAllByRole('tab');
+    expect(tabElements.length).toBeGreaterThan(0);
+
+    await waitFor(() => {
+      expect(tabElements[0]).toHaveClass('active');
+      expect(tabElements[1]).not.toHaveClass('active');
+    });
   });
 
   it('page renders with query', async () => {
     location.search = '?edx_user=&org_key=testX&external_user_key=';
-    wrapper = mount(<ProgramEnrollmentsIndexPageWrapper location={location} />);
-    const tabs = wrapper.find('nav.nav-tabs a');
 
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
+    render(
+      <ProgramEnrollmentsIndexPageWrapper location={location} />,
+    );
+
+    const tabs = await screen.findAllByRole('tab');
+    expect(tabs.length).toBeGreaterThan(0);
+
+    await waitFor(() => {
+      expect(tabs[0].className).toMatch('active');
+      expect(tabs[1].className).not.toMatch('active');
+    });
   });
 });

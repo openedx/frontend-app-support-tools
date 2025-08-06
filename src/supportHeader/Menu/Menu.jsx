@@ -227,6 +227,7 @@ class Menu extends React.Component {
     const rootClassName = this.state.expanded ? 'menu expanded' : 'menu';
 
     return React.createElement(this.props.tag, {
+      role: 'menu',
       className: `${rootClassName} ${className}`,
       ref: this.menu,
       onKeyDown: this.onKeyDown,

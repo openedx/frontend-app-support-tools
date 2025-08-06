@@ -1,12 +1,16 @@
 import 'babel-polyfill';
-
 import {
-  APP_INIT_ERROR, APP_READY, subscribe, initialize, mergeConfig, getConfig,
+  APP_INIT_ERROR,
+  APP_READY,
+  subscribe,
+  initialize,
+  mergeConfig,
+  getConfig,
 } from '@edx/frontend-platform';
 import { AppProvider, ErrorPage } from '@edx/frontend-platform/react';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Routes, Route } from 'react-router-dom';
 
 import { hasFeatureFlagEnabled } from '@edx/frontend-enterprise-utils';
@@ -35,10 +39,15 @@ const { CONFIGURATION, SUPPORT_TOOLS_TABS } = ROUTES;
 
 subscribe(APP_READY, () => {
   const { administrator } = getAuthenticatedUser();
+  const root = createRoot(document.getElementById('root'));
+
   if (!administrator) {
-    ReactDOM.render(<ErrorPage message="You do not have access to this page." />, document.getElementById('root'));
+    root.render(
+      <ErrorPage message="You do not have access to this page." />,
+    );
     return;
   }
+
   const configurationRoutes = [
     <Route
       key={uuidv4()}
@@ -58,7 +67,11 @@ subscribe(APP_READY, () => {
     <Route
       key={uuidv4()}
       path={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.SUB_DIRECTORY.ERROR}
-      element={<ErrorPageContainer to={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME} />}
+      element={(
+        <ErrorPageContainer
+          to={CONFIGURATION.SUB_DIRECTORY.PROVISIONING.HOME}
+        />
+      )}
     />,
     <Route
       key={uuidv4()}
@@ -71,6 +84,7 @@ subscribe(APP_READY, () => {
       element={<ConfigurationPage />}
     />,
   ];
+
   const customerRoutes = [
     <Route
       key={uuidv4()}
@@ -83,19 +97,33 @@ subscribe(APP_READY, () => {
       element={<CustomerViewContainer />}
     />,
   ];
-  ReactDOM.render(
+
+  root.render(
     <AppProvider>
       <UserMessagesProvider>
         <Head />
         <Header />
         <Routes>
-          {/* Start: Configuration Dropdown Routes */}
-          {getConfig().FEATURE_CUSTOMER_SUPPORT_VIEW === 'true' && customerRoutes}
-          {getConfig().FEATURE_CONFIGURATION_MANAGEMENT && configurationRoutes}
-          {/* End: Configuration Dropdown Routes */}
-          <Route path={`${SUPPORT_TOOLS_TABS.HOME}*`} element={<SupportToolsTab />} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION} element={<UserPage />} />
-          <Route path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS} element={<FBEIndexPage />} />
+          {
+            getConfig().FEATURE_CUSTOMER_SUPPORT_VIEW === 'true'
+            && customerRoutes
+          }
+          {
+            getConfig().FEATURE_CONFIGURATION_MANAGEMENT
+            && configurationRoutes
+          }
+          <Route
+            path={`${SUPPORT_TOOLS_TABS.HOME}*`}
+            element={<SupportToolsTab />}
+          />
+          <Route
+            path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.LEARNER_INFORMATION}
+            element={<UserPage />}
+          />
+          <Route
+            path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.FEATURE_BASED_ENROLLMENTS}
+            element={<FBEIndexPage />}
+          />
           <Route
             path={SUPPORT_TOOLS_TABS.SUB_DIRECTORY.PROGRAM_ENROLLMENTS}
             element={<ProgramEnrollmentsIndexPage />}
@@ -103,29 +131,48 @@ subscribe(APP_READY, () => {
         </Routes>
       </UserMessagesProvider>
     </AppProvider>,
-    document.getElementById('root'),
   );
 });
 
 subscribe(APP_INIT_ERROR, (error) => {
-  ReactDOM.render(<ErrorPage message={error.message} />, document.getElementById('root'));
+  const root = createRoot(document.getElementById('root'));
+  root.render(<ErrorPage message={error.message} />);
 });
 
 initialize({
   handlers: {
     config: () => {
       mergeConfig({
-        COMMERCE_COORDINATOR_ORDER_DETAILS_URL: process.env.COMMERCE_COORDINATOR_ORDER_DETAILS_URL || null,
-        LICENSE_MANAGER_URL: process.env.LICENSE_MANAGER_URL || null,
-        LICENSE_MANAGER_DJANGO_URL: process.env.LICENSE_MANAGER_DJANGO_URL || null,
-        ADMIN_PORTAL_BASE_URL: process.env.ADMIN_PORTAL_BASE_URL || null,
-        ENTERPRISE_ACCESS_BASE_URL: process.env.ENTERPRISE_ACCESS_BASE_URL || null,
-        FEATURE_CONFIGURATION_MANAGEMENT: process.env.FEATURE_CONFIGURATION_MANAGEMENT || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT') || null,
-        FEATURE_CONFIGURATION_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION') || null,
-        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION: process.env.FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION') || null,
-        FEATURE_CUSTOMER_SUPPORT_VIEW: process.env.FEATURE_CUSTOMER_SUPPORT_VIEW || hasFeatureFlagEnabled('FEATURE_CUSTOMER_SUPPORT_VIEW') || null,
-        SUBSIDY_BASE_URL: process.env.SUBSIDY_BASE_URL || null,
-        SUBSIDY_BASE_DJANGO_URL: process.env.SUBSIDY_BASE_DJANGO_URL || null,
+        COMMERCE_COORDINATOR_ORDER_DETAILS_URL:
+          process.env.COMMERCE_COORDINATOR_ORDER_DETAILS_URL || null,
+        LICENSE_MANAGER_URL:
+          process.env.LICENSE_MANAGER_URL || null,
+        LICENSE_MANAGER_DJANGO_URL:
+          process.env.LICENSE_MANAGER_DJANGO_URL || null,
+        ADMIN_PORTAL_BASE_URL:
+          process.env.ADMIN_PORTAL_BASE_URL || null,
+        ENTERPRISE_ACCESS_BASE_URL:
+          process.env.ENTERPRISE_ACCESS_BASE_URL || null,
+        FEATURE_CONFIGURATION_MANAGEMENT:
+          process.env.FEATURE_CONFIGURATION_MANAGEMENT
+          || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_MANAGEMENT')
+          || null,
+        FEATURE_CONFIGURATION_ENTERPRISE_PROVISION:
+          process.env.FEATURE_CONFIGURATION_ENTERPRISE_PROVISION
+          || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_ENTERPRISE_PROVISION')
+          || null,
+        FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION:
+          process.env.FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION
+          || hasFeatureFlagEnabled('FEATURE_CONFIGURATION_EDIT_ENTERPRISE_PROVISION')
+          || null,
+        FEATURE_CUSTOMER_SUPPORT_VIEW:
+          process.env.FEATURE_CUSTOMER_SUPPORT_VIEW
+          || hasFeatureFlagEnabled('FEATURE_CUSTOMER_SUPPORT_VIEW')
+          || null,
+        SUBSIDY_BASE_URL:
+          process.env.SUBSIDY_BASE_URL || null,
+        SUBSIDY_BASE_DJANGO_URL:
+          process.env.SUBSIDY_BASE_DJANGO_URL || null,
       });
     },
   },

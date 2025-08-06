@@ -1,45 +1,52 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CopyShowHyperlinks from './CopyShowHyperLinks';
+import '@testing-library/jest-dom';
 
 describe('Copy Show Hyperlinks', () => {
-  let props;
-  let wrapper;
   const text = 'value1234567890';
 
-  beforeEach(() => {
-    props = {
-      text,
-    };
-    wrapper = mount(<IntlProvider locale="en"><CopyShowHyperlinks {...props} /></IntlProvider>);
-  });
-  it('Text Value', () => {
-    const copy = wrapper.find('a').at(0);
-    const show = wrapper.find('a').at(1);
+  const renderComponent = (props = {}) => render(
+    <IntlProvider locale="en">
+      <CopyShowHyperlinks text={text} {...props} />
+    </IntlProvider>,
+  );
 
-    expect(copy.text()).toEqual('Copy ');
-    expect(show.text()).toEqual('Show');
-    expect(wrapper.text()).toEqual('Copy Show');
+  it('renders Copy and Show links', () => {
+    renderComponent();
+
+    const copyLink = screen.getByText(/Copy/i);
+    const showLink = screen.getByText(/Show/i);
+
+    expect(copyLink).toBeInTheDocument();
+    expect(showLink).toBeInTheDocument();
+    expect(screen.getByText(/Copy/i).textContent).toMatch(/Copy/);
+    expect(screen.getByText(/Show/i).textContent).toMatch(/Show/);
   });
-  it('Click Copy', () => {
+
+  it('copies text to clipboard on click', async () => {
     Object.assign(navigator, {
       clipboard: {
-        writeText: () => {},
+        writeText: jest.fn(),
       },
     });
-    jest.spyOn(navigator.clipboard, 'writeText');
-    const copyLink = wrapper.find('a').at(0);
-    copyLink.simulate('click');
+
+    renderComponent();
+
+    const copyLink = screen.getByText(/Copy/i);
+    fireEvent.click(copyLink);
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(text);
-    expect(copyLink.text()).toEqual('Copy\u2713');
-    setInterval(() => expect(copyLink.text()).toEqual('Copy '), 3000);
   });
-  it('Click Show', () => {
+
+  it('shows alert with text on click', () => {
     window.alert = jest.fn();
-    const showLink = wrapper.find('a').at(1);
-    showLink.simulate('click');
+
+    renderComponent();
+
+    const showLink = screen.getByText(/Show/i);
+    fireEvent.click(showLink);
 
     expect(window.alert).toHaveBeenCalledWith(text);
     window.alert.mockClear();

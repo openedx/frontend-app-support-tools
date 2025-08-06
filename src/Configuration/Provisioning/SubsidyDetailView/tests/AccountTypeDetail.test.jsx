@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { screen, render } from '@testing-library/react';
 import PROVISIONING_PAGE_TEXT from '../../data/constants';
 import AccountTypeDetail from '../AccountTypeDetail';

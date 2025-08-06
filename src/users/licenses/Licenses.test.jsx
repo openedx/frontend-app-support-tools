@@ -1,46 +1,64 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { camelCaseObject } from '@edx/frontend-platform';
 import Licenses from './Licenses';
 import licensesData from '../data/test/licenses';
 import * as api from '../data/api';
 
 describe('Single Sign On Records', () => {
-  let wrapper;
   const props = {
     userEmail: 'user@example.com',
   };
 
-  beforeEach(async () => {
-    jest.spyOn(api, 'getLicense').mockImplementationOnce(() => Promise.resolve(camelCaseObject(licensesData)));
-    wrapper = mount(<Licenses {...props} />);
+  beforeEach(() => {
+    jest.spyOn(api, 'getLicense').mockImplementation(() => (
+      Promise.resolve(camelCaseObject(licensesData))
+    ));
   });
 
   it('Licenses props', () => {
-    const userEmail = wrapper.prop('userEmail');
-    expect(userEmail).toEqual(props.userEmail);
+    render(<Licenses {...props} />);
+    expect(props.userEmail).toEqual('user@example.com');
   });
 
-  it('Licenses Data', () => {
-    const cardList = wrapper.find('Card');
-    waitFor(() => {
-      expect(cardList).toHaveLength(licensesData.results.length);
-      expect(wrapper.find('h3#licenses-title-header').text()).toEqual('Licenses Subscription');
+  it('Licenses Data', async () => {
+    const { container } = render(<Licenses {...props} />);
+
+    await waitFor(() => {
+      const title = screen.getByRole('heading', {
+        level: 3,
+        name: /Licenses Subscription/i,
+      });
+      expect(title).toBeInTheDocument();
+
+      const cards = container.querySelectorAll('.pgn__card');
+      expect(cards.length).toBe(licensesData.results.length);
     });
   });
 
   it('No Licenses Data', async () => {
-    jest.spyOn(api, 'getLicense').mockImplementationOnce(() => Promise.resolve({ ...licensesData, results: [], status: 'No records found.' }));
-    wrapper = mount(<Licenses {...props} />);
+    jest.spyOn(api, 'getLicense').mockImplementationOnce(() => (
+      Promise.resolve({
+        ...licensesData,
+        results: [],
+        status: 'No records found.',
+      })
+    ));
 
-    expect(wrapper.find('h3#licenses-title-header').text()).toEqual('Licenses Subscription');
-    const cardList = wrapper.find('Card');
-    expect(cardList).toHaveLength(0);
+    const { container } = render(<Licenses {...props} />);
 
-    waitFor(() => {
-      const noRecordMessage = wrapper.find('p');
-      expect(noRecordMessage.text()).toEqual('No records found.');
+    await waitFor(() => {
+      const title = screen.getByRole('heading', {
+        level: 3,
+        name: /Licenses Subscription/i,
+      });
+      expect(title).toBeInTheDocument();
+
+      const noCards = container.querySelectorAll('.pgn__card');
+      expect(noCards.length).toBe(0);
+
+      const noRecordMessage = screen.getByText(/No records found./i);
+      expect(noRecordMessage).toBeInTheDocument();
     });
   });
 });

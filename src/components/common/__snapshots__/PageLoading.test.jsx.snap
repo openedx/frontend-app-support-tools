@@ -1,25 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<PageLoading /> snapshot matches correctly 1`] = `
-<div>
-  <div
-    className="d-flex justify-content-center align-items-center flex-column"
-    style={
-      {
-        "height": "20vh",
-      }
-    }
-  >
+<DocumentFragment>
+  <div>
     <div
-      className="spinner-border text-primary"
-      role="status"
+      class="d-flex justify-content-center align-items-center flex-column"
+      style="height: 20vh;"
     >
-      <span
-        className="sr-only"
+      <div
+        class="spinner-border text-primary"
+        role="status"
       >
-        Loading
-      </span>
+        <span
+          class="sr-only"
+        >
+          Loading
+        </span>
+      </div>
     </div>
   </div>
-</div>
+</DocumentFragment>
 `;

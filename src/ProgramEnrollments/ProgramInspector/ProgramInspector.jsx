@@ -71,8 +71,7 @@ export default function ProgramInspector() {
         }
         return getUser(name).then((res) => {
           navigate(`?edx_user_id=${res.id}`);
-        }).catch(err => {
-          console.error(err);
+        }).catch(() => {
           setError('An error occurred while fetching user id');
           navigate('/programs');
         });
@@ -92,8 +91,7 @@ export default function ProgramInspector() {
       getUser(userId).then(res => {
         setUsername(res.username);
         setQuery({ uri: `?edx_user=${res.username}&org_key=${activeOrgKey}&external_user_key=${externalUserKey}` });
-      }).catch(err => {
-        console.error(err);
+      }).catch(() => {
         setError('An error occurred while fetching user id');
         navigate('/programs');
       });
