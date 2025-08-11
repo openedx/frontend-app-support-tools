@@ -131,5 +131,75 @@ const messages = defineMessages({
     defaultMessage: 'Showing 1 - {sortedAndFilteredDataLength} of {userCoursesDataLength}.',
     description: 'Label for the number of entries showing in the table',
   },
+  usernameOrEmailUserSearchPlaceholder: {
+    id: 'courseTeamManagementTableUsernameOrEmailUserSearchPlaceholder',
+    defaultMessage: 'Username or email',
+    description: 'Placeholder for User Search field',
+  },
+  userSearchUnsavedChangesModalHeader: {
+    id: 'courseTeamManagementTableUserSearchUnsavedChangesModalHeader',
+    defaultMessage: 'Unsaved changes',
+    description: 'User Search Unsaved Changes Modal Header',
+  },
+  userSearchUnsavedChangesModalDescription: {
+    id: 'courseTeamManagementTableUserSearchUnsavedChangesModalDescription',
+    defaultMessage: 'Are you sure you want to leave this page? All unsaved changes will be lost.',
+    description: 'User Search Unsaved Changes Modal Description',
+  },
+  userSearchUnsavedChangesModalStageOnPageBtn: {
+    id: 'courseTeamManagementTableUserSearchUnsavedChangesModalStageOnPageBtn',
+    defaultMessage: 'Stay on page',
+    description: 'User Search Unsaved Changes Modal Stage On Page Button',
+  },
+  userSearchUnsavedChangesModalLeavePageBtn: {
+    id: 'courseTeamManagementTableUserSearchUnsavedChangesModalLeavePageBtn',
+    defaultMessage: 'Leave page',
+    description: 'User Search Unsaved Changes Modal Leave Page Button',
+  },
+  supportToolHomePageUsernameOrEmailUserSearchPlaceholder: {
+    id: 'supportToolHomePageUsernameOrEmailUserSearchPlaceholder',
+    defaultMessage: 'Username, Email or LMS User ID',
+    description: 'Placeholder for User Search field on support tool home page',
+  },
+  confirmChangesModalHeader: {
+    id: 'courseTeamManagementTableConfirmChangesModalHeader',
+    defaultMessage: 'Confirm changes?',
+    description: 'Confirm changes? Modal Header',
+  },
+  confirmChangesModalDescription: {
+    id: 'courseTeamManagementTableConfirmChangesModalDescription',
+    defaultMessage: 'Are you sure you want to update access for:',
+    description: 'Confirm changes Modal Description',
+  },
+  confirmChangesModalCancelButton: {
+    id: 'confirmChangesModalCancelButton',
+    defaultMessage: 'Cancel',
+    description: 'Confirm changes Modal Cencel Button text',
+  },
+  confirmChangesModalSaveButton: {
+    id: 'confirmChangesModalSaveButton',
+    defaultMessage: 'Save',
+    description: 'Confirm changes Modal Save Button text',
+  },
+  showMoreChangesInConfirmChangesModal: {
+    id: 'showMoreChangesInConfirmChangesModal',
+    defaultMessage: 'Show {hiddenCount} more',
+    description: 'Show {count} more statement in confirm changes Modal',
+  },
+  addedToCourseCountChangesInConfirmChangesModal: {
+    id: 'addedToCourseCountChangesInConfirmChangesModal',
+    defaultMessage: 'Added to {count} course(s):',
+    description: 'Added to {count} course(s) statement in confirm changes Modal',
+  },
+  removedFromCourseCountChangesInConfirmChangesModal: {
+    id: 'removedFromCourseCountChangesInConfirmChangesModal',
+    defaultMessage: 'Removed from {count} course(s):',
+    description: 'Removed from {count} course(s): statement in confirm changes Modal',
+  },
+  roleUpdatedInCourseCountChangesInConfirmChangesModal: {
+    id: 'roleUpdatedInCourseCountChangesInConfirmChangesModal',
+    defaultMessage: 'Role updated in {count} course(s):',
+    description: 'Role updated in {count} course(s): statement in confirm changes Modal',
+  },
 });
 export default messages;

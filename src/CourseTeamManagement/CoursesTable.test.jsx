@@ -1,8 +1,10 @@
 import { mount } from 'enzyme';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
+import { act } from 'react-dom/test-utils';
 import CoursesTable from './CoursesTable';
+import * as api from './data/api';
 
-const intlProviderWrapper = (component) => (
+export const intlProviderWrapper = (component) => (
   <IntlProvider locale="en" messages={{}}>
     {component}
   </IntlProvider>
@@ -357,6 +359,140 @@ describe('CoursesTable', () => {
       wrapper.update();
 
       expect(wrapper.text()).toContain('No results found');
+    });
+  });
+
+  describe('CoursesTable save workflow', () => {
+    const mockCourses = [
+      {
+        course_name: 'Test Course A',
+        number: 'CS101',
+        run: 'run1',
+        status: 'active',
+        role: 'staff',
+        org: 'edx',
+        course_url: 'https://example.com/course-a',
+      },
+      {
+        course_name: 'Test Course B',
+        number: 'CS102',
+        run: 'run2',
+        status: 'archived',
+        role: 'instructor',
+        org: 'mitx',
+        course_url: 'https://example.com/course-b',
+      },
+      {
+        course_name: 'Test Course c',
+        number: 'CS103',
+        run: 'run3',
+        status: 'active',
+        org: 'harvard',
+        role: null,
+        course_url: 'https://example.com/course-c',
+      },
+      {
+        course_name: 'Test Course d',
+        number: 'CS104',
+        run: 'run4',
+        status: 'active',
+        org: 'harvard',
+        role: null,
+        course_url: 'https://example.com/course-d',
+      },
+      {
+        course_name: 'Test Course e',
+        number: 'CS105',
+        run: 'run5',
+        status: 'active',
+        org: 'harvard',
+        role: null,
+        course_url: 'https://example.com/course-e',
+      },
+      {
+        course_name: 'Test Course f',
+        number: 'CS106',
+        run: 'run6',
+        status: 'active',
+        org: 'harvard',
+        role: null,
+        course_url: 'https://example.com/course-f',
+      },
+      {
+        course_name: 'Test Course g',
+        number: 'CS107',
+        run: 'run7',
+        status: 'active',
+        org: 'harvard',
+        role: null,
+        course_url: 'https://example.com/course-g',
+      },
+    ];
+
+    const setCourseUpdateErrorsMock = jest.fn();
+    const defaultProps = {
+      userCourses: mockCourses,
+      username: 'test',
+      email: 'test@test.com',
+      setCourseUpdateErrors: setCourseUpdateErrorsMock,
+    };
+
+    beforeEach(() => {
+      jest.spyOn(api, 'updateUserRolesInCourses').mockResolvedValue([]); // mock API success
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('opens ChangeConfirmationModal and confirms save', async () => {
+      wrapper = mount(intlProviderWrapper(<CoursesTable {...defaultProps} />));
+
+      // make changes in course table
+      wrapper.find('input[type="checkbox"]').at(1).simulate('change');
+      wrapper.find('input[type="checkbox"]').at(3).simulate('change');
+      wrapper.find('input[type="checkbox"]').at(4).simulate('change');
+      wrapper.find('input[type="checkbox"]').at(5).simulate('change');
+      wrapper.find('input[type="checkbox"]').at(6).simulate('change');
+      wrapper.find('input[type="checkbox"]').at(7).simulate('change');
+      wrapper.find('[data-testid="role-dropdown-run2"]').at(0).simulate('click');
+      wrapper.find('[data-testid="role-dropdown-item-staff-run2"]').at(0).simulate('click');
+
+      // open, then close, then re-open modal and also try show more course changes
+      wrapper.find('[data-testid="save-course-changes"]').at(0).simulate('click');
+      wrapper.find('[data-testid="cancel-save-course-changes"]').at(0).simulate('click');
+      wrapper.find('[data-testid="save-course-changes"]').at(0).simulate('click');
+      wrapper.find('[data-testid="show-more-changes"]').at(0).simulate('click');
+
+      // confirm save in modal
+      wrapper.find('[data-testid="confirm-save-course-changes"]').at(0).simulate('click');
+
+      // wait for async useEffect
+      jest.useFakeTimers();
+      await act(async () => {
+        await Promise.resolve();
+        jest.runAllTimers(); // for the setTimeout in useEffect
+      });
+
+      wrapper.update();
+
+      expect(api.updateUserRolesInCourses).toHaveBeenCalledWith({
+        userEmail: defaultProps.email,
+        changedCourses: expect.any(Object),
+      });
+    });
+    it('adds beforeunload listener and prevents unload when there are unsaved changes', () => {
+      wrapper = mount(intlProviderWrapper(<CoursesTable {...defaultProps} />));
+      // make changes in course table and it will set hasUnsavedChangesRef.current to true
+      wrapper.find('input[type="checkbox"]').at(1).simulate('change');
+      const event = new Event('beforeunload');
+      Object.defineProperty(event, 'returnValue', {
+        writable: true,
+        value: undefined,
+      });
+      window.dispatchEvent(event);
+
+      expect(event.returnValue).toBe('');
     });
   });
 });

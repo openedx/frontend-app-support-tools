@@ -12,10 +12,50 @@ import PropTypes from 'prop-types';
 import messages from './messages';
 import SortableHeader from './customSortableHeader';
 import TableActions from './customTableActions';
+import { getChangedRows } from './utils';
+import ChangeConfirmationModal from './changeConfirmationModal';
+import { updateUserRolesInCourses } from './data/api';
 
-export default function CoursesTable({ username, userCourses }) {
+export default function CoursesTable({
+  username, email, userCourses, setCourseUpdateErrors,
+}) {
   const intl = useIntl();
+  const saveButtonRef = useRef();
+  const [showModal, setShowModal] = useState(false);
+  const [submitButtonState, setSubmitButtonState] = useState('default');
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
   let userCoursesData = userCourses;
+  const [originalRowRoles] = useState(() => userCoursesData.reduce((acc, row) => {
+    acc[row.run] = row.role == null ? 'null' : row.role;
+    return acc;
+  }, {}));
+
+  const [originalCheckedRows] = useState(() => {
+    const initial = {};
+    userCoursesData.forEach((row) => {
+      if (row.role === 'staff' || row.role === 'instructor') {
+        initial[row.run] = true;
+      }
+    });
+    return initial;
+  });
+
+  const unsavedChangesRef = useRef({ newlyCheckedWithRole: [], uncheckedWithRole: [], roleChangedRows: [] });
+  const hasUnsavedChangesRef = useRef(false);
+  useEffect(() => {
+    if (submitButtonState === 'pending') {
+      updateUserRolesInCourses({ userEmail: email, changedCourses: unsavedChangesRef.current }).then((data) => {
+        setSubmitButtonState('complete');
+        setTimeout(() => {
+          setCourseUpdateErrors({ success: true, errors: data });
+          setShowModal(false);
+        }, 2000);
+      });
+    }
+  }, [submitButtonState]);
 
   // Change role null to 'null' for sorting to working correctly
   // As we are considering 'null' to appear as staff with disabled dropdown
@@ -93,11 +133,20 @@ export default function CoursesTable({ username, userCourses }) {
   const numChecked = allRowIds.filter((id) => checkedRows[id]).length;
   const allChecked = numChecked === allRowIds.length && allRowIds.length > 0;
   const someChecked = numChecked > 0 && numChecked < allRowIds.length;
+  const [isSaveBtnEnabled, setIsSaveBtnEnabled] = useState(false);
   useEffect(() => {
     if (headerCheckboxRef.current) {
       headerCheckboxRef.current.indeterminate = someChecked && !allChecked;
     }
-  }, [someChecked, allChecked, numChecked, sortBy]);
+  }, [someChecked, allChecked, numChecked, sortBy, rowRoles, isSaveBtnEnabled, showModal, submitButtonState]);
+
+  useEffect(() => {
+    const changes = getChangedRows(checkedRows, originalCheckedRows, rowRoles, originalRowRoles, userCoursesData);
+    hasUnsavedChangesRef.current = Object.values(changes).some(arr => arr.length > 0);
+    setIsSaveBtnEnabled(hasUnsavedChangesRef.current);
+    sessionStorage.setItem(`${username}hasUnsavedChanges`, hasUnsavedChangesRef.current);
+    unsavedChangesRef.current = changes;
+  }, [checkedRows, rowRoles]);
 
   const handleHeaderCheckboxChange = () => {
     if (allChecked) {
@@ -246,6 +295,17 @@ export default function CoursesTable({ username, userCourses }) {
       setSortBy={setSortBy}
     />
   );
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!hasUnsavedChangesRef.current) { return; }
+
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   return (
     <div className="course-team-management-courses-table">
@@ -322,17 +382,44 @@ export default function CoursesTable({ username, userCourses }) {
         {sortedAndFilteredData.length > 0 && <DataTable.TableFooter />}
       </DataTable>
       <div className="py-4 my-2 d-flex justify-content-end align-items-center">
-        <Button variant="brand" style={{ width: '8%' }}>
+        <Button
+          onClick={() => setShowModal(true)}
+          disabled={!isSaveBtnEnabled}
+          variant="brand"
+          style={{ width: '8%' }}
+          data-testid="save-course-changes"
+        >
           {intl.formatMessage(messages.saveButtonLabel)}
         </Button>
       </div>
+      <ChangeConfirmationModal
+        changedData={unsavedChangesRef.current}
+        isOpen={showModal}
+        onConfirm={setSubmitButtonState}
+        submitButtonState={submitButtonState}
+        onCancel={handleCancel}
+        username={username}
+        email={email}
+        positionRef={saveButtonRef}
+      />
     </div>
   );
 }
 
 CoursesTable.propTypes = {
-  username: PropTypes.string.isRequired,
-  userCourses: PropTypes.string.isRequired,
+  username: PropTypes.string,
+  email: PropTypes.string,
+  userCourses: PropTypes.shape({
+    course_id: PropTypes.string,
+    course_name: PropTypes.string,
+    course_url: PropTypes.string,
+    role: PropTypes.string,
+    status: PropTypes.string,
+    org: PropTypes.string,
+    number: PropTypes.string,
+    run: PropTypes.string,
+  }).isRequired,
+  setCourseUpdateErrors: PropTypes.func.isRequired,
   row: PropTypes.shape({
     run: PropTypes.string.isRequired,
     original: PropTypes.shape({
@@ -340,4 +427,9 @@ CoursesTable.propTypes = {
       course_name: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+};
+
+CoursesTable.defaultProps = {
+  username: '',
+  email: '',
 };

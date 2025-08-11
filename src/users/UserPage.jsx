@@ -18,7 +18,7 @@ import { TAB_PATH_MAP } from '../SupportToolsTab/constants';
 import CancelRetirement from './account-actions/CancelRetirement';
 import ROUTES from '../data/constants/routes';
 import CoursesListTable from '../CourseTeamManagement/CoursesTable';
-import fetchUserRoleBasedCourses from '../CourseTeamManagement/data/api';
+import { fetchUserRoleBasedCourses } from '../CourseTeamManagement/data/api';
 
 export default function UserPage({ isOnCourseTeamPage }) {
   const location = useLocation();
@@ -134,14 +134,24 @@ export default function UserPage({ isOnCourseTeamPage }) {
     }
   }, [userIdentifier]);
 
+  const [courseUpdateErrors, setCourseUpdateErrors] = useState(
+    {
+      success: false,
+      errors: {
+        newlyCheckedWithRoleErrors: [],
+        uncheckedWithRoleErrors: [],
+        roleChangedRowsErrors: [],
+      },
+    },
+  );
   useEffect(() => {
-    if (data?.user?.email) {
+    if (data?.user?.email || courseUpdateErrors.success) {
       setUserCourses([]);
       fetchUserRoleBasedCourses(data.user.email).then((courses) => {
         setUserCourses(courses);
       });
     }
-  }, [data.user]);
+  }, [data.user, courseUpdateErrors]);
 
   useEffect(() => {
     if (params.get('username') && params.get('username') !== userIdentifier) {
@@ -156,6 +166,8 @@ export default function UserPage({ isOnCourseTeamPage }) {
   return (
     <main className={`${!isOnCourseTeamPage ? 'mt-3 mb-5' : 'course-team-management-user-search'}`}>
       {!isOnCourseTeamPage && <AlertList topic="general" className="mb-3" />}
+      { /* pass errorrs in below alert */}
+      {!isOnCourseTeamPage && courseUpdateErrors.errors.length > 0 && <AlertList topic="CTM-errors" className="mb-3" />}
       {/* NOTE: the "key" here causes the UserSearch component to re-render completely when the
       user identifier changes.  Doing so clears out the search box. */}
       <UserSearch
@@ -163,6 +175,7 @@ export default function UserPage({ isOnCourseTeamPage }) {
         userIdentifier={userIdentifier}
         searchHandler={handleSearchInputChange}
         isOnCourseTeamPage={isOnCourseTeamPage}
+        username={data?.user?.username}
       />
       {loading && <PageLoading srMessage="Loading" />}
       {isOnCourseTeamPage && !loading && !data?.user && (
@@ -176,8 +189,11 @@ export default function UserPage({ isOnCourseTeamPage }) {
       {isOnCourseTeamPage && !loading && data?.user && userCourses.length > 0
         && (
           <CoursesListTable
+            userIdentifier={userIdentifier}
             username={data.user.username}
+            email={data.user.email}
             userCourses={userCourses}
+            setCourseUpdateErrors={setCourseUpdateErrors}
           />
         )}
       {!isOnCourseTeamPage && !loading && data.user && data.user.username && (
