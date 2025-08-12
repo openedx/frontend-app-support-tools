@@ -19,6 +19,7 @@ const sampleCourses = [
     role: 'staff',
     org: 'edx',
     course_url: 'https://example.com/course-a',
+    course_id: 'courseId1',
   },
   {
     course_name: 'Test Course B',
@@ -28,6 +29,7 @@ const sampleCourses = [
     role: 'instructor',
     org: 'mitx',
     course_url: 'https://example.com/course-b',
+    course_id: 'courseId2',
   },
 ];
 
@@ -103,23 +105,24 @@ describe('CoursesTable', () => {
   });
 
   describe('Sorting', () => {
-    it('sorts by course_name ascending when header is clicked once', () => {
-      const headerIcon = wrapper.find('[data-testid="sort-icon-course_name"]').first();
+    it('sorts by course_name descending when header is clicked once as its by default sorted in ascending order', () => {
+      const headerIcon = wrapper.find('[data-testid="ascending-sort-icon-course_name"]').first();
       headerIcon.simulate('click');
       wrapper.update();
 
       const sortedCourseName = wrapper.find('a').at(0).text();
-      expect(sortedCourseName).toBe('Test Course A');
+      expect(sortedCourseName).toBe('Test Course B');
     });
 
-    it('sorts by course_name descending when header is clicked twice', () => {
-      const headerIcon = wrapper.find('[data-testid="sort-icon-course_name"]').first();
-      headerIcon.simulate('click'); // ascending
+    it('sorts by course_name ascending when header is clicked thrice', () => {
+      const headerIcon = wrapper.find('[data-testid="ascending-sort-icon-course_name"]').first();
       headerIcon.simulate('click'); // descending
+      headerIcon.simulate('click'); // no sorting
+      headerIcon.simulate('click'); // ascending
       wrapper.update();
 
       const sortedCourseName = wrapper.find('a').at(0).text();
-      expect(sortedCourseName).toBe('Test Course B');
+      expect(sortedCourseName).toBe('Test Course A');
     });
 
     it('keeps original order for items with same course_name (stable sort)', () => {
@@ -132,6 +135,7 @@ describe('CoursesTable', () => {
           role: 'staff',
           org: 'edx',
           course_url: 'https://example.com/course-c',
+          course_id: 'courseId3',
         },
         {
           course_name: 'Same Course',
@@ -141,6 +145,7 @@ describe('CoursesTable', () => {
           role: 'instructor',
           org: 'mitx',
           course_url: 'https://example.com/course-d',
+          course_id: 'courseId4',
         },
       ];
 
@@ -148,7 +153,7 @@ describe('CoursesTable', () => {
         <CoursesTable username="testuser" userCourses={duplicateCourses} />,
       ));
 
-      const headerIcon = duplicateWrapper.find('[data-testid="sort-icon-course_name"]').first();
+      const headerIcon = duplicateWrapper.find('[data-testid="ascending-sort-icon-course_name"]').first();
       headerIcon.simulate('click');
       duplicateWrapper.update();
 
@@ -160,12 +165,12 @@ describe('CoursesTable', () => {
 
   describe('Role Dropdown', () => {
     it('updates role to "staff" when staff dropdown item is clicked', () => {
-      const toggle = wrapper.find('[data-testid="role-dropdown-run1"]').at(0);
+      const toggle = wrapper.find('[data-testid="role-dropdown-courseId1"]').at(0);
       expect(toggle.exists()).toBe(true);
       toggle.simulate('click');
       wrapper.update();
 
-      const staffItem = wrapper.find('[data-testid="role-dropdown-item-staff-run1"]');
+      const staffItem = wrapper.find('[data-testid="role-dropdown-item-staff-courseId1"]');
       staffItem.at(0).simulate('click');
       wrapper.update();
 
@@ -173,11 +178,11 @@ describe('CoursesTable', () => {
     });
 
     it('updates role to "instructor" when instructor dropdown item is clicked', () => {
-      const toggle = wrapper.find('[data-testid="role-dropdown-run1"]').at(0);
+      const toggle = wrapper.find('[data-testid="role-dropdown-courseId1"]').at(0);
       toggle.simulate('click');
       wrapper.update();
 
-      const instructorItem = wrapper.find('[data-testid="role-dropdown-item-instructor-run1"]');
+      const instructorItem = wrapper.find('[data-testid="role-dropdown-item-instructor-courseId1"]');
       instructorItem.at(0).simulate('click');
       wrapper.update();
 
@@ -372,6 +377,7 @@ describe('CoursesTable', () => {
         role: 'staff',
         org: 'edx',
         course_url: 'https://example.com/course-a',
+        course_id: 'courseId1',
       },
       {
         course_name: 'Test Course B',
@@ -381,6 +387,7 @@ describe('CoursesTable', () => {
         role: 'instructor',
         org: 'mitx',
         course_url: 'https://example.com/course-b',
+        course_id: 'courseId2',
       },
       {
         course_name: 'Test Course c',
@@ -390,6 +397,7 @@ describe('CoursesTable', () => {
         org: 'harvard',
         role: null,
         course_url: 'https://example.com/course-c',
+        course_id: 'courseId3',
       },
       {
         course_name: 'Test Course d',
@@ -399,6 +407,7 @@ describe('CoursesTable', () => {
         org: 'harvard',
         role: null,
         course_url: 'https://example.com/course-d',
+        course_id: 'courseId4',
       },
       {
         course_name: 'Test Course e',
@@ -408,6 +417,7 @@ describe('CoursesTable', () => {
         org: 'harvard',
         role: null,
         course_url: 'https://example.com/course-e',
+        course_id: 'courseId5',
       },
       {
         course_name: 'Test Course f',
@@ -417,6 +427,7 @@ describe('CoursesTable', () => {
         org: 'harvard',
         role: null,
         course_url: 'https://example.com/course-f',
+        course_id: 'courseId6',
       },
       {
         course_name: 'Test Course g',
@@ -426,6 +437,7 @@ describe('CoursesTable', () => {
         org: 'harvard',
         role: null,
         course_url: 'https://example.com/course-g',
+        course_id: 'courseId7',
       },
     ];
 
@@ -455,8 +467,8 @@ describe('CoursesTable', () => {
       wrapper.find('input[type="checkbox"]').at(5).simulate('change');
       wrapper.find('input[type="checkbox"]').at(6).simulate('change');
       wrapper.find('input[type="checkbox"]').at(7).simulate('change');
-      wrapper.find('[data-testid="role-dropdown-run2"]').at(0).simulate('click');
-      wrapper.find('[data-testid="role-dropdown-item-staff-run2"]').at(0).simulate('click');
+      wrapper.find('[data-testid="role-dropdown-courseId2"]').at(0).simulate('click');
+      wrapper.find('[data-testid="role-dropdown-item-staff-courseId2"]').at(0).simulate('click');
 
       // open, then close, then re-open modal and also try show more course changes
       wrapper.find('[data-testid="save-course-changes"]').at(0).simulate('click');

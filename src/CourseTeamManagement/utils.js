@@ -3,24 +3,24 @@ export function getChangedRows(checkedRows, originalCheckedRows, rowRoles, origi
   const uncheckedWithRole = [];
   const roleChangedRows = [];
 
-  // Create a quick lookup for course metadata by runId
   const courseMetadata = userCoursesData.reduce((acc, row) => {
-    acc[row.run] = {
+    acc[row.course_id] = {
       courseName: row.course_name,
       number: row.number,
       courseId: row.course_id,
+      runId: row.run,
     };
     return acc;
   }, {});
 
-  Object.keys(checkedRows).forEach((runId) => {
-    const wasChecked = originalCheckedRows[runId] || false;
-    const isChecked = checkedRows[runId] || false;
+  Object.keys(checkedRows).forEach((courseId) => {
+    const wasChecked = originalCheckedRows[courseId] || false;
+    const isChecked = checkedRows[courseId] || false;
 
-    const originalRole = originalRowRoles[runId];
-    const currentRole = rowRoles[runId];
+    const originalRole = originalRowRoles[courseId];
+    const currentRole = rowRoles[courseId];
 
-    const { courseName, number, courseId } = courseMetadata[runId] || {};
+    const { courseName, number, runId } = courseMetadata[courseId] || {};
 
     if (!wasChecked && isChecked && currentRole) {
       newlyCheckedWithRole.push({
@@ -88,7 +88,7 @@ export function extractErrorsFromUpdateResponse(changedData, response) {
 
   const failedRows = (response?.results || []).filter(r => r.status === 'failed');
 
-  const matchedKeys = new Set(); // to avoid adding the same row twice
+  const matchedKeys = new Set();
 
   const collectErrors = (sourceArray, action, targetArray) => {
     sourceArray?.forEach(row => {
@@ -99,7 +99,7 @@ export function extractErrorsFromUpdateResponse(changedData, response) {
         );
         if (failed) {
           targetArray.push({ ...row, error: failed.error || 'Unknown error' });
-          matchedKeys.add(key); // mark as processed so it won't be added to other arrays
+          matchedKeys.add(key);
         }
       }
     });

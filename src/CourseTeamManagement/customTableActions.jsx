@@ -36,7 +36,6 @@ const TableActions = ({
   return (
     <div className="custom-table-actions-container">
       <div className="custom-table-filter-actions">
-        {/* Search input */}
         <Form.Control
           ref={searchInputRef}
           type="text"
@@ -45,7 +44,6 @@ const TableActions = ({
           onChange={(e) => setSearch(e.target.value)}
           trailingElement={<Icon src={Search} />}
         />
-        {/* Status Dropdown */}
         <DropdownButton
           id="status-dropdown"
           title={
@@ -77,14 +75,12 @@ const TableActions = ({
           ))}
         </DropdownButton>
 
-        {/* Org Dropdown */}
         <OrgDropdownWithSearch
           org={org}
           setOrg={setOrg}
           orgFilterChoices={orgFilterChoices}
         />
 
-        {/* Role Dropdown */}
         <DropdownButton
           id="role-dropdown"
           title={
@@ -97,12 +93,12 @@ const TableActions = ({
           }
           onSelect={(eventKey) => {
             if (eventKey === 'staff' || eventKey === 'instructor') {
-              const filteredRunIds = new Set(sortedAndFilteredData.map((row) => row.run));
+              const filteredCourseIds = new Set(sortedAndFilteredData.map((row) => row.course_id));
               setRowRoles((prev) => {
                 const updated = { ...prev };
-                Object.keys(checkedRows).forEach((runId) => {
-                  if (checkedRows[runId] && filteredRunIds.has(runId)) {
-                    updated[runId] = eventKey;
+                Object.keys(checkedRows).forEach((courseId) => {
+                  if (checkedRows[courseId] && filteredCourseIds.has(courseId)) {
+                    updated[courseId] = eventKey;
                   }
                 });
                 return updated;
@@ -153,10 +149,10 @@ TableActions.propTypes = {
   orgFilterChoices: PropTypes.arrayOf(PropTypes.string).isRequired,
   setRowRoles: PropTypes.func.isRequired,
   sortedAndFilteredData: PropTypes.arrayOf(PropTypes.shape({
-    run: PropTypes.string.isRequired,
+    course_id: PropTypes.string.isRequired,
   })).isRequired,
   checkedRows: PropTypes.objectOf(PropTypes.bool).isRequired,
   userCoursesData: PropTypes.arrayOf(PropTypes.shape({
-    run: PropTypes.string.isRequired,
+    course_id: PropTypes.string.isRequired,
   })).isRequired,
 };

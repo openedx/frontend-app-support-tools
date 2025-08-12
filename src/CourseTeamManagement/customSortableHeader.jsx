@@ -27,9 +27,9 @@ const SortableHeader = ({
   let SortIcon = <ArrowDropUpDown data-testid={`sort-icon-${id}`} onClick={handleClick} />;
   if (isSorted) {
     if (isDesc) {
-      SortIcon = <ArrowDropDown onClick={handleClick} />;
-    } else {
       SortIcon = <ArrowDropDown onClick={handleClick} style={{ transform: 'rotate(180deg)' }} />;
+    } else {
+      SortIcon = <ArrowDropDown data-testid={`ascending-sort-icon-${id}`} onClick={handleClick} />;
     }
   }
 

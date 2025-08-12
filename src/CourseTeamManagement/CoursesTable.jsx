@@ -29,7 +29,7 @@ export default function CoursesTable({
 
   let userCoursesData = userCourses;
   const [originalRowRoles] = useState(() => userCoursesData.reduce((acc, row) => {
-    acc[row.run] = row.role == null ? 'null' : row.role;
+    acc[row.course_id] = row.role == null ? 'null' : row.role;
     return acc;
   }, {}));
 
@@ -37,7 +37,7 @@ export default function CoursesTable({
     const initial = {};
     userCoursesData.forEach((row) => {
       if (row.role === 'staff' || row.role === 'instructor') {
-        initial[row.run] = true;
+        initial[row.course_id] = true;
       }
     });
     return initial;
@@ -52,7 +52,7 @@ export default function CoursesTable({
         setTimeout(() => {
           setCourseUpdateErrors({ success: true, errors: data });
           setShowModal(false);
-        }, 2000);
+        }, 1000);
       });
     }
   }, [submitButtonState]);
@@ -66,10 +66,13 @@ export default function CoursesTable({
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [org, setOrg] = useState('');
-  const [sortBy, setSortBy] = useState([]);
-  // Track roles for each course row, keyed by run
+  const [sortBy, setSortBy] = useState([{
+    id: 'course_name',
+    desc: false,
+  }]);
+  // Track roles for each course row, keyed by course_id
   const [rowRoles, setRowRoles] = useState(() => userCoursesData.reduce((acc, row) => {
-    acc[row.run] = row.role;
+    acc[row.course_id] = row.role;
     return acc;
   }, {}));
   const searchInputRef = useRef(null);
@@ -77,7 +80,7 @@ export default function CoursesTable({
   const sortedAndFilteredData = React.useMemo(() => {
     let data = userCoursesData.map((row) => ({
       ...row,
-      role: rowRoles[row.run] !== undefined ? rowRoles[row.run] : 'null',
+      role: rowRoles[row.course_id] !== undefined ? rowRoles[row.course_id] : 'null',
     }));
 
     // Manual Filtering for all columns in single search box
@@ -93,12 +96,17 @@ export default function CoursesTable({
     // Manual sorting
     if (sortBy.length > 0) {
       const { id, desc } = sortBy[0];
+
+      const collator = new Intl.Collator(undefined, {
+        numeric: true, // "test 5" < "test 15"
+        sensitivity: 'base', // ignore case differences
+      });
       data = [...data].sort((a, b) => {
-        const aValue = a[id];
-        const bValue = b[id];
-        if (aValue < bValue) { return desc ? 1 : -1; }
-        if (aValue > bValue) { return desc ? -1 : 1; }
-        return 0;
+        const aVal = a[id] === null || a[id] === undefined ? '' : String(a[id]);
+        const bVal = b[id] === null || b[id] === undefined ? '' : String(b[id]);
+
+        const comparison = collator.compare(aVal, bVal);
+        return desc ? -comparison : comparison;
       });
     }
 
@@ -112,24 +120,24 @@ export default function CoursesTable({
     }
   }, []);
 
-  // Custom checkbox selection state, keyed by run
+  // Custom checkbox selection state, keyed by course_id
   const [checkedRows, setCheckedRows] = useState(() => {
     const initial = {};
     userCoursesData.forEach((row) => {
       if (row.role === 'staff' || row.role === 'instructor') {
-        initial[row.run] = true;
+        initial[row.course_id] = true;
       }
     });
     return initial;
   });
 
-  const handleCheckboxChange = (runId) => {
-    setCheckedRows((prev) => ({ ...prev, [runId]: !prev[runId] }));
+  const handleCheckboxChange = (courseId) => {
+    setCheckedRows((prev) => ({ ...prev, [courseId]: !prev[courseId] }));
   };
 
   // Select all/clear all logic for header checkbox
   const headerCheckboxRef = useRef(null);
-  const allRowIds = sortedAndFilteredData.map((row) => row.run);
+  const allRowIds = sortedAndFilteredData.map((row) => row.course_id);
   const numChecked = allRowIds.filter((id) => checkedRows[id]).length;
   const allChecked = numChecked === allRowIds.length && allRowIds.length > 0;
   const someChecked = numChecked > 0 && numChecked < allRowIds.length;
@@ -197,21 +205,21 @@ export default function CoursesTable({
   };
 
   const formatRole = ({ row }) => {
-    const runId = row.original.run;
-    const value = rowRoles[runId];
+    const courseId = row.original.course_id;
+    const value = rowRoles[courseId];
     // If role is 'null', default to staff for display only
     const displayValue = value === 'null' ? 'staff' : value;
     let title = 'Staff';
     if (displayValue === 'instructor') { title = 'Admin'; }
     // Enable dropdown if checkbox is checked, otherwise disable
-    const isChecked = !!checkedRows[runId];
+    const isChecked = !!checkedRows[courseId];
     const isDisabled = !isChecked;
     return (
       <Dropdown>
         <Dropdown.Toggle
           as="button"
           className="course-team-management-role-col-dropdown"
-          data-testid={`role-dropdown-${runId}`}
+          data-testid={`role-dropdown-${courseId}`}
           variant="outline-primary"
           disabled={isDisabled}
           style={{
@@ -229,18 +237,18 @@ export default function CoursesTable({
 
         <Dropdown.Menu placement="top">
           <Dropdown.Item
-            data-testid={`role-dropdown-item-staff-${runId}`}
+            data-testid={`role-dropdown-item-staff-${courseId}`}
             eventKey="staff"
             active={displayValue === 'staff'}
-            onClick={() => setRowRoles((prev) => ({ ...prev, [runId]: 'staff' }))}
+            onClick={() => setRowRoles((prev) => ({ ...prev, [courseId]: 'staff' }))}
           >
             {intl.formatMessage(messages.statusStaffFilterLabelChoice)}
           </Dropdown.Item>
           <Dropdown.Item
-            data-testid={`role-dropdown-item-instructor-${runId}`}
+            data-testid={`role-dropdown-item-instructor-${courseId}`}
             eventKey="instructor"
             active={displayValue === 'instructor'}
-            onClick={() => setRowRoles((prev) => ({ ...prev, [runId]: 'instructor' }))}
+            onClick={() => setRowRoles((prev) => ({ ...prev, [courseId]: 'instructor' }))}
           >
             {intl.formatMessage(messages.statusAdminFilterLabelChoice)}
           </Dropdown.Item>
@@ -281,8 +289,8 @@ export default function CoursesTable({
   const CheckboxCell = ({ row }) => (
     <Form.Check
       type="checkbox"
-      checked={!!checkedRows[row.original.run]}
-      onChange={() => handleCheckboxChange(row.original.run)}
+      checked={!!checkedRows[row.original.course_id]}
+      onChange={() => handleCheckboxChange(row.original.course_id)}
       aria-label={`Select row for ${row.original.course_name}`}
       style={{ marginLeft: 8 }}
     />
@@ -370,7 +378,7 @@ export default function CoursesTable({
             disableFilters: true,
           },
         ]}
-        getRowId={(row) => row.run}
+        getRowId={(row) => row.course_id}
       >
         <DataTable.TableControlBar />
         <div style={{ height: 450, overflow: 'auto' }}>
@@ -422,9 +430,11 @@ CoursesTable.propTypes = {
   setCourseUpdateErrors: PropTypes.func.isRequired,
   row: PropTypes.shape({
     run: PropTypes.string.isRequired,
+    course_id: PropTypes.string.isRequired,
     original: PropTypes.shape({
       run: PropTypes.string.isRequired,
       course_name: PropTypes.string.isRequired,
+      course_id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

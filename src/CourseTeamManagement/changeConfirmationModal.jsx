@@ -62,7 +62,7 @@ export default function ChangeConfirmationModal({
       isOpen={isOpen}
       onClose={onCancel}
       positionRef={positionRef}
-      closeOnOutsideClick={submitButtonState !== 'pending'}
+      isBlocking={submitButtonState === 'pending' || submitButtonState === 'complete'}
     >
       <div
         role="dialog"
