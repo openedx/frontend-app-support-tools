@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {
-  faExclamationTriangle, faInfoCircle, faCheckCircle, faMinusCircle,
+  faExclamationTriangle, faInfoCircle, faCheckCircle, faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '@openedx/paragon';
@@ -25,7 +25,7 @@ function getAlertIcon(type) {
     return faExclamationTriangle;
   }
   if (type === 'danger') {
-    return faMinusCircle;
+    return faExclamationCircle;
   }
   if (type === 'success') {
     return faCheckCircle;

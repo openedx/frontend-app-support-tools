@@ -166,12 +166,22 @@ const messages = defineMessages({
     defaultMessage: 'Confirm changes?',
     description: 'Confirm changes? Modal Header',
   },
+  errorChangesModalHeader: {
+    id: 'courseTeamManagementTableErrorChangesModalHeader',
+    defaultMessage: 'Changes not saved',
+    description: 'Changes not saved Header in case of error in Modal',
+  },
   confirmChangesModalDescription: {
     id: 'courseTeamManagementTableConfirmChangesModalDescription',
     defaultMessage: 'Are you sure you want to update access for:',
     description: 'Confirm changes Modal Description',
   },
-  confirmChangesModalCancelButton: {
+  errorChangesModalDescription: {
+    id: 'courseTeamManagementTableErrorChangesModalDescription',
+    defaultMessage: 'We couldn\'t save the following updates for:',
+    description: 'Changes not saved header description in case of error in Modal',
+  },
+  confirmChangesModalCloseButtonText: {
     id: 'confirmChangesModalCancelButton',
     defaultMessage: 'Cancel',
     description: 'Confirm changes Modal Cencel Button text',
@@ -180,6 +190,11 @@ const messages = defineMessages({
     id: 'confirmChangesModalSaveButton',
     defaultMessage: 'Save',
     description: 'Confirm changes Modal Save Button text',
+  },
+  errorChangesModalCloseButtonText: {
+    id: 'changesWithErrorsModalCloseButton',
+    defaultMessage: 'Close',
+    description: 'Error changes Modal Close Button text',
   },
   showMoreChangesInConfirmChangesModal: {
     id: 'showMoreChangesInConfirmChangesModal',
@@ -200,6 +215,41 @@ const messages = defineMessages({
     id: 'roleUpdatedInCourseCountChangesInConfirmChangesModal',
     defaultMessage: 'Role updated in {count} course(s):',
     description: 'Role updated in {count} course(s): statement in confirm changes Modal',
+  },
+  addedToCourseCountChangesInConfirmChangesModalError: {
+    id: 'addedToCourseCountChangesInConfirmChangesModalError',
+    defaultMessage: 'Couldn\'t add to {count} course(s):',
+    description: 'Added to {count} course(s) statement in confirm changes Modal',
+  },
+  removedFromCourseCountChangesInConfirmChangesModalError: {
+    id: 'removedFromCourseCountChangesInConfirmChangesModalError',
+    defaultMessage: 'Couldn\'t remove from {count} course(s):',
+    description: 'Removed from {count} course(s): statement in confirm changes Modal',
+  },
+  roleUpdatedInCourseCountChangesInConfirmChangesModalError: {
+    id: 'roleUpdatedInCourseCountChangesInConfirmChangesModalError',
+    defaultMessage: 'Couldn\'t update role in {count} course(s):',
+    description: 'Role updated in {count} course(s): statement in confirm changes Modal',
+  },
+  courseUpdatesErrorsAlertMessage: {
+    id: 'courseUpdatesErrorsAlertMessage',
+    defaultMessage: 'Some changes couldn\'t be saved.',
+    description: 'Error message for course role updates alert.',
+  },
+  courseUpdatesErrorsAlertViewDetailsMessage: {
+    id: 'courseUpdatesErrorsAlertViewDetailsMessage',
+    defaultMessage: 'View details',
+    description: 'Error message view details text for course role updates alert.',
+  },
+  courseTeamUpdateApiError: {
+    id: 'courseTeamUpdateApiError',
+    defaultMessage: 'Unexpected error occured while updating user roles.',
+    description: 'Error message for Put API error.',
+  },
+  courseTeamGetApiError: {
+    id: 'courseTeamGetApiError',
+    defaultMessage: 'Unexpected error occured while fetching user courses.',
+    description: 'Error message for Get API error.',
   },
 });
 export default messages;

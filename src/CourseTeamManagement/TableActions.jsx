@@ -8,7 +8,7 @@ import { Check, Search, ArrowDropDown } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import { useIntl } from '@edx/frontend-platform/i18n';
 
-import OrgDropdownWithSearch from './customOrgDropdownWithSearch';
+import OrgDropdownWithSearch from './OrgDropdownWithSearch';
 import messages from './messages';
 
 const TableActions = ({

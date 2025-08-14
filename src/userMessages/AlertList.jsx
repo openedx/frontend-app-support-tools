@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import UserMessagesContext from './UserMessagesContext';
 import Alert from './Alert';
 
-export default function AlertList({ topic, className, customAlerts }) {
+export default function AlertList({
+  topic, className, customAlerts, isDismissed, setIsDismissed,
+}) {
   const { remove, messages } = useContext(UserMessagesContext);
   const getAlertComponent = useCallback(
     (code) => (customAlerts[code] !== undefined ? customAlerts[code] : Alert),
@@ -25,7 +27,10 @@ export default function AlertList({ topic, className, customAlerts }) {
             <AlertComponent
               type={message.type}
               dismissible={message.dismissible}
-              onDismiss={() => remove(message.id)}
+              onDismiss={() => {
+                remove(message.id);
+                if (isDismissed === false) { setIsDismissed(true); }
+              }}
             >
               {message.text}
             </AlertComponent>
@@ -46,6 +51,8 @@ AlertList.propTypes = {
       PropTypes.node,
     ]),
   ),
+  isDismissed: PropTypes.bool,
+  setIsDismissed: PropTypes.func,
 };
 
 AlertList.defaultProps = {

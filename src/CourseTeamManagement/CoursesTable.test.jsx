@@ -38,7 +38,15 @@ describe('CoursesTable', () => {
 
   beforeEach(() => {
     wrapper = mount(intlProviderWrapper(
-      <CoursesTable username="testuser" userCourses={sampleCourses} />,
+      <CoursesTable
+        username="testuser"
+        userCourses={sampleCourses}
+        setCourseUpdateErrors={jest.fn()}
+        setApiErrors={jest.fn()}
+        isAlertDismissed={false}
+        setIsAlertDismissed={jest.fn()}
+        showErrorsModal={false}
+      />,
     ));
   });
 
@@ -150,7 +158,15 @@ describe('CoursesTable', () => {
       ];
 
       const duplicateWrapper = mount(intlProviderWrapper(
-        <CoursesTable username="testuser" userCourses={duplicateCourses} />,
+        <CoursesTable
+          username="testuser"
+          userCourses={duplicateCourses}
+          setCourseUpdateErrors={jest.fn()}
+          setApiErrors={jest.fn()}
+          isAlertDismissed={false}
+          setIsAlertDismissed={jest.fn()}
+          showErrorsModal={false}
+        />,
       ));
 
       const headerIcon = duplicateWrapper.find('[data-testid="ascending-sort-icon-course_name"]').first();
@@ -365,6 +381,67 @@ describe('CoursesTable', () => {
 
       expect(wrapper.text()).toContain('No results found');
     });
+
+    it('clears organization filter when pressing Enter on All Organizations option', () => {
+      // First filter to mitx via click to set a non-empty org filter
+      const orgDropdownToggle = wrapper.find('[data-testid="org-dropdown-toggle"]').at(0);
+      orgDropdownToggle.simulate('click');
+      wrapper.update();
+
+      wrapper.find('[data-testid="org-dropdown-option-mitx"]').simulate('click');
+      wrapper.update();
+
+      // Confirm only Test Course B is shown
+      let courseNames = wrapper.find('a').map((a) => a.text());
+      expect(courseNames).not.toContain('Test Course A');
+      expect(courseNames).toContain('Test Course B');
+
+      // Reopen and use keyboard Enter on All option
+      wrapper.find('[data-testid="org-dropdown-toggle"]').at(0).simulate('click');
+      wrapper.update();
+
+      const preventDefault = jest.fn();
+      wrapper.find('[data-testid="org-dropdown-option-all"]').at(0)
+        .simulate('keyDown', { key: 'Enter', preventDefault });
+      wrapper.update();
+
+      // Confirm both courses are shown again and menu closed
+      courseNames = wrapper.find('a').map((a) => a.text());
+      expect(courseNames).toContain('Test Course A');
+      expect(courseNames).toContain('Test Course B');
+      expect(wrapper.find('[data-testid="org-dropdown-option-all"]').exists()).toBe(false);
+    });
+
+    it('pressing Space on an org option closes and clears filter per current handler', () => {
+      // Ensure no filter initially
+      let courseNames = wrapper.find('a').map((a) => a.text());
+      expect(courseNames).toContain('Test Course A');
+      expect(courseNames).toContain('Test Course B');
+
+      // First apply mitx filter
+      wrapper.find('[data-testid="org-dropdown-toggle"]').at(0).simulate('click');
+      wrapper.update();
+      wrapper.find('[data-testid="org-dropdown-option-mitx"]').simulate('click');
+      wrapper.update();
+
+      courseNames = wrapper.find('a').map((a) => a.text());
+      expect(courseNames).not.toContain('Test Course A');
+      expect(courseNames).toContain('Test Course B');
+
+      // Reopen and Space key on mitx option
+      wrapper.find('[data-testid="org-dropdown-toggle"]').at(0).simulate('click');
+      wrapper.update();
+      const preventDefault = jest.fn();
+      wrapper.find('[data-testid="org-dropdown-option-mitx"]').at(0)
+        .simulate('keyDown', { key: ' ', preventDefault });
+      wrapper.update();
+
+      // Based on component logic this clears to '' and closes
+      courseNames = wrapper.find('a').map((a) => a.text());
+      expect(courseNames).toContain('Test Course A');
+      expect(courseNames).toContain('Test Course B');
+      expect(wrapper.find('[data-testid="org-dropdown-option-mitx"]').exists()).toBe(false);
+    });
   });
 
   describe('CoursesTable save workflow', () => {
@@ -447,6 +524,10 @@ describe('CoursesTable', () => {
       username: 'test',
       email: 'test@test.com',
       setCourseUpdateErrors: setCourseUpdateErrorsMock,
+      setApiErrors: jest.fn(),
+      isAlertDismissed: false,
+      setIsAlertDismissed: jest.fn(),
+      showErrorsModal: false,
     };
 
     beforeEach(() => {
@@ -488,10 +569,11 @@ describe('CoursesTable', () => {
 
       wrapper.update();
 
-      expect(api.updateUserRolesInCourses).toHaveBeenCalledWith({
-        userEmail: defaultProps.email,
-        changedCourses: expect.any(Object),
-      });
+      expect(api.updateUserRolesInCourses).toHaveBeenCalledTimes(1);
+      const firstArg = api.updateUserRolesInCourses.mock.calls[0][0];
+      expect(firstArg.userEmail).toBe(defaultProps.email);
+      expect(firstArg.changedCourses).toBeDefined();
+      expect(typeof firstArg.changedCourses).toBe('object');
     });
     it('adds beforeunload listener and prevents unload when there are unsaved changes', () => {
       wrapper = mount(intlProviderWrapper(<CoursesTable {...defaultProps} />));

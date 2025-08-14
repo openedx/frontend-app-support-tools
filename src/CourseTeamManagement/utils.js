@@ -88,26 +88,26 @@ export function extractErrorsFromUpdateResponse(changedData, response) {
 
   const failedRows = (response?.results || []).filter(r => r.status === 'failed');
 
-  const matchedKeys = new Set();
+  failedRows.forEach(failed => {
+    const { error } = failed;
 
-  const collectErrors = (sourceArray, action, targetArray) => {
-    sourceArray?.forEach(row => {
-      const key = `${row.course_id}::${row.role}::${action}`;
-      if (!matchedKeys.has(key)) {
-        const failed = failedRows.find(
-          r => r.course_id === row.course_id && r.role === row.role && r.action === action,
-        );
-        if (failed) {
-          targetArray.push({ ...row, error: failed.error || 'Unknown error' });
-          matchedKeys.add(key);
-        }
-      }
-    });
-  };
+    const matchNew = changedData?.newlyCheckedWithRole?.find(row => row.courseId === failed.course_id);
+    if (matchNew) {
+      newlyCheckedWithRoleErrors.push({ ...matchNew, error });
+      return;
+    }
 
-  collectErrors(changedData.newlyCheckedWithRole, 'assign', newlyCheckedWithRoleErrors);
-  collectErrors(changedData.uncheckedWithRole, 'revoke', uncheckedWithRoleErrors);
-  collectErrors(changedData.roleChangedRows, 'assign', roleChangedRowsErrors);
+    const matchUnchecked = changedData?.uncheckedWithRole?.find(row => row.courseId === failed.course_id);
+    if (matchUnchecked) {
+      uncheckedWithRoleErrors.push({ ...matchUnchecked, error });
+      return;
+    }
+
+    const matchRoleChanged = changedData?.roleChangedRows?.find(row => row.courseId === failed.course_id);
+    if (matchRoleChanged) {
+      roleChangedRowsErrors.push({ ...matchRoleChanged, error });
+    }
+  });
 
   return {
     newlyCheckedWithRoleErrors,

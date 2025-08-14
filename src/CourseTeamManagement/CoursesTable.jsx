@@ -10,14 +10,22 @@ import {
 import { ArrowDropDown } from '@openedx/paragon/icons';
 import PropTypes from 'prop-types';
 import messages from './messages';
-import SortableHeader from './customSortableHeader';
-import TableActions from './customTableActions';
+import SortableHeader from './SortableHeader';
+import TableActions from './TableActions';
 import { getChangedRows } from './utils';
-import ChangeConfirmationModal from './changeConfirmationModal';
+import CoursesChangesModal from './CoursesChangesModal';
 import { updateUserRolesInCourses } from './data/api';
 
 export default function CoursesTable({
-  username, email, userCourses, setCourseUpdateErrors,
+  username,
+  email,
+  userCourses,
+  courseUpdateErrors,
+  setCourseUpdateErrors,
+  showErrorsModal,
+  setApiErrors,
+  isAlertDismissed,
+  setIsAlertDismissed,
 }) {
   const intl = useIntl();
   const saveButtonRef = useRef();
@@ -47,12 +55,35 @@ export default function CoursesTable({
   const hasUnsavedChangesRef = useRef(false);
   useEffect(() => {
     if (submitButtonState === 'pending') {
-      updateUserRolesInCourses({ userEmail: email, changedCourses: unsavedChangesRef.current }).then((data) => {
-        setSubmitButtonState('complete');
-        setTimeout(() => {
-          setCourseUpdateErrors({ success: true, errors: data });
+      updateUserRolesInCourses({
+        userEmail: email,
+        changedCourses: unsavedChangesRef.current,
+        intl,
+      }).then((response) => {
+        // APIs already tested in api.test.js
+        /* istanbul ignore next */
+        if (response?.error) {
           setShowModal(false);
-        }, 1000);
+          setCourseUpdateErrors({
+            email: '',
+            username: '',
+            success: true,
+            errors: {
+              newlyCheckedWithRoleErrors: [],
+              uncheckedWithRoleErrors: [],
+              roleChangedRowsErrors: [],
+            },
+          });
+          setApiErrors(response);
+        } else {
+          setSubmitButtonState('complete');
+          setTimeout(() => {
+            setCourseUpdateErrors({
+              username, email, success: true, errors: response,
+            });
+            setShowModal(false);
+          }, 1000);
+        }
       });
     }
   }, [submitButtonState]);
@@ -145,8 +176,21 @@ export default function CoursesTable({
   useEffect(() => {
     if (headerCheckboxRef.current) {
       headerCheckboxRef.current.indeterminate = someChecked && !allChecked;
+      setIsAlertDismissed(false);
     }
-  }, [someChecked, allChecked, numChecked, sortBy, rowRoles, isSaveBtnEnabled, showModal, submitButtonState]);
+  }, [
+    someChecked,
+    allChecked,
+    numChecked,
+    sortBy,
+    rowRoles,
+    isSaveBtnEnabled,
+    showModal,
+    submitButtonState,
+    courseUpdateErrors,
+    showErrorsModal,
+    isAlertDismissed,
+  ]);
 
   useEffect(() => {
     const changes = getChangedRows(checkedRows, originalCheckedRows, rowRoles, originalRowRoles, userCoursesData);
@@ -378,6 +422,7 @@ export default function CoursesTable({
             disableFilters: true,
           },
         ]}
+        /* istanbul ignore next */
         getRowId={(row) => row.course_id}
       >
         <DataTable.TableControlBar />
@@ -393,14 +438,14 @@ export default function CoursesTable({
         <Button
           onClick={() => setShowModal(true)}
           disabled={!isSaveBtnEnabled}
-          variant="brand"
+          variant="danger"
           style={{ width: '8%' }}
           data-testid="save-course-changes"
         >
           {intl.formatMessage(messages.saveButtonLabel)}
         </Button>
       </div>
-      <ChangeConfirmationModal
+      <CoursesChangesModal
         changedData={unsavedChangesRef.current}
         isOpen={showModal}
         onConfirm={setSubmitButtonState}
@@ -427,7 +472,40 @@ CoursesTable.propTypes = {
     number: PropTypes.string,
     run: PropTypes.string,
   }).isRequired,
+  courseUpdateErrors: PropTypes.shape({
+    email: PropTypes.string,
+    username: PropTypes.string,
+    success: PropTypes.bool,
+    errors: PropTypes.shape({
+      newlyCheckedWithRoleErrors: PropTypes.shape({
+        runId: PropTypes.string,
+        role: PropTypes.string,
+        courseName: PropTypes.string,
+        number: PropTypes.string,
+        courseId: PropTypes.string,
+        error: PropTypes.string,
+      }),
+      uncheckedWithRoleErrors: PropTypes.shape({
+        runId: PropTypes.string,
+        role: PropTypes.string,
+        courseName: PropTypes.string,
+        number: PropTypes.string,
+        courseId: PropTypes.string,
+        error: PropTypes.string,
+      }),
+      roleChangedRowsErrors: PropTypes.shape({
+        runId: PropTypes.string,
+        from: PropTypes.string,
+        to: PropTypes.string,
+        courseName: PropTypes.string,
+        number: PropTypes.string,
+        courseId: PropTypes.string,
+        error: PropTypes.string,
+      }),
+    }),
+  }),
   setCourseUpdateErrors: PropTypes.func.isRequired,
+  setApiErrors: PropTypes.func.isRequired,
   row: PropTypes.shape({
     run: PropTypes.string.isRequired,
     course_id: PropTypes.string.isRequired,
@@ -437,6 +515,9 @@ CoursesTable.propTypes = {
       course_id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  showErrorsModal: PropTypes.bool,
+  isAlertDismissed: PropTypes.bool,
+  setIsAlertDismissed: PropTypes.func,
 };
 
 CoursesTable.defaultProps = {

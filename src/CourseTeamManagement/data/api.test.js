@@ -1,8 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import { getConfig } from '@edx/frontend-platform';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import { createIntl } from '@edx/frontend-platform/i18n';
 import { fetchUserRoleBasedCourses, updateUserRolesInCourses } from './api';
 import * as utils from '../utils';
+import messages from '../messages';
+
+const intl = createIntl({ locale: 'en', messages: {} });
 
 describe('Manage Course Team API', () => {
   let mockAdapter;
@@ -62,8 +66,19 @@ describe('Manage Course Team API', () => {
     it('returns empty array on error', async () => {
       mockAdapter.onGet(apiUrl).reply(500);
 
-      const result = await fetchUserRoleBasedCourses(email);
-      expect(result).toEqual([]);
+      const result = await fetchUserRoleBasedCourses(email, intl);
+      expect(result).toEqual({
+        error: [
+          {
+            code: null,
+            dismissible: true,
+            text: intl.formatMessage(messages.courseTeamGetApiError),
+            type: 'danger',
+            topic: 'courseTeamManagementApiErrors',
+          },
+        ],
+        isGetAppError: true,
+      });
     });
   });
 
@@ -126,8 +141,18 @@ describe('Manage Course Team API', () => {
     it('returns empty array on error', async () => {
       mockAdapter.onPut(apiUrl).reply(500);
 
-      const result = await updateUserRolesInCourses({ userEmail: email, changedCourses });
-      expect(result).toEqual([]);
+      const result = await updateUserRolesInCourses({ userEmail: email, changedCourses, intl });
+      expect(result).toEqual({
+        error: [
+          {
+            code: null,
+            dismissible: true,
+            text: intl.formatMessage(messages.courseTeamUpdateApiError),
+            type: 'danger',
+            topic: 'courseTeamManagementApiErrors',
+          },
+        ],
+      });
     });
   });
 });

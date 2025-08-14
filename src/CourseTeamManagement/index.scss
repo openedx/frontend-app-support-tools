@@ -224,4 +224,35 @@
             padding-left: 0;
         }
     }
+
+    .pgn__stateful-btn {
+        min-width: 88px;
+    }
+}
+
+.course-updates-errors-alert {
+    .alert,
+    .btn-link {
+        font-family: inherit;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .alert {
+        color: var(--Text-Gray-1, #454545);
+    }
+
+    .btn-link {
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-skip-ink: none;
+        text-decoration-thickness: auto;
+        text-underline-offset: auto;
+    }
+
+    .fa-exclamation-circle {
+        color: #AB0D02;
+    }
 }

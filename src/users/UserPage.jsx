@@ -20,7 +20,16 @@ import ROUTES from '../data/constants/routes';
 import CoursesListTable from '../CourseTeamManagement/CoursesTable';
 import { fetchUserRoleBasedCourses } from '../CourseTeamManagement/data/api';
 
-export default function UserPage({ isOnCourseTeamPage }) {
+export default function UserPage({
+  isOnCourseTeamPage,
+  courseUpdateErrors,
+  setCourseUpdateErrors,
+  showErrorsModal,
+  apiErrors,
+  setApiErrors,
+  isAlertDismissed,
+  setIsAlertDismissed,
+}) {
   const location = useLocation();
   const navigate = useNavigate();
   const intl = useIntl();
@@ -85,6 +94,8 @@ export default function UserPage({ isOnCourseTeamPage }) {
   function validateInput(input) {
     if (!isValidUsername(input) && !isEmail(input) && !isValidLMSUserID(input)) {
       clear('general');
+      clear('courseTeamManagementApiErrors');
+      if (isOnCourseTeamPage) { setApiErrors(''); }
       add({
         code: null,
         dismissible: true,
@@ -101,6 +112,8 @@ export default function UserPage({ isOnCourseTeamPage }) {
   const handleFetchSearchResults = useCallback((searchValue) => {
     if (searchValue !== undefined && searchValue !== '') {
       clear('general');
+      clear('courseTeamManagementApiErrors');
+      if (isOnCourseTeamPage) { setApiErrors(''); }
       if (!validateInput(searchValue)) {
         return;
       }
@@ -113,6 +126,8 @@ export default function UserPage({ isOnCourseTeamPage }) {
       // This is the case of an empty search (maybe a user wanted to clear out what they were seeing)
     } else if (searchValue === '') {
       clear('general');
+      clear('courseTeamManagementApiErrors');
+      if (isOnCourseTeamPage) { setApiErrors(''); }
       navigate(`${baseURL}`, { replace: true });
       setLoading(false);
       setSearching(false);
@@ -134,24 +149,29 @@ export default function UserPage({ isOnCourseTeamPage }) {
     }
   }, [userIdentifier]);
 
-  const [courseUpdateErrors, setCourseUpdateErrors] = useState(
-    {
-      success: false,
-      errors: {
-        newlyCheckedWithRoleErrors: [],
-        uncheckedWithRoleErrors: [],
-        roleChangedRowsErrors: [],
-      },
-    },
-  );
+  const loadUserCourses = () => {
+    if (!data?.user?.email) { return; }
+    setUserCourses([]);
+    fetchUserRoleBasedCourses(data.user.email, intl).then((response) => {
+      if (response?.error) {
+        setApiErrors(response);
+      } else {
+        setUserCourses(response);
+      }
+    });
+  };
+
   useEffect(() => {
-    if (data?.user?.email || courseUpdateErrors.success) {
-      setUserCourses([]);
-      fetchUserRoleBasedCourses(data.user.email).then((courses) => {
-        setUserCourses(courses);
-      });
+    if (isOnCourseTeamPage) {
+      loadUserCourses();
     }
-  }, [data.user, courseUpdateErrors]);
+  }, [isOnCourseTeamPage, data.user]);
+
+  useEffect(() => {
+    if (isOnCourseTeamPage && courseUpdateErrors?.success) {
+      loadUserCourses();
+    }
+  }, [isOnCourseTeamPage, courseUpdateErrors]);
 
   useEffect(() => {
     if (params.get('username') && params.get('username') !== userIdentifier) {
@@ -162,12 +182,14 @@ export default function UserPage({ isOnCourseTeamPage }) {
       handleFetchSearchResults(params.get('lms_user_id'));
     }
   }, []);
+  const showNoUserSelectedDescription = (isOnCourseTeamPage
+        && !loading
+        && !data?.user)
+        || (!searching && apiErrors?.isGetAppError);
 
   return (
     <main className={`${!isOnCourseTeamPage ? 'mt-3 mb-5' : 'course-team-management-user-search'}`}>
       {!isOnCourseTeamPage && <AlertList topic="general" className="mb-3" />}
-      { /* pass errorrs in below alert */}
-      {!isOnCourseTeamPage && courseUpdateErrors.errors.length > 0 && <AlertList topic="CTM-errors" className="mb-3" />}
       {/* NOTE: the "key" here causes the UserSearch component to re-render completely when the
       user identifier changes.  Doing so clears out the search box. */}
       <UserSearch
@@ -178,7 +200,7 @@ export default function UserPage({ isOnCourseTeamPage }) {
         username={data?.user?.username}
       />
       {loading && <PageLoading srMessage="Loading" />}
-      {isOnCourseTeamPage && !loading && !data?.user && (
+      {showNoUserSelectedDescription && (
         <div className="course-team-management-no-user-selected">
           <h3 style={{ fontWeight: 600, marginBottom: 8 }}>{intl.formatMessage(messages.noUserSelected)}</h3>
           <p style={{ color: '#495057', fontSize: 18, textAlign: 'center' }}>
@@ -193,7 +215,12 @@ export default function UserPage({ isOnCourseTeamPage }) {
             username={data.user.username}
             email={data.user.email}
             userCourses={userCourses}
+            courseUpdateErrors={courseUpdateErrors}
             setCourseUpdateErrors={setCourseUpdateErrors}
+            showErrorsModal={showErrorsModal}
+            setApiErrors={setApiErrors}
+            isAlertDismissed={isAlertDismissed}
+            setIsAlertDismissed={setIsAlertDismissed}
           />
         )}
       {!isOnCourseTeamPage && !loading && data.user && data.user.username && (
@@ -214,6 +241,44 @@ export default function UserPage({ isOnCourseTeamPage }) {
 
 UserPage.propTypes = {
   isOnCourseTeamPage: PropTypes.bool,
+  showErrorsModal: PropTypes.bool,
+  courseUpdateErrors: PropTypes.shape({
+    email: PropTypes.string,
+    username: PropTypes.string,
+    success: PropTypes.bool,
+    errors: PropTypes.shape({
+      newlyCheckedWithRoleErrors: PropTypes.shape({
+        runId: PropTypes.string,
+        role: PropTypes.string,
+        courseName: PropTypes.string,
+        number: PropTypes.string,
+        courseId: PropTypes.string,
+        error: PropTypes.string,
+      }),
+      uncheckedWithRoleErrors: PropTypes.shape({
+        runId: PropTypes.string,
+        role: PropTypes.string,
+        courseName: PropTypes.string,
+        number: PropTypes.string,
+        courseId: PropTypes.string,
+        error: PropTypes.string,
+      }),
+      roleChangedRowsErrors: PropTypes.shape({
+        runId: PropTypes.string,
+        from: PropTypes.string,
+        to: PropTypes.string,
+        courseName: PropTypes.string,
+        number: PropTypes.string,
+        courseId: PropTypes.string,
+        error: PropTypes.string,
+      }),
+    }),
+  }),
+  setCourseUpdateErrors: PropTypes.func,
+  apiErrors: PropTypes.bool,
+  setApiErrors: PropTypes.func,
+  isAlertDismissed: PropTypes.bool,
+  setIsAlertDismissed: PropTypes.func,
 };
 
 UserSearch.defaultProps = {
