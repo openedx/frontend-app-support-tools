@@ -26,21 +26,14 @@ const OrgDropdownWithSearch = ({ org, setOrg, orgFilterChoices }) => {
   }, []);
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative' }} className="ml-2">
+    <div ref={dropdownRef} className="course-team-table-org-filter ml-2">
       <Button
         variant="outline-primary"
         className="w-100 text-start d-flex justify-content-between align-items-center"
         onClick={() => setIsOpen((prev) => !prev)}
         data-testid="org-dropdown-toggle"
       >
-        <span
-          style={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            marginRight: 8,
-          }}
-        >
+        <span className="course-team-table-org-filter-btn">
           {org
             ? orgFilterChoices.find((c) => c.value === org)?.name
             : intl.formatMessage(messages.allOrgsFilterLabel)}
@@ -49,17 +42,7 @@ const OrgDropdownWithSearch = ({ org, setOrg, orgFilterChoices }) => {
       </Button>
 
       {isOpen && (
-        <div
-          className="border rounded-sm bg-white"
-          style={{
-            position: 'absolute',
-            top: '50px',
-            zIndex: 1000,
-            width: '250%',
-            maxHeight: 250,
-            overflowY: 'auto',
-          }}
-        >
+        <div className="border rounded-sm bg-white course-team-table-org-filter-menu-container">
           <Form.Control
             type="text"
             placeholder={intl.formatMessage(messages.searchPlaceholder)}

@@ -1,4 +1,4 @@
-import { ArrowDropDown, ArrowDropUpDown } from '@openedx/paragon/icons';
+import { ArrowDropDown, ArrowDropUpDown, ArrowDropUp } from '@openedx/paragon/icons';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ const SortableHeader = ({
 }) => {
   const intl = useIntl();
   const isSorted = sortBy[0]?.id === id;
-  const isDesc = sortBy[0]?.desc;
+  const isAscending = sortBy[0]?.desc;
 
   const handleClick = () => {
     setSortBy((prev) => {
@@ -26,22 +26,15 @@ const SortableHeader = ({
 
   let SortIcon = <ArrowDropUpDown data-testid={`sort-icon-${id}`} onClick={handleClick} />;
   if (isSorted) {
-    if (isDesc) {
-      SortIcon = <ArrowDropDown onClick={handleClick} style={{ transform: 'rotate(180deg)' }} />;
+    if (isAscending) {
+      SortIcon = <ArrowDropUp onClick={handleClick} />;
     } else {
       SortIcon = <ArrowDropDown data-testid={`ascending-sort-icon-${id}`} onClick={handleClick} />;
     }
   }
 
   return (
-    <div
-      style={{
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 4,
-      }}
-    >
+    <div className="sorted-header">
       {intl.formatMessage(label)}
       {SortIcon}
     </div>

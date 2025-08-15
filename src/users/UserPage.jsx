@@ -202,10 +202,8 @@ export default function UserPage({
       {loading && <PageLoading srMessage="Loading" />}
       {showNoUserSelectedDescription && (
         <div className="course-team-management-no-user-selected">
-          <h3 style={{ fontWeight: 600, marginBottom: 8 }}>{intl.formatMessage(messages.noUserSelected)}</h3>
-          <p style={{ color: '#495057', fontSize: 18, textAlign: 'center' }}>
-            {intl.formatMessage(messages.noUserSelectedDescription)}
-          </p>
+          <h3>{intl.formatMessage(messages.noUserSelected)}</h3>
+          <p>{intl.formatMessage(messages.noUserSelectedDescription)}</p>
         </div>
       )}
       {isOnCourseTeamPage && !loading && data?.user && userCourses.length > 0

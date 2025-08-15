@@ -266,14 +266,6 @@ export default function CoursesTable({
           data-testid={`role-dropdown-${courseId}`}
           variant="outline-primary"
           disabled={isDisabled}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '2px 8px',
-            width: '95px',
-            borderRadius: '6px',
-          }}
         >
           <span>{title}</span>
           <ArrowDropDown className="ml-2" />
@@ -326,7 +318,7 @@ export default function CoursesTable({
       checked={allChecked}
       onChange={handleHeaderCheckboxChange}
       aria-label="Select all rows"
-      style={{ marginLeft: 8 }}
+      className="ml-2"
     />
   );
   // eslint-disable-next-line react/no-unstable-nested-components
@@ -336,7 +328,7 @@ export default function CoursesTable({
       checked={!!checkedRows[row.original.course_id]}
       onChange={() => handleCheckboxChange(row.original.course_id)}
       aria-label={`Select row for ${row.original.course_name}`}
-      style={{ marginLeft: 8 }}
+      className="ml-2"
     />
   );
   const sortableHeader = (id, label) => (
@@ -426,7 +418,7 @@ export default function CoursesTable({
         getRowId={(row) => row.course_id}
       >
         <DataTable.TableControlBar />
-        <div style={{ height: 450, overflow: 'auto' }}>
+        <div className="course-team-table-content-size">
           {sortedAndFilteredData.length > 0 && <DataTable.Table />}
           {sortedAndFilteredData.length === 0 && (
             <div className="pgn__data-table-empty">{intl.formatMessage(messages.noResultsFoundForTable)}</div>
@@ -439,7 +431,7 @@ export default function CoursesTable({
           onClick={() => setShowModal(true)}
           disabled={!isSaveBtnEnabled}
           variant="danger"
-          style={{ width: '8%' }}
+          className="save-changes-btn"
           data-testid="save-course-changes"
         >
           {intl.formatMessage(messages.saveButtonLabel)}

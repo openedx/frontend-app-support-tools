@@ -50,7 +50,7 @@ const TableActions = ({
             (
               <span className="d-flex align-items-center">
                 {intl.formatMessage(statusLabelMessage)}
-                <Icon style={{ marginLeft: 8 }} src={ArrowDropDown} />
+                <Icon className="ml-2" src={ArrowDropDown} />
               </span>
             )
           }
@@ -87,7 +87,7 @@ const TableActions = ({
             (
               <span className="d-flex align-items-center">
                 {intl.formatMessage(messages.statusActionsFilterLabel)}
-                <Icon style={{ marginLeft: 8 }} src={ArrowDropDown} />
+                <Icon className="ml-2" src={ArrowDropDown} />
               </span>
             )
           }

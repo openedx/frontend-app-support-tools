@@ -31,6 +31,17 @@
     justify-content: center;
     height: 50vh;
     color: '#003057';
+
+    h3 {
+        font-weight: 600;
+        margin-bottom: 8px
+    }
+
+    p {
+        color: #495057;
+        font-size: 18px;
+        text-align: center;
+    }
 }
 
 .course-team-management-courses-table {
@@ -117,6 +128,42 @@
     .pgn__data-table-empty {
         margin-left: 8px;
     }
+
+    .save-changes-btn {
+        width: 96px;
+    }
+
+    .course-team-table-org-filter {
+        position: relative;
+
+        .course-team-table-org-filter-btn {
+            white-space: nowrap;
+            overflow: 'hidden';
+            text-overflow: 'ellipsis';
+            margin-right: 8px;
+        }
+
+        .course-team-table-org-filter-menu-container {
+            position: absolute;
+            top: 50px;
+            z-index: 1000;
+            width: 320px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    }
+}
+
+.sorted-header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px,
+}
+
+.course-team-table-content-size {
+    overflow: auto;
+    height: 450px;
 }
 
 .custom-table-actions-container {
@@ -145,6 +192,12 @@
     height: 32px;
     border: 1px solid var(--Light-200, #F3F1ED);
     border-color: var(--Light-200, #F3F1ED);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 8px;
+    width: 95px;
+    border-radius: 6px;
 }
 
 .course-team-management-role-col-dropdown::after {
