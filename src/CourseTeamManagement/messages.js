@@ -251,5 +251,35 @@ const messages = defineMessages({
     defaultMessage: 'Unexpected error occured while fetching user courses.',
     description: 'Error message for Get API error.',
   },
+  staffRole: {
+    id: 'courseTeamManagementStaffRole',
+    defaultMessage: 'Staff',
+    description: 'Course Team Management Staff role text',
+  },
+  instructorRole: {
+    id: 'courseTeamManagementInstructorRole',
+    defaultMessage: 'Instructor',
+    description: 'Course Team Management Instructor role text',
+  },
+  saveChangesButtonText: {
+    id: 'courseTeamManagementSaveChangesButtonText',
+    defaultMessage: 'Save',
+    description: 'Course Team Management Save changes button text',
+  },
+  savingChangesButtonText: {
+    id: 'courseTeamManagementSavingChangesButtonText',
+    defaultMessage: 'Saving',
+    description: 'Course Team Management Saving changes button text',
+  },
+  savedChangesButtonText: {
+    id: 'courseTeamManagementSavedChangesButtonText',
+    defaultMessage: 'Saved',
+    description: 'Course Team Management Saved changes button text',
+  },
+  alertDismissBtnText: {
+    id: 'alertDismissBtnText',
+    defaultMessage: 'Dismiss',
+    description: 'Alert dismiss button text',
+  },
 });
 export default messages;

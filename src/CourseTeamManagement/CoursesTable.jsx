@@ -15,6 +15,9 @@ import TableActions from './TableActions';
 import { getChangedRows } from './utils';
 import CoursesChangesModal from './CoursesChangesModal';
 import { updateUserRolesInCourses } from './data/api';
+import {
+  ACTIVE_COURSE_STATUS, INSTRUCTOR_ROLE, NULL_ROLE, STAFF_ROLE,
+} from './constants';
 
 export default function CoursesTable({
   username,
@@ -37,14 +40,14 @@ export default function CoursesTable({
 
   let userCoursesData = userCourses;
   const [originalRowRoles] = useState(() => userCoursesData.reduce((acc, row) => {
-    acc[row.course_id] = row.role == null ? 'null' : row.role;
+    acc[row.course_id] = row.role == null ? NULL_ROLE : row.role;
     return acc;
   }, {}));
 
   const [originalCheckedRows] = useState(() => {
     const initial = {};
     userCoursesData.forEach((row) => {
-      if (row.role === 'staff' || row.role === 'instructor') {
+      if (row.role === STAFF_ROLE || row.role === INSTRUCTOR_ROLE) {
         initial[row.course_id] = true;
       }
     });
@@ -92,7 +95,7 @@ export default function CoursesTable({
   // As we are considering 'null' to appear as staff with disabled dropdown
   userCoursesData = userCoursesData.map((course) => ({
     ...course,
-    role: course.role === null ? 'null' : course.role,
+    role: course.role === null ? NULL_ROLE : course.role,
   }));
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
@@ -111,7 +114,7 @@ export default function CoursesTable({
   const sortedAndFilteredData = React.useMemo(() => {
     let data = userCoursesData.map((row) => ({
       ...row,
-      role: rowRoles[row.course_id] !== undefined ? rowRoles[row.course_id] : 'null',
+      role: rowRoles[row.course_id] !== undefined ? rowRoles[row.course_id] : NULL_ROLE,
     }));
 
     // Manual Filtering for all columns in single search box
@@ -155,7 +158,7 @@ export default function CoursesTable({
   const [checkedRows, setCheckedRows] = useState(() => {
     const initial = {};
     userCoursesData.forEach((row) => {
-      if (row.role === 'staff' || row.role === 'instructor') {
+      if (row.role === STAFF_ROLE || row.role === INSTRUCTOR_ROLE) {
         initial[row.course_id] = true;
       }
     });
@@ -230,9 +233,9 @@ export default function CoursesTable({
   const formatStatus = ({ value }) => (
     <Badge
       className="course-team-management-course-status-badge"
-      variant={value === 'active' ? 'success' : 'light'}
+      variant={value === ACTIVE_COURSE_STATUS ? 'success' : 'light'}
     >
-      {value === 'active'
+      {value === ACTIVE_COURSE_STATUS
         ? intl.formatMessage(messages.activeCoursesFilterLabel)
         : intl.formatMessage(messages.archivedCoursesFilterLabel)}
     </Badge>
@@ -252,9 +255,9 @@ export default function CoursesTable({
     const courseId = row.original.course_id;
     const value = rowRoles[courseId];
     // If role is 'null', default to staff for display only
-    const displayValue = value === 'null' ? 'staff' : value;
-    let title = 'Staff';
-    if (displayValue === 'instructor') { title = 'Admin'; }
+    const displayValue = value === NULL_ROLE ? STAFF_ROLE : value;
+    let title = intl.formatMessage(messages.statusStaffFilterLabelChoice);
+    if (displayValue === INSTRUCTOR_ROLE) { title = intl.formatMessage(messages.statusAdminFilterLabelChoice); }
     // Enable dropdown if checkbox is checked, otherwise disable
     const isChecked = !!checkedRows[courseId];
     const isDisabled = !isChecked;
@@ -274,17 +277,17 @@ export default function CoursesTable({
         <Dropdown.Menu placement="top">
           <Dropdown.Item
             data-testid={`role-dropdown-item-staff-${courseId}`}
-            eventKey="staff"
-            active={displayValue === 'staff'}
-            onClick={() => setRowRoles((prev) => ({ ...prev, [courseId]: 'staff' }))}
+            eventKey={STAFF_ROLE}
+            active={displayValue === STAFF_ROLE}
+            onClick={() => setRowRoles((prev) => ({ ...prev, [courseId]: STAFF_ROLE }))}
           >
             {intl.formatMessage(messages.statusStaffFilterLabelChoice)}
           </Dropdown.Item>
           <Dropdown.Item
             data-testid={`role-dropdown-item-instructor-${courseId}`}
-            eventKey="instructor"
-            active={displayValue === 'instructor'}
-            onClick={() => setRowRoles((prev) => ({ ...prev, [courseId]: 'instructor' }))}
+            eventKey={INSTRUCTOR_ROLE}
+            active={displayValue === INSTRUCTOR_ROLE}
+            onClick={() => setRowRoles((prev) => ({ ...prev, [courseId]: INSTRUCTOR_ROLE }))}
           >
             {intl.formatMessage(messages.statusAdminFilterLabelChoice)}
           </Dropdown.Item>

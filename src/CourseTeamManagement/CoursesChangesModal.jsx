@@ -9,6 +9,7 @@ import {
 } from '@openedx/paragon';
 import { CheckCircleOutline, SpinnerSimple } from '@openedx/paragon/icons';
 import { useIntl } from '@edx/frontend-platform/i18n';
+import { INSTRUCTOR_ROLE } from './constants';
 import messages from './messages';
 
 export default function CoursesChangesModal({
@@ -105,7 +106,9 @@ export default function CoursesChangesModal({
               }) => (
                 <p key={`added-${runId}`}>
                   <span>{`${courseName} (${number} - ${runId})`}</span>{' '}
-                  {role === 'instructor' ? 'Instructor' : 'Staff'}
+                  {role === INSTRUCTOR_ROLE
+                    ? intl.formatMessage(messages.instructorRole)
+                    : intl.formatMessage(messages.staffRole)}
                 </p>
               ),
             )}
@@ -119,7 +122,9 @@ export default function CoursesChangesModal({
               }) => (
                 <p key={`removed-${runId}`}>
                   <span>{`${courseName} (${number} - ${runId})`}</span>{' '}
-                  {role === 'instructor' ? 'Instructor' : 'Staff'}
+                  {role === INSTRUCTOR_ROLE
+                    ? intl.formatMessage(messages.instructorRole)
+                    : intl.formatMessage(messages.staffRole)}
                 </p>
               ),
             )}
@@ -132,7 +137,7 @@ export default function CoursesChangesModal({
                 courseName, number, runId, from, to,
               }) => (
                 <p key={`role-${runId}`}>
-                  <span className="font-medium">{`${courseName} (${number} - ${runId}) ${from === 'instructor' ? 'Instructor' : 'Staff'} → ${to === 'instructor' ? 'Instructor' : 'Staff'}`}</span>
+                  <span className="font-medium">{`${courseName} (${number} - ${runId}) ${from === INSTRUCTOR_ROLE ? intl.formatMessage(messages.instructorRole) : intl.formatMessage(messages.staffRole)} → ${to === INSTRUCTOR_ROLE ? intl.formatMessage(messages.instructorRole) : intl.formatMessage(messages.staffRole)}`}</span>
                 </p>
               ),
             )}
@@ -158,9 +163,9 @@ export default function CoursesChangesModal({
           {!hasError && (
             <StatefulButton
               labels={{
-                default: 'Save',
-                pending: 'Saving',
-                complete: 'Saved',
+                default: intl.formatMessage(messages.saveChangesButtonText),
+                pending: intl.formatMessage(messages.savingChangesButtonText),
+                complete: intl.formatMessage(messages.savedChangesButtonText),
               }}
               data-testid="confirm-save-course-changes"
               variant="danger"

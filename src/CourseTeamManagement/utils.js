@@ -1,3 +1,5 @@
+import { STAFF_ROLE, NULL_ROLE } from './constants';
+
 export function getChangedRows(checkedRows, originalCheckedRows, rowRoles, originalRowRoles, userCoursesData) {
   const newlyCheckedWithRole = [];
   const uncheckedWithRole = [];
@@ -25,7 +27,7 @@ export function getChangedRows(checkedRows, originalCheckedRows, rowRoles, origi
     if (!wasChecked && isChecked && currentRole) {
       newlyCheckedWithRole.push({
         runId,
-        role: currentRole === 'null' ? 'staff' : currentRole,
+        role: currentRole === NULL_ROLE ? STAFF_ROLE : currentRole,
         courseName,
         number,
         courseId,

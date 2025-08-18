@@ -10,6 +10,14 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 
 import OrgDropdownWithSearch from './OrgDropdownWithSearch';
 import messages from './messages';
+import {
+  ACTIVE_COURSE_STATUS,
+  ARCHIVED_COURSE_STATUS,
+  COURSE_STATUS_DROPDOWN_OPTIONS,
+  INSTRUCTOR_ROLE,
+  ROLE_DROPDOWN_OPTIONS,
+  STAFF_ROLE,
+} from './constants';
 
 const TableActions = ({
   search,
@@ -27,9 +35,9 @@ const TableActions = ({
 }) => {
   const intl = useIntl();
   let statusLabelMessage = messages.allCoursesFilterLabel;
-  if (status === 'active') {
+  if (status === ACTIVE_COURSE_STATUS) {
     statusLabelMessage = messages.activeCoursesFilterLabel;
-  } else if (status === 'archived') {
+  } else if (status === ARCHIVED_COURSE_STATUS) {
     statusLabelMessage = messages.archivedCoursesFilterLabel;
   }
 
@@ -58,11 +66,7 @@ const TableActions = ({
           className="ml-2"
           variant="outline-primary"
         >
-          {[
-            { value: '', label: messages.allCoursesFilterLabel },
-            { value: 'active', label: messages.activeCoursesFilterLabel },
-            { value: 'archived', label: messages.archivedCoursesFilterLabel },
-          ].map((option) => (
+          {COURSE_STATUS_DROPDOWN_OPTIONS.map((option) => (
             <Dropdown.Item
               data-testid={`status-dropdown-item-${option.value}`}
               key={option.value}
@@ -92,7 +96,7 @@ const TableActions = ({
             )
           }
           onSelect={(eventKey) => {
-            if (eventKey === 'staff' || eventKey === 'instructor') {
+            if (eventKey === STAFF_ROLE || eventKey === INSTRUCTOR_ROLE) {
               const filteredCourseIds = new Set(sortedAndFilteredData.map((row) => row.course_id));
               setRowRoles((prev) => {
                 const updated = { ...prev };
@@ -108,10 +112,7 @@ const TableActions = ({
           className="ml-2"
           variant="outline-primary"
         >
-          {[
-            { value: 'staff', label: messages.statusStaffFilterLabel },
-            { value: 'instructor', label: messages.statusAdminFilterLabel },
-          ].map((option) => (
+          {ROLE_DROPDOWN_OPTIONS.map((option) => (
             <Dropdown.Item key={option.value} eventKey={option.value}>
               {intl.formatMessage(option.label)}
             </Dropdown.Item>
