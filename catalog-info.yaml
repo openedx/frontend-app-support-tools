@@ -12,7 +12,7 @@ metadata:
       icon: 'Web'
   openedx.org/release: "master"    
 spec:
-  owner: group:2u-phoenix
+  owner: group:openedx-unmaintained
   type: 'service'
   lifecycle: 'production'
   dependsOn:
