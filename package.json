@@ -43,7 +43,7 @@
     "axios": "^1.7.7",
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
-    "dayjs": "1.11.9",
+    "dayjs": "1.11.18",
     "lodash.debounce": "4.0.8",
     "lodash.snakecase": "4.1.1",
     "moment": "2.29.4",
