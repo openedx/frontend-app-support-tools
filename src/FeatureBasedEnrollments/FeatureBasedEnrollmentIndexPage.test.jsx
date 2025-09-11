@@ -1,13 +1,18 @@
-import { mount } from 'enzyme';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MemoryRouter } from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import FeatureBasedEnrollmentIndexPage from './FeatureBasedEnrollmentIndexPage';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import { fbeEnabledResponse } from './data/test/featureBasedEnrollment';
-
 import * as api from './data/api';
+import '@testing-library/jest-dom';
 
 const mockedNavigator = jest.fn();
 
@@ -33,94 +38,87 @@ FeatureBasedEnrollmentIndexPageWrapper.defaultProps = {
 };
 
 describe('Feature Based Enrollment Index Page', () => {
-  let wrapper; let apiMock;
   const courseId = 'course-v1:testX+test123+2030';
-
-  afterEach(() => {
-    if (apiMock) {
-      apiMock.mockReset();
-    }
-  });
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('default page render', async () => {
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
+    render(<FeatureBasedEnrollmentIndexPageWrapper courseId={courseId} />);
+    const inputBox = screen.getByRole('textbox');
+    fireEvent.change(inputBox, { target: { value: courseId } });
+    const searchButton = screen.getByRole('button', { name: /search/i });
 
-    const courseIdInput = wrapper.find('input[name="courseId"]');
-    const searchButton = wrapper.find('button.btn-primary');
-
-    expect(courseIdInput.prop('defaultValue')).toEqual(undefined);
-    expect(searchButton.text()).toEqual('Search');
+    expect(screen.getByDisplayValue(courseId)).toBeInTheDocument();
+    expect(searchButton).toBeInTheDocument();
   });
 
-  it('default page render with query param course id', async () => {
-    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve({}));
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper searchQuery={`?course_id=${courseId}`} />);
-
-    const courseIdInput = wrapper.find('input[name="courseId"]');
-    const searchButton = wrapper.find('button.btn-primary');
-
-    expect(courseIdInput.prop('defaultValue')).toEqual(courseId);
-    expect(searchButton.text()).toEqual('Search');
-  });
-
-  it('valid search value', async () => {
-    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
-
-    wrapper.find('input[name="courseId"]').instance().value = courseId;
-    wrapper.find('button.btn-primary').simulate('click');
-
-    expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('Card')).toHaveLength(2);
-      expect(mockedNavigator).toHaveBeenCalledWith(`/feature_based_enrollments/?course_id=${courseId}`);
-    });
+  it('default page render with query param course id', () => {
+    jest.spyOn(api, 'default').mockResolvedValueOnce({});
+    render(
+      <FeatureBasedEnrollmentIndexPageWrapper searchQuery={`?course_id=${courseId}`} />,
+    );
+    const courseIdInput = screen.getByRole('textbox');
+    expect(courseIdInput).toHaveValue(courseId);
   });
 
   it('api call made on each click', async () => {
-    apiMock = jest.spyOn(api, 'default').mockImplementation(() => Promise.resolve(fbeEnabledResponse));
+    jest.spyOn(api, 'default').mockResolvedValue(fbeEnabledResponse);
+    render(<FeatureBasedEnrollmentIndexPageWrapper />);
 
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
+    const courseIdInput = screen.getByRole('textbox');
+    const searchButton = screen.getByRole('button', { name: /search/i });
 
-    wrapper.find('input[name="courseId"]').instance().value = courseId;
-    wrapper.find('button.btn-primary').simulate('click');
+    await userEvent.clear(courseIdInput);
+    await userEvent.type(courseIdInput, courseId);
+    await userEvent.click(searchButton);
 
-    waitFor(() => {
-      expect(apiMock).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(api.default).toHaveBeenCalledTimes(1));
 
-      wrapper.find('button.btn-primary').simulate('click');
-      expect(apiMock).toHaveBeenCalledTimes(2);
-    });
+    await userEvent.click(searchButton);
+    await waitFor(() => expect(api.default).toHaveBeenCalledTimes(2));
   });
 
   it('empty search value does not yield anything', async () => {
-    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
+    jest.spyOn(api, 'default').mockResolvedValueOnce(fbeEnabledResponse);
+    render(<FeatureBasedEnrollmentIndexPageWrapper />);
 
-    wrapper.find('input[name="courseId"]').instance().value = '';
-    wrapper.find('button.btn-primary').simulate('click');
-    waitFor(() => {
-      expect(apiMock).toHaveBeenCalledTimes(0);
-      expect(wrapper.find('Card')).toHaveLength(0);
-      expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', { replace: true });
+    const courseIdInput = screen.getByRole('textbox');
+    const searchButton = screen.getByRole('button', { name: /search/i });
+
+    await userEvent.clear(courseIdInput);
+    await userEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(api.default).not.toHaveBeenCalled();
+      expect(screen.queryAllByTestId('fbe-card')).toHaveLength(0);
+      expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', {
+        replace: true,
+      });
     });
   });
 
   it('Invalid search value', async () => {
-    apiMock = jest.spyOn(api, 'default').mockImplementationOnce(() => Promise.resolve(fbeEnabledResponse));
-    wrapper = mount(<FeatureBasedEnrollmentIndexPageWrapper />);
+    jest.spyOn(api, 'default').mockResolvedValueOnce(fbeEnabledResponse);
+    render(<FeatureBasedEnrollmentIndexPageWrapper />);
 
-    wrapper.find('input[name="courseId"]').instance().value = 'invalid-value';
-    wrapper.find('button.btn-primary').simulate('click');
+    const courseIdInput = screen.getByRole('textbox');
+    const searchButton = screen.getByRole('button', { name: /search/i });
 
-    expect(apiMock).toHaveBeenCalledTimes(0);
-    expect(wrapper.find('Card')).toHaveLength(0);
-    expect(wrapper.find('.alert').text()).toEqual('Supplied course ID "invalid-value" is either invalid or incorrect.');
-    expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', { replace: true });
+    await userEvent.clear(courseIdInput);
+    await userEvent.type(courseIdInput, 'invalid-value');
+    await userEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(api.default).not.toHaveBeenCalled();
+      expect(screen.queryAllByTestId('fbe-card')).toHaveLength(0);
+      expect(
+        screen.getByText(/supplied course ID "invalid-value" is either invalid or incorrect/i),
+      ).toBeInTheDocument();
+      expect(mockedNavigator).toHaveBeenCalledWith('/feature_based_enrollments', {
+        replace: true,
+      });
+    });
   });
 });

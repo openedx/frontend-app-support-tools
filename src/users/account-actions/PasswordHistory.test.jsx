@@ -1,43 +1,60 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import {
+  render,
+  screen,
+  fireEvent,
+  within,
+} from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import PasswordHistory from './PasswordHistory';
 import UserSummaryData from '../data/test/userSummary';
 
+const PasswordHistoryWrapper = (props) => (
+  <IntlProvider locale="en">
+    <PasswordHistory {...props} />
+  </IntlProvider>
+);
+
 describe('Password History Component Tests', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    const data = {
-      passwordStatus: UserSummaryData.userData.passwordStatus,
-    };
-    wrapper = mount(
-      <IntlProvider locale="en">
-        <PasswordHistory {...data} />
-      </IntlProvider>,
-    );
-  });
-
-  afterEach(() => {
-    wrapper.unmount();
-  });
+  const data = {
+    passwordStatus: UserSummaryData.userData.passwordStatus,
+  };
 
   it('Password History Modal', () => {
-    const passwordHistoryButton = wrapper.find('button#toggle-password-history');
-    let historyModal = wrapper.find('ModalDialog#password-history');
+    render(<PasswordHistoryWrapper {...data} />);
 
-    expect(historyModal.prop('isOpen')).toEqual(false);
-    expect(passwordHistoryButton.text()).toEqual('Show History');
-    expect(passwordHistoryButton.disabled).toBeFalsy();
+    const passwordHistoryButton = screen.getByRole('button', {
+      name: /Show History/i,
+    });
+    expect(passwordHistoryButton).toBeInTheDocument();
+    expect(passwordHistoryButton).not.toBeDisabled();
 
-    passwordHistoryButton.simulate('click');
-    historyModal = wrapper.find('ModalDialog#password-history');
+    let historyModal = screen.queryByRole('dialog');
+    expect(historyModal).not.toBeInTheDocument();
 
-    expect(historyModal.prop('isOpen')).toEqual(true);
-    expect(historyModal.find('table tbody tr')).toHaveLength(2);
+    fireEvent.click(passwordHistoryButton);
 
-    historyModal.find('button.btn-link').simulate('click');
-    historyModal = wrapper.find('ModalDialog#password-history');
-    expect(historyModal.prop('isOpen')).toEqual(false);
+    historyModal = screen.getByRole('dialog');
+    expect(historyModal).toBeInTheDocument();
+
+    expect(
+      within(historyModal).getByRole('heading', {
+        name: /Enable\/Disable History/i,
+      }),
+    ).toBeInTheDocument();
+
+    const table = within(historyModal).getByRole('table');
+    const rows = within(table).getAllByRole('row');
+    expect(rows).toHaveLength(3);
+
+    const closeButtons = within(historyModal).getAllByRole('button', {
+      name: /Close/i,
+    });
+    const footerCloseButton = closeButtons.find(
+      (btn) => btn.textContent.trim() === 'Close',
+    );
+    fireEvent.click(footerCloseButton);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

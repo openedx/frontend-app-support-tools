@@ -1,6 +1,7 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import '@testing-library/jest-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import EnrollmentDetails from './EnrollmentDetails';
@@ -17,87 +18,101 @@ const EnrollmentDetailsWrapper = (props) => (
 );
 
 describe('Enrollment Details', () => {
-  let wrapper;
   const data = programInspectorSuccessResponse.learner_program_enrollments.enrollments[0];
 
-  it('Enrollment Details render', async () => {
-    wrapper = mount(
+  it('Enrollment Details render', () => {
+    render(
       <EnrollmentDetailsWrapper
-        enrollments={
-          programInspectorSuccessResponse.learner_program_enrollments.enrollments
-        }
+        enrollments={programInspectorSuccessResponse.learner_program_enrollments.enrollments}
       />,
     );
 
-    const heading = wrapper.find('.enrollments h3');
-    expect(heading.text()).toEqual(
-      `Program: ${data.program_name} (${data.program_uuid})`,
-    );
+    const heading = screen.getByRole('heading', { level: 3 });
+    expect(heading).toHaveTextContent(`Program: ${data.program_name} (${data.program_uuid})`);
   });
 
   it.each([{ enrollment: null }, { enrollment: undefined }])(
     'Enrollment Details do not render',
-    async ({ enrollment }) => {
-      wrapper = mount(<EnrollmentDetailsWrapper enrollments={enrollment} />);
-
-      const heading = wrapper.find('.enrollments h3');
-      expect(heading.exists()).toBeFalsy();
+    ({ enrollment }) => {
+      render(<EnrollmentDetailsWrapper enrollments={enrollment} />);
+      expect(screen.queryByRole('heading', { level: 3 })).not.toBeInTheDocument();
     },
   );
+});
 
-  it('Enrollment details table render', async () => {
-    wrapper = mount(
-      <EnrollmentDetailsWrapper
-        enrollments={
-          programInspectorSuccessResponse.learner_program_enrollments.enrollments
-        }
-      />,
-    );
+describe('EnrollmentDetailsWrapper Component', () => {
+  const enrollmentData = programInspectorSuccessResponse.learner_program_enrollments.enrollments;
 
-    const row = wrapper.find('.enrollment-details tbody tr');
-    expect(row.find('td').at(0).text()).toEqual(data.status);
-    expect(row.find('td').at(1).text()).toEqual(data.created);
-    expect(row.find('td').at(2).text()).toEqual(data.modified);
-    expect(row.find('td').at(3).text()).toEqual(data.external_user_key);
+  it('renders Enrollment Details table correctly', () => {
+    render(<EnrollmentDetailsWrapper enrollments={enrollmentData} />);
+
+    const tables = screen.getAllByRole('table');
+    expect(tables.length).toBeGreaterThan(0);
+
+    const table = tables[0];
+    expect(table).toBeInTheDocument();
+
+    const rows = within(table).getAllByRole('row');
+    expect(rows.length).toBeGreaterThan(1);
+
+    const dataRow = rows[1];
+    const cells = within(dataRow).getAllByRole('cell');
+    const data = enrollmentData[0];
+
+    expect(cells[0]).toHaveTextContent(data.status);
+    expect(cells[1]).toHaveTextContent(data.created);
+    expect(cells[2]).toHaveTextContent(data.modified);
+    expect(cells[3]).toHaveTextContent(data.external_user_key);
+  });
+
+  it('renders Program Course Enrollments table correctly', () => {
+    render(<EnrollmentDetailsWrapper enrollments={enrollmentData} />);
+
+    const heading = screen.getByRole('heading', { level: 5 });
+    expect(heading).toHaveTextContent(/program course enrollments/i);
+
+    const tables = screen.getAllByRole('table');
+    expect(tables.length).toBeGreaterThan(1);
+
+    const table = tables[1];
+    expect(table).toBeInTheDocument();
+
+    const rows = within(table).getAllByRole('row');
+    expect(rows.length).toBeGreaterThan(1);
+
+    const dataRow = rows[1];
+    const cells = within(dataRow).getAllByRole('cell');
+    const course = enrollmentData[0].program_course_enrollments[0];
+
+    expect(within(cells[0]).getByRole('link')).toHaveTextContent(course.course_key);
+    expect(cells[1]).toHaveTextContent(course.status);
+    expect(cells[2]).toHaveTextContent(course.created);
+    expect(cells[3]).toHaveTextContent(course.modified);
+    expect(cells[4]).toHaveTextContent(course.course_enrollment.course_id);
+    expect(cells[5]).toHaveTextContent(course.course_enrollment.is_active ? 'True' : 'False');
+    expect(cells[6]).toHaveTextContent(course.course_enrollment.mode);
   });
 
   it.each([
-    { audit: 'True', index: 0 },
-    { audit: 'False', index: 1 },
-  ])(
-    'Program course enrollments table render Audit',
-    async ({ audit, index }) => {
-      wrapper = mount(
-        <EnrollmentDetailsWrapper
-          enrollments={
-            programInspectorSuccessResponse.learner_program_enrollments.enrollments
-          }
-        />,
-      );
-      const programCourseEnrollments = data.program_course_enrollments[index];
-      expect(wrapper.find('.enrollments h5').text()).toEqual(
-        'Program Course Enrollments',
-      );
-      const row = wrapper.find('.course-enrollment-details tbody tr').at(index);
-      expect(row.find('td').at(0).find('a').text()).toEqual(
-        programCourseEnrollments.course_key,
-      );
-      expect(row.find('td').at(1).text()).toEqual(
-        programCourseEnrollments.status,
-      );
-      expect(row.find('td').at(2).text()).toEqual(
-        programCourseEnrollments.created,
-      );
-      expect(row.find('td').at(3).text()).toEqual(
-        programCourseEnrollments.modified,
-      );
-      expect(row.find('td').at(4).text()).toEqual(
-        programCourseEnrollments.course_enrollment.course_id,
-      );
-      expect(row.find('td').at(5).text()).toEqual(audit);
-      expect(row.find('td').at(6).text()).toEqual(
-        programCourseEnrollments.course_enrollment.mode,
-      );
-    },
-  );
+    { index: 0 },
+    { index: 1 },
+  ])('renders audit column correctly for row %i', ({ index }) => {
+    render(<EnrollmentDetailsWrapper enrollments={enrollmentData} />);
+
+    const tables = screen.getAllByRole('table');
+    expect(tables.length).toBeGreaterThan(1);
+
+    const table = tables[1];
+    expect(table).toBeInTheDocument();
+
+    const rows = within(table).getAllByRole('row');
+    expect(rows.length).toBeGreaterThan(index + 1);
+
+    const dataRow = rows[index + 1];
+    const cells = within(dataRow).getAllByRole('cell');
+    expect(cells.length).toBeGreaterThan(6);
+
+    const auditCell = cells[6];
+    expect(auditCell).toHaveTextContent(/audit/i);
+  });
 });

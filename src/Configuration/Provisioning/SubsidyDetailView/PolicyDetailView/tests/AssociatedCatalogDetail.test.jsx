@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import AssociatedCatalogDetail from '../AssociatedCatalogDetail';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';

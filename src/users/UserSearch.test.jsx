@@ -1,39 +1,42 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import UserSearch from './UserSearch';
 
 describe('User Search Page', () => {
   let props;
-  let wrapper;
 
   beforeEach(() => {
     props = { userIdentifier: '', searchHandler: jest.fn() };
-    wrapper = mount(<UserSearch {...props} />);
   });
 
   describe('renders correctly', () => {
     it('with correct user identifier', () => {
-      expect(wrapper.find('input').prop('defaultValue')).toEqual(
-        props.userIdentifier,
-      );
+      render(<UserSearch {...props} />);
+      const input = screen.getByRole('textbox');
+      expect(input).toHaveValue(props.userIdentifier);
     });
+
     it('with correct default user identifier', () => {
       delete props.userIdentifier;
-      const userSearchwrapper = mount(<UserSearch {...props} />);
-
-      expect(userSearchwrapper.find('input').prop('defaultValue')).toEqual('');
+      render(<UserSearch {...props} />);
+      const input = screen.getByRole('textbox');
+      expect(input).toHaveValue('');
     });
+
     it('with submit button', () => {
-      expect(wrapper.find('button')).toHaveLength(1);
-      expect(wrapper.find('button').text()).toEqual('Search');
+      render(<UserSearch {...props} />);
+      const button = screen.getByRole('button', { name: /search/i });
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveTextContent('Search');
     });
 
     it('when submit button is clicked', () => {
       const searchProps = { userIdentifier: 'staff', searchHandler: jest.fn() };
-      const userSearchwrapper = mount(<UserSearch {...searchProps} />);
+      render(<UserSearch {...searchProps} />);
 
-      userSearchwrapper.find('button').simulate('click');
+      const button = screen.getByRole('button', { name: /search/i });
+      fireEvent.click(button);
 
       expect(searchProps.searchHandler).toHaveBeenCalledWith(
         searchProps.userIdentifier,
@@ -41,9 +44,8 @@ describe('User Search Page', () => {
     });
 
     it('matches snapshot', () => {
-      const tree = renderer.create(wrapper).toJSON();
-
-      expect(tree).toMatchSnapshot();
+      const { asFragment } = render(<UserSearch {...props} />);
+      expect(asFragment()).toMatchSnapshot();
     });
   });
 });

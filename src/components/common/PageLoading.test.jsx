@@ -1,26 +1,25 @@
-import { shallow } from 'enzyme';
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
 import PageLoading from './PageLoading';
+import '@testing-library/jest-dom';
 
 describe('<PageLoading />', () => {
-  it('does not render without message', () => {
-    const wrapper = shallow(<PageLoading srMessage="" />);
-
-    expect(wrapper.find('.sr-only')).toHaveLength(0);
+  it('does not render screen reader message when srMessage is empty', () => {
+    render(<PageLoading srMessage="" />);
+    const srElement = screen.queryByText((content, element) => element?.classList.contains('sr-only'));
+    expect(srElement).not.toBeInTheDocument();
   });
+
   it('renders expected message', () => {
     const message = 'Loading...';
-
-    const wrapper = shallow(<PageLoading srMessage={message} />);
-    const srElement = wrapper.find('.sr-only');
-
-    expect(srElement).toHaveLength(1);
-    expect(srElement.text()).toEqual(message);
+    render(<PageLoading srMessage={message} />);
+    const srElement = screen.getByText(message);
+    expect(srElement).toBeInTheDocument();
+    expect(srElement).toHaveClass('sr-only');
   });
-  it('snapshot matches correctly', () => {
-    const tree = renderer.create(<PageLoading srMessage="Loading" />).toJSON();
 
-    expect(tree).toMatchSnapshot();
+  it('snapshot matches correctly', () => {
+    const { asFragment } = render(<PageLoading srMessage="Loading" />);
+    expect(asFragment()).toMatchSnapshot();
   });
 });

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import React from 'react';
 import PolicyContainer from '../PolicyContainer';
 import { initialStateValue, ProvisioningContext } from '../../../../testData/Provisioning';

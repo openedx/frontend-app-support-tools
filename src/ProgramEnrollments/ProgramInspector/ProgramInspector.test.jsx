@@ -1,7 +1,12 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from './data/api';
@@ -23,24 +28,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigator,
 }));
 
-const ProgramEnrollmentsWrapper = () => (
+const renderComponent = () => render(
   <MemoryRouter initialEntries={['/programs?edx_user_id=123']}>
     <IntlProvider locale="en">
       <UserMessagesProvider>
         <ProgramInspector />
       </UserMessagesProvider>
     </IntlProvider>
-  </MemoryRouter>
+  </MemoryRouter>,
 );
 
-describe('Program Inspector', () => {
-  let wrapper;
-  let apiMock;
-  let samlMock;
-  let ssoMock;
-  let verifiedNameMock;
-  let getUserMock;
-
+describe('Program Inspector - RTL', () => {
   const data = {
     username: 'verified',
     orgKey: samlProvidersResponseValues[0],
@@ -48,62 +46,38 @@ describe('Program Inspector', () => {
   };
 
   beforeEach(() => {
-    ssoMock = jest
-      .spyOn(ssoAndUserApi, 'getSsoRecords')
-      .mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
-    samlMock = jest
-      .spyOn(api, 'getSAMLProviderList')
-      .mockImplementationOnce(() => Promise.resolve(samlProvidersResponseValues));
-    verifiedNameMock = jest
-      .spyOn(ssoAndUserApi, 'getVerifiedNameHistory')
-      .mockImplementationOnce(() => Promise.resolve(verifiedNameHistory));
-    getUserMock = jest
-      .spyOn(ssoAndUserApi, 'getUser')
-      .mockImplementation(() => Promise.resolve(UserSummaryData.userData));
     jest.clearAllMocks();
-  });
-
-  afterEach(() => {
-    if (apiMock) {
-      apiMock.mockReset();
-    }
-    if (wrapper) {
-      wrapper.unmount();
-    }
-    samlMock.mockReset();
-    ssoMock.mockReset();
-    verifiedNameMock.mockReset();
-    getUserMock.mockReset();
+    jest.spyOn(ssoAndUserApi, 'getSsoRecords').mockResolvedValue(ssoRecordsData);
+    jest.spyOn(api, 'getSAMLProviderList').mockResolvedValue(samlProvidersResponseValues);
+    jest.spyOn(ssoAndUserApi, 'getVerifiedNameHistory').mockResolvedValue(verifiedNameHistory);
+    jest.spyOn(ssoAndUserApi, 'getUser').mockResolvedValue(UserSummaryData.userData);
   });
 
   it('default render', async () => {
-    wrapper = mount(<ProgramEnrollmentsWrapper />);
-    apiMock = jest
+    jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorErrorResponse));
+      .mockResolvedValue(programInspectorErrorResponse);
+    renderComponent();
 
-    const usernameInput = wrapper.find("input[name='username']");
-    const externalKeyInput = wrapper.find("input[name='externalKey']");
-    expect(usernameInput.prop('defaultValue')).toEqual(undefined);
-    expect(externalKeyInput.prop('defaultValue')).toEqual(undefined);
+    expect(screen.getByLabelText(/username/i)).toHaveValue('');
+    expect(screen.getByPlaceholderText(/gtpersondirectoryid/i)).toHaveValue('');
   });
 
-  it('render when username', async () => {
-    apiMock = jest
+  it('render when username is provided', async () => {
+    jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
+      .mockResolvedValue(programInspectorSuccessResponse);
+    renderComponent();
 
-    wrapper = mount(<ProgramEnrollmentsWrapper />);
+    fireEvent.change(screen.getByLabelText(/edx username or email/i), {
+      target: { value: data.username },
+    });
 
-    wrapper.find("input[name='username']").simulate(
-      'change',
-      { target: { value: data.username } },
-    );
-    wrapper.find("select[name='orgKey']").simulate(
-      'change',
-      { target: { value: data.orgKey } },
-    );
-    wrapper.find('button.btn-primary').simulate('click');
+    fireEvent.change(screen.getByLabelText(/identity-providing institution/i), {
+      target: { value: data.orgKey },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /search program records/i }));
 
     await waitFor(() => {
       expect(mockedNavigator).toHaveBeenCalledWith(
@@ -111,41 +85,36 @@ describe('Program Inspector', () => {
       );
     });
 
-    waitFor(() => {
-      expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
-        'Username',
-      );
-      expect(wrapper.find('.inspector-name-row p.small').at(0).text()).toEqual(
+    expect(screen.getByText('Username')).toBeInTheDocument();
+    expect(
+      screen.getByText(
         programInspectorSuccessResponse.learner_program_enrollments.user.username,
-      );
-      expect(wrapper.find('.inspector-name-row p.h5').at(1).text()).toEqual(
-        'Email',
-      );
-      expect(wrapper.find('.inspector-name-row p.small').at(1).text()).toEqual(
+      ),
+    ).toBeInTheDocument();
+
+    expect(screen.getByText('Email')).toBeInTheDocument();
+    expect(
+      screen.getByText(
         programInspectorSuccessResponse.learner_program_enrollments.user.email,
-      );
-    });
+      ),
+    ).toBeInTheDocument();
   });
 
-  it('render when external_user_key', async () => {
-    apiMock = jest
+  it('render when external_user_key is provided', async () => {
+    jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper />);
+      .mockResolvedValue(programInspectorSuccessResponse);
+    renderComponent();
 
-    wrapper.find(
-      "input[name='externalKey']",
-    ).simulate(
-      'change',
-      { target: { value: data.externalKey } },
-    );
-    wrapper.find(
-      "select[name='orgKey']",
-    ).simulate(
-      'change',
-      { target: { value: data.orgKey } },
-    );
-    wrapper.find('button.btn-primary').simulate('click');
+    fireEvent.change(screen.getByLabelText(/institution user key/i), {
+      target: { value: data.externalKey },
+    });
+
+    fireEvent.change(screen.getByLabelText(/identity-providing institution/i), {
+      target: { value: data.orgKey },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /search program records/i }));
 
     await waitFor(() => {
       expect(mockedNavigator).toHaveBeenCalledWith(
@@ -153,111 +122,97 @@ describe('Program Inspector', () => {
       );
     });
 
-    waitFor(() => {
-      expect(wrapper.find('.inspector-name-row p.h5').at(0).text()).toEqual(
-        'Username',
-      );
-      expect(wrapper.find('.inspector-name-row p.small').at(0).text()).toEqual(
+    expect(screen.getByText('Username')).toBeInTheDocument();
+    expect(
+      screen.getByText(
         programInspectorSuccessResponse.learner_program_enrollments.user.username,
-      );
-      expect(wrapper.find('.inspector-name-row p.h5').at(1).text()).toEqual(
-        'Email',
-      );
-      expect(wrapper.find('.inspector-name-row p.small').at(1).text()).toEqual(
+      ),
+    ).toBeInTheDocument();
+
+    expect(screen.getByText('Email')).toBeInTheDocument();
+    expect(
+      screen.getByText(
         programInspectorSuccessResponse.learner_program_enrollments.user.email,
-      );
-    });
+      ),
+    ).toBeInTheDocument();
   });
 
   it('render nothing when no username or external_user_key', async () => {
-    apiMock = jest
+    jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper />);
+      .mockResolvedValue(programInspectorSuccessResponse);
+    renderComponent();
 
-    wrapper.find(
-      "input[name='username']",
-    ).simulate(
-      'change',
-      { target: { value: undefined } },
-    );
-    wrapper.find(
-      "input[name='externalKey']",
-    ).simulate(
-      'change',
-      { target: { value: undefined } },
-    );
-    wrapper.find(
-      "select[name='orgKey']",
-    ).simulate(
-      'change',
-      { target: { value: data.orgKey } },
-    );
-    wrapper.find('button.btn-primary').simulate('click');
+    fireEvent.change(screen.getByLabelText(/edx username or email/i), {
+      target: { value: '' },
+    });
 
-    expect(mockedNavigator).toHaveBeenCalledWith(
-      '/programs',
-    );
-    expect(wrapper.find('.inspector-name-row').exists()).toBeFalsy();
+    fireEvent.change(screen.getByLabelText(/institution user key/i), {
+      target: { value: '' },
+    });
+
+    fireEvent.change(screen.getByLabelText(/identity-providing institution/i), {
+      target: { value: data.orgKey },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /search program records/i }));
+
+    expect(mockedNavigator).toHaveBeenCalledWith('/programs');
+    expect(screen.queryByText('Username')).not.toBeInTheDocument();
   });
 
   it('render when getUser fails', async () => {
-    apiMock = jest
+    jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementation(() => Promise.resolve(programInspectorSuccessResponse));
-
-    getUserMock = jest
+      .mockResolvedValue(programInspectorSuccessResponse);
+    jest
       .spyOn(ssoAndUserApi, 'getUser')
-      .mockImplementation(() => Promise.reject(new Error('Error fetching User Info')));
+      .mockRejectedValue(new Error('Error fetching User Info'));
 
-    wrapper = mount(<ProgramEnrollmentsWrapper />);
+    renderComponent();
 
     await waitFor(() => {
-      wrapper.update();
-      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occurred while fetching user id');
+      expect(
+        screen.getByText(/an error occurred while fetching user id/i),
+      ).toBeInTheDocument();
     });
 
-    wrapper.find(
-      "input[name='username']",
-    ).simulate(
-      'change',
-      { target: { value: 'AnonyMouse' } },
-    );
-    wrapper.find('button.btn-primary').simulate('click');
+    fireEvent.change(screen.getByLabelText(/edx username or email/i), {
+      target: { value: 'AnonyMouse' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /search program records/i }));
 
     await waitFor(() => {
-      wrapper.update();
-      expect(wrapper.find('Alert').at(0).text()).toEqual('An error occurred while fetching user id');
+      expect(
+        screen.getByText(/an error occurred while fetching user id/i),
+      ).toBeInTheDocument();
       expect(mockedNavigator).toHaveBeenCalledTimes(3);
     });
   });
 
   it('check if SSO is present', async () => {
-    apiMock = jest
+    jest
       .spyOn(api, 'getProgramEnrollmentsInspector')
-      .mockImplementationOnce(() => Promise.resolve(programInspectorSuccessResponse));
-    wrapper = mount(<ProgramEnrollmentsWrapper />);
+      .mockResolvedValue(programInspectorSuccessResponse);
+    renderComponent();
 
-    wrapper.find(
-      "input[name='username']",
-    ).simulate(
-      'change',
-      { target: { value: data.username } },
-    );
-    wrapper.find(
-      "select[name='orgKey']",
-    ).simulate(
-      'change',
-      { target: { value: data.orgKey } },
-    );
-    wrapper.find('button.btn-primary').simulate('click');
+    fireEvent.change(screen.getByLabelText(/edx username or email/i), {
+      target: { value: data.username },
+    });
 
-    const ssoRecords = wrapper.find('.sso-records');
-    waitFor(() => {
-      expect(ssoRecords.find('h4').at(0).text()).toEqual('SSO Records');
-      expect(ssoRecords.find('.h3').text()).toEqual(
-        'tpa-saml (Provider)',
-      );
+    fireEvent.change(screen.getByLabelText(/identity-providing institution/i), {
+      target: { value: data.orgKey },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /search program records/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { level: 4, name: /SSO Records/i }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/tpa-saml/i)).toBeInTheDocument();
+      expect(screen.getByText(/\(Provider\)/i)).toBeInTheDocument();
     });
   });
 });

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import PolicyDescription from '../PolicyDescription';
 
 const mockDescription = 'I want to be the very best';

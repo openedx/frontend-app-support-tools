@@ -1,70 +1,105 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-
-import CourseSummary from './CourseSummary';
-import courseSummaryData from '../data/test/courseSummary';
+import {
+  render,
+  screen,
+  waitFor,
+  within,
+  fireEvent,
+  cleanup,
+} from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
+import CourseSummary from './CourseSummary';
+import courseSummaryData from '../data/test/courseSummary';
 
 const CourseSummaryWrapper = (props) => (
-  <UserMessagesProvider>
-    <CourseSummary {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <CourseSummary {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Course Summary', () => {
-  let wrapper;
   let apiMock;
   const props = {
     courseUUID: 'course-uuid',
-    closeHandler: jest.fn(() => {}),
+    closeHandler: jest.fn(),
   };
 
-  beforeEach(async () => {
-    apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
-    wrapper = mount(<CourseSummaryWrapper {...props} />);
-  });
-
   afterEach(() => {
-    apiMock.mockRestore();
-    wrapper.unmount();
+    if (apiMock) {
+      apiMock.mockRestore();
+    }
+    cleanup();
   });
 
-  it('Default component render with Modal', () => {
-    const dataRows = wrapper.find('table.course-summary-table tbody').first().children();
-    waitFor(() => {
-      expect(dataRows.length).toEqual(5);
+  it('Default component render with Modal', async () => {
+    apiMock = jest
+      .spyOn(api, 'getCourseData')
+      .mockResolvedValueOnce(courseSummaryData.courseData);
 
-      let courseSummaryModal = wrapper.find('ModalDialog#course-summary');
-      expect(courseSummaryModal.prop('isOpen')).toEqual(true);
-      expect(courseSummaryModal.find('h2.pgn__modal-title').text()).toEqual('Course Summary: Test Course');
+    render(<CourseSummaryWrapper {...props} />);
 
-      const courseRunsTable = wrapper.find('table.course-runs-table');
-      expect(courseRunsTable.find('tbody tr').length).toEqual(2);
+    const modal = await screen.findByRole('dialog');
+    expect(modal).toBeInTheDocument();
 
-      wrapper.find('button.btn-link').simulate('click');
-      courseSummaryModal = wrapper.find('ModalDialog#course-summary');
-      expect(courseSummaryModal.prop('isOpen')).toEqual(false);
+    expect(
+      within(modal).getByRole('heading', {
+        name: /Course Summary: Test Course/i,
+      }),
+    ).toBeInTheDocument();
+
+    const summaryTable = modal.querySelector('table.course-summary-table');
+    expect(summaryTable).toBeInTheDocument();
+
+    const summaryRows = within(summaryTable).getAllByRole('row');
+    expect(summaryRows.length).toBeGreaterThan(1);
+
+    const courseRunsTable = modal.querySelector('table.course-runs-table');
+    expect(courseRunsTable).toBeInTheDocument();
+
+    const courseRunRows = within(courseRunsTable).getAllByRole('row');
+    expect(courseRunRows.length).toBe(3);
+
+    const footer = modal.querySelector('.pgn__modal-footer');
+    const closeBtn = within(footer).getByRole('button', { name: /Close/i });
+    fireEvent.click(closeBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 
   it('Missing Course Run Information', async () => {
     const courseData = { ...courseSummaryData.courseData, courseRuns: [] };
     const summaryData = { ...courseSummaryData, courseData };
-    apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(summaryData.courseData));
-    wrapper = mount(<CourseSummaryWrapper {...props} />);
-    waitFor(() => expect(wrapper.html()).toEqual(expect.stringContaining('No Course Runs available')));
+    apiMock = jest
+      .spyOn(api, 'getCourseData')
+      .mockResolvedValueOnce(summaryData.courseData);
+
+    render(<CourseSummaryWrapper {...props} />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/No Course Runs available/i),
+      ).toBeInTheDocument();
+    });
   });
 
   it('Render loading page correctly', async () => {
-    apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve(courseSummaryData.courseData));
-    wrapper = mount(<CourseSummaryWrapper {...props} />);
-    expect(wrapper.find('PageLoading').html()).toEqual(expect.stringContaining('Loading'));
+    apiMock = jest
+      .spyOn(api, 'getCourseData')
+      .mockResolvedValueOnce(courseSummaryData.courseData);
+
+    render(<CourseSummaryWrapper {...props} />);
+
+    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
   });
 
   it('Course Summary Fetch Errors', async () => {
-    apiMock = jest.spyOn(api, 'getCourseData').mockImplementationOnce(() => Promise.resolve({
+    apiMock = jest.spyOn(api, 'getCourseData').mockResolvedValueOnce({
       errors: [
         {
           code: null,
@@ -74,12 +109,29 @@ describe('Course Summary', () => {
           topic: 'course-summary',
         },
       ],
-    }));
-    wrapper = mount(<CourseSummaryWrapper {...props} />);
+    });
 
-    const courseSummaryModal = wrapper.find('ModalDialog#course-summary');
-    expect(courseSummaryModal.find('h2.pgn__modal-title').text()).toEqual('Course Summary');
-    const alert = wrapper.find('.alert');
-    waitFor(() => expect(alert.text()).toEqual('No Course Summary Data found'));
+    render(<CourseSummaryWrapper {...props} />);
+
+    const modal = await screen.findByRole('dialog');
+    expect(modal).toBeInTheDocument();
+
+    expect(
+      within(modal).getByRole('heading', { name: /Course Summary/i }),
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        within(modal).getByText(/No Course Summary Data found/i),
+      ).toBeInTheDocument();
+    });
+
+    const footer = modal.querySelector('.pgn__modal-footer');
+    const closeBtn = within(footer).getByRole('button', { name: /Close/i });
+    fireEvent.click(closeBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
   });
 });

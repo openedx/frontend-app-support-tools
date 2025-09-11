@@ -1,68 +1,88 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import PropTypes from 'prop-types';
+import {
+  render,
+  screen,
+  fireEvent,
+  within,
+  waitFor,
+} from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
 import RetireUser from './RetireUser';
 import UserSummaryData from '../data/test/userSummary';
 
-const RetireUserWrapper = (props) => (
+const RetireUserWrapper = ({ email, username, changeHandler }) => (
   <IntlProvider locale="en">
-    <RetireUser {...props} />
+    <RetireUser email={email} username={username} changeHandler={changeHandler} />
   </IntlProvider>
 );
 
-describe('Retire User Component Tests', () => {
-  let wrapper;
-  const data = {
-    email: UserSummaryData.userData.email,
-    username: UserSummaryData.userData.username,
-    changeHandler: UserSummaryData.changeHandler,
-  };
+RetireUserWrapper.propTypes = {
+  email: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+  changeHandler: PropTypes.func.isRequired,
+};
 
-  beforeEach(() => {
-    wrapper = mount(<RetireUserWrapper {...data} />);
-  });
+describe('Retire User Component Tests', () => {
+  const { email, username } = UserSummaryData.userData;
 
   afterEach(() => {
-    wrapper.unmount();
+    jest.restoreAllMocks();
   });
 
   it('Retire User button for a User', () => {
-    const retireUserButton = wrapper.find('#retire-user').hostNodes();
-    expect(retireUserButton.text()).toEqual('Retire User');
+    const mockChangeHandler = jest.fn();
+    render(
+      <RetireUserWrapper
+        email={email}
+        username={username}
+        changeHandler={mockChangeHandler}
+      />,
+    );
+    const retireUserButton = screen.getByRole('button', { name: /Retire User/i });
+    expect(retireUserButton).toBeInTheDocument();
   });
 
   it('Retire User Modal Success', async () => {
-    const mockApiCall = jest.spyOn(api, 'postRetireUser').mockImplementationOnce(() => Promise.resolve({}));
-    const retireUserButton = wrapper.find('#retire-user').hostNodes();
-    let retireUserModal = wrapper.find('ModalDialog#user-account-retire');
+    const mockChangeHandler = jest.fn();
+    const mockApiCall = jest.spyOn(api, 'postRetireUser').mockResolvedValue({});
 
-    expect(retireUserModal.prop('isOpen')).toEqual(false);
-    expect(retireUserButton.text()).toEqual('Retire User');
-
-    retireUserButton.simulate('click');
-    retireUserModal = wrapper.find('ModalDialog#user-account-retire');
-
-    expect(retireUserModal.prop('isOpen')).toEqual(true);
-    expect(retireUserModal.find('h2.pgn__modal-title').text()).toEqual('Retire User Confirmation');
-    const confirmAlert = retireUserModal.find('.alert-warning');
-    expect(confirmAlert.text()).toEqual(
-      "You are about to retire edx with the email address: edx@example.com. This is a serious action that will revoke this user's access to edX and their earned certificates. Furthermore, the email address associated with the retired account will not be able to be used to create a new account.",
+    render(
+      <RetireUserWrapper
+        email={email}
+        username={username}
+        changeHandler={mockChangeHandler}
+      />,
     );
-    retireUserModal.find('button.btn-danger').hostNodes().simulate('click');
-    waitFor(() => {
-      expect(UserSummaryData.changeHandler).toHaveBeenCalled();
 
-      retireUserModal.find('button.btn-link').simulate('click');
-      retireUserModal = wrapper.find('ModalDialog#user-account-retire');
-      expect(retireUserModal.prop('isOpen')).toEqual(false);
-    });
+    const retireUserButton = screen.getByRole('button', { name: /Retire User/i });
+    fireEvent.click(retireUserButton);
+
+    const modal = await screen.findByRole('dialog');
+    const modalWithin = within(modal);
+
+    expect(
+      modalWithin.getByRole('heading', { name: /Retire User Confirmation/i }),
+    ).toBeInTheDocument();
+    expect(modalWithin.getByText(new RegExp(email, 'i'))).toBeInTheDocument();
+
+    const confirmButton = modalWithin.getByRole('button', { name: /Confirm/i });
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => expect(mockChangeHandler).toHaveBeenCalled());
+
+    const closeButtons = modalWithin.getAllByRole('button', { name: /Close/i });
+    const footerCloseButton = closeButtons.find(btn => btn.textContent.trim() === 'Close');
+    fireEvent.click(footerCloseButton);
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 
     mockApiCall.mockRestore();
   });
 
   it('Retire User Modal Failure', async () => {
+    const mockChangeHandler = jest.fn();
     const retireUserErrors = {
       errors: [
         {
@@ -74,28 +94,42 @@ describe('Retire User Component Tests', () => {
         },
       ],
     };
-    const mockApiCall = jest.spyOn(api, 'postRetireUser').mockImplementationOnce(() => Promise.resolve(retireUserErrors));
-    const retireUserButton = wrapper.find('#retire-user').hostNodes();
-    retireUserButton.simulate('click');
-    let retireUserModal = wrapper.find('ModalDialog#user-account-retire');
+    const mockApiCall = jest.spyOn(api, 'postRetireUser').mockResolvedValue(retireUserErrors);
 
-    retireUserModal.find('button.btn-danger').hostNodes().simulate('click');
-    retireUserModal = wrapper.find('ModalDialog#user-account-retire');
+    render(
+      <RetireUserWrapper
+        email={email}
+        username={username}
+        changeHandler={mockChangeHandler}
+      />,
+    );
+    const retireUserButton = screen.getByRole('button', { name: /Retire User/i });
+    fireEvent.click(retireUserButton);
 
-    const confirmAlert = retireUserModal.find('.alert-danger');
-    waitFor(() => {
-      expect(confirmAlert.text()).toEqual(
-        'Something went wrong. Please try again later!',
-      );
-      expect(retireUserModal.prop('isOpen')).toEqual(true);
-    });
+    const modal = await screen.findByRole('dialog');
+    const modalWithin = within(modal);
+
+    const confirmButton = modalWithin.getByRole('button', { name: /Confirm/i });
+    fireEvent.click(confirmButton);
+
+    const errorAlert = await modalWithin.findByText(/Something went wrong/i);
+    expect(errorAlert).toBeInTheDocument();
+
+    expect(modal).toBeInTheDocument();
 
     mockApiCall.mockRestore();
   });
 
   it('Retire User button disabled for already retired users', () => {
-    wrapper = mount(<RetireUserWrapper {...data} email="invalid@retired.invalid" />);
-    const retireUserButton = wrapper.find('#retire-user').hostNodes();
-    expect(retireUserButton.prop('disabled')).toEqual(true);
+    const mockChangeHandler = jest.fn();
+    render(
+      <RetireUserWrapper
+        email="invalid@retired.invalid"
+        username={username}
+        changeHandler={mockChangeHandler}
+      />,
+    );
+    const retireUserButton = screen.getByRole('button', { name: /Retire User/i });
+    expect(retireUserButton).toBeDisabled();
   });
 });

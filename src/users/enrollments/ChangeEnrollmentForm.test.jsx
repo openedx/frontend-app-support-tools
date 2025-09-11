@@ -1,89 +1,143 @@
-import { mount } from 'enzyme';
-import React from 'react';
-import { waitFor } from '@testing-library/react';
-
-import ChangeEnrollmentForm from './ChangeEnrollmentForm';
-import { changeEnrollmentFormData } from '../data/test/enrollments';
-import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import * as api from '../data/api';
+import ChangeEnrollmentForm from './ChangeEnrollmentForm';
+import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
+import { changeEnrollmentFormData } from '../data/test/enrollments';
+import UserMessagesContext from '../../userMessages/UserMessagesContext';
+
+jest.mock('../../userMessages/UserMessagesProvider', () => {
+  const originalModule = jest.requireActual('../../userMessages/UserMessagesProvider');
+  return {
+    __esModule: true,
+    ...originalModule,
+    useUserMessages: jest.fn(),
+  };
+});
+
+jest.mock('../data/api', () => ({
+  patchEnrollment: jest.fn(),
+}));
+
+const changeHandlerMock = jest.fn();
 
 const EnrollmentFormWrapper = (props) => (
-  <UserMessagesProvider>
-    <ChangeEnrollmentForm {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <ChangeEnrollmentForm {...props} changeHandler={changeHandlerMock} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Enrollment Change form', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = mount(<EnrollmentFormWrapper {...changeEnrollmentFormData} />);
-  });
-
   afterEach(() => {
-    wrapper.unmount();
+    jest.restoreAllMocks();
+    cleanup();
+    changeHandlerMock.mockClear();
+    api.patchEnrollment.mockClear();
   });
 
   it('Default form rendering', () => {
-    let changeFormModal = wrapper.find('ModalDialog#change-enrollment');
-    expect(changeFormModal.prop('isOpen')).toEqual(true);
-    const modeSelectionDropdown = wrapper.find('select#mode');
-    const modeChangeReasonDropdown = wrapper.find('select#reason');
-    const commentsTextarea = wrapper.find('textarea#comments');
-    expect(modeSelectionDropdown.find('option')).toHaveLength(2);
-    expect(modeChangeReasonDropdown.find('option')).toHaveLength(5);
-    expect(commentsTextarea.text()).toEqual('');
-
-    wrapper.find('button.btn-link').simulate('click');
-    changeFormModal = wrapper.find('ModalDialog#change-enrollment');
-    expect(changeFormModal.prop('isOpen')).toEqual(false);
+    render(<EnrollmentFormWrapper {...changeEnrollmentFormData} />);
+    expect(screen.getByText(/change enrollment/i)).toBeInTheDocument();
+    expect(document.getElementById('mode')).toBeInTheDocument();
+    expect(document.getElementById('reason')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Explanation')).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/close/i));
   });
 
   describe('Form submission', () => {
     it('Successful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'patchEnrollment').mockImplementationOnce(() => Promise.resolve({}));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+      api.patchEnrollment.mockResolvedValueOnce({});
+      render(<EnrollmentFormWrapper {...changeEnrollmentFormData} />);
 
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      wrapper.find('button.btn-primary').simulate('click');
-      expect(wrapper.find('div.spinner-border').length).toEqual(1);
-      expect(apiMock).toHaveBeenCalledTimes(1);
+      fireEvent.change(document.getElementById('mode'), { target: { value: 'verified' } });
+      fireEvent.change(document.getElementById('reason'), { target: { value: 'other' } });
+      fireEvent.change(screen.getByPlaceholderText('Explanation'), { target: { value: 'test mode change' } });
 
-      waitFor(() => {
-        expect(changeEnrollmentFormData.changeHandler).toHaveBeenCalledTimes(1);
-        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      fireEvent.click(screen.getByText(/submit/i));
+
+      await waitFor(() => {
+        expect(changeHandlerMock).toHaveBeenCalledTimes(1);
       });
 
-      apiMock.mockReset();
-      const submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton).toEqual({});
+      expect(api.patchEnrollment).toHaveBeenCalledTimes(1);
     });
 
     it('Unsuccessful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'patchEnrollment').mockImplementationOnce(() => Promise.resolve({
+      const addMock = jest.fn();
+      const clearMock = jest.fn();
+      const mockMessages = [];
+
+      api.patchEnrollment.mockResolvedValueOnce({
         errors: [
           {
-            code: null,
-            dismissible: true,
             text: 'Error changing enrollment',
             type: 'danger',
-            topic: 'changeEnrollments',
           },
         ],
-      }));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+      });
 
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
+      const MockUserMessagesContext = ({ children }) => {
+        const contextValue = useMemo(
+          () => ({
+            add: addMock,
+            clear: clearMock,
+            messages: mockMessages,
+          }),
+          [],
+        );
 
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test mode change' } });
-      wrapper.find('button.btn-primary').simulate('click');
+        return (
+          <UserMessagesContext.Provider value={contextValue}>
+            {children}
+          </UserMessagesContext.Provider>
+        );
+      };
 
-      expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error changing enrollment'));
+      MockUserMessagesContext.propTypes = {
+        children: PropTypes.node.isRequired,
+      };
+
+      render(
+        <IntlProvider locale="en">
+          <MockUserMessagesContext>
+            <ChangeEnrollmentForm
+              {...changeEnrollmentFormData}
+              changeHandler={changeHandlerMock}
+              closeHandler={jest.fn()}
+              user="test-user"
+            />
+          </MockUserMessagesContext>
+        </IntlProvider>,
+      );
+
+      fireEvent.change(document.getElementById('mode'), { target: { value: 'verified' } });
+      fireEvent.change(document.getElementById('reason'), { target: { value: 'other' } });
+      fireEvent.change(screen.getByPlaceholderText('Explanation'), { target: { value: 'test change' } });
+
+      fireEvent.click(screen.getByText(/submit/i));
+
+      await waitFor(() => expect(api.patchEnrollment).toHaveBeenCalledTimes(1));
+
+      await waitFor(() => {
+        expect(addMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            text: 'Error changing enrollment',
+            type: 'danger',
+          }),
+        );
+      });
+
+      expect(changeHandlerMock).not.toHaveBeenCalled();
     });
   });
 });

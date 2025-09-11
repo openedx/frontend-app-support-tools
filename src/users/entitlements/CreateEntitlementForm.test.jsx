@@ -1,73 +1,83 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CreateEntitlementForm from './CreateEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
-const CreateEntitlementFormWrapper = (props) => (
-  <UserMessagesProvider>
-    <CreateEntitlementForm {...props} />
-  </UserMessagesProvider>
+const renderWithProviders = (props = {}) => render(
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <CreateEntitlementForm {...entitlementFormData} {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>,
 );
 
 describe('Create Entitlement Form', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = mount(<CreateEntitlementFormWrapper {...entitlementFormData} />);
-  });
-
   afterEach(() => {
-    wrapper.unmount();
+    jest.clearAllMocks();
   });
 
   it('Default form render', () => {
-    let createFormModal = wrapper.find('ModalDialog#create-entitlement');
-    expect(createFormModal.prop('isOpen')).toEqual(true);
-    const courseUuidInput = wrapper.find('input#courseUuid');
-    const modeSelectDropdown = wrapper.find('select#mode');
-    const commentsTextArea = wrapper.find('textarea#comments');
-    expect(courseUuidInput.prop('value')).toEqual(entitlementFormData.entitlement.courseUuid);
-    expect(modeSelectDropdown.find('option')).toHaveLength(4);
-    expect(commentsTextArea.text()).toEqual('');
+    renderWithProviders();
 
-    wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('ModalDialog#create-entitlement');
-    expect(createFormModal.prop('isOpen')).toEqual(false);
+    const modal = screen.getByRole('dialog');
+    expect(modal).toBeInTheDocument();
+
+    expect(
+      within(modal).getByRole('heading', { name: /create new entitlement/i }),
+    ).toBeInTheDocument();
+
+    const courseUuidInput = screen.getByPlaceholderText(/course uuid/i);
+    const modeSelectDropdown = screen.getByRole('combobox');
+    const commentsTextArea = screen.getByPlaceholderText(/explanation/i);
+
+    expect(courseUuidInput).toHaveValue(entitlementFormData.entitlement.courseUuid);
+    expect(within(modeSelectDropdown).getAllByRole('option')).toHaveLength(4);
+    expect(commentsTextArea).toHaveValue('');
+
+    const closeBtn = screen.getAllByRole('button', { name: /^close$/i })[0];
+    fireEvent.click(closeBtn);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   describe('Form Submission', () => {
     it('Submit button disabled by default', () => {
-      expect(wrapper.find('button.btn-primary').prop('disabled')).toBeTruthy();
+      renderWithProviders();
+      expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
     });
 
     it('Successful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'postEntitlement').mockImplementationOnce(() => Promise.resolve({}));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+      const apiMock = jest.spyOn(api, 'postEntitlement').mockResolvedValueOnce({});
+      renderWithProviders();
 
-      wrapper.find('input#courseUuid').simulate('change', { target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'professional' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
-      const submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton.prop('disabled')).toBeFalsy();
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      submitButton.simulate('click');
-      expect(wrapper.find('div.spinner-border').length).toEqual(1);
+      fireEvent.change(screen.getByPlaceholderText(/course uuid/i), {
+        target: { value: 'b4f19c72-784d-4110-a3ba-318666a7db1a' },
+      });
+      fireEvent.change(screen.getByRole('combobox'), {
+        target: { value: 'professional' },
+      });
+      fireEvent.change(screen.getByPlaceholderText(/explanation/i), {
+        target: { value: 'creating new entitlement' },
+      });
+
+      const submitBtn = screen.getByRole('button', { name: /submit/i });
+      expect(submitBtn).not.toBeDisabled();
+      fireEvent.click(submitBtn);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-
-      waitFor(() => {
-        expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
-        expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      });
-      apiMock.mockReset();
+      await waitFor(() => expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1));
     });
 
     it('Unsuccessful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'postEntitlement').mockImplementationOnce(() => Promise.resolve({
+      const apiMock = jest.spyOn(api, 'postEntitlement').mockResolvedValueOnce({
         errors: [
           {
             code: null,
@@ -77,14 +87,17 @@ describe('Create Entitlement Form', () => {
             topic: 'createEntitlement',
           },
         ],
-      }));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+      });
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'creating new entitlement' } });
-      wrapper.find('button.btn-primary').simulate('click');
+      renderWithProviders();
+
+      fireEvent.change(screen.getByPlaceholderText(/explanation/i), {
+        target: { value: 'creating new entitlement' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error creating entitlement'));
+      await waitFor(() => expect(screen.getByText(/error creating entitlement/i)).toBeInTheDocument());
     });
   });
 });

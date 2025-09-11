@@ -1,5 +1,10 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 
 import * as api from './data/api';
@@ -7,12 +12,16 @@ import UserSummaryData from './data/test/userSummary';
 import LearnerInformation from './LearnerInformation';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import verifiedNameHistoryData from './data/test/verifiedNameHistory';
-import { enrollmentsData } from './data/test/enrollments';
+import {
+  enrollmentsData,
+} from './data/test/enrollments';
 import onboardingStatusData from './data/test/onboardingStatus';
 import ssoRecordsData from './data/test/ssoRecords';
 import licensesData from './data/test/licenses';
 import enterpriseCustomerUsersData from './data/test/enterpriseCustomerUsers';
-import { entitlementsData } from './data/test/entitlements';
+import {
+  entitlementsData,
+} from './data/test/entitlements';
 
 const LearnerInformationWrapper = (props) => (
   <IntlProvider locale="en">
@@ -23,182 +32,117 @@ const LearnerInformationWrapper = (props) => (
 );
 
 describe('Learners and Enrollments component', () => {
-  let wrapper;
   const props = {
     user: UserSummaryData.userData,
-    changeHandler: jest.fn(() => { }),
+    changeHandler: jest.fn(() => {}),
   };
 
-  beforeEach(async () => {
-    jest.spyOn(api, 'getVerifiedNameHistory').mockImplementationOnce(() => Promise.resolve(verifiedNameHistoryData));
-    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
-    jest.spyOn(api, 'getOnboardingStatus').mockImplementationOnce(() => Promise.resolve(onboardingStatusData));
-    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecordsData));
-    jest.spyOn(api, 'getLicense').mockImplementationOnce(() => Promise.resolve(licensesData));
-    jest.spyOn(api, 'getEntitlements').mockImplementationOnce(() => Promise.resolve(entitlementsData));
-    jest.spyOn(api, 'getEnrollments').mockImplementationOnce(() => Promise.resolve(enrollmentsData));
-    jest.spyOn(api, 'getEnterpriseCustomerUsers').mockImplementationOnce(() => Promise.resolve(enterpriseCustomerUsersData));
-    const ssoRecords = ssoRecordsData.map((entry) => ({
-      ...entry,
-      extraData: JSON.parse(entry.extraData),
-    }));
-    jest.spyOn(api, 'getSsoRecords').mockImplementationOnce(() => Promise.resolve(ssoRecords));
-    wrapper = mount(<LearnerInformationWrapper {...props} />);
+  beforeEach(() => {
+    jest.spyOn(api, 'getVerifiedNameHistory').mockResolvedValue(verifiedNameHistoryData);
+    jest.spyOn(api, 'getEnrollments').mockResolvedValue(enrollmentsData);
+    jest.spyOn(api, 'getOnboardingStatus').mockResolvedValue(onboardingStatusData);
+    jest.spyOn(api, 'getSsoRecords').mockResolvedValue(
+      ssoRecordsData.map((entry) => ({
+        ...entry,
+        extraData: JSON.parse(entry.extraData),
+      })),
+    );
+    jest.spyOn(api, 'getLicense').mockResolvedValue(licensesData);
+    jest.spyOn(api, 'getEntitlements').mockResolvedValue(entitlementsData);
+    jest.spyOn(api, 'getEnterpriseCustomerUsers').mockResolvedValue(enterpriseCustomerUsersData);
   });
 
-  afterEach(() => {
-    wrapper.unmount();
+  it('renders correctly', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+
+    await waitFor(() => {
+      const tabs = screen.getAllByRole('tab');
+      expect(tabs[0]).toHaveTextContent('Account Information');
+      expect(tabs[1]).toHaveTextContent('Enrollments/Entitlements');
+      expect(tabs[2]).toHaveTextContent('Learner Purchases');
+      expect(tabs[3]).toHaveTextContent('SSO/License Info');
+      expect(tabs[4]).toHaveTextContent('Learner Credentials');
+      expect(tabs[5]).toHaveTextContent('Learner Records');
+      expect(tabs[6]).toHaveTextContent('Course Reset');
+    });
   });
 
-  it('renders correctly', () => {
-    const tabs = wrapper.find('nav.nav-tabs a');
+  it('Account Information Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[0]);
 
-    expect(tabs.at(0).text()).toEqual('Account Information');
-    expect(tabs.at(1).text()).toEqual('Enrollments/Entitlements');
-    expect(tabs.at(2).text()).toEqual('Learner Purchases');
-    expect(tabs.at(3).text()).toEqual('SSO/License Info');
-    expect(tabs.at(4).text()).toEqual('Learner Credentials');
-    expect(tabs.at(5).text()).toEqual('Learner Records');
-    expect(tabs.at(6).text()).toEqual('Course Reset');
+    await waitFor(() => {
+      expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText('Account Details')).toBeInTheDocument();
+    });
   });
 
-  it('Account Information Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Enrollments/Entitlements Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[1]);
 
-    tabs.at(0).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-
-    const accountInfo = wrapper.find('.tab-content div#learner-information-tabpane-account');
-    expect(accountInfo.html()).toEqual(expect.stringContaining('active'));
-    expect(accountInfo.find('#account-table h3').text()).toEqual('Account Details');
+    await waitFor(() => {
+      expect(tabs[1]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText(/Entitlements \(2\)/)).toBeInTheDocument();
+      expect(screen.getByText(/Enrollments \(2\)/)).toBeInTheDocument();
+    });
   });
 
-  it('Enrollments/Entitlements Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Learner Purchases Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[2]);
 
-    tabs.at(1).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-
-    const enrollmentsEntitlements = wrapper.find('.tab-content div#learner-information-tabpane-enrollments-entitlements');
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('active'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Entitlements (2)'));
-    expect(enrollmentsEntitlements.html()).toEqual(expect.stringContaining('Enrollments (2)'));
+    await waitFor(() => {
+      expect(tabs[2]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText(/Order History/)).toBeInTheDocument();
+    });
   });
 
-  it('Learner Purchases Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('SSO Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[3]);
 
-    tabs.at(2).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-
-    const learnerPurchases = wrapper.find('.tab-content div#learner-information-tabpane-learner-purchases');
-    expect(learnerPurchases.html()).toEqual(expect.stringContaining('active'));
-    expect(learnerPurchases.html()).toEqual(
-      expect.stringContaining('Order History'),
-    );
+    await waitFor(() => {
+      expect(tabs[3]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByText(/Single Sign-on Records/)).toBeInTheDocument();
+      expect(screen.getByText(/Licenses Subscription/)).toBeInTheDocument();
+    });
   });
 
-  it('SSO Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Learner Credentials Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[4]);
 
-    tabs.at(3).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-
-    const ssoRecords = wrapper.find('.tab-content div#learner-information-tabpane-sso');
-    expect(ssoRecords.html()).toEqual(expect.stringContaining('active'));
-    expect(ssoRecords.html()).toEqual(
-      expect.stringContaining('Single Sign-on Records'),
-    );
-    expect(ssoRecords.html()).toEqual(
-      expect.stringContaining('Licenses Subscription'),
-    );
+    await waitFor(() => {
+      expect(tabs[4]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByRole('tabpanel', { name: /learner credentials/i })).toBeInTheDocument();
+    });
   });
 
-  it('Learner Credentials Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Learner Records Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[5]);
 
-    tabs.at(4).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-
-    const credentials = wrapper.find(
-      '.tab-content div#learner-information-tabpane-credentials',
-    );
-    expect(credentials.html()).toEqual(expect.stringContaining('active'));
-    expect(credentials.html()).toEqual(
-      expect.stringContaining('Learner Credentials'),
-    );
+    await waitFor(() => {
+      expect(tabs[5]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByRole('tabpanel', { name: /learner records/i })).toBeInTheDocument();
+    });
   });
 
-  it('Learner Records Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
+  it('Course Reset Tab', async () => {
+    render(<LearnerInformationWrapper {...props} />);
+    const tabs = await screen.findAllByRole('tab');
+    fireEvent.click(tabs[6]);
 
-    tabs.at(5).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).toEqual(expect.stringContaining('active'));
-
-    const records = wrapper.find(
-      '.tab-content div#learner-information-tabpane-records',
-    );
-    expect(records.html()).toEqual(expect.stringContaining('active'));
-    expect(records.html()).toEqual(
-      expect.stringContaining('Learner Records'),
-    );
-  });
-
-  it('Course Reset Tab', () => {
-    let tabs = wrapper.find('nav.nav-tabs a');
-
-    tabs.at(6).simulate('click');
-    tabs = wrapper.find('nav.nav-tabs a');
-    expect(tabs.at(0).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(1).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(2).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(3).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(4).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(5).html()).not.toEqual(expect.stringContaining('active'));
-    expect(tabs.at(6).html()).toEqual(expect.stringContaining('active'));
-
-    const records = wrapper.find(
-      '.tab-content div#learner-information-tabpane-course-reset',
-    );
-    expect(records.html()).toEqual(expect.stringContaining('active'));
-    expect(records.html()).toEqual(
-      expect.stringContaining('Course Reset'),
-    );
+    await waitFor(() => {
+      expect(tabs[6]).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByRole('tabpanel', { name: /course reset/i })).toBeInTheDocument();
+    });
   });
 });

@@ -1,18 +1,17 @@
-import { mount } from 'enzyme';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import LinkProgramEnrollments from './LinkProgramEnrollments';
 import UserMessagesProvider from '../userMessages/UserMessagesProvider';
 import {
   lpeSuccessResponse,
   lpeErrorResponseInvalidUUID,
-  lpeErrorResponseEmptyValues,
   lpeErrorResponseInvalidUsername,
   lpeErrorResponseInvalidExternalKey,
   lpeErrorResponseAlreadyLinked,
 } from './data/test/linkProgramEnrollment';
-
 import * as api from './data/api';
 
 const LinkProgramEnrollmentsWrapper = (props) => (
@@ -23,147 +22,161 @@ const LinkProgramEnrollmentsWrapper = (props) => (
   </MemoryRouter>
 );
 
-describe('Link Program Enrollments', () => {
-  let wrapper;
-  let apiMock;
-  const data = {
-    programID: '8bee627e-d85e-4a76-be41-d58921da666e',
-    usernamePairText: 'testuser,verified',
-  };
+const mockData = {
+  programID: '8bee627e-d85e-4a76-be41-d58921da666e',
+  usernamePairText: 'testuser,verified',
+};
 
+describe('Link Program Enrollments', () => {
   beforeEach(() => {
-    if (apiMock) {
-      apiMock.mockReset();
-    }
+    jest.clearAllMocks();
   });
 
-  it('default page render', async () => {
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+  it('default page render', () => {
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
 
-    const programIdInput = wrapper.find("input[name='programUUID']");
-    const usernamePairInput = wrapper.find("textarea[name='usernamePairText']");
-    const submitButton = wrapper.find('button.btn-primary');
+    const programInput = screen.getByLabelText(/Program UUID/i);
+    expect(programInput).toBeInTheDocument();
 
-    expect(programIdInput.prop('defaultValue')).toEqual(undefined);
-    expect(usernamePairInput.prop('defaultValue')).toEqual(undefined);
-    expect(submitButton.text()).toEqual('Submit');
+    const usernamePairTextInput = screen.getByLabelText(/List of External key and username pairings/i);
+    expect(usernamePairTextInput).toBeInTheDocument();
+
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    expect(submitButton).toBeInTheDocument();
   });
 
   it('valid search value', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementationOnce(() => Promise.resolve(lpeSuccessResponse));
+    jest.spyOn(api, 'default').mockResolvedValueOnce(lpeSuccessResponse);
 
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    const programInput = screen.getByLabelText(/Program UUID/i);
+    await userEvent.clear(programInput);
+    await userEvent.type(programInput, mockData.programID);
 
-    expect(apiMock).toHaveBeenCalledTimes(1);
-  });
+    const usernamePairTextInput = screen.getByLabelText(/List of External key and username pairings/i);
+    await userEvent.clear(usernamePairTextInput);
+    await userEvent.type(usernamePairTextInput, mockData.usernamePairText);
 
-  it('api call made on each click', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementation(() => Promise.resolve(lpeSuccessResponse));
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    await userEvent.click(submitButton);
 
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
-
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
-
-    waitFor(() => {
-      expect(apiMock).toHaveBeenCalledTimes(1);
-
-      wrapper.find('button.btn-primary').simulate('click');
-      expect(apiMock).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(api.default).toHaveBeenCalledTimes(1);
     });
   });
 
+  it('api call made on each click', async () => {
+    jest.spyOn(api, 'default').mockResolvedValue(lpeSuccessResponse);
+
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
+
+    const programInput = screen.getByLabelText(/Program UUID/i);
+    const usernamePairTextInput = screen.getByLabelText(/List of External key and username pairings/i);
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+
+    await userEvent.clear(programInput);
+    await userEvent.type(programInput, mockData.programID);
+    await userEvent.clear(usernamePairTextInput);
+    await userEvent.type(usernamePairTextInput, mockData.usernamePairText);
+    await userEvent.click(submitButton);
+
+    await waitFor(() => expect(api.default).toHaveBeenCalledTimes(1));
+
+    await userEvent.click(submitButton);
+    await waitFor(() => expect(api.default).toHaveBeenCalledTimes(2));
+  });
+
   it('empty search value yields error response', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseEmptyValues));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    const lpeErrorResponseEmptyValues = {
+      successes: [],
+      errors: ['Please enter required fields'],
+    };
 
-    wrapper.find('input[name="programUUID"]').instance().value = '';
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = '';
-    wrapper.find('button.btn-primary').simulate('click');
+    jest.spyOn(api, 'default').mockResolvedValueOnce(lpeErrorResponseEmptyValues);
 
-    expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
+    const programInput = screen.getByLabelText(/Program UUID/i);
+    const usernamePairTextInput = screen.getByLabelText(/List of External key and username pairings/i);
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+
+    await userEvent.clear(programInput);
+    await userEvent.clear(usernamePairTextInput);
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(api.default).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Please enter required fields');
+      expect(screen.queryByTestId('success')).not.toBeInTheDocument();
     });
   });
 
   it('Invalid Program UUID value', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidUUID));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    jest.spyOn(api, 'default').mockResolvedValueOnce(lpeErrorResponseInvalidUUID);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
 
-    waitFor(() => {
-      expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    await userEvent.type(screen.getByLabelText(/program uuid/i), mockData.programID);
+    await userEvent.type(screen.getByLabelText(/List of External key and username pairings/i), mockData.usernamePairText);
+    await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    await waitFor(() => {
+      expect(api.default).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('error-message')).toBeInTheDocument();
+      expect(screen.queryByTestId('success-message')).not.toBeInTheDocument();
     });
   });
 
   it('Invalid Username value', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidUsername));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    jest.spyOn(api, 'default').mockResolvedValueOnce(lpeErrorResponseInvalidUsername);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
 
-    waitFor(() => {
-      expect(apiMock).toHaveBeenCalledTimes(1);
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    await userEvent.type(screen.getByLabelText(/program uuid/i), mockData.programID);
+    await userEvent.type(screen.getByLabelText(/List of External key and username pairings/i), mockData.usernamePairText);
+    await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    await waitFor(() => {
+      expect(api.default).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('error-message')).toBeInTheDocument();
+      expect(screen.queryByTestId('success-message')).not.toBeInTheDocument();
     });
   });
 
   it('Invalid External User Key value', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseInvalidExternalKey));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    jest.spyOn(api, 'default').mockResolvedValueOnce(lpeErrorResponseInvalidExternalKey);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
 
-    expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    await userEvent.type(screen.getByLabelText(/program uuid/i), mockData.programID);
+    await userEvent.type(screen.getByLabelText(/List of External key and username pairings/i), mockData.usernamePairText);
+    await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    await waitFor(() => {
+      expect(api.default).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('error-message')).toBeInTheDocument();
+      expect(screen.queryByTestId('success-message')).not.toBeInTheDocument();
     });
   });
 
   it('Program Already Linked', async () => {
-    apiMock = jest
-      .spyOn(api, 'default')
-      .mockImplementationOnce(() => Promise.resolve(lpeErrorResponseAlreadyLinked));
-    wrapper = mount(<LinkProgramEnrollmentsWrapper />);
+    jest.spyOn(api, 'default').mockResolvedValueOnce(lpeErrorResponseAlreadyLinked);
 
-    wrapper.find('input[name="programUUID"]').instance().value = data.programID;
-    wrapper.find('textarea[name="usernamePairText"]').instance().value = data.usernamePairText;
-    wrapper.find('button.btn-primary').simulate('click');
+    render(<LinkProgramEnrollmentsWrapper programID={mockData.programID} />);
 
-    expect(apiMock).toHaveBeenCalledTimes(1);
-    waitFor(() => {
-      expect(wrapper.find('.error-message')).toHaveLength(1);
-      expect(wrapper.find('.success-message')).toHaveLength(0);
+    const programInput = screen.getByLabelText(/Program UUID/i);
+    await userEvent.type(programInput, mockData.programID);
+
+    const usernamePairTextInput = screen.getByLabelText(/List of External key and username pairings/i);
+    await userEvent.type(usernamePairTextInput, mockData.usernamePairText);
+
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(api.default).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('error-message')).toBeInTheDocument();
+      expect(screen.queryByTestId('success-message')).not.toBeInTheDocument();
     });
   });
 });

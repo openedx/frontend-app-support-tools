@@ -1,69 +1,79 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import ExpireEntitlementForm from './ExpireEntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
 const ExpireEntitlementFormWrapper = (props) => (
-  <UserMessagesProvider>
-    <ExpireEntitlementForm {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <ExpireEntitlementForm {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Expire Entitlement Form', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = mount(<ExpireEntitlementFormWrapper {...entitlementFormData} />);
-  });
-
   afterEach(() => {
-    wrapper.unmount();
+    jest.restoreAllMocks();
+    cleanup();
   });
 
   it('Default form render', () => {
-    let expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
-    expect(expireFormModal.prop('isOpen')).toEqual(true);
-    const commentsTextArea = wrapper.find('textarea#comments');
-    expect(commentsTextArea.text()).toEqual('');
+    render(<ExpireEntitlementFormWrapper {...entitlementFormData} />);
 
-    wrapper.find('button.btn-link').simulate('click');
-    expireFormModal = wrapper.find('ModalDialog#expire-entitlement');
-    expect(expireFormModal.prop('isOpen')).toEqual(false);
+    const modal = screen.getByRole('dialog');
+    expect(modal).toBeInTheDocument();
+
+    const commentsTextArea = screen.getByPlaceholderText(/explanation/i);
+    expect(commentsTextArea).toHaveValue('');
+
+    const closeButtons = screen.getAllByRole('button', { name: /close/i });
+    const closeButton = closeButtons[1];
+    fireEvent.click(closeButton);
+
+    expect(modal).not.toBeVisible();
   });
 
   describe('Form Submission', () => {
     it('Submit button disabled by default', () => {
-      expect(wrapper.find('button.btn-primary').prop('disabled')).toBeTruthy();
+      render(<ExpireEntitlementFormWrapper {...entitlementFormData} />);
+      const submitButton = screen.getByRole('button', { name: /submit/i });
+      expect(submitButton).toBeDisabled();
     });
 
     it('Successful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'patchEntitlement').mockImplementationOnce(() => Promise.resolve({}));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+      const apiMock = jest.spyOn(api, 'patchEntitlement').mockResolvedValueOnce({});
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'expiring entitlement' } });
-      let submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton.prop('disabled')).toBeFalsy();
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      submitButton.simulate('click');
-      expect(wrapper.find('div.spinner-border').length).toEqual(1);
+      render(<ExpireEntitlementFormWrapper {...entitlementFormData} />);
 
-      expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => {
-        expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
-        expect(wrapper.find('div.spinner-border').length).toEqual(0);
+      const commentsTextArea = screen.getByPlaceholderText(/explanation/i);
+      fireEvent.change(commentsTextArea, {
+        target: { value: 'expiring entitlement' },
       });
-      apiMock.mockReset();
 
-      submitButton = wrapper.find('button.btn-primary');
-      expect(submitButton).toEqual({});
+      const submitButton = screen.getByRole('button', { name: /submit/i });
+      expect(submitButton).toBeEnabled();
+
+      fireEvent.click(submitButton);
+      expect(apiMock).toHaveBeenCalledTimes(1);
+
+      await waitFor(() => {
+        expect(entitlementFormData.changeHandler).toHaveBeenCalledTimes(1);
+      });
+
+      apiMock.mockReset();
     });
 
     it('Unsuccessful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'patchEntitlement').mockImplementationOnce(() => Promise.resolve({
+      const apiMock = jest.spyOn(api, 'patchEntitlement').mockResolvedValueOnce({
         errors: [
           {
             code: null,
@@ -73,14 +83,23 @@ describe('Expire Entitlement Form', () => {
             topic: 'expireEntitlement',
           },
         ],
-      }));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+      });
 
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'expiring entitlement' } });
-      wrapper.find('button.btn-primary').simulate('click');
+      render(<ExpireEntitlementFormWrapper {...entitlementFormData} />);
+
+      const commentsTextArea = screen.getByPlaceholderText(/explanation/i);
+      fireEvent.change(commentsTextArea, {
+        target: { value: 'expiring entitlement' },
+      });
+
+      const submitButton = screen.getByRole('button', { name: /submit/i });
+      fireEvent.click(submitButton);
 
       expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error expiring entitlement'));
+
+      await waitFor(() => {
+        expect(screen.getByText(/error expiring entitlement/i)).toBeInTheDocument();
+      });
     });
   });
 });

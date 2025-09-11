@@ -1,34 +1,29 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import { render, screen } from '@testing-library/react';
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import AccountActions from './AccountActions';
 import UserSummaryData from '../data/test/userSummary';
 
+const renderWithProviders = (props) => render(
+  <IntlProvider locale="en">
+    <AccountActions {...props} />
+  </IntlProvider>,
+);
+
 describe('Account Actions Component Tests', () => {
-  let wrapper;
-
   beforeEach(() => {
-    wrapper = mount(<IntlProvider locale="en"><AccountActions {...UserSummaryData} /> </IntlProvider>);
-  });
-
-  afterEach(() => {
-    wrapper.unmount();
+    renderWithProviders(UserSummaryData);
   });
 
   it('Action Buttons rendered', () => {
-    const passwordHistoryButton = wrapper.find('button#toggle-password-history');
-    const toggleUserStatusButton = wrapper.find('button#toggle-password');
-    const passwordResetEmailButton = wrapper.find('button#reset-password');
+    const passwordHistoryButton = screen.getByRole('button', { name: /show history/i });
+    const toggleUserStatusButton = screen.getByRole('button', { name: /disable user/i });
+    const passwordResetEmailButton = screen.getByRole('button', { name: /reset password/i });
 
-    expect(passwordHistoryButton.text()).toEqual('Show History');
-    expect(passwordHistoryButton.disabled).toBeFalsy();
+    expect(passwordHistoryButton).toBeEnabled();
+    expect(toggleUserStatusButton).toBeEnabled();
+    expect(passwordResetEmailButton).toBeEnabled();
 
-    expect(toggleUserStatusButton.text()).toEqual('Disable User');
-    expect(toggleUserStatusButton.disabled).toBeFalsy();
-
-    expect(passwordResetEmailButton.text()).toEqual('Reset Password');
-    expect(passwordResetEmailButton.disabled).toBeFalsy();
-
-    expect(wrapper.find('h3').text()).toEqual('Account Actions');
+    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Account Actions');
   });
 });

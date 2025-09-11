@@ -1,38 +1,42 @@
-import { mount } from 'enzyme';
 import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n'; // or `react-intl`
 
 import EntitlementForm from './EntitlementForm';
 import entitlementFormData from '../data/test/entitlementForm';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import { CREATE, REISSUE, EXPIRE } from './EntitlementActions';
 
-const EntitlementFormWrapper = (props) => (
-  <UserMessagesProvider>
-    <EntitlementForm {...props} />
-  </UserMessagesProvider>
+const renderWithProviders = (ui, props = {}) => render(
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      {React.cloneElement(ui, props)}
+    </UserMessagesProvider>
+  </IntlProvider>,
 );
 
 describe('Entitlement forms', () => {
-  let wrapper;
+  it('renders Create Entitlement form', () => {
+    renderWithProviders(<EntitlementForm {...entitlementFormData} formType={CREATE} />);
 
-  it('Create Entitlement form render', () => {
-    wrapper = mount(<EntitlementFormWrapper {...entitlementFormData} formType={CREATE} />);
-    expect(wrapper.find('CreateEntitlementForm').length).toEqual(1);
-    expect(wrapper.find('ReissueEntitlementForm').length).toEqual(0);
-    expect(wrapper.find('ExpireEntitlementForm').length).toEqual(0);
+    expect(screen.getByRole('heading', { name: /create new entitlement/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /reissue entitlement/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /expire entitlement/i })).not.toBeInTheDocument();
   });
 
-  it('Reissue Entitlement form render', () => {
-    wrapper = mount(<EntitlementFormWrapper {...entitlementFormData} formType={REISSUE} />);
-    expect(wrapper.find('ReissueEntitlementForm').length).toEqual(1);
-    expect(wrapper.find('CreateEntitlementForm').length).toEqual(0);
-    expect(wrapper.find('ExpireEntitlementForm').length).toEqual(0);
+  it('renders Reissue Entitlement form', () => {
+    renderWithProviders(<EntitlementForm {...entitlementFormData} formType={REISSUE} />);
+
+    expect(screen.getByRole('heading', { name: /reissue entitlement/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /create new entitlement/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /expire entitlement/i })).not.toBeInTheDocument();
   });
 
-  it('Expire Entitlement form render', () => {
-    wrapper = mount(<EntitlementFormWrapper {...entitlementFormData} formType={EXPIRE} />);
-    expect(wrapper.find('ExpireEntitlementForm').length).toEqual(1);
-    expect(wrapper.find('CreateEntitlementForm').length).toEqual(0);
-    expect(wrapper.find('ReissueEntitlementForm').length).toEqual(0);
+  it('renders Expire Entitlement form', () => {
+    renderWithProviders(<EntitlementForm {...entitlementFormData} formType={EXPIRE} />);
+
+    expect(screen.getByRole('heading', { name: /expire entitlement/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /create new entitlement/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /reissue entitlement/i })).not.toBeInTheDocument();
   });
 });

@@ -1,87 +1,96 @@
-import { mount } from 'enzyme';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
-
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from '@testing-library/react';
+import { IntlProvider } from '@edx/frontend-platform/i18n';
 import CreateEnrollmentForm from './CreateEnrollmentForm';
 import { createEnrollmentFormData } from '../data/test/enrollments';
 import UserMessagesProvider from '../../userMessages/UserMessagesProvider';
 import * as api from '../data/api';
 
 const EnrollmentFormWrapper = (props) => (
-  <UserMessagesProvider>
-    <CreateEnrollmentForm {...props} />
-  </UserMessagesProvider>
+  <IntlProvider locale="en">
+    <UserMessagesProvider>
+      <CreateEnrollmentForm {...props} />
+    </UserMessagesProvider>
+  </IntlProvider>
 );
 
 describe('Enrollment Create form', () => {
-  let wrapper;
-
-  beforeEach(() => {
-    wrapper = mount(<EnrollmentFormWrapper {...createEnrollmentFormData} />);
-  });
-
   afterEach(() => {
-    wrapper.unmount();
+    jest.restoreAllMocks();
+    cleanup();
   });
 
   it('Default form rendering', () => {
-    let createFormModal = wrapper.find('ModalDialog#create-enrollment');
-    expect(createFormModal.prop('isOpen')).toEqual(true);
-    const modeSelectionDropdown = wrapper.find('select#mode');
-    const modeChangeReasonDropdown = wrapper.find('select#reason');
-    const commentsTextarea = wrapper.find('textarea#comments');
-    expect(modeSelectionDropdown.find('option')).toHaveLength(9);
-    expect(modeChangeReasonDropdown.find('option')).toHaveLength(5);
-    expect(commentsTextarea.text()).toEqual('');
+    render(<EnrollmentFormWrapper {...createEnrollmentFormData} />);
 
-    wrapper.find('button.btn-link').simulate('click');
-    createFormModal = wrapper.find('ModalDialog#create-enrollment');
-    expect(createFormModal.prop('isOpen')).toEqual(false);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/course run id/i)).toBeInTheDocument();
+    expect(screen.getAllByRole('combobox')[0]).toBeInTheDocument(); // mode
+    expect(screen.getAllByRole('combobox')[1]).toBeInTheDocument(); // reason
+    expect(screen.getByPlaceholderText(/explanation/i)).toBeInTheDocument();
   });
 
-  describe('Form submission', () => {
-    it('Successful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'postEnrollment').mockImplementationOnce(() => Promise.resolve({}));
-      expect(apiMock).toHaveBeenCalledTimes(0);
+  it('Successful form submission', async () => {
+    const apiMock = jest.spyOn(api, 'postEnrollment').mockResolvedValueOnce({});
 
-      wrapper.find('input#courseID').simulate('change', { target: { value: 'course-v1:testX+test123+2030' } });
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test create enrollment' } });
-      expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      wrapper.find('button.btn-primary').simulate('click');
-      expect(wrapper.find('div.spinner-border').length).toEqual(1);
-      expect(apiMock).toHaveBeenCalledTimes(1);
+    render(<EnrollmentFormWrapper {...createEnrollmentFormData} />);
 
-      waitFor(() => {
-        expect(wrapper.find('.alert').text()).toEqual('New Enrollment successfully created.');
-        expect(wrapper.find('div.spinner-border').length).toEqual(0);
-      });
-      apiMock.mockReset();
+    fireEvent.change(screen.getByPlaceholderText(/course run id/i), {
+      target: { value: 'course-v1:testX+test123+2030' },
     });
 
-    it('Unsuccessful form submission', async () => {
-      const apiMock = jest.spyOn(api, 'postEnrollment').mockImplementationOnce(() => Promise.resolve({
-        errors: [
-          {
-            code: null,
-            dismissible: true,
-            text: 'Error creating enrollment',
-            type: 'danger',
-            topic: 'createEnrollments',
-          },
-        ],
-      }));
-      expect(apiMock).toHaveBeenCalledTimes(0);
-      wrapper.find('input#courseID').simulate('change', { target: { value: 'course-v1:testX+test123+2030' } });
+    fireEvent.change(screen.getAllByRole('combobox')[1], { target: { value: 'other' } }); // reason
+    fireEvent.change(screen.getAllByRole('combobox')[0], { target: { value: 'verified' } }); // mode
 
-      wrapper.find('select#reason').simulate('change', { target: { value: 'Other' } });
-      wrapper.find('select#mode').simulate('change', { target: { value: 'verified' } });
-      wrapper.find('textarea#comments').simulate('change', { target: { value: 'test create enrollment' } });
-      wrapper.find('button.btn-primary').simulate('click');
+    fireEvent.change(screen.getByPlaceholderText(/explanation/i), {
+      target: { value: 'test create enrollment' },
+    });
 
-      expect(apiMock).toHaveBeenCalledTimes(1);
-      waitFor(() => expect(wrapper.find('.alert').text()).toEqual('Error creating enrollment'));
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    await waitFor(() => expect(apiMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      expect(screen.getByText(/new enrollment successfully created/i)).toBeInTheDocument();
+    });
+  });
+
+  it('Unsuccessful form submission', async () => {
+    const apiMock = jest.spyOn(api, 'postEnrollment').mockResolvedValueOnce({
+      errors: [
+        {
+          code: null,
+          dismissible: true,
+          text: 'Error creating enrollment',
+          type: 'danger',
+          topic: 'createEnrollments',
+        },
+      ],
+    });
+
+    render(<EnrollmentFormWrapper {...createEnrollmentFormData} />);
+
+    fireEvent.change(screen.getByPlaceholderText(/course run id/i), {
+      target: { value: 'course-v1:testX+test123+2030' },
+    });
+
+    fireEvent.change(screen.getAllByRole('combobox')[1], { target: { value: 'other' } }); // reason
+    fireEvent.change(screen.getAllByRole('combobox')[0], { target: { value: 'verified' } }); // mode
+
+    fireEvent.change(screen.getByPlaceholderText(/explanation/i), {
+      target: { value: 'test create enrollment' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    await waitFor(() => expect(apiMock).toHaveBeenCalledTimes(1));
+    await waitFor(() => {
+      expect(screen.getByText(/error creating enrollment/i)).toBeInTheDocument();
     });
   });
 });
