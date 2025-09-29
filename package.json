@@ -59,7 +59,7 @@
     "react-transition-group": "4.4.1",
     "redux": "4.0.5",
     "use-context-selector": "1.4.1",
-    "uuid": "9.0.0"
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "@edx/browserslist-config": "^1.1.0",
